@@ -11,32 +11,38 @@
 #include "population.hpp"
 #include <cstdlib>
 #include <iostream>
+#include "util.hpp"
+#include <assert.h>
 
 namespace tankwar {
 
-Tank::Tank(Brain_ptr bptr, size_t teamID, Vector2D loc, Vector2D dir) : Object(loc, dir, 0, Params::TANK_RANGE, Params::MAX_TANK_SPEED, false, false), brain_(bptr), teamID_(teamID){
+Tank::Tank(size_t teamID, Vector2D loc, Vector2D dir) :
+		Object(loc, dir, 0, Params::TANK_RANGE, Params::MAX_TANK_SPEED, false, false),
+		brain_(),
+		teamID_(teamID){
 }
 
-double fRand(double fMin, double fMax)
-{
-    double f = (double)rand() / RAND_MAX;
-    return fMin + f * (fMax - fMin);
+void Tank::calculateFitness() {
+	if(projectiles_ == Params::MAX_PROJECTILES || friendly_fire_ > 0)
+		fitness_=0;
+	else
+		fitness_ = (double)((hits_ * 3) + (Params::MAX_DAMAGE - damage_) + (Params::MAX_PROJECTILES - projectiles_)) / (double)(((friendly_fire_ * 2) + 1));
+
+	//fitness_ = Params::MAX_PROJECTILES - friendly_fire_;
 }
 
 void Tank::think(BattleField& field) {
 	if(teamID_ == 0)
-		brain_->update(*this, field.teamA_, field.teamB_);
+		brain_.update(*this, field.teamA_, field.teamB_);
 	else
-		brain_->update(*this, field.teamB_, field.teamA_);
+		brain_.update(*this, field.teamB_, field.teamA_);
 }
 
 void Tank::move() {
 	//assign the outputs
-	lthrust_ = brain_->lthrust_;
-	rthrust_ = brain_->rthrust_;
-	wantsShoot_ = (brain_->shoot_ > 0);
-
-	std::cerr << brain_->lthrust_ << "\t" << brain_->rthrust_ << "\t" << brain_->shoot_ << std::endl;
+	lthrust_ = brain_.lthrust_;
+	rthrust_ = brain_.rthrust_;
+	wantsShoot_ = (brain_.shoot_ > 0);
 
 	if(wantsShoot_)
 		this->shoot();
@@ -57,5 +63,18 @@ void Tank::move() {
 
 	//update location
 	loc_ += (dir_ * speed_);
+}
+
+
+void Tank::reset() {
+	projectiles_ = Params::MAX_PROJECTILES;
+	lthrust_ = 0;
+	rthrust_ = 0;
+	friendly_fire_ = 0;
+	hits_ = 0;
+	damage_ = 0;
+	fitness_ = 0;
+	dead_ = false;
+	explode_ = false;
 }
 } /* namespace tankwar */

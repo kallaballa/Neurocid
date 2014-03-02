@@ -1,6 +1,6 @@
 CXX     := g++-4.8
 TARGET  := tankwar
-SRCS    := battlefield.cpp canvas.cpp params.cpp tank.cpp tankwar.cpp brain.cpp
+SRCS    := battlefield.cpp canvas.cpp params.cpp tank.cpp tankwar.cpp brain.cpp genetic.cpp util.cpp
 #precompiled headers
 HEADERS := 
 GCH    := ${HEADERS:.h=.gch}
@@ -9,7 +9,7 @@ DEPS    := ${SRCS:.cpp=.dep}
     
 CXXFLAGS += -DETLOG -std=c++0x -pedantic -Wall `pkg-config --cflags SDL_gfx sdl SDL_image`
 LDFLAGS += -L/opt/local/lib 
-LIBS    += -lm `pkg-config --libs SDL_gfx sdl SDL_image` -lfann
+LIBS    += -lm `pkg-config --libs SDL_gfx sdl SDL_image` -lfann -lX11
 .PHONY: all release clean distclean 
 
 ifeq ($(UNAME), Darwin)

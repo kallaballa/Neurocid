@@ -26,7 +26,6 @@ private:
 	void checkTeamHits(Population& team);
 	void checkHits();
 	void letTanksThink();
-	void render();
 };
 
 } /* namespace tankwar */

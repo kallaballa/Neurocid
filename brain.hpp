@@ -1,10 +1,3 @@
-/*
- * brain.hpp
- *
- *  Created on: Mar 2, 2014
- *      Author: elchaschab
- */
-
 #ifndef BRAIN_HPP_
 #define BRAIN_HPP_
 
@@ -18,20 +11,25 @@ class Tank;
 class Population;
 
 class Brain {
-	fann *nn_;
+
+	size_t size_;
 public:
+	fann *nn_;
 	fann_type lthrust_ = 0;
 	fann_type rthrust_ = 0;
 	fann_type shoot_ = 0;
 
-	Brain(size_t intputs, size_t outputs, size_t layers, size_t hiddenNeurons);
+	Brain();
 	virtual ~Brain();
+	void destroy();
 	void update(const Tank& tank, const Population& ownTeam, const Population& otherTeam);
 	void randomize();
+	size_t size() const;
+	fann_type* weights();
 };
 
 
-typedef std::shared_ptr<Brain> Brain_ptr;
+typedef Brain* Brain_ptr;
 } /* namespace tankwar */
 
 #endif /* BRAIN_HPP_ */

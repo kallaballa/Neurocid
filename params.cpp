@@ -7,12 +7,13 @@ size_t Params::FRAME_PER_SECOND = 60;
 size_t Params::Params::NUM_INPUTS = 4;
 size_t Params::NUM_HIDDEN = 1;
 size_t Params::NUM_NEURONS_PER_HIDDEN = 6;
+size_t Params::NUM_LAYERS = 6;
 size_t Params::NUM_OUTPUTS = 2;
 double Params::ACTIVATION_RESPONSE = 1;
 double Params::BIAS = -1;
 
 //Tank
-size_t Params::MAX_PROJECTILES=5;
+size_t Params::MAX_PROJECTILES=3;
 size_t Params::MAX_DAMAGE=3;
 double Params::MAX_TURN_RATE = 0.3;
 double Params::MAX_TANK_SPEED = 4;
@@ -25,7 +26,7 @@ size_t Params::NUM_TICKS = 2000;
 
 //Projectile
 double Params::PROJECTILE_SCALE = 1;
-double Params::MAX_PROJECTILE_SPEED = 12;
+double Params::MAX_PROJECTILE_SPEED = 8;
 int Params::PROJECTILE_RANGE = 3;
 
 //Genetic

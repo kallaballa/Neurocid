@@ -2,11 +2,15 @@
 #include "canvas.hpp"
 #include "tank.hpp"
 #include "projectile.hpp"
+#include "battlefield.hpp"
+#include "population.hpp"
+#include <thread>
+#include <chrono>
 
 namespace tankwar {
 
 Canvas::Canvas(Coord width, Coord height) :
-  screen_(NULL) , width_(width), height_(height) {
+  screen_(NULL) , enabled_(true), width_(width), height_(height), timeout_(20) {
   if (width > 0 && height > 0) {
     if (SDL_Init(SDL_INIT_VIDEO) == -1) {
       printf("Can't init SDL:  %s\n", SDL_GetError());
@@ -39,7 +43,7 @@ void Canvas::drawProjectile(Projectile& pro, Color& c) {
 }
 
 void Canvas::drawExplosion(Object& o, Color& c) {
-	 ellipseRGBA(screen_, (Uint16)o.loc_.x, (Uint16)o.loc_.y, (Uint16)o.range_, (Uint16)o.range_, c.r, c.g, c.b, 255);
+	 ellipseRGBA(screen_, (Uint16)o.loc_.x, (Uint16)o.loc_.y, (Uint16)10, (Uint16)10, c.r, c.g, c.b, 255);
 }
 
 void Canvas::clear() {
@@ -50,5 +54,41 @@ void Canvas::update() {
   if(screen_ != NULL) {
 	  SDL_Flip(screen_);
   }
+}
+
+void Canvas::render(BattleField& field) {
+	if(!isEnabled())
+		return;
+	Color white = {255,255,255};
+	Color green = {0,255,0};
+	Color purple = {255,0,255};
+	Color red = {255,0,0};
+
+	this->clear();
+	for(Tank& t : field.teamA_) {
+		if(t.explode_)
+			this->drawExplosion(t, red);
+		else if(!t.dead_)
+			this->drawTank(t, green);
+		t.explode_ = false;
+	}
+
+	for(Tank& t : field.teamB_) {
+		if(t.explode_)
+			this->drawExplosion(t, red);
+		else if(!t.dead_)
+			this->drawTank(t, purple);
+		t.explode_ = false;
+	}
+
+	for(Projectile& p : field.projectiles_) {
+		if(p.explode_)
+			this->drawExplosion(p, red);
+		else if(!p.dead_)
+			this->drawProjectile(p,white);
+		p.explode_ = false;
+	}
+	this->update();
+	std::this_thread::sleep_for(std::chrono::milliseconds(timeout_));
 }
 }

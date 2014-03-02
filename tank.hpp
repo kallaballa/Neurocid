@@ -13,7 +13,6 @@
 namespace tankwar {
 
 class Tank : public Object {
-	size_t projectiles_ = Params::MAX_PROJECTILES;
 	bool wantsShoot_ = false;
 
 	void shoot() {
@@ -21,43 +20,41 @@ class Tank : public Object {
 			projectiles_--;
 	}
 public:
-	Brain_ptr brain_;
+	size_t projectiles_ = Params::MAX_PROJECTILES;
+	Brain brain_;
 	size_t teamID_;
 	Thrust lthrust_ = 0;
 	Thrust rthrust_ = 0;
-	size_t friendly_fire = 0;
-	size_t hits = 0;
+	size_t friendly_fire_ = 0;
+	size_t hits_ = 0;
 	size_t damage_ = 0;
+	double fitness_ = 0;
 
-	Tank(Brain_ptr brain_, size_t teamID, Vector2D loc, Vector2D dir);
+	Tank(size_t teamID, Vector2D loc, Vector2D dir);
+	~Tank() {};
 
-	bool operator==(const Tank& other){
+	bool operator==(const Tank& other) const {
 		return this->teamID_ == other.teamID_ && this->loc_ == other.loc_;
 	}
 
-	bool operator!=(const Tank& other){
+	bool operator!=(const Tank& other) const {
 		return !this->operator ==(other);
 	}
 
 	bool willShoot() {
 		return projectiles_ > 0 && wantsShoot_;
 	}
-
-	template<class T>
-	void clamp(T &arg, T min, T max)
-	{
-	  if (arg < min) {
-	    arg = min;
-	  }
-
-	  if (arg > max) {
-	    arg = max;
-	  }
-	}
-
+	void calculateFitness();
 	void think(BattleField& field);
 	void move();
+	void reset();
+
+	bool operator<(const Tank& other) const	{
+		return (this->fitness_ < other.fitness_);
+	}
+
 };
+
 
 } /* namespace tankwar */
 

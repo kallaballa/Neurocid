@@ -23,7 +23,7 @@ struct Object {
 	bool explode_;
 	bool dead_;
 
-	Object(Vector2D& loc, Vector2D& dir, Coord rotation, Coord range, Coord speed, bool explode, bool dead) :
+	Object(Vector2D loc, Vector2D dir, Coord rotation, Coord range, Coord speed, bool explode, bool dead) :
 			loc_(loc), dir_(dir), rotation_(rotation), range_(range), speed_(speed), explode_(explode), dead_(dead) {
 	}
 

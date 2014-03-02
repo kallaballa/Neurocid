@@ -10,12 +10,14 @@
 
 namespace tankwar {
 using std::string;
+
 struct Color {
 	uint8_t r;
 	uint8_t g;
 	uint8_t b;
 };
 
+class BattleField;
 class Tank;
 class Projectile;
 class Object;
@@ -29,10 +31,30 @@ public:
   void drawExplosion(Object& o, Color& c);
   void update();
   void clear();
+  void render(BattleField& field);
+
+  void setTimeout(size_t millis) {
+  	timeout_=millis;
+  }
+
+  size_t getTimeout() {
+   	return timeout_;
+   }
+
+
+  bool isEnabled() {
+	  return enabled_;
+  }
+
+  void setEnabled(bool e) {
+	  enabled_ = e;
+  }
 private:
   class SDL_Surface *screen_;
+  bool enabled_;
   Coord width_;
   Coord height_;
+  size_t timeout_;
 };
 }
 

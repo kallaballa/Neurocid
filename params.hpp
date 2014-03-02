@@ -18,6 +18,7 @@ static size_t FRAME_PER_SECOND;
 static size_t NUM_INPUTS;
 static size_t NUM_HIDDEN;
 static size_t NUM_NEURONS_PER_HIDDEN;
+static size_t NUM_LAYERS;
 static size_t NUM_OUTPUTS;
 static double ACTIVATION_RESPONSE;
 static double BIAS;

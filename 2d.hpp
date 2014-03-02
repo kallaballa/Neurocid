@@ -52,7 +52,7 @@ struct Vector2D {
 		return *this;
 	}
 
-	bool operator==(const Vector2D &other) {
+	bool operator==(const Vector2D &other) const {
 		return this->x == other.x && this->y == other.y;
 	}
 
@@ -62,7 +62,12 @@ struct Vector2D {
 
 	Vector2D& normalize() {
 		double vector_length = this->length();
-
+		if(vector_length == 0)
+		{
+			this->x = 0;
+			this->y = 0;
+			return *this;
+		}
 		this->x = this->x / vector_length;
 		this->y = this->y / vector_length;
 		return *this;
