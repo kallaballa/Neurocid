@@ -15,7 +15,7 @@
 namespace tankwar {
 
 Brain::Brain(): nn_(NULL) {
-	nn_ = fann_create_standard(Params::NUM_LAYERS, Params::NUM_INPUTS, Params::NUM_NEURONS_PER_HIDDEN, Params::NUM_OUTPUTS);
+	nn_ = fann_create_standard(Params::NUM_LAYERS, Params::NUM_INPUTS,Params::NUM_NEURONS_PER_HIDDEN, Params::NUM_NEURONS_PER_HIDDEN, Params::NUM_OUTPUTS);
     fann_set_activation_function_hidden(nn_, FANN_SIGMOID_SYMMETRIC);
     fann_set_activation_function_output(nn_, FANN_SIGMOID_SYMMETRIC);
 }

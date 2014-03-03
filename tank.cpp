@@ -27,7 +27,7 @@ void Tank::calculateFitness() {
 	if(projectiles_ == Params::MAX_PROJECTILES)
 		fitness_=0;
 	else
-		fitness_ = (double)((hits_*10) + ((Params::MAX_PROJECTILES - projectiles_))/2)/ (double)(friendly_fire_*2 + 1);
+		fitness_ = (double)((hits_*20) + (Params::MAX_DAMAGE - damage_))/ (double)(friendly_fire_*2 + 1);
 
 //	fitness_ = hits_;
 //	fitness_ = Params::MAX_PROJECTILES - friendly_fire_;

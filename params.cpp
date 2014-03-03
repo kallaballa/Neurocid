@@ -14,7 +14,7 @@ double Params::BIAS = -1;
 
 //Tank
 size_t Params::MAX_PROJECTILES=5;
-size_t Params::MAX_DAMAGE=100;
+size_t Params::MAX_DAMAGE=5;
 double Params::MAX_TURN_RATE = 0.3;
 double Params::MAX_TANK_SPEED = 4;
 double Params::TANK_SCALE = 5;

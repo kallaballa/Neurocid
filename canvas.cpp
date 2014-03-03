@@ -31,7 +31,11 @@ void Canvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c) {
   }
 }
 
-void Canvas::drawTank(Tank& tank, Color& c) {
+void Canvas::drawTank(Tank& tank) {
+	Color c = {255,0,255};
+	if(tank.teamID_ == 0)
+		c = {0,255,0};
+
     ellipseRGBA(screen_, (Uint16)tank.loc_.x, (Uint16)tank.loc_.y, (Uint16)tank.range_, (Uint16)tank.range_, c.r, c.g, c.b, 255);
     Vector2D tip = tank.loc_;
     tip += tank.dir_ * 5;
@@ -60,8 +64,6 @@ void Canvas::render(BattleField& field) {
 	if(!isEnabled())
 		return;
 	Color white = {255,255,255};
-	Color green = {0,255,0};
-	Color purple = {255,0,255};
 	Color red = {255,0,0};
 
 	this->clear();
@@ -69,7 +71,7 @@ void Canvas::render(BattleField& field) {
 		if(t.explode_)
 			this->drawExplosion(t, red);
 		else if(!t.dead_)
-			this->drawTank(t, green);
+			this->drawTank(t);
 		t.explode_ = false;
 	}
 
@@ -77,7 +79,7 @@ void Canvas::render(BattleField& field) {
 		if(t.explode_)
 			this->drawExplosion(t, red);
 		else if(!t.dead_)
-			this->drawTank(t, purple);
+			this->drawTank(t);
 		t.explode_ = false;
 	}
 

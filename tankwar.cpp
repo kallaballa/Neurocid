@@ -54,11 +54,11 @@ int main(int argc, char** argv) {
 
 	size_t numTeamA = 20;
 	size_t numTeamB = 20;
-//	Params::NUM_INPUTS = 3 + (2 * numTeamA) + (2 * numTeamB);
-	Params::NUM_INPUTS = 4;
+	Params::NUM_INPUTS = 3 + (2 * numTeamA) + (2 * numTeamB);
+//	Params::NUM_INPUTS = 4;
 	Params::NUM_OUTPUTS = 3;
-	Params::NUM_LAYERS = 3;
-	Params::NUM_NEURONS_PER_HIDDEN = 6;
+	Params::NUM_LAYERS = 4;
+	Params::NUM_NEURONS_PER_HIDDEN = 12;
 
 	std::cerr << "Make Teams" << endl;
 	Population teamA;
@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 
 	for(size_t i = 0; i < numTeamB; i++) {
 		Tank t1(1, {750, (20 * i) + 20}, {-1, 0});
-//		Tank t1(1, {fRand(50,750), fRand(50,550)},{fRand(-1,1),fRand(-1,1)});
+		//Tank t1(1, {fRand(50,750), fRand(50,550)},{fRand(-1,1),fRand(-1,1)});
 		t1.brain_.randomize();
 		teamB.push_back(t1);
 /*
@@ -111,6 +111,7 @@ int main(int argc, char** argv) {
 		//switch sides
 		teamA = newTeamB;
 		teamB = newTeamA;
+
 		//shuffle positions
 		random_shuffle(teamA.begin(), teamA.end());
 		random_shuffle(teamB.begin(), teamB.end());
@@ -120,7 +121,8 @@ int main(int argc, char** argv) {
 
 		for(size_t i = 0; i < numTeamA ; i++) {
 			teamA[i].reset();
-
+			//teamA[i].loc_ = {fRand(50,750), fRand(50,550)};
+			//teamA[i].dir_ =  {fRand(-1,1),fRand(-1,1)};
 			teamA[i].loc_ = {50, (20 * i) + 20};
 			teamA[i].dir_ =  {1, 0};
 			//teamA[i + 1].reset();
@@ -130,6 +132,9 @@ int main(int argc, char** argv) {
 
 		for(size_t i = 0; i < numTeamB; i++) {
 			teamB[i].reset();
+//			teamB[i].loc_ = {fRand(50,750), fRand(50,550)};
+//			teamB[i].dir_ =  {fRand(-1,1),fRand(-1,1)};
+
 			teamB[i].loc_ = {750, (20 * i) + 20};
 			teamB[i].dir_ =  {-1, 0};
 			//teamB[i + 1].reset();

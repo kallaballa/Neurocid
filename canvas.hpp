@@ -26,7 +26,7 @@ class Canvas {
 public:
   Canvas(Coord width, Coord height);
   void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
-  void drawTank(Tank& tank, Color& c);
+  void drawTank(Tank& tank);
   void drawProjectile(Projectile& pro, Color& c);
   void drawExplosion(Object& o, Color& c);
   void update();
