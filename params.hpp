@@ -41,6 +41,7 @@ static double MAX_PROJECTILE_SPEED;
 static int PROJECTILE_RANGE;
 //Genetic
 static double CROSSOVER_RATE;
+static size_t CROSSOVER_ITERATIONS;
 static double MUTATION_RATE;
 static double MAX_PERTUBATION;
 static size_t NUM_ELITE;

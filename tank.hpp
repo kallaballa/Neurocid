@@ -47,12 +47,13 @@ public:
 	void calculateFitness();
 	void think(BattleField& field);
 	void move();
+	Tank makeChild();
+	Tank clone();
 	void reset();
 
 	bool operator<(const Tank& other) const	{
 		return (this->fitness_ < other.fitness_);
 	}
-
 };
 
 

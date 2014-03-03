@@ -81,8 +81,9 @@ Tank& GeneticAlgorithm::getChromoRoulette(Population& pop) {
 //-----------------------------------------------------------------------
 std::pair<Tank, Tank> GeneticAlgorithm::crossover(Tank &mum,
 		Tank &dad) {
-	Tank baby1(mum.teamID_, mum.loc_, mum.dir_);
-	Tank baby2(mum.teamID_, mum.loc_, mum.dir_);
+	Tank baby1 = mum.makeChild();
+	Tank baby2 = mum.makeChild();
+
 	fann_type* wMum = mum.brain_.weights();
 	fann_type* wDad = dad.brain_.weights();
 	fann_type* wBaby1 = baby1.brain_.weights();
@@ -93,8 +94,41 @@ std::pair<Tank, Tank> GeneticAlgorithm::crossover(Tank &mum,
 	if ((fRand(0,1) > crossoverRate_) || (mum == dad)) {
 		return {baby1, baby2};
 	}
+	size_t it = Params::CROSSOVER_ITERATIONS;
+	size_t last_cp = 0;
+	size_t cp;
+	bool cross = false;
 
-	//determine a crossover point
+	for(size_t i = 0; i < it && cp < (mum.brain_.size() - 1); ++i) {
+		//determine a crossover point
+		cp = iRand(last_cp, mum.brain_.size() - 1);
+
+		//create the offspring
+		for (size_t j = last_cp; j < cp; ++j) {
+			if(cross) {
+				wBaby1[j] = wMum[j];
+				wBaby2[j] = wDad[j];
+			} else {
+				wBaby1[j] = wDad[j];
+				wBaby2[j] = wMum[j];
+			}
+		}
+
+		last_cp = cp;
+		cross = !cross;
+	}
+
+	for (size_t i = last_cp; i < mum.brain_.size(); ++i) {
+		if(cross) {
+			wBaby1[i] = wMum[i];
+			wBaby2[i] = wDad[i];
+		} else {
+			wBaby1[i] = wDad[i];
+			wBaby2[i] = wMum[i];
+		}
+	}
+
+	/*//determine a crossover point
 	size_t cp = iRand(0, mum.brain_.size() - 1);
 	size_t i = 0;
 	//create the offspring
@@ -107,7 +141,7 @@ std::pair<Tank, Tank> GeneticAlgorithm::crossover(Tank &mum,
 		wBaby1[i] = wDad[i];
 		wBaby2[i] = wMum[i];
 	}
-
+*/
 	return {baby1, baby2};
 }
 
@@ -134,12 +168,11 @@ void GeneticAlgorithm::epoch(Population& old_pop, Population& new_pop) {
 	//Now to add a little elitism we shall add in some copies of the
 	//fittest genomes. Make sure we add an EVEN number or the roulette
 	//wheel sampling will crash
-	/*if (!(numCopiesElite_ * (numElite_ % 2))) {
+	if (!(numCopiesElite_ * (numElite_ % 2))) {
 		copyNBest(numElite_, numCopiesElite_, old_pop, new_pop);
-	}*/
+	}
 
 	//now we enter the GA loop
-
 	//repeat until a new population is generated
 	while (new_pop.size() < old_pop.size()) {
 		//grab two chromosones
@@ -171,8 +204,7 @@ void GeneticAlgorithm::copyNBest(size_t nBest, const size_t numCopies,
 	//add the required amount of copies of the n most fittest to the supplied population
 	while (nBest--) {
 		for (size_t i = 0; i < numCopies; ++i) {
-			Tank& t = in[(in.size() - 1) - nBest];
-			out.push_back(Tank(t.teamID_, t.loc_, t.dir_));
+			out.push_back(in[(in.size() - 1) - nBest].clone());
 		}
 	}
 }

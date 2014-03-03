@@ -13,6 +13,7 @@
 #include <iostream>
 #include "util.hpp"
 #include <assert.h>
+#include <cmath>
 
 namespace tankwar {
 
@@ -23,16 +24,17 @@ Tank::Tank(size_t teamID, Vector2D loc, Vector2D dir) :
 }
 
 void Tank::calculateFitness() {
-	if(projectiles_ == Params::MAX_PROJECTILES || friendly_fire_ > 0)
+	if(projectiles_ == Params::MAX_PROJECTILES)
 		fitness_=0;
 	else
-		fitness_ = (double)((hits_ * 3) + (Params::MAX_DAMAGE - damage_) + (Params::MAX_PROJECTILES - projectiles_)) / (double)(((friendly_fire_ * 2) + 1));
+		fitness_ = (double)((hits_*10) + ((Params::MAX_PROJECTILES - projectiles_))/2)/ (double)(friendly_fire_*2 + 1);
 
-	//fitness_ = Params::MAX_PROJECTILES - friendly_fire_;
+//	fitness_ = hits_;
+//	fitness_ = Params::MAX_PROJECTILES - friendly_fire_;
 }
 
 void Tank::think(BattleField& field) {
-	if(teamID_ == 0)
+	if(teamID_ == field.teamA_[0].teamID_)
 		brain_.update(*this, field.teamA_, field.teamB_);
 	else
 		brain_.update(*this, field.teamB_, field.teamA_);
@@ -42,6 +44,8 @@ void Tank::move() {
 	//assign the outputs
 	lthrust_ = brain_.lthrust_;
 	rthrust_ = brain_.rthrust_;
+
+	assert(!isnan(lthrust_) && !isnan(rthrust_));
 	wantsShoot_ = (brain_.shoot_ > 0);
 
 	if(wantsShoot_)
@@ -61,10 +65,25 @@ void Tank::move() {
 	dir_.x = -sin(rotation_);
 	dir_.y = cos(rotation_);
 
+	//std::cerr << dir_.x << "\t" << dir_.y << "\t" << speed_ << "\t" << loc_.x << "\t" <<  loc_.y << std::endl;
 	//update location
 	loc_ += (dir_ * speed_);
 }
 
+Tank Tank::makeChild() {
+	return Tank(this->teamID_, this->loc_, this->dir_);
+}
+
+Tank Tank::clone() {
+	//make child
+	Tank t = makeChild();
+
+	//copy brain
+	for(size_t i = 0; i < brain_.size(); ++i) {
+		t.brain_.weights()[i] = brain_.weights()[i];
+	}
+	return t;
+}
 
 void Tank::reset() {
 	projectiles_ = Params::MAX_PROJECTILES;

@@ -12,7 +12,6 @@ class Population;
 
 class Brain {
 
-	size_t size_;
 public:
 	fann *nn_;
 	fann_type lthrust_ = 0;
@@ -20,6 +19,7 @@ public:
 	fann_type shoot_ = 0;
 
 	Brain();
+	Brain(const Brain& other);
 	virtual ~Brain();
 	void destroy();
 	void update(const Tank& tank, const Population& ownTeam, const Population& otherTeam);

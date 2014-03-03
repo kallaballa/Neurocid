@@ -92,28 +92,31 @@ void BattleField::moveTanks() {
 
 void BattleField::moveProjectiles() {
 	for(Projectile& p : projectiles_) {
-	//	if(!p.dead_)
+		if(!p.dead_)
 			p.move();
 	}
 }
 
-
 void BattleField::checkTeamHits(Population& team) {
 	for(Projectile& p : projectiles_) {
-	//	if(p.dead_)
-		//	continue;
+		if(p.dead_)
+			continue;
 
 		for(Tank& t : team) {
 			if(!t.dead_ && p.collides(t) && t != p.owner_) {
 				p.dead_ = true;
 				t.damage_++;
-				if(p.owner_.teamID_ == t.teamID_)
+				if(p.owner_.teamID_ == t.teamID_) {
 					p.owner_.friendly_fire_++;
-				else
+					if(t.damage_ >= Params::MAX_DAMAGE) {
+						t.dead_ = true;
+					}
+				}
+				else {
 					p.owner_.hits_++;
-
-				if(t.damage_ >= Params::MAX_DAMAGE) {
-					t.dead_ = true;
+					if(t.damage_ >= Params::MAX_DAMAGE) {
+						t.dead_ = true;
+					}
 				}
 			}
 		}
@@ -136,13 +139,11 @@ void BattleField::letTanksThink() {
 	}
 }
 
-
-
 void BattleField::step() {
 	moveTanks();
 	moveProjectiles();
 	checkHits();
-	letTanksThink();
+    letTanksThink();
 }
 
 } /* namespace tankwar */

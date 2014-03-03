@@ -15,10 +15,12 @@
 namespace tankwar {
 
 Brain::Brain(): nn_(NULL) {
-	size_ = Params::NUM_INPUTS + Params::NUM_OUTPUTS + (((Params::NUM_LAYERS - 2) * Params::NUM_NEURONS_PER_HIDDEN));
-	nn_ = fann_create_standard(Params::NUM_LAYERS, Params::NUM_INPUTS, Params::NUM_NEURONS_PER_HIDDEN, Params::NUM_NEURONS_PER_HIDDEN, Params::NUM_NEURONS_PER_HIDDEN, Params::NUM_NEURONS_PER_HIDDEN, Params::NUM_OUTPUTS);
+	nn_ = fann_create_standard(Params::NUM_LAYERS, Params::NUM_INPUTS, Params::NUM_NEURONS_PER_HIDDEN, Params::NUM_OUTPUTS);
     fann_set_activation_function_hidden(nn_, FANN_SIGMOID_SYMMETRIC);
     fann_set_activation_function_output(nn_, FANN_SIGMOID_SYMMETRIC);
+}
+
+Brain::Brain(const Brain& other): nn_(other.nn_) {
 }
 
 Brain::~Brain() {
@@ -37,33 +39,43 @@ void Brain::randomize() {
 void Brain::update(const Tank& tank, const Population& ownTeam, const Population& otherTeam) {
 	assert(nn_ != NULL);
 	size_t numInputs = Params::NUM_INPUTS;
+	assert(Params::NUM_INPUTS == fann_get_num_input(nn_));
+	assert(Params::NUM_OUTPUTS == fann_get_num_output(nn_));
 	fann_type inputs[numInputs];
 
 	inputs[0] = (fann_type)tank.dir_.x;
 	inputs[1] = (fann_type)tank.dir_.y;
-	inputs[2] = (fann_type)	(1.0 / Params::MAX_PROJECTILES) * (double)tank.projectiles_;
+//	inputs[2] = (fann_type)	(1.0 / Params::MAX_PROJECTILES) * (double)tank.projectiles_;
+	inputs[2] = (fann_type)(tank.loc_ - otherTeam[0].loc_).normalize().x;
+	inputs[3] = (fann_type)(tank.loc_ - otherTeam[0].loc_).normalize().y;
 
-	size_t off = 3;
+	assert(!isnan(inputs[0]) && !isnan(inputs[1]) && !isnan(inputs[2]));
+
+/*	size_t off = 3;
 	for(size_t i = 0; i < ownTeam.size(); ++i) {
-	//	inputs[off + (i*2)] = (fann_type)(tank.loc_ - ownTeam[i].loc_).x;
-	  //  inputs[off + (i*2) + 1] = (fann_type)(tank.loc_ - ownTeam[i].loc_).y;
-		inputs[off + (i*2)] = 0;
-		inputs[off + (i*2) + 1] = 0;
+		inputs[off + (i*2)] = (fann_type)(tank.loc_ - ownTeam[i].loc_).normalize().x;
+		inputs[off + (i*2) + 1] = (fann_type)(tank.loc_ - ownTeam[i].loc_).normalize().y;
+//		inputs[off + (i*2)] = 1;
+//		inputs[off + (i*2) + 1] = 1;
 	}
 
-	off += ownTeam.size();
+	off += (ownTeam.size() * 2);
 
 	for(size_t i = 0; i < otherTeam.size(); ++i) {
-//		inputs[off + (i*2)] = (fann_type)(tank.loc_ - otherTeam[i].loc_).normalize().x;
-//	    inputs[off + (i*2) + 1] = (fann_type)(tank.loc_ - otherTeam[i].loc_).normalize().y;
-		inputs[off + (i*2)] = 0;
-		inputs[off + (i*2) + 1] = 0;
+		inputs[off + (i*2)] = (fann_type)(tank.loc_ - otherTeam[i].loc_).normalize().x;
+	    inputs[off + (i*2) + 1] = (fann_type)(tank.loc_ - otherTeam[i].loc_).normalize().y;
+//		inputs[off + (i*2)] = 1;
+//		inputs[off + (i*2) + 1] = 1;
 	}
-	/*std::cerr << "input:\t";
+
+	off += (otherTeam.size() * 2);
+*/
+//	std::cerr << "input:";
 	for(size_t i = 0; i < numInputs; ++i) {
-		std::cerr << inputs[i] << "\t";
+		assert(!isnan(inputs[i]));
+//		std::cerr << "\t" << inputs[i];
 	}
-	std::cerr << std::endl;*/
+//	std::cerr << std::endl;
 	fann_type* outputs = fann_run(nn_, inputs);
 	lthrust_ = outputs[0];
 	rthrust_ = outputs[1];
@@ -73,7 +85,7 @@ void Brain::update(const Tank& tank, const Population& ownTeam, const Population
 }
 
 size_t Brain::size() const {
-	return size_;
+	return nn_->total_connections;
 }
 
 fann_type* Brain::weights() {
