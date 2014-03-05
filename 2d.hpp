@@ -9,6 +9,7 @@
 #ifndef TWD_HPP_
 #define TWD_HPP_
 
+#define _USE_MATH_DEFINES
 #include <stdint.h>
 #include <math.h>
 

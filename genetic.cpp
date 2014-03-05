@@ -66,7 +66,6 @@ Tank& GeneticAlgorithm::getChromoRoulette(Population& pop) {
 		if (fitnessSoFar >= slice) {
 			return pop[i];
 		}
-
 	}
 
 	assert(false);
@@ -92,8 +91,9 @@ std::pair<Tank, Tank> GeneticAlgorithm::crossover(Tank &mum,
 	//just return parents as offspring dependent on the rate
 	//or if parents are the same
 	if ((fRand(0,1) > crossoverRate_) || (mum == dad)) {
-		return {baby1, baby2};
+		return {mum.clone(), dad.clone()};
 	}
+	/*
 	size_t it = Params::CROSSOVER_ITERATIONS;
 	size_t last_cp = 0;
 	size_t cp;
@@ -127,8 +127,9 @@ std::pair<Tank, Tank> GeneticAlgorithm::crossover(Tank &mum,
 			wBaby2[i] = wMum[i];
 		}
 	}
+	*/
 
-	/*//determine a crossover point
+	//determine a crossover point
 	size_t cp = iRand(0, mum.brain_.size() - 1);
 	size_t i = 0;
 	//create the offspring
@@ -141,7 +142,7 @@ std::pair<Tank, Tank> GeneticAlgorithm::crossover(Tank &mum,
 		wBaby1[i] = wDad[i];
 		wBaby2[i] = wMum[i];
 	}
-*/
+
 	return {baby1, baby2};
 }
 
@@ -159,6 +160,7 @@ void GeneticAlgorithm::epoch(Population& old_pop, Population& new_pop) {
 	for(Tank& t : old_pop) {
 		t.calculateFitness();
 	}
+
 	//sort the population (for scaling and elitism)
 	sort(old_pop.begin(), old_pop.end());
 
@@ -204,7 +206,9 @@ void GeneticAlgorithm::copyNBest(size_t nBest, const size_t numCopies,
 	//add the required amount of copies of the n most fittest to the supplied population
 	while (nBest--) {
 		for (size_t i = 0; i < numCopies; ++i) {
-			out.push_back(in[(in.size() - 1) - nBest].clone());
+			Tank &t = in[(in.size() - 1) - nBest];
+			out.push_back(t.clone());
+			assert(t.brain_ == (*(out.end() - 1)).brain_);
 		}
 	}
 }

@@ -71,6 +71,14 @@ void Canvas::render(BattleField& field) {
 		else if(!t.dead_)
 			this->drawTank(t, green);
 		t.explode_ = false;
+
+		for(Projectile& p : t.projectiles_) {
+			if(p.explode_)
+				this->drawExplosion(p, red);
+			else if(!p.dead_)
+				this->drawProjectile(p,white);
+			p.explode_ = false;
+		}
 	}
 
 	for(Tank& t : field.teamB_) {
@@ -79,15 +87,17 @@ void Canvas::render(BattleField& field) {
 		else if(!t.dead_)
 			this->drawTank(t, purple);
 		t.explode_ = false;
+
+		for(Projectile& p : t.projectiles_) {
+			if(p.explode_)
+				this->drawExplosion(p, red);
+			else if(!p.dead_)
+				this->drawProjectile(p,white);
+			p.explode_ = false;
+		}
 	}
 
-	for(Projectile& p : field.projectiles_) {
-		if(p.explode_)
-			this->drawExplosion(p, red);
-		else if(!p.dead_)
-			this->drawProjectile(p,white);
-		p.explode_ = false;
-	}
+
 	this->update();
 	std::this_thread::sleep_for(std::chrono::milliseconds(timeout_));
 }

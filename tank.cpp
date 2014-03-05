@@ -13,22 +13,48 @@
 #include <iostream>
 #include "util.hpp"
 #include <assert.h>
+#define _USE_MATH_DEFINES
 #include <cmath>
-
+#include <limits>
 namespace tankwar {
 
-Tank::Tank(size_t teamID, Vector2D loc, Vector2D dir) :
-		Object(loc, dir, 0, Params::TANK_RANGE, Params::MAX_TANK_SPEED, false, false),
+Tank::Tank(size_t teamID, Vector2D loc, Coord rotation) :
+		Object(loc, rotation, Params::TANK_RANGE, Params::MAX_TANK_SPEED, false, false),
 		brain_(),
 		teamID_(teamID){
 }
 
 void Tank::calculateFitness() {
-	if(projectiles_ == Params::MAX_PROJECTILES)
+	Coord totalDiff = 0;
+
+	if(projectiles_.empty()) {
+		totalDiff = (Params::MAX_PROJECTILES * 1.5708);
+	} else {
+		for(Projectile& p : projectiles_) {
+			Vector2D perfect = (p.startLoc_ - p.nearestEnemyLoc_);
+			Vector2D candidate = (p.startLoc_ - p.loc_);
+			Coord arcPerfect = atan2(perfect.x, perfect.y);
+			Coord arcCanditate = atan2(candidate.x, candidate.y);
+			Coord diff = fabs(fmod(fabs(arcPerfect) - fabs(arcCanditate), M_PI));
+			totalDiff += diff;
+	//		std::cerr << "perfect:" << arcPerfect << "\tcanidate:" << arcCanditate << "\tdiff: " << diff << std::endl;
+		}
+	}
+
+	//std::cerr << "tdiff:" << totalDiff << std::endl;
+	if(ammonition_ == Params::MAX_PROJECTILES)
 		fitness_=0;
 	else
-		fitness_ = (double)((hits_*10) + ((Params::MAX_PROJECTILES - projectiles_))/2)/ (double)(friendly_fire_*2 + 1);
+		fitness_ = (
+				(M_PI - (totalDiff/Params::MAX_PROJECTILES))
+				+ ((M_PI/1) / ((ammonition_ / Params::MAX_PROJECTILES) + 1))
+				)
+				/ (double)(friendly_fire_ + 1);
 
+	//std::cerr << "f:" << fitness_ << std::endl;
+	assert(fitness_ >= 0);
+	assert(!std::isnan(fitness_));
+	assert(!std::isinf(fitness_));	//
 //	fitness_ = hits_;
 //	fitness_ = Params::MAX_PROJECTILES - friendly_fire_;
 }
@@ -47,9 +73,7 @@ void Tank::move() {
 
 	assert(!isnan(lthrust_) && !isnan(rthrust_));
 	wantsShoot_ = (brain_.shoot_ > 0);
-
-	if(wantsShoot_)
-		this->shoot();
+	//std::cerr << brain_.shoot_ << std::endl;
 
 	//calculate steering forces
 	Thrust rotForce = lthrust_ - rthrust_;
@@ -71,7 +95,7 @@ void Tank::move() {
 }
 
 Tank Tank::makeChild() {
-	return Tank(this->teamID_, this->loc_, this->dir_);
+	return Tank(this->teamID_, this->loc_, this->rotation_);
 }
 
 Tank Tank::clone() {
@@ -85,15 +109,18 @@ Tank Tank::clone() {
 	return t;
 }
 
-void Tank::reset() {
-	projectiles_ = Params::MAX_PROJECTILES;
+void Tank::resetGameState() {
+	ammonition_ = Params::MAX_PROJECTILES;
 	lthrust_ = 0;
 	rthrust_ = 0;
+	dead_ = false;
+	explode_ = false;
+}
+
+void Tank::resetScore() {
 	friendly_fire_ = 0;
 	hits_ = 0;
 	damage_ = 0;
 	fitness_ = 0;
-	dead_ = false;
-	explode_ = false;
 }
 } /* namespace tankwar */

@@ -10,6 +10,7 @@
 
 #include "object.hpp"
 #include "params.hpp"
+#include <limits>
 
 namespace tankwar {
 
@@ -17,14 +18,27 @@ class Tank;
 
 class Projectile : public Object {
 public:
-	Tank& owner_;
-	Projectile(Tank& owner, Vector2D& loc, Vector2D& dir) : Object(loc, dir, 0.0, Params::PROJECTILE_RANGE, Params::MAX_PROJECTILE_SPEED, false, false), owner_(owner) {
+	Tank* owner_;
+	Vector2D nearestEnemyLoc_;
+	Coord nearestEnemyDis_;
+	Vector2D startLoc_;
+
+	Projectile(Tank& owner, Vector2D& loc, Coord rotation) :
+		Object(loc, rotation, Params::PROJECTILE_RANGE, Params::MAX_PROJECTILE_SPEED, false, false),
+		owner_(&owner),
+		nearestEnemyLoc_(0,0),
+		nearestEnemyDis_(std::numeric_limits<Coord>::max()),
+		startLoc_(loc) {
+		dir_.x = -sin(rotation_);
+		dir_.y = cos(rotation_);
 	}
 
 	void move() {
 		//update location
 		loc_ += (dir_ * speed_);
 	}
+
+	Projectile& operator=(const Projectile& other);
 };
 
 }

@@ -16,125 +16,160 @@ using std::cerr;
 using std::endl;
 
 int main(int argc, char** argv) {
-	Canvas canvas(800,600);
+	Canvas canvas(800, 800);
+	bool run = true;
 
 	std::thread t([&]() {
-		while(true) {
-			XInitThreads();
-			SDL_Event event;
+		GeneticAlgorithm genalgA(0.1, 0.7, 0.3, 2, 2);
+		GeneticAlgorithm genalgB(0.1, 0.7, 0.3, 2, 2);
 
-			while( SDL_PollEvent( &event ) ){
-				switch( event.type ){
-				  case SDL_KEYDOWN:
-					  if(event.key.keysym.scancode == 0x41) {
-						  if(canvas.isEnabled()) {
-							  if(canvas.getTimeout() == 20)
-								  canvas.setTimeout(1);
-							  else
-								  canvas.setEnabled(false);
-						  } else {
-							  canvas.setTimeout(20);
-							  canvas.setEnabled(true);
-						  }
-					  }
-					  break;
-
-				  case SDL_KEYUP:
-					break;
-
-				  default:
-					break;
-				}
-			}
-		}
-	});
-
-	GeneticAlgorithm genalgA(0.3, 0.7, 0.3, 4, 1);
-	GeneticAlgorithm genalgB(0.3, 0.7, 0.3, 4, 1);
-
-	size_t numTeamA = 20;
-	size_t numTeamB = 20;
+		size_t numTeamA = 20;
+		size_t numTeamB = 20;
 //	Params::NUM_INPUTS = 3 + (2 * numTeamA) + (2 * numTeamB);
-	Params::NUM_INPUTS = 4;
-	Params::NUM_OUTPUTS = 3;
-	Params::NUM_LAYERS = 3;
-	Params::NUM_NEURONS_PER_HIDDEN = 6;
+		Params::NUM_INPUTS = 4;
+		Params::NUM_OUTPUTS = 3;
+		Params::NUM_LAYERS = 3;
+		Params::NUM_NEURONS_PER_HIDDEN = 6;
 
-	std::cerr << "Make Teams" << endl;
-	Population teamA;
-	Population teamB;
-	for(size_t i = 0; i < numTeamA; i++) {
-		Tank t1(0, {50, (20 * i) + 20}, {1, 0});
-		//Tank t1(0, {fRand(50,750), fRand(50,550)},{fRand(-1,1),fRand(-1,1)});
-
-		t1.brain_.randomize();
-		teamA.push_back(t1);
-
-/*		Tank t2(new Brain(numInputs, numOutputs, numLayers, numHiddenNeurons),0, {40, (10 * i) + 20}, {1, 0});
-		t2.brain_.randomize();
-		teamA.push_back(t2);*/
-	}
-
-	for(size_t i = 0; i < numTeamB; i++) {
-		Tank t1(1, {750, (20 * i) + 20}, {-1, 0});
-//		Tank t1(1, {fRand(50,750), fRand(50,550)},{fRand(-1,1),fRand(-1,1)});
-		t1.brain_.randomize();
-		teamB.push_back(t1);
-/*
-		Tank t2(new Brain(numInputs, numOutputs, numLayers, numHiddenNeurons),1, {270, (10 * i) + 20}, {-1, 0});
-		t2.brain_.randomize();
-		teamB.push_back(t2);*/
-	}
-
-	while(true) {
-		std::cerr << "Make Battlefield" << "\t" << teamA.size() << "\t" <<teamB.size() << endl;
-		BattleField field(canvas, teamA, teamB);
-
-		for(size_t i = 0; i < 300; ++i) {
-			field.step();
-			canvas.render(field);
-		}
-
+		Population teamA;
+		Population teamB;
 		Population newTeamA;
 		Population newTeamB;
-		genalgA.epoch(teamA, newTeamA);
-		genalgB.epoch(teamB, newTeamB);
 
-		for(Tank& t: teamA) {
-			t.brain_.destroy();
-		}
-
-		for(Tank& t: teamB) {
-			t.brain_.destroy();
-		}
-
-		//switch sides
-		teamA = newTeamB;
-		teamB = newTeamA;
-		//shuffle positions
-		random_shuffle(teamA.begin(), teamA.end());
-		random_shuffle(teamB.begin(), teamB.end());
-
-		std::cerr << "TeamA Gen/Best/Avg:\t" << genalgA.generation() << "\t" << genalgA.bestFitness() << "\t" << genalgA.averageFitness() << endl;
-		std::cerr << "TeamB Gen/Best/Avg:\t" << genalgB.generation() << "\t" << genalgB.bestFitness() << "\t" << genalgB.averageFitness() << endl;
-
-		for(size_t i = 0; i < numTeamA ; i++) {
-			teamA[i].reset();
-
-			teamA[i].loc_ = {50, (20 * i) + 20};
-			teamA[i].dir_ =  {1, 0};
-			//teamA[i + 1].reset();
-			//teamA[i + 1].loc_ = {40, (10 * i) + 20};
-			//teamA[i + 1].dir_ = {1, 0};
+		for(size_t i = 0; i < numTeamA; i++) {
+			Tank t1(0, {0, 0}, 0);
+			t1.brain_.randomize();
+			teamA.push_back(t1);
 		}
 
 		for(size_t i = 0; i < numTeamB; i++) {
-			teamB[i].reset();
-			teamB[i].loc_ = {750, (20 * i) + 20};
-			teamB[i].dir_ =  {-1, 0};
-			//teamB[i + 1].reset();
-			//teamB[i + 1].loc_ = {270, (10 * i) + 20};
-			//teamB[i + 1].dir_ = {-1, 0};
+			Tank t1(1, {0, 0}, 0);
+			t1.brain_.randomize();
+			teamB.push_back(t1);
+		}
+
+		size_t side = 0;
+
+		while(run) {
+			side = iRand(0,3);
+			for(size_t i = 0; i < numTeamA; i++) {
+				teamA[i].resetGameState();
+				if(side == 0) {
+					teamA[i].loc_ = {750, (20 * i) + 20};
+					teamA[i].rotation_ = M_PI / 2;
+				} else if(side == 1) {
+					teamA[i].loc_ = {50, (20 * i) + 20};
+					teamA[i].rotation_ = -M_PI / 2;
+				} else if(side == 2) {
+					teamA[i].loc_ = {(20 * i) + 20, 750};
+					teamA[i].rotation_ = M_PI;
+				} else if(side == 3) {
+					teamA[i].loc_ = {(20 * i) + 20, 50};
+					teamA[i].rotation_ = 0;
+				}
+			}
+
+			for(size_t i = 0; i < numTeamB; i++) {
+				teamB[i].resetGameState();
+				if(side == 0) {
+					teamB[i].loc_ = {50, (20 * i) + 20};
+					teamB[i].rotation_ = -M_PI / 2;
+				} else if(side == 1) {
+					teamB[i].loc_ = {750, (20 * i) + 20};
+					teamB[i].rotation_ = M_PI / 2;
+				} else if(side == 2) {
+					teamB[i].loc_ = {(20 * i) + 20, 50};
+					teamB[i].rotation_ = 0;
+				} else if(side == 3) {
+					teamB[i].loc_ = {(20 * i) + 20, 750};
+					teamB[i].rotation_ = M_PI;
+				}
+			}
+
+			BattleField field(canvas, teamA, teamB);
+
+			for(size_t i = 0; (i < 300) && run; ++i) {
+				field.step();
+				canvas.render(field);
+			}
+
+			//	if(side == 3) {
+			newTeamA.clear();
+			newTeamB.clear();
+			genalgA.epoch(teamA, newTeamA);
+			genalgB.epoch(teamB, newTeamB);
+
+			for(Tank& t: teamA) {
+				assert(!t.brain_.isDestroyed());
+				t.brain_.destroy();
+			}
+
+			for(Tank& t: teamB) {
+				assert(!t.brain_.isDestroyed());
+				t.brain_.destroy();
+			}
+			std::cerr << "TeamA Gen/Best/Avg:\t" << genalgA.generation() << "\t" << genalgA.bestFitness() << "\t" << genalgA.averageFitness() << endl;
+			std::cerr << "TeamB Gen/Best/Avg:\t" << genalgB.generation() << "\t" << genalgB.bestFitness() << "\t" << genalgB.averageFitness() << endl;
+			std::cerr << std::endl;
+
+			assert(teamA.size() == teamB.size());
+			assert(teamA.size() == newTeamA.size());
+			assert(teamB.size() == newTeamB.size());
+
+			teamA = newTeamA;
+			teamB = newTeamB;
+
+			//shuffle positions
+			random_shuffle(teamA.begin(), teamA.end());
+			random_shuffle(teamB.begin(), teamB.end());
+
+			for(size_t i = 0; i < numTeamA; i++) {
+				teamA[i].resetScore();
+			}
+
+			for(size_t i = 0; i < numTeamB; i++) {
+				teamB[i].resetScore();
+			}
+			//	}
+
+			/*		if(side == 3)
+			 side = 0;
+			 else
+			 side++;*/
+		}
+	});
+	while (run) {
+		SDL_Event event;
+
+		while (SDL_PollEvent(&event)) {
+			switch (event.type) {
+			case SDL_KEYDOWN:
+				if (event.key.keysym.sym == SDLKey::SDLK_SPACE) {
+					if (canvas.isEnabled()) {
+						if (canvas.getTimeout() == 20)
+							canvas.setTimeout(1);
+						else
+							canvas.setEnabled(false);
+					} else {
+						canvas.setTimeout(20);
+						canvas.setEnabled(true);
+					}
+				} else if (event.key.keysym.sym == SDLKey::SDLK_ESCAPE) {
+					run = false;
+					std::cerr << "Quitting" << std::endl;
+				}
+
+				break;
+
+			case SDL_KEYUP:
+				break;
+
+			default:
+				break;
+			}
 		}
 	}
+
+	t.join();
+	SDL_Quit();
 }

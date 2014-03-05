@@ -30,6 +30,7 @@ void Brain::destroy() {
 	if(nn_ != NULL)
 		fann_destroy(nn_);
 	nn_ = NULL;
+	destroyed_ = true;
 }
 
 void Brain::randomize() {
@@ -46,10 +47,9 @@ void Brain::update(const Tank& tank, const Population& ownTeam, const Population
 	inputs[0] = (fann_type)tank.dir_.x;
 	inputs[1] = (fann_type)tank.dir_.y;
 //	inputs[2] = (fann_type)	(1.0 / Params::MAX_PROJECTILES) * (double)tank.projectiles_;
-	inputs[2] = (fann_type)(tank.loc_ - otherTeam[0].loc_).normalize().x;
-	inputs[3] = (fann_type)(tank.loc_ - otherTeam[0].loc_).normalize().y;
-
-	assert(!isnan(inputs[0]) && !isnan(inputs[1]) && !isnan(inputs[2]));
+	inputs[2] = (fann_type)(tank.loc_ - otherTeam[otherTeam.size() / 2].loc_).normalize().x;
+	inputs[3] = (fann_type)(tank.loc_ - otherTeam[otherTeam.size() / 2].loc_).normalize().y;
+	//inputs[4] = (fann_type)1;
 
 /*	size_t off = 3;
 	for(size_t i = 0; i < ownTeam.size(); ++i) {
@@ -80,7 +80,9 @@ void Brain::update(const Tank& tank, const Population& ownTeam, const Population
 	lthrust_ = outputs[0];
 	rthrust_ = outputs[1];
 	shoot_ = outputs[2];
-//	std::cerr << "shoot:\t" << inputs[2] << std::endl;
+	assert(!isnan(lthrust_) && !isnan(rthrust_) && !isnan(shoot_));
+
+	//	std::cerr << "shoot:\t" << inputs[2] << std::endl;
 //	std::cerr << "output:\t" << lthrust_ << "\t" << rthrust_ << "\t" << shoot_ << std::endl;
 }
 

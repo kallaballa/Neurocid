@@ -4,6 +4,7 @@
 #include <fann.h>
 #include "2d.hpp"
 #include <memory>
+#include <assert.h>
 
 namespace tankwar {
 
@@ -11,6 +12,7 @@ class Tank;
 class Population;
 
 class Brain {
+	bool destroyed_ = false;
 
 public:
 	fann *nn_;
@@ -26,6 +28,23 @@ public:
 	void randomize();
 	size_t size() const;
 	fann_type* weights();
+
+	bool isDestroyed() {
+		return destroyed_;
+	}
+
+	bool operator==(Brain& other) {
+		assert(other.size() == this->size());
+		for(size_t i = 0; i < this->size(); ++i){
+			if(this->weights()[i] != other.weights()[i])
+				return false;
+		}
+		return true;
+	}
+
+	bool operator!=(Brain& other) {
+		return !operator==(other);
+	}
 };
 
 
