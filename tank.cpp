@@ -103,7 +103,7 @@ void Tank::move() {
 	lthrust_ = brain_.lthrust_;
 	rthrust_ = brain_.rthrust_;
 
-	assert(!isnan(lthrust_) && !isnan(rthrust_));
+	assert(!std::isnan(lthrust_) && !std::isnan(rthrust_));
 	wantsShoot_ = (brain_.shoot_ > 0);
 	//std::cerr << brain_.shoot_ << std::endl;
 
