@@ -8,7 +8,7 @@ OBJS    := ${SRCS:.cpp=.o}
 DEPS    := ${SRCS:.cpp=.dep} 
     
 CXXFLAGS += -DETLOG -std=c++0x -pedantic -Wall `pkg-config --cflags SDL_gfx sdl SDL_image` -D_CHECK_BRAIN_ALLOC
-LDFLAGS += -L/opt/local/lib 
+LDFLAGS += -L/opt/local/lib  -L/opt/X11/lib
 LIBS    += -lm `pkg-config --libs SDL_gfx sdl SDL_image` -lfann -lX11
 .PHONY: all release clean distclean 
 
@@ -19,7 +19,7 @@ endif
 all: release
 
 release: LDFLAGS += -s
-release: CXXFLAGS += -march=native -g0 -Ofast 
+release: CXXFLAGS += -g0 -Ofast 
 release: ${TARGET}
 
 debug: CXXFLAGS += -g3 -O0 -rdynamic
