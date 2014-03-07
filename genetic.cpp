@@ -71,6 +71,8 @@ std::pair<Tank, Tank> GeneticPool::crossover(Tank &mum, Tank &dad, size_t iterat
 
 	//just return parents as offspring dependent on the rate or if parents are the same
 	if ((fRand(0,1) > params_.crossoverRate) || (mum == dad)) {
+		baby1.brain_.destroy();
+		baby2.brain_.destroy();
 		return {mum.clone(), dad.clone()};
 	}
 
@@ -131,6 +133,7 @@ Population GeneticPool::epoch(Population& old_pop) {
 	//Now to add a little elitism we shall add in some copies of the
 	//fittest genomes. Make sure we add an EVEN number or the roulette
 	//wheel sampling will crash
+	std::cerr << "copy" << std::endl;
 	assert(params_.numElite_ <= old_pop.size());
 	if (!(params_.numEliteCopies_ * (params_.numElite_ % 2))) {
 		copyNBest(params_.numElite_, params_.numEliteCopies_, old_pop, new_pop);
@@ -155,6 +158,7 @@ Population GeneticPool::epoch(Population& old_pop) {
 		new_pop.push_back(babies.first);
 		new_pop.push_back(babies.second);
 	}
+	assert(new_pop.size() == old_pop.size());
 	stats_.generationCnt_++;
 	return new_pop;
 }
