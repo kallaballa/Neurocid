@@ -1,6 +1,6 @@
 CXX     := g++-4.8
 TARGET  := tankwar
-SRCS    := battlefield.cpp canvas.cpp params.cpp tank.cpp tankwar.cpp brain.cpp genetic.cpp util.cpp projectile.cpp
+SRCS    := battlefield.cpp canvas.cpp params.cpp tank.cpp tankwar.cpp brain.cpp genetic.cpp util.cpp projectile.cpp placer.cpp renderer.cpp game.cpp options.cpp gamestate.cpp
 #precompiled headers
 HEADERS := 
 GCH    := ${HEADERS:.h=.gch}
