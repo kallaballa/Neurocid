@@ -3,20 +3,19 @@
 
 #include "projectile.hpp"
 #include "canvas.hpp"
-#include <list>
+#include <vector>
 
 namespace tankwar {
+
+using std::vector;
 
 class Population;
 
 class BattleField {
-
 public:
-	Canvas& canvas_;
-	Population& teamA_;
-	Population& teamB_;
+	vector<Population>&  teams_;
 
-	BattleField(Canvas& canvas, Population& teamA, Population& teamB);
+	BattleField(vector<Population>& teams);
 
 	void step();
 private:

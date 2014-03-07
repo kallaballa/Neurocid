@@ -1,10 +1,3 @@
-/*
- * brain.cpp
- *
- *  Created on: Mar 2, 2014
- *      Author: elchaschab
- */
-
 #include "brain.hpp"
 #include "population.hpp"
 #include "tank.hpp"
@@ -14,21 +7,47 @@
 
 namespace tankwar {
 
-Brain::Brain(): nn_(NULL) {
-	nn_ = fann_create_standard(Params::NUM_LAYERS, Params::NUM_INPUTS, Params::NUM_NEURONS_PER_HIDDEN, Params::NUM_OUTPUTS);
+#ifdef _CHECK_BRAIN_ALLOC
+std::map<fann*, size_t> Brain::nnAllocs_;
+size_t Brain::nnAllocCnt_ = 0;
+#endif
+
+Brain::Brain(BrainLayout layout): layout_(layout), nn_(NULL) {
+	assert(layout_.numLayers_ >= 3);
+	assert(layout_.numLayers_ < 20);
+	unsigned int layerArray[layout_.numLayers_];
+	layerArray[0] = layout_.numInputs;
+	layerArray[layout_.numLayers_ - 1] = layout_.numOutputs;
+
+	for(size_t i = 1; i < (layout_.numLayers_ - 1); i++) {
+		layerArray[i] = layout_.neuronsPerHidden;
+	}
+
+	nn_ = fann_create_standard_array(layout_.numLayers_, layerArray);
     fann_set_activation_function_hidden(nn_, FANN_SIGMOID_SYMMETRIC);
     fann_set_activation_function_output(nn_, FANN_SIGMOID_SYMMETRIC);
+#ifdef _CHECK_BRAIN_ALLOC
+    size_t id = ++nnAllocCnt_;
+    nnAllocs_[nn_] = id;
+    std::cerr << "alloc: " << id << std::endl;
+#endif
 }
 
-Brain::Brain(const Brain& other): nn_(other.nn_) {
+Brain::Brain(const Brain& other): layout_(other.layout_), nn_(other.nn_) {
 }
 
 Brain::~Brain() {
 }
 
 void Brain::destroy() {
-	if(nn_ != NULL)
-		fann_destroy(nn_);
+    assert(nn_ != NULL);
+#ifdef _CHECK_BRAIN_ALLOC
+	auto it = nnAllocs_.find(nn_);
+	assert(it != nnAllocs_.end());
+	std::cerr << "free: " << (*it).second << std::endl;
+	nnAllocs_.erase(it);
+#endif
+	fann_destroy(nn_);
 	nn_ = NULL;
 	destroyed_ = true;
 }
@@ -37,19 +56,75 @@ void Brain::randomize() {
 	fann_randomize_weights(nn_, -1, 1);
 }
 
-void Brain::update(const Tank& tank, const Population& ownTeam, const Population& otherTeam) {
+void Brain::update(const Tank& tank, Population& ownTeam, Population& otherTeam) {
 	assert(nn_ != NULL);
-	size_t numInputs = Params::NUM_INPUTS;
-	assert(Params::NUM_INPUTS == fann_get_num_input(nn_));
-	assert(Params::NUM_OUTPUTS == fann_get_num_output(nn_));
+	size_t numInputs = layout_.numInputs;
+	assert(layout_.numInputs == fann_get_num_input(nn_));
+	assert(layout_.numOutputs == fann_get_num_output(nn_));
 	fann_type inputs[numInputs];
+
+	Vector2D nearestProjectileLoc = {0,0};
+	Coord nearestProjectileDis = std::numeric_limits<Coord>().max();
+
+	for(const Tank& enemy : otherTeam) {
+		for(const Projectile& p : enemy.projectiles_) {
+			Coord distance = tank.distance(p);
+			if(distance < nearestProjectileDis){
+				nearestProjectileDis = distance;
+				nearestProjectileLoc = p.loc_;
+			}
+		}
+	}
+
+	Vector2D nearestEnemyLoc = {0,0};
+	Coord nearestEnemyDis = std::numeric_limits<Coord>().max();
+
+	for(const Tank& enemy : otherTeam) {
+		Coord distance = tank.distance(enemy);
+		if(distance < nearestEnemyDis){
+			nearestEnemyDis = distance;
+			nearestEnemyLoc = enemy.loc_;
+		}
+	}
+
+	Vector2D nearestFriendLoc = {0,0};
+	Vector2D nearestFriendLoc2 = {0,0};
+	Coord nearestFriendDis = std::numeric_limits<Coord>().max();
+
+	for(const Tank& f : otherTeam) {
+		Coord distance = tank.distance(f);
+		if(distance < nearestFriendDis){
+			nearestFriendDis = distance;
+			nearestFriendLoc2 = nearestFriendLoc;
+			nearestFriendLoc = f.loc_;
+		}
+	}
+//	std::cerr<< tank.loc_.x << ","<< tank.loc_.y << "\t" <<nearestEnemyLoc.x << ","<< nearestEnemyLoc.y << std::endl;
+
+	assert(nearestEnemyLoc != Vector2D(0,0));
+	assert(nearestEnemyDis != std::numeric_limits<Coord>().max());
+	assert(nearestFriendLoc != Vector2D(0,0));
+	assert(nearestFriendDis != std::numeric_limits<Coord>().max());
+
+	Vector2D toNearestEnemy = (nearestEnemyLoc - tank.loc_).normalize();
+	Vector2D toNearestFriend = (nearestFriendLoc - tank.loc_).normalize();
+	Vector2D toNearestFriend2 = (nearestFriendLoc2 - tank.loc_).normalize();
+	Vector2D toNearestProjectile = (nearestProjectileLoc - tank.loc_).normalize();
+
+	//std::cerr<< tank.dir_.x << ","<< tank.dir_.y << "\t" << toNearestEnemy.x << ","<< toNearestEnemy.y << std::endl;
 
 	inputs[0] = (fann_type)tank.dir_.x;
 	inputs[1] = (fann_type)tank.dir_.y;
-//	inputs[2] = (fann_type)	(1.0 / Params::MAX_PROJECTILES) * (double)tank.projectiles_;
-	inputs[2] = (fann_type)(tank.loc_ - otherTeam[otherTeam.size() / 2].loc_).normalize().x;
-	inputs[3] = (fann_type)(tank.loc_ - otherTeam[otherTeam.size() / 2].loc_).normalize().y;
-	//inputs[4] = (fann_type)1;
+	//inputs[2] = (fann_type)	(1.0 / Params::MAX_PROJECTILES) * (double)tank.projectiles_;
+	inputs[2] = (fann_type)toNearestEnemy.x;
+	inputs[3] = (fann_type)toNearestEnemy.y;
+	//inputs[4] = (fann_type)toNearestFriend.x;
+	//inputs[5] = (fann_type)toNearestFriend.y;
+	//inputs[6] = (fann_type)toNearestFriend2.x;
+	//inputs[7] = (fann_type)toNearestFriend2.y;
+	//inputs[8] = (fann_type)toNearestProjectile.x;
+	//inputs[9] = (fann_type)toNearestProjectile.y;
+	//inputs[10] = (fann_type)1;
 
 /*	size_t off = 3;
 	for(size_t i = 0; i < ownTeam.size(); ++i) {

@@ -7,6 +7,8 @@
 #include <SDL/SDL_image.h>
 #include "2d.hpp"
 #include <string>
+#include <cassert>
+#include "options.hpp"
 
 namespace tankwar {
 using std::string;
@@ -23,8 +25,17 @@ class Projectile;
 class Object;
 
 class Canvas {
+private:
+	static Canvas* instance_;
+	Canvas(Coord width, Coord height);
+	std::vector<Color> teamColors_ = {
+			{0,255,0},
+			{0,0,255},
+			{0,255,255},
+			{255,0,255},
+			{255,255,0}
+	};
 public:
-  Canvas(Coord width, Coord height);
   void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
   void drawTank(Tank& tank, Color& c);
   void drawProjectile(Projectile& pro, Color& c);
@@ -33,21 +44,12 @@ public:
   void clear();
   void render(BattleField& field);
 
-  void setTimeout(size_t millis) {
-  	timeout_=millis;
-  }
 
-  size_t getTimeout() {
-   	return timeout_;
-   }
+  static Canvas* getInstance() {
+	  if(instance_ == NULL)
+		  instance_ = new Canvas(Options::getInstance()->WINDOW_WIDTH, Options::getInstance()->WINDOW_HEIGHT);
 
-
-  bool isEnabled() {
-	  return enabled_;
-  }
-
-  void setEnabled(bool e) {
-	  enabled_ = e;
+	  return instance_;
   }
 private:
   class SDL_Surface *screen_;

@@ -57,6 +57,10 @@ struct Vector2D {
 		return this->x == other.x && this->y == other.y;
 	}
 
+	bool operator!=(const Vector2D &other) const {
+		return !operator==(other);
+	}
+
 	inline double length() {
 		return sqrt(this->x * this->x + this->y * this->y);
 	}
@@ -71,6 +75,16 @@ struct Vector2D {
 		}
 		this->x = this->x / vector_length;
 		this->y = this->y / vector_length;
+		return *this;
+	}
+
+	Vector2D& rotate(int degrees) {
+		double radians = degrees * (M_PI / 180);
+		double cs = cos(radians);
+		double sn = sin(radians);
+		Coord x1 = this->x * cs - this->y * sn;
+		this->y = this->x * sn + this->y * cs;
+		this->x = x1;
 		return *this;
 	}
 };

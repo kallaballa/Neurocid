@@ -8,6 +8,8 @@
 
 #include "battlefield.hpp"
 #include "population.hpp"
+#include "gamestate.hpp"
+
 #include <vector>
 #include <list>
 #include <cstdlib>
@@ -19,7 +21,7 @@ using std::list;
 using std::cerr;
 using std::endl;
 
-BattleField::BattleField(Canvas& canvas, Population& teamA_, Population& teamB_) : canvas_(canvas), teamA_(teamA_), teamB_(teamB_) {
+BattleField::BattleField(vector<Population>& teams) : teams_(teams) {
 }
 
 void BattleField::moveTeamTanks(Population& team) {
@@ -56,10 +58,12 @@ void BattleField::moveTeamTanks(Population& team) {
 		}
 	}
 }
+
 //FIXME make move order random
 void BattleField::moveTanks() {
-	moveTeamTanks(teamA_);
-	moveTeamTanks(teamB_);
+	for(Population& team : teams_) {
+		moveTeamTanks(team);
+	}
 }
 
 void BattleField::moveTeamProjectiles(Population& team) {
@@ -72,18 +76,24 @@ void BattleField::moveTeamProjectiles(Population& team) {
 }
 
 void BattleField::moveProjectiles() {
-	moveTeamProjectiles(teamA_);
-	moveTeamProjectiles(teamB_);
+	for(Population& team : teams_) {
+		moveTeamProjectiles(team);
+	}
 }
-
 
 void BattleField::checkHit(Tank& t, Projectile& p) {
 	if (!p.dead_ && !t.dead_ && t != (*p.owner_)) {
-		if (!p.owner_->teamID_ != t.teamID_) {
+		if (p.owner_->teamID_ != t.teamID_) {
 			Coord distance = p.distance(t);
 			if (distance < p.nearestEnemyDis_) {
 				p.nearestEnemyDis_ = distance;
 				p.nearestEnemyLoc_ = t.loc_;
+			}
+		} else {
+			Coord distance = p.distance(t);
+			if (distance < p.nearestEnemyDis_) {
+				p.nearestFriendDis_ = distance;
+				p.nearestFriendLoc_ = t.loc_;
 			}
 		}
 
@@ -92,11 +102,15 @@ void BattleField::checkHit(Tank& t, Projectile& p) {
 			t.damage_++;
 			if (p.owner_->teamID_ == t.teamID_) {
 				p.owner_->friendly_fire_++;
+				p.friendHitter_ = true;
+				p.nearestFriendDis_ = 0;
+				p.nearestFriendLoc_ = t.loc_;
 				if (t.damage_ >= Params::MAX_DAMAGE) {
 					t.dead_ = true;
 				}
 			} else {
 				p.owner_->hits_++;
+				p.enemyHitter_ = true;
 				p.nearestEnemyDis_ = 0;
 				p.nearestEnemyLoc_ = t.loc_;
 				if (t.damage_ >= Params::MAX_DAMAGE) {
@@ -122,26 +136,29 @@ void BattleField::checkTeamHits(Population& attacker, Population& defender) {
 }
 
 void BattleField::checkHits() {
-	checkTeamHits(teamA_, teamB_);
-	checkTeamHits(teamB_, teamA_);
+	for(size_t i = 0; i < teams_.size(); ++i) {
+		for(size_t j = 0; j < teams_.size(); ++j) {
+			if(i == j)
+				continue;
+
+			checkTeamHits(teams_[i], teams_[j]);
+		}
+	}
 }
 
-//moves all tanks in random order
 void BattleField::letTanksThink() {
-	for(Tank& t : teamA_) {
-		t.think(*this);
-	}
-
-	for(Tank& t : teamB_) {
-		t.think(*this);
+	for(Population& team : teams_) {
+		for(Tank& t : team) {
+			t.think(*this);
+		}
 	}
 }
 
 void BattleField::step() {
-	moveTanks();
-	moveProjectiles();
-	checkHits();
-    letTanksThink();
+	if(GameState::getInstance()->isRunning()) moveTanks();
+	if(GameState::getInstance()->isRunning()) moveProjectiles();
+	if(GameState::getInstance()->isRunning()) checkHits();
+	if(GameState::getInstance()->isRunning()) letTanksThink();
 }
 
 } /* namespace tankwar */

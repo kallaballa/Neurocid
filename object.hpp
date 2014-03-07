@@ -30,11 +30,11 @@ struct Object {
 	virtual ~Object() {
 	}
 
-	Coord distance(const Object& other) {
+	Coord distance(const Object& other) const {
 		return sqrt(pow(abs(this->loc_.x - other.loc_.x),2) + pow(abs(this->loc_.y - other.loc_.y),2));
 	}
 
-	bool collides(const Object& other) {
+	bool collides(const Object& other) const {
 		return distance(other) < (this->range_ + other.range_);
 	}
 

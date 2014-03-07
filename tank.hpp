@@ -28,7 +28,7 @@ public:
 	size_t damage_ = 0;
 	double fitness_ = 0;
 
-	Tank(size_t teamID, Vector2D loc, Coord rotation);
+	Tank(size_t teamID, BrainLayout layout, Vector2D loc, Coord rotation);
 	~Tank() {};
 
 	bool operator==(const Tank& other) const {
@@ -47,6 +47,7 @@ public:
 		return false;
 	}
 
+	void updateDirection();
 	void calculateFitness();
 	void think(BattleField& field);
 	void move();
