@@ -23,12 +23,19 @@ struct Object {
 	bool explode_;
 	bool dead_;
 
-	Object(Vector2D loc, Vector2D dir, Coord rotation, Coord range, Coord speed, bool explode, bool dead) :
-			loc_(loc), dir_(dir), rotation_(rotation), range_(range), speed_(speed), explode_(explode), dead_(dead) {
+	Object(Vector2D loc, Coord rotation, Coord range, Coord speed, bool explode, bool dead) :
+			loc_(loc), dir_(0,0), rotation_(rotation), range_(range), speed_(speed), explode_(explode), dead_(dead) {
 	}
 
-	bool collides(const Object& other) {
-		return sqrt(pow(abs(this->loc_.x - other.loc_.x),2) + pow(abs(this->loc_.y - other.loc_.y),2)) < (this->range_ + other.range_);
+	virtual ~Object() {
+	}
+
+	Coord distance(const Object& other) const {
+		return sqrt(pow(abs(this->loc_.x - other.loc_.x),2) + pow(abs(this->loc_.y - other.loc_.y),2));
+	}
+
+	bool collides(const Object& other) const {
+		return distance(other) < (this->range_ + other.range_);
 	}
 
 	virtual void move() = 0;

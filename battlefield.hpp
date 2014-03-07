@@ -3,27 +3,28 @@
 
 #include "projectile.hpp"
 #include "canvas.hpp"
-#include <list>
+#include <vector>
 
 namespace tankwar {
+
+using std::vector;
 
 class Population;
 
 class BattleField {
-
 public:
-	Canvas& canvas_;
-	std::list<Projectile> projectiles_;
-	Population& teamA_;
-	Population& teamB_;
+	vector<Population>&  teams_;
 
-	BattleField(Canvas& canvas, Population& teamA, Population& teamB);
+	BattleField(vector<Population>& teams);
 
 	void step();
 private:
+	void moveTeamTanks(Population& team);
 	void moveTanks();
+	void moveTeamProjectiles(Population& team);
 	void moveProjectiles();
-	void checkTeamHits(Population& team);
+	void checkHit(Tank& t, Projectile& p);
+	void checkTeamHits(Population& attacker, Population& defender);
 	void checkHits();
 	void letTanksThink();
 };

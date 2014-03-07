@@ -9,6 +9,8 @@
 
 namespace tankwar {
 
+Canvas* Canvas::instance_ = NULL;
+
 Canvas::Canvas(Coord width, Coord height) :
   screen_(NULL) , enabled_(true), width_(width), height_(height), timeout_(20) {
   if (width > 0 && height > 0) {
@@ -31,15 +33,11 @@ void Canvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c) {
   }
 }
 
-void Canvas::drawTank(Tank& tank) {
-	Color c = {255,0,255};
-	if(tank.teamID_ == 0)
-		c = {0,255,0};
-
+void Canvas::drawTank(Tank& tank, Color c) {
     ellipseRGBA(screen_, (Uint16)tank.loc_.x, (Uint16)tank.loc_.y, (Uint16)tank.range_, (Uint16)tank.range_, c.r, c.g, c.b, 255);
     Vector2D tip = tank.loc_;
-    tip += tank.dir_ * 5;
-    ellipseRGBA(screen_, (Uint16)tip.x, (Uint16)tip.y, 3, 3, c.r, c.g, c.b, 255);
+    tip += tank.dir_ * (tank.range_);
+    ellipseRGBA(screen_, (Uint16)tip.x, (Uint16)tip.y, 2, 2, c.r, c.g, c.b, 255);
 }
 
 void Canvas::drawProjectile(Projectile& pro, Color& c) {
@@ -61,36 +59,33 @@ void Canvas::update() {
 }
 
 void Canvas::render(BattleField& field) {
-	if(!isEnabled())
-		return;
+	assert(teamColors_.size() >= field.teams_.size());
+
 	Color white = {255,255,255};
 	Color red = {255,0,0};
 
 	this->clear();
-	for(Tank& t : field.teamA_) {
-		if(t.explode_)
-			this->drawExplosion(t, red);
-		else if(!t.dead_)
-			this->drawTank(t);
-		t.explode_ = false;
+	size_t teamCnt = 0;
+	for(Population& team : field.teams_) {
+		for(Tank& t : team) {
+			if(t.explode_)
+				this->drawExplosion(t, red);
+			else if(!t.dead_)
+				this->drawTank(t, teamColors_[teamCnt]);
+			t.explode_ = false;
+
+			for(Projectile& p : t.projectiles_) {
+				if(p.explode_)
+					this->drawExplosion(p, red);
+				else if(!p.dead_)
+					this->drawProjectile(p,white);
+				p.explode_ = false;
+			}
+		}
+		++teamCnt;
 	}
 
-	for(Tank& t : field.teamB_) {
-		if(t.explode_)
-			this->drawExplosion(t, red);
-		else if(!t.dead_)
-			this->drawTank(t);
-		t.explode_ = false;
-	}
 
-	for(Projectile& p : field.projectiles_) {
-		if(p.explode_)
-			this->drawExplosion(p, red);
-		else if(!p.dead_)
-			this->drawProjectile(p,white);
-		p.explode_ = false;
-	}
 	this->update();
-	std::this_thread::sleep_for(std::chrono::milliseconds(timeout_));
 }
 }

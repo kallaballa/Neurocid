@@ -6,140 +6,126 @@
 #include "brain.hpp"
 #include "genetic.hpp"
 #include "util.hpp"
+#include "renderer.hpp"
+#include "game.hpp"
+#include "gamestate.hpp"
+
 #include <thread>
 #include <SDL/SDL_events.h>
 #include <X11/Xlib.h>
-#include <algorithm>
 
 using namespace tankwar;
 using std::cerr;
 using std::endl;
+using std::vector;
+
+/*
+ * Make a population with a size of n using the brain layout
+ */
+Population makePopulation(size_t teamID, size_t size, BrainLayout layout) {
+	Population p;
+	for(size_t i = 0; i < size; i++) {
+		Tank t(teamID, layout, {0, 0}, 0);
+		t.brain_.randomize();
+		p.push_back(t);
+	}
+	return p;
+}
+
+vector<Population> makeTeams(size_t numTeams, size_t teamSize, BrainLayout l) {
+	vector<Population> teams(numTeams);
+	size_t teamID = 0;
+	std::generate(teams.begin(), teams.end(), [&]() { return makePopulation(teamID++, teamSize, l); });
+	return teams;
+}
+
+vector<GeneticPool> makePools(size_t numTeams, GeneticParams gp) {
+	vector<GeneticPool> pools(numTeams);
+	std::generate(pools.begin(), pools.end(), [&]() { return GeneticPool(gp); });
+	return pools;
+}
+
+void runEventHandler() {
+	Canvas& canvas = *Canvas::getInstance();
+	Renderer& renderer = *Renderer::getInstance();
+	GameState& gameState = *GameState::getInstance();
+	SDL_Event event;
+
+	while (gameState.isRunning()) {
+		renderer.render();
+
+		while (SDL_PollEvent(&event)) {
+			switch (event.type) {
+			case SDL_KEYDOWN:
+				if (event.key.keysym.sym == SDLKey::SDLK_SPACE) {
+					if (renderer.isEnabled()) {
+						if(gameState.isSlow()) {
+							renderer.setEnabled(false);
+							gameState.setSlow(false);
+						} else {
+							gameState.setSlow(true);
+						}
+					} else {
+						renderer.setEnabled(true);
+					}
+				} else if (event.key.keysym.sym == SDLKey::SDLK_ESCAPE) {
+					std::cerr << "Quitting" << std::endl;
+					gameState.stop();
+				}
+
+				break;
+
+			case SDL_KEYUP:
+				break;
+
+			default:
+				break;
+			}
+		}
+	}
+}
 
 int main(int argc, char** argv) {
-	Canvas canvas(800,600);
+	std::thread gameThread([&]() {
+		size_t battleIterations = 300;
+		size_t numTeams = 2;
+		size_t teamSize = 20;
 
-	std::thread t([&]() {
-		while(true) {
-			XInitThreads();
-			SDL_Event event;
+		BrainLayout l = {
+				4, // inputs
+				3,  // outputs
+				3, // layers
+				6  // neurons per hidden layer
+		};
 
-			while( SDL_PollEvent( &event ) ){
-				switch( event.type ){
-				  case SDL_KEYDOWN:
-					  if(event.key.keysym.scancode == 0x41) {
-						  if(canvas.isEnabled()) {
-							  if(canvas.getTimeout() == 20)
-								  canvas.setTimeout(1);
-							  else
-								  canvas.setEnabled(false);
-						  } else {
-							  canvas.setTimeout(20);
-							  canvas.setEnabled(true);
-						  }
-					  }
-					  break;
+		GeneticParams gp = {
+				0.1, // mutationRate
+				0.7, // crossoverRate
+				0.3, // maxPertubation
+				4,   // numElite
+				1    //  numEliteCopies
+		};
 
-				  case SDL_KEYUP:
-					break;
+		vector<Population> teams = makeTeams(numTeams, teamSize, l);
+		vector<GeneticPool> pools = makePools(numTeams, gp);
 
-				  default:
-					break;
-				}
+		RandomOppositeLinesFacingRandom placer;
+
+		while(GameState::getInstance()->isRunning()) {
+			Game game(battleIterations, teams, pools, placer);
+			teams = game.play();
+			assert(teams.size() == numTeams);
+		}
+
+		for(Population& p : teams) {
+			for(Tank& t : p) {
+				if(!t.brain_.isDestroyed())
+					t.brain_.destroy();
 			}
 		}
 	});
 
-	GeneticAlgorithm genalgA(0.3, 0.7, 0.3, 4, 1);
-	GeneticAlgorithm genalgB(0.3, 0.7, 0.3, 4, 1);
-
-	size_t numTeamA = 20;
-	size_t numTeamB = 20;
-	Params::NUM_INPUTS = 3 + (2 * numTeamA) + (2 * numTeamB);
-//	Params::NUM_INPUTS = 4;
-	Params::NUM_OUTPUTS = 3;
-	Params::NUM_LAYERS = 4;
-	Params::NUM_NEURONS_PER_HIDDEN = 12;
-
-	std::cerr << "Make Teams" << endl;
-	Population teamA;
-	Population teamB;
-	for(size_t i = 0; i < numTeamA; i++) {
-		Tank t1(0, {50, (20 * i) + 20}, {1, 0});
-		//Tank t1(0, {fRand(50,750), fRand(50,550)},{fRand(-1,1),fRand(-1,1)});
-
-		t1.brain_.randomize();
-		teamA.push_back(t1);
-
-/*		Tank t2(new Brain(numInputs, numOutputs, numLayers, numHiddenNeurons),0, {40, (10 * i) + 20}, {1, 0});
-		t2.brain_.randomize();
-		teamA.push_back(t2);*/
-	}
-
-	for(size_t i = 0; i < numTeamB; i++) {
-		Tank t1(1, {750, (20 * i) + 20}, {-1, 0});
-		//Tank t1(1, {fRand(50,750), fRand(50,550)},{fRand(-1,1),fRand(-1,1)});
-		t1.brain_.randomize();
-		teamB.push_back(t1);
-/*
-		Tank t2(new Brain(numInputs, numOutputs, numLayers, numHiddenNeurons),1, {270, (10 * i) + 20}, {-1, 0});
-		t2.brain_.randomize();
-		teamB.push_back(t2);*/
-	}
-
-	while(true) {
-		std::cerr << "Make Battlefield" << "\t" << teamA.size() << "\t" <<teamB.size() << endl;
-		BattleField field(canvas, teamA, teamB);
-
-		for(size_t i = 0; i < 300; ++i) {
-			field.step();
-			canvas.render(field);
-		}
-
-		Population newTeamA;
-		Population newTeamB;
-		genalgA.epoch(teamA, newTeamA);
-		genalgB.epoch(teamB, newTeamB);
-
-		for(Tank& t: teamA) {
-			t.brain_.destroy();
-		}
-
-		for(Tank& t: teamB) {
-			t.brain_.destroy();
-		}
-
-		//switch sides
-		teamA = newTeamB;
-		teamB = newTeamA;
-
-		//shuffle positions
-		random_shuffle(teamA.begin(), teamA.end());
-		random_shuffle(teamB.begin(), teamB.end());
-
-		std::cerr << "TeamA Gen/Best/Avg:\t" << genalgA.generation() << "\t" << genalgA.bestFitness() << "\t" << genalgA.averageFitness() << endl;
-		std::cerr << "TeamB Gen/Best/Avg:\t" << genalgB.generation() << "\t" << genalgB.bestFitness() << "\t" << genalgB.averageFitness() << endl;
-
-		for(size_t i = 0; i < numTeamA ; i++) {
-			teamA[i].reset();
-			//teamA[i].loc_ = {fRand(50,750), fRand(50,550)};
-			//teamA[i].dir_ =  {fRand(-1,1),fRand(-1,1)};
-			teamA[i].loc_ = {50, (20 * i) + 20};
-			teamA[i].dir_ =  {1, 0};
-			//teamA[i + 1].reset();
-			//teamA[i + 1].loc_ = {40, (10 * i) + 20};
-			//teamA[i + 1].dir_ = {1, 0};
-		}
-
-		for(size_t i = 0; i < numTeamB; i++) {
-			teamB[i].reset();
-//			teamB[i].loc_ = {fRand(50,750), fRand(50,550)};
-//			teamB[i].dir_ =  {fRand(-1,1),fRand(-1,1)};
-
-			teamB[i].loc_ = {750, (20 * i) + 20};
-			teamB[i].dir_ =  {-1, 0};
-			//teamB[i + 1].reset();
-			//teamB[i + 1].loc_ = {270, (10 * i) + 20};
-			//teamB[i + 1].dir_ = {-1, 0};
-		}
-	}
+	runEventHandler();
+	gameThread.join();
+	SDL_Quit();
 }

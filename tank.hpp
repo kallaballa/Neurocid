@@ -15,12 +15,10 @@ namespace tankwar {
 class Tank : public Object {
 	bool wantsShoot_ = false;
 
-	void shoot() {
-		if(projectiles_ > 0)
-			projectiles_--;
-	}
 public:
-	size_t projectiles_ = Params::MAX_PROJECTILES;
+	std::vector<Projectile> projectiles_;
+
+	size_t ammonition_ = Params::MAX_PROJECTILES;
 	Brain brain_;
 	size_t teamID_;
 	Thrust lthrust_ = 0;
@@ -30,7 +28,7 @@ public:
 	size_t damage_ = 0;
 	double fitness_ = 0;
 
-	Tank(size_t teamID, Vector2D loc, Vector2D dir);
+	Tank(size_t teamID, BrainLayout layout, Vector2D loc, Coord rotation);
 	~Tank() {};
 
 	bool operator==(const Tank& other) const {
@@ -41,15 +39,29 @@ public:
 		return !this->operator ==(other);
 	}
 
-	bool willShoot() {
-		return projectiles_ > 0 && wantsShoot_;
+	bool shoot() {
+		if(wantsShoot_ && ammonition_ > 0) {
+			--ammonition_;
+			return true;
+		}
+		return false;
 	}
+
+	void updateDirection();
 	void calculateFitness();
 	void think(BattleField& field);
 	void move();
 	Tank makeChild();
+
+	Projectile& makeProjectile() {
+		projectiles_.push_back(Projectile(*this, loc_, rotation_));
+		return *(projectiles_.end() - 1);
+	}
+
 	Tank clone();
-	void reset();
+	void resetGameState();
+	void resetScore();
+
 
 	bool operator<(const Tank& other) const	{
 		return (this->fitness_ < other.fitness_);

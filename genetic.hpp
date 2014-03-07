@@ -8,21 +8,19 @@
 using namespace std;
 
 namespace tankwar {
-//-----------------------------------------------------------------------
-//
-//	the genetic algorithm class
-//-----------------------------------------------------------------------
-class GeneticAlgorithm {
-private:
-	//probability that a chromosones bits will mutate.
-	//Try figures around 0.05 to 0.3 ish
-	double mutationRate_;
-	//probability of chromosones crossing over bits
-	//0.7 is pretty good
-	double crossoverRate_;
-	double maxPerturbation_;
+
+struct GeneticParams {
+	double mutationRate;
+	double crossoverRate;
+	double maxPertubation;
 	size_t numElite_;
-	size_t numCopiesElite_;
+	size_t numEliteCopies_;
+};
+
+struct Statistics {
+	Statistics() {
+		reset();
+	}
 
 	//total fitness of population
 	double totalFitness_;
@@ -34,33 +32,72 @@ private:
 	double worstFitness_;
 	//keeps track of the best genome
 	//generation counter
-	size_t generation_;
+	double totalFriendlyFire_;
+	double totalHits_;
+	double totalDamage_;
+	double totalAmmonition_;
+	double averageFriendlyFire_;
+	double averageHits_;
+	double averageDamage_;
+	double averageAmmonition_;
 
-	int fittestGenome_;
+	size_t generationCnt_;
+	double score_;
 
+	size_t fittestGenome_ ;
+
+	void reset() {
+		totalFitness_ = 0;
+		bestFitness_ = 0;
+		worstFitness_ = std::numeric_limits<double>().max();
+		averageFitness_ = 0;
+		averageFriendlyFire_ = 0;
+		averageDamage_ = 0;
+		averageAmmonition_ = 0;
+		totalFitness_ = 0;
+		totalFriendlyFire_ = 0;
+		totalHits_ = 0;
+		totalDamage_ = 0;
+		totalAmmonition_ = 0;
+		score_ = 0;
+	}
+
+	void print(std::ostream& os) {
+		os << generationCnt_ << ":"
+		<< bestFitness_ << ":"
+		<< averageFitness_ << ":"
+		<< averageFriendlyFire_ << ":"
+		<< averageHits_ << ":"
+		<< averageDamage_ << ":"
+		<< (averageAmmonition_ / 3) << ":"
+		<< (score_);
+	}
+};
+
+//-----------------------------------------------------------------------
+//
+//	the genetic algorithm class
+//-----------------------------------------------------------------------
+class GeneticPool {
+private:
+	GeneticParams params_;
+	Statistics stats_;
+	bool initialized_ = false;
 
 	void mutate(Brain& brain);
-	Tank& getChromoRoulette(Population& pop);
-	std::pair<Tank, Tank> crossover(Tank &mum, Tank &dad);
-	void copyNBest(size_t nBest, const size_t numCopies, Population& in, Population& out);
-	void calculateBestWorstAvTot(Population& pop);
-	void reset();
+	Tank& pickSpecimen(Population& pop);
+	std::pair<Tank, Tank> crossover(Tank &mum, Tank &dad, size_t iterations);
+	void copyNBest(size_t n, const size_t numCopies, Population& in, Population& out);
+	void calculateStatistics(Population& pop);
 public:
-	GeneticAlgorithm(double mutRate, double crossRate, double maxPertubation, size_t numElite, size_t numCopiesElite);
+	GeneticPool(GeneticParams params);
+	GeneticPool();
 
 	//this runs the GA for one generation.
-	void epoch(Population& old_pop, Population& new_pop);
+	Population epoch(Population& old_pop);
 
-	size_t generation() const {
-		return generation_;
-	}
-
-	double averageFitness() const {
-		return averageFitness_;
-	}
-
-	double bestFitness() const {
-		return bestFitness_;
+	Statistics& statistics() {
+		return stats_;
 	}
 };
 }
