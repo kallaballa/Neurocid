@@ -3,4 +3,7 @@
 *.gch
 src/tankwar
 tests/tests
+teamA.png
+teamB.png
+timeseries.csv
 
