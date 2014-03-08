@@ -1,0 +1,6 @@
+*.dep
+*.o
+*.gch
+src/tankwar
+tests/tests
+
