@@ -21,6 +21,16 @@ public:
 	virtual void place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing) = 0;
 };
 
+class OppositeLines  : public Placer {
+public:
+	virtual void place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing);
+};
+
+class OppositeLinesFacingInward : public Placer {
+public:
+	virtual void place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing);
+};
+
 class RandomOppositeLines  : public Placer {
 public:
 	Vector2D axisDir_;
@@ -31,12 +41,12 @@ public:
 
 class RandomOppositeLinesFacingRandom  : public RandomOppositeLines {
 public:
-	void place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing);
+	virtual void place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing);
 };
 
 class RandomOppositeLinesFacingInward  : public RandomOppositeLines {
 public:
-	void place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing);
+	virtual void place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing);
 };
 
 } /* namespace tankwar */

@@ -8,13 +8,13 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
-
-#include <vector>
-#include <stddef.h>
-#include <cassert>
 #include "options.hpp"
 #include "placer.hpp"
 #include "genetic.hpp"
+#include <ctime>
+#include <vector>
+#include <stddef.h>
+#include <cassert>
 
 namespace tankwar {
 
@@ -26,7 +26,7 @@ private:
 	void fight();
 	void mate();
 	void cleanup();
-	void print();
+	void print(float secondsTaken);
 	void prepare();
 public:
 	size_t battleIterations_;

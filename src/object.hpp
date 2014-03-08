@@ -31,7 +31,7 @@ struct Object {
 	}
 
 	Coord distance(const Object& other) const {
-		return sqrt(pow(abs(this->loc_.x - other.loc_.x),2) + pow(abs(this->loc_.y - other.loc_.y),2));
+		return hypot(this->loc_.x - other.loc_.x, this->loc_.y - other.loc_.y);
 	}
 
 	bool collides(const Object& other) const {

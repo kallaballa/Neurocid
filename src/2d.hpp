@@ -122,6 +122,14 @@ inline Vector2D operator-(const Vector2D &lhs, const Vector2D &rhs) {
 	return result;
 }
 
+inline Vector2D directionFromRotation(double& rad) {
+	return Vector2D(cos(rad), sin(rad));
+}
+
+inline double rotationFromDirection(Vector2D& dir) {
+	return atan2(dir.y, dir.x);
+}
+
 }
 
 #endif /* TWD_HPP_ */

@@ -122,7 +122,8 @@ void BattleField::checkHit(Tank& t, Projectile& p) {
 }
 
 void BattleField::checkTeamHits(Population& attacker, Population& defender) {
-	for (Tank& a : attacker) {
+	for(size_t i = 0; i < attacker.size(); ++i) {
+		Tank& a = attacker[i];
 		for (Projectile& p : a.projectiles_) {
 			for (Tank& a : attacker) {
 				checkHit(a,p);
@@ -136,6 +137,7 @@ void BattleField::checkTeamHits(Population& attacker, Population& defender) {
 }
 
 void BattleField::checkHits() {
+	#pragma omp parallel for
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		for(size_t j = 0; j < teams_.size(); ++j) {
 			if(i == j)
@@ -147,9 +149,11 @@ void BattleField::checkHits() {
 }
 
 void BattleField::letTanksThink() {
-	for(Population& team : teams_) {
-		for(Tank& t : team) {
-			t.think(*this);
+	#pragma omp parallel for
+	for(size_t i = 0; i < teams_.size(); ++i) {
+		Population& team = teams_[i];
+		for(size_t i = 0; i < team.size(); ++i) {
+			team[i].think(*this);
 		}
 	}
 }

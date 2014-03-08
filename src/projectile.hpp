@@ -37,8 +37,7 @@ public:
 		startLoc_(loc),
 		enemyHitter_(false),
 		friendHitter_(false){
-		dir_.x = -sin(rotation_);
-		dir_.y = cos(rotation_);
+		dir_ = directionFromRotation(rotation);
 	}
 
 	void move() {

@@ -66,23 +66,24 @@ void Game::cleanup() {
 	}
 }
 
-void Game::print() {
+void Game::print(float secondsTaken) {
 	for(GeneticPool& pool : pools_) {
 		pool.statistics().print(std::cout);
 		std::cout << ":";
 	}
-	std::cout << std::endl;
+	std::cout << secondsTaken << std::endl;
 }
 
-
 vector<Population> Game::play() {
+	const clock_t begin_time = clock();
 	if(GameState::getInstance()->isRunning()) prepare();
 	if(GameState::getInstance()->isRunning()) place();
 	if(GameState::getInstance()->isRunning()) fight();
 	if(GameState::getInstance()->isRunning()) mate();
-	if(GameState::getInstance()->isRunning()) print();
 	cleanup();
+	const clock_t end_time = clock () - begin_time;
+	if(GameState::getInstance()->isRunning()) print(1 / (float(end_time) /  CLOCKS_PER_SEC));
+
 	return newTeams_;
 }
-
 } /* namespace tankwar */

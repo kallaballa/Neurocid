@@ -9,7 +9,7 @@
 #include "renderer.hpp"
 #include "game.hpp"
 #include "gamestate.hpp"
-
+#include <ctime>
 #include <thread>
 #include <SDL/SDL_events.h>
 #include <X11/Xlib.h>
@@ -89,13 +89,13 @@ int main(int argc, char** argv) {
 	std::thread gameThread([&]() {
 		size_t battleIterations = 300;
 		size_t numTeams = 2;
-		size_t teamSize = 20;
+		size_t teamSize = 10;
 
 		BrainLayout l = {
 				4, // inputs
 				3,  // outputs
-				3, // layers
-				6  // neurons per hidden layer
+				6, // layers
+				12  // neurons per hidden layer
 		};
 
 		GeneticParams gp = {
@@ -111,6 +111,7 @@ int main(int argc, char** argv) {
 
 		RandomOppositeLinesFacingRandom placer;
 
+		// do something
 		while(GameState::getInstance()->isRunning()) {
 			Game game(battleIterations, teams, pools, placer);
 			teams = game.play();
