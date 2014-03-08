@@ -1,0 +1,4 @@
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:src/
+
+$1
+
