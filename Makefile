@@ -14,7 +14,7 @@ endif
 all: release
 
 release: LDFLAGS += -s
-release: CXXFLAGS += -g0 -Ofast 
+release: CXXFLAGS += -g0 -O3
 release: dirs
 
 debug: CXXFLAGS += -g3 -O0 -rdynamic -D_CHECK_BRAIN_ALLOC
