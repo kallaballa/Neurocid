@@ -147,7 +147,7 @@ void Brain::update(const Tank& tank, Population& ownTeam, Population& otherTeam)
 */
 //	std::cerr << "input:";
 	for(size_t i = 0; i < numInputs; ++i) {
-		assert(!isnan(inputs[i]));
+		assert(!std::isnan(inputs[i]));
 //		std::cerr << "\t" << inputs[i];
 	}
 //	std::cerr << std::endl;
@@ -155,7 +155,7 @@ void Brain::update(const Tank& tank, Population& ownTeam, Population& otherTeam)
 	lthrust_ = outputs[0];
 	rthrust_ = outputs[1];
 	shoot_ = outputs[2];
-	assert(!isnan(lthrust_) && !isnan(rthrust_) && !isnan(shoot_));
+	assert(!std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(shoot_));
 
 	//	std::cerr << "shoot:\t" << inputs[2] << std::endl;
 //	std::cerr << "output:\t" << lthrust_ << "\t" << rthrust_ << "\t" << shoot_ << std::endl;
