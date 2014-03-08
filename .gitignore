@@ -6,4 +6,7 @@ tests/tests
 teamA.png
 teamB.png
 timeseries.csv
+game/tankwar
+render/makeAndRender
+src/libtankwar.so
 
