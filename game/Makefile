@@ -1,12 +1,14 @@
-TARGET  := libtankwar.so
-SRCS    := battlefield.cpp canvas.cpp params.cpp tank.cpp brain.cpp genetic.cpp util.cpp projectile.cpp placer.cpp renderer.cpp game.cpp options.cpp gamestate.cpp
+TARGET  := tankwar
+SRCS    := tankwar.cpp 
 #precompiled headers
 HEADERS := 
 GCH    := ${HEADERS:.h=.gch}
 OBJS    := ${SRCS:.cpp=.o} 
 DEPS    := ${SRCS:.cpp=.dep} 
-CXXFLAGS += -fpic
-LDFLAGS += -shared 
+
+CXXFLAGS += -I../src/ 
+LDFLAGS += -L../src/ -ltankwar
+
 .PHONY: all release debug clean distclean 
 
 all: release
