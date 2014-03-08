@@ -1,16 +1,9 @@
-CXX     := g++-4.8
-TARGET  := tankwar
-SRCS    := battlefield.cpp canvas.cpp params.cpp tank.cpp tankwar.cpp brain.cpp genetic.cpp util.cpp projectile.cpp placer.cpp renderer.cpp game.cpp options.cpp gamestate.cpp
-#precompiled headers
-HEADERS := 
-GCH    := ${HEADERS:.h=.gch}
-OBJS    := ${SRCS:.cpp=.o} 
-DEPS    := ${SRCS:.cpp=.dep} 
-    
-CXXFLAGS += -DETLOG -std=c++0x -pedantic -Wall `pkg-config --cflags SDL_gfx sdl SDL_image` -D_CHECK_BRAIN_ALLOC
-LDFLAGS += -L/opt/local/lib 
-LIBS    += -lm `pkg-config --libs SDL_gfx sdl SDL_image` -lfann -lX11
-.PHONY: all release clean distclean 
+CXX      := g++-4.8
+CXXFLAGS := -fopenmp -DETLOG -std=c++0x -pedantic -Wall `pkg-config --cflags SDL_gfx sdl SDL_image` -D_CHECK_BRAIN_ALLOC
+LDFLAGS  := -L/opt/local/lib 
+LIBS     := -fopenmp -lm `pkg-config --libs SDL_gfx sdl SDL_image` -lfann -lX11
+DIRS     := src tests
+.PHONY: all release debug clean distclean 
 
 ifeq ($(UNAME), Darwin)
  CXXFLAGS +=  -stdlib=libc++
@@ -20,35 +13,20 @@ all: release
 
 release: LDFLAGS += -s
 release: CXXFLAGS += -march=native -g0 -Ofast 
-release: ${TARGET}
+release: dirs
 
 debug: CXXFLAGS += -g3 -O0 -rdynamic
 debug: LDFLAGS += -Wl,--export-dynamic
-debug: ${TARGET}
+debug: dirs
 
-${TARGET}: ${OBJS} 
-	${CXX} ${LDFLAGS} -o $@ $^ ${LIBS} 
+clean: dirs
 
-${OBJS}: %.o: %.cpp %.dep ${GCH}
-	${CXX} ${CXXFLAGS} -o $@ -c $< 
+distclean: dirs
 
-${DEPS}: %.dep: %.cpp Makefile 
-	${CXX} ${CXXFLAGS} -MM $< > $@ 
+export LDFLAGS
+export CXXFLAGS
+export LIBS
 
-${GCH}: %.gch: ${HEADERS} 
-	${CXX} ${CXXFLAGS} -o $@ -c ${@:.gch=.h}
-
-install:
-	mkdir -p ${DESTDIR}/${PREFIX}
-	cp ${TARGET} ${DESTDIR}/${PREFIX}
-
-uninstall:
-	rm ${DESTDIR}/${PREFIX}/${TARGET}
-
-clean:
-	rm -f *~ ${DEPS} ${OBJS} ${GCH} ${TARGET} 
-
-distclean: clean
-
-
-
+dirs:
+	${MAKE} -C src/ ${MAKEFLAGS} ${MAKECMDGOALS}
+	${MAKE} -C tests/ ${MAKEFLAGS} ${MAKECMDGOALS}
