@@ -1,5 +1,5 @@
 CXX      := g++-4.8
-CXXFLAGS := -fopenmp -DETLOG -std=c++0x -pedantic -Wall `pkg-config --cflags SDL_gfx sdl SDL_image` -D_CHECK_BRAIN_ALLOC
+CXXFLAGS := -fopenmp -DETLOG -std=c++0x -pedantic -Wall `pkg-config --cflags SDL_gfx sdl SDL_image` 
 LDFLAGS  := -L/opt/local/lib 
 LIBS     := -fopenmp -lm `pkg-config --libs SDL_gfx sdl SDL_image` -lfann -lX11
 DIRS     := src tests
@@ -17,7 +17,7 @@ release: LDFLAGS += -s
 release: CXXFLAGS += -g0 -Ofast 
 release: dirs
 
-debug: CXXFLAGS += -g3 -O0 -rdynamic
+debug: CXXFLAGS += -g3 -O0 -rdynamic -D_CHECK_BRAIN_ALLOC
 debug: LDFLAGS += -Wl,--export-dynamic
 debug: dirs
 
