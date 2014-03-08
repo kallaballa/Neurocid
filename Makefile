@@ -7,12 +7,14 @@ DIRS     := src tests
 
 ifeq ($(UNAME), Darwin)
  CXXFLAGS +=  -stdlib=libc++
+else
+ CXXFLAGS += -march=native
 endif
 
 all: release
 
 release: LDFLAGS += -s
-release: CXXFLAGS += -march=native -g0 -Ofast 
+release: CXXFLAGS += -g0 -Ofast 
 release: dirs
 
 debug: CXXFLAGS += -g3 -O0 -rdynamic
@@ -29,4 +31,7 @@ export LIBS
 
 dirs:
 	${MAKE} -C src/ ${MAKEFLAGS} ${MAKECMDGOALS}
+	${MAKE} -C game/ ${MAKEFLAGS} ${MAKECMDGOALS}
 	${MAKE} -C tests/ ${MAKEFLAGS} ${MAKECMDGOALS}
+	${MAKE} -C render/ ${MAKEFLAGS} ${MAKECMDGOALS}
+
