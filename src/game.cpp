@@ -53,6 +53,16 @@ void Game::fight() {
 }
 
 void Game::score() {
+	assert(teams_.size() == 2);
+	size_t collisions = 			(pools_[0].statistics().totalHits_
+			+ pools_[0].statistics().totalFriendlyFire_
+			+ pools_[1].statistics().totalHits_
+			+ pools_[1].statistics().totalFriendlyFire_
+	);
+
+	size_t damage = (pools_[0].statistics().totalDamage_+ pools_[1].statistics().totalDamage_);
+
+	assert(collisions == damage);
 	vector<size_t> alive(2,0);
 
 	for(size_t i = 0; i < teams_.size(); ++i) {
@@ -62,7 +72,6 @@ void Game::score() {
 				++alive[i];
 		}
 	}
-	assert(teams_.size() == 2);
 
 	if(alive[0] != alive[1]) {
 		if(alive[0] > alive[1]) {
@@ -73,6 +82,9 @@ void Game::score() {
 			teams_[1].winner_=true;
 		}
 	}
+
+	newTeams_[0].score_ = teams_[0].score_;
+	newTeams_[1].score_ = teams_[1].score_;
 }
 
 void Game::mate() {
@@ -80,8 +92,6 @@ void Game::mate() {
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		newTeams_.push_back(pools_[i].epoch(teams_[i]));
 	}
-	newTeams_[0].score_ = teams_[0].score_;
-	newTeams_[1].score_ = teams_[1].score_;
 }
 
 
@@ -99,6 +109,7 @@ void Game::print() {
 		pool.statistics().print(std::cout);
 		std::cout << ":";
 	}
+	std::cout << std::endl;
 }
 
 template<typename TimeT = std::chrono::milliseconds>
@@ -120,8 +131,8 @@ vector<Population> Game::play() {
 		if(GameState::getInstance()->isRunning()) prepare();
 		if(GameState::getInstance()->isRunning()) place();
 		if(GameState::getInstance()->isRunning()) fight();
-		if(GameState::getInstance()->isRunning()) score();
 		if(GameState::getInstance()->isRunning()) mate();
+		if(GameState::getInstance()->isRunning()) score();
 		cleanup();
 
 		if(GameState::getInstance()->isRunning()) print();

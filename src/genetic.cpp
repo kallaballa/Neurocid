@@ -176,6 +176,7 @@ void GeneticPool::calculateStatistics(Population& pop) {
  */
 Population GeneticPool::epoch(Population& old_pop) {
 	assert(initialized_);
+	//FIXME preallocate
 	Population new_pop;
 	stats_.reset();
 

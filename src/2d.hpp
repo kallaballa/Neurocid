@@ -17,7 +17,6 @@
 
 namespace tankwar {
 typedef double Coord;
-typedef double Thrust;
 
 struct Vector2D {
 	Coord x, y;

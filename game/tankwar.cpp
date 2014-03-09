@@ -65,19 +65,19 @@ int main(int argc, char** argv) {
 	std::thread gameThread([&]() {
 		size_t battleIterations = 200;
 		size_t numTeams = 2;
-		size_t teamSize = 20;
+		size_t teamSize = 10;
 
 		BrainLayout l = {
-				6, // inputs
+				8, // inputs
 				3, // outputs
-				6, // layers
-				12  // neurons per hidden layer
+				5, // layers
+				6  // neurons per hidden layer
 		};
 
 		GeneticParams gp = {
 				0.1, // mutationRate
 				0.7, // crossoverRate
-				3,   // crossoverIterations
+				1,   // crossoverIterations
 				0.3, // maxPertubation
 				2,   // numElite
 				1    //  numEliteCopies
@@ -88,13 +88,13 @@ int main(int argc, char** argv) {
 
 		OppositeLinesFacingRandom placer;
 
-		// do something
 		while(GameState::getInstance()->isRunning()) {
 			Game game(battleIterations, teams, pools, placer);
 			teams = game.play();
 			assert(teams.size() == numTeams);
 		}
 
+		//make sure we destroyed all brains left so valgrind doesn't complain
 		for(Population& p : teams) {
 			for(Tank& t : p) {
 				if(!t.brain_.isDestroyed())

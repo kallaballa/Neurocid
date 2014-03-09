@@ -111,20 +111,18 @@ void Brain::update(const Tank& tank, Population& ownTeam, Population& otherTeam)
 	Vector2D toNearestFriend2 = (nearestFriendLoc2 - tank.loc_).normalize();
 	Vector2D toNearestProjectile = (nearestProjectileLoc - tank.loc_).normalize();
 
-
 //	std::cerr<< tank.dir_.x << ","<< tank.dir_.y << "\t" << toNearestEnemy.x << ","<< toNearestEnemy.y << std::endl;
-
 	inputs[0] = (fann_type)tank.dir_.x;
 	inputs[1] = (fann_type)tank.dir_.y;
 	//inputs[2] = (fann_type)	(1.0 / Params::MAX_PROJECTILES) * (double)tank.projectiles_;
 	inputs[2] = (fann_type)toNearestEnemy.x;
 	inputs[3] = (fann_type)toNearestEnemy.y;
-	//inputs[4] = (fann_type)toNearestFriend.x;
-	//inputs[5] = (fann_type)toNearestFriend.y;
-	//inputs[6] = (fann_type)toNearestFriend2.x;
-	//inputs[7] = (fann_type)toNearestFriend2.y;
-	inputs[4] = (fann_type)toNearestProjectile.x;
-	inputs[5] = (fann_type)toNearestProjectile.y;
+	inputs[4] = (fann_type)toNearestFriend.x;
+	inputs[5] = (fann_type)toNearestFriend.y;
+	inputs[6] = (fann_type)toNearestFriend2.x;
+	inputs[7] = (fann_type)toNearestFriend2.y;
+	//inputs[4] = (fann_type)toNearestProjectile.x;
+	//inputs[5] = (fann_type)toNearestProjectile.y;
 	//inputs[10] = (fann_type)1;
 
 /*	size_t off = 3;

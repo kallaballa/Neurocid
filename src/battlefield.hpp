@@ -26,6 +26,7 @@ private:
 	void moveTeamProjectiles(Population& team);
 	void moveProjectiles();
 	void buildBsp();
+	void findNearestTanks(Projectile& p);
 	void calculateHit(Projectile& p1, Projectile& p2);
 	void calculateHit(Projectile& p, Tank& t);
 	void calculateHits(Projectile& t, Bsp::NodeVector inRange);

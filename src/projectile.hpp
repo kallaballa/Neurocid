@@ -31,9 +31,9 @@ public:
 		Object(loc, rotation, Params::PROJECTILE_RANGE, Params::MAX_PROJECTILE_SPEED, false, false),
 		owner_(&owner),
 		nearestEnemyLoc_(0,0),
-		nearestEnemyDis_(std::numeric_limits<Coord>::max()),
+		nearestEnemyDis_(std::numeric_limits<Coord>().max()),
 		nearestFriendLoc_(0,0),
-		nearestFriendDis_(std::numeric_limits<Coord>::max()),
+		nearestFriendDis_(std::numeric_limits<Coord>().max()),
 		startLoc_(loc),
 		enemyHitter_(false),
 		friendHitter_(false){

@@ -52,10 +52,6 @@ void BattleField::moveTeamTanks(Population& team) {
 			if(!stepBack) {
 				t = clone;
 			}*/
-
-			if(t.shoot()) {
-				t.makeProjectile();
-			}
 		}
 	}
 }
@@ -109,34 +105,18 @@ void BattleField::calculateHit(Projectile& p1, Projectile& p2) {
 
 void BattleField::calculateHit(Projectile& p, Tank& t) {
 	if (!p.dead_ && !t.dead_ && t != (*p.owner_)) {
-		Coord distance = p.distance(t);
 		p.dead_ = true;
 		t.damage_++;
-
 		if (t.damage_ >= Params::MAX_DAMAGE) {
 			t.dead_ = true;
 		}
 
 		if (p.owner_->teamID_ != t.teamID_) {
-			p.owner_->friendly_fire_++;
-			p.friendHitter_ = true;
-			p.nearestFriendDis_ = 0;
-			p.nearestFriendLoc_ = t.loc_;
-
-			if (distance < p.nearestEnemyDis_) {
-				p.nearestEnemyDis_ = distance;
-				p.nearestEnemyLoc_ = t.loc_;
-			}
-		} else {
 			p.owner_->hits_++;
 			p.enemyHitter_ = true;
-			p.nearestEnemyDis_ = 0;
-			p.nearestEnemyLoc_ = t.loc_;
-
-			if (distance < p.nearestEnemyDis_) {
-				p.nearestFriendDis_ = distance;
-				p.nearestFriendLoc_ = t.loc_;
-			}
+		} else {
+			p.owner_->friendly_fire_++;
+			p.friendHitter_ = true;
 		}
 	}
 }
@@ -153,6 +133,35 @@ void BattleField::calculateHits(Projectile& p, Bsp::NodeVector inRange) {
 	}
 }
 
+void BattleField::findNearestTanks(Projectile& p) {
+
+	auto nearestEnemy = bsp_.find_nearest_if(&p,std::numeric_limits<Coord>().max(),[&](Object* o){
+		Tank* t;
+		if((t = dynamic_cast<Tank*>(o)) && !t->dead_ && t->teamID_ != p.owner_->teamID_) {
+			return true;
+		} else
+			return false;
+	});
+
+	if(p.nearestEnemyDis_ > nearestEnemy.second) {
+		p.nearestEnemyLoc_ = (*nearestEnemy.first)->loc_;
+		p.nearestEnemyDis_  = nearestEnemy.second;
+	}
+
+	auto nearestFriend = bsp_.find_nearest_if(&p,std::numeric_limits<Coord>().max(),[&](Object* o){
+		Tank* t;
+		if((t = dynamic_cast<Tank*>(o)) && !t->dead_ && (*t) != (*p.owner_) && t->teamID_ == p.owner_->teamID_) {
+			return true;
+		} else
+			return false;
+	});
+
+	if(p.nearestFriendDis_ > nearestFriend.second) {
+		p.nearestFriendLoc_ = (*nearestFriend.first)->loc_;
+		p.nearestFriendDis_  = nearestFriend.second;
+	}
+}
+
 void BattleField::checkHits() {
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		Population& team = teams_[i];
@@ -162,10 +171,13 @@ void BattleField::checkHits() {
 			Tank& t = team[j];
 			Bsp::NodeVector result;
 
-			#pragma omp for
+			#pragma omp for ordered schedule(dynamic)
 			for(size_t k = 0; k < t.projectiles_.size(); ++k) {
 				Projectile& p = t.projectiles_[k];
+				findNearestTanks(p);
 				bsp_.find_within_range(&p, p.range_ + Params::TANK_RANGE, std::back_inserter(result));
+
+				#pragma omp ordered
 				calculateHits(p, result);
 				result.clear();
 			}

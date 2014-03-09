@@ -24,6 +24,7 @@ static double MAX_TURN_RATE;
 static double MAX_TANK_SPEED;
 static double TANK_SCALE;
 static size_t TANK_RANGE;
+static size_t COOL_DOWN;
 
 //Projectile
 static double PROJECTILE_SCALE;

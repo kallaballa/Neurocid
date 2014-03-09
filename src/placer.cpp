@@ -34,6 +34,41 @@ void OppositeLinesFacingInward::place(vector<Population>& teams, Vector2D center
 	}
 }
 
+void OppositeLinesFacingOutward::place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing) {
+	assert(teams.size() == 2);
+
+	Coord lineLength = (Params::TANK_RANGE + spacing) * teams[0].size();
+	for(size_t i = 0; i < teams[0].size(); i++) {
+		teams[0][i].loc_ = {center.x - (distance / 2), center.y - (lineLength / 2) + ((Params::TANK_RANGE + spacing) * i)};
+		Vector2D inDir = {-1,0};
+		teams[0][i].setRotation(rotationFromDirection(inDir));
+	}
+
+	for(size_t i = 0; i < teams[1].size(); i++) {
+		teams[1][i].loc_ = {center.x + (distance / 2), center.y - (lineLength / 2) + ((Params::TANK_RANGE + spacing) * i)};
+		Vector2D inDir = {1,0};
+		teams[1][i].setRotation(rotationFromDirection(inDir));
+	}
+}
+
+void OppositeLinesFacingSheer::place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing) {
+	Coord lineLength = (Params::TANK_RANGE + spacing) * teams[0].size();
+
+	for(size_t i = 0; i < teams[0].size(); i++) {
+		teams[0][i].loc_ = {center.x - (distance / 2), center.y - (lineLength / 2) + ((Params::TANK_RANGE + spacing) * i)};
+		Vector2D inDir(-1,0);
+		inDir.rotate(45);
+		teams[0][i].setRotation(rotationFromDirection(inDir));
+	}
+
+	for(size_t i = 0; i < teams[1].size(); i++) {
+		teams[1][i].loc_ = {center.x + (distance / 2), center.y - (lineLength / 2) + ((Params::TANK_RANGE + spacing) * i)};
+		Vector2D inDir(1,0);
+		inDir.rotate(45);
+		teams[1][i].setRotation(rotationFromDirection(inDir));
+	}
+}
+
 void OppositeLinesFacingRandom::place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing) {
 	assert(teams.size() == 2);
 
@@ -45,7 +80,7 @@ void OppositeLinesFacingRandom::place(vector<Population>& teams, Vector2D center
 
 	for(size_t i = 0; i < teams[1].size(); i++) {
 		teams[1][i].loc_ = {center.x + (distance / 2), center.y - (lineLength / 2) + ((Params::TANK_RANGE + spacing) * i)};
-		teams[0][i].setRotation(fRand(-M_PI,M_PI));
+		teams[1][i].setRotation(fRand(-M_PI,M_PI));
 	}
 }
 

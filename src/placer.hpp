@@ -31,6 +31,16 @@ public:
 	virtual void place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing);
 };
 
+class OppositeLinesFacingSheer : public Placer {
+public:
+	virtual void place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing);
+};
+
+class OppositeLinesFacingOutward : public Placer {
+public:
+	virtual void place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing);
+};
+
 class OppositeLinesFacingRandom : public Placer {
 public:
 	virtual void place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing);
