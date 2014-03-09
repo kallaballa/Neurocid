@@ -123,8 +123,8 @@ void Brain::update(const Tank& tank, Population& ownTeam, Population& otherTeam)
 	//inputs[5] = (fann_type)toNearestFriend.y;
 	//inputs[6] = (fann_type)toNearestFriend2.x;
 	//inputs[7] = (fann_type)toNearestFriend2.y;
-	//inputs[8] = (fann_type)toNearestProjectile.x;
-	//inputs[9] = (fann_type)toNearestProjectile.y;
+	inputs[4] = (fann_type)toNearestProjectile.x;
+	inputs[5] = (fann_type)toNearestProjectile.y;
 	//inputs[10] = (fann_type)1;
 
 /*	size_t off = 3;

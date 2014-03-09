@@ -1,10 +1,3 @@
-/*
- * placer.cpp
- *
- *  Created on: Mar 7, 2014
- *      Author: elchaschab
- */
-
 #include "placer.hpp"
 
 namespace tankwar {
@@ -15,14 +8,12 @@ void OppositeLines::place(vector<Population>& teams, Vector2D center, Coord dist
 	Coord lineLength = (Params::TANK_RANGE + spacing) * teams[0].size();
 	for(size_t i = 0; i < teams[0].size(); i++) {
 		teams[0][i].loc_ = {center.x - (distance / 2), center.y - (lineLength / 2) + ((Params::TANK_RANGE + spacing) * i)};
-		teams[0][i].rotation_ = 0;
-		teams[0][i].updateDirection();
+		teams[0][i].setRotation(0);
 	}
 
 	for(size_t i = 0; i < teams[1].size(); i++) {
 		teams[1][i].loc_ = {center.x + (distance / 2), center.y - (lineLength / 2) + ((Params::TANK_RANGE + spacing) * i)};
-		teams[1][i].rotation_ = 0;
-		teams[1][i].updateDirection();
+		teams[1][i].setRotation(0);
 	}
 }
 
@@ -33,22 +24,35 @@ void OppositeLinesFacingInward::place(vector<Population>& teams, Vector2D center
 	for(size_t i = 0; i < teams[0].size(); i++) {
 		teams[0][i].loc_ = {center.x - (distance / 2), center.y - (lineLength / 2) + ((Params::TANK_RANGE + spacing) * i)};
 		Vector2D inDir = {1,0};
-		teams[0][i].rotation_ = rotationFromDirection(inDir);
-		teams[0][i].updateDirection();
+		teams[0][i].setRotation(rotationFromDirection(inDir));
 	}
 
 	for(size_t i = 0; i < teams[1].size(); i++) {
 		teams[1][i].loc_ = {center.x + (distance / 2), center.y - (lineLength / 2) + ((Params::TANK_RANGE + spacing) * i)};
 		Vector2D inDir = {-1,0};
-		teams[1][i].rotation_ = rotationFromDirection(inDir);;
-		teams[1][i].updateDirection();
+		teams[1][i].setRotation(rotationFromDirection(inDir));
+	}
+}
+
+void OppositeLinesFacingRandom::place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing) {
+	assert(teams.size() == 2);
+
+	Coord lineLength = (Params::TANK_RANGE + spacing) * teams[0].size();
+	for(size_t i = 0; i < teams[0].size(); i++) {
+		teams[0][i].loc_ = {center.x - (distance / 2), center.y - (lineLength / 2) + ((Params::TANK_RANGE + spacing) * i)};
+		teams[0][i].setRotation(fRand(-M_PI,M_PI));
+	}
+
+	for(size_t i = 0; i < teams[1].size(); i++) {
+		teams[1][i].loc_ = {center.x + (distance / 2), center.y - (lineLength / 2) + ((Params::TANK_RANGE + spacing) * i)};
+		teams[0][i].setRotation(fRand(-M_PI,M_PI));
 	}
 }
 
 void RandomOppositeLines::place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing) {
 	assert(teams.size() == 2);
 
-	double rotation = fRand(-2,2);
+	double rotation = fRand(-M_PI,M_PI);
 	axisDir_ = directionFromRotation(rotation);
 	Vector2D sideDir = axisDir_;
 	sideDir.rotate(90);
@@ -80,32 +84,53 @@ void RandomOppositeLines::place(vector<Population>& teams, Vector2D center, Coor
 void RandomOppositeLinesFacingRandom::place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing) {
 	RandomOppositeLines::place(teams, center, distance, spacing);
 	for(size_t i = 0; i < teams[0].size(); i++) {
-		teams[0][i].rotation_ = fRand(0,2 * M_PI);
-		teams[0][i].updateDirection();
+		teams[0][i].setRotation(fRand(-M_PI, M_PI));
 	}
 
 	for(size_t i = 0; i < teams[1].size(); i++) {
-		teams[1][i].rotation_ = fRand(0,2 * M_PI);
-		teams[1][i].updateDirection();
+		teams[1][i].setRotation(fRand(-M_PI, M_PI));
 	}
 }
 
-//FIXME test me again
 void RandomOppositeLinesFacingInward::place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing) {
 	RandomOppositeLines::place(teams, center, distance, spacing);
 	for(size_t i = 0; i < teams[0].size(); i++) {
-		Vector2D inDir = (center - centerA_);
-		inDir.rotate(-90);
-		teams[0][i].rotation_ = rotationFromDirection(inDir);
-		teams[0][i].updateDirection();
+		Vector2D inDir = (center - centerA_).normalize();
+		teams[0][i].setRotation(rotationFromDirection(inDir));
 	}
 
 	for(size_t i = 0; i < teams[1].size(); i++) {
 		Vector2D inDir = (center - centerB_);
-		inDir.rotate(-90);
-		teams[1][i].rotation_ = rotationFromDirection(inDir);
-		teams[1][i].updateDirection();
+		teams[1][i].setRotation(rotationFromDirection(inDir));
 	}
 }
 
+
+void RandomOppositeLinesFacingOutward::place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing) {
+	RandomOppositeLines::place(teams, center, distance, spacing);
+	for(size_t i = 0; i < teams[0].size(); i++) {
+		Vector2D inDir = (centerA_ - center).normalize();
+		teams[0][i].setRotation(rotationFromDirection(inDir));
+	}
+
+	for(size_t i = 0; i < teams[1].size(); i++) {
+		Vector2D inDir = (centerB_ - center);
+		teams[1][i].setRotation(rotationFromDirection(inDir));
+	}
+}
+
+void RandomOppositeLinesFacingSheer::place(vector<Population>& teams, Vector2D center, Coord distance, Coord spacing) {
+	RandomOppositeLines::place(teams, center, distance, spacing);
+	for(size_t i = 0; i < teams[0].size(); i++) {
+		Vector2D inDir = (centerA_ - center);
+		inDir.rotate(-45);
+		teams[0][i].setRotation(rotationFromDirection(inDir));
+	}
+
+	for(size_t i = 0; i < teams[1].size(); i++) {
+		Vector2D inDir = (centerB_ - center);
+		inDir.rotate(-45);
+		teams[1][i].setRotation(rotationFromDirection(inDir));
+	}
+}
 } /* namespace tankwar */

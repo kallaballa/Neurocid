@@ -22,10 +22,21 @@ Tank::Tank(size_t teamID, BrainLayout layout, Vector2D loc, Coord rotation) :
 		Object(loc, rotation, Params::TANK_RANGE, Params::MAX_TANK_SPEED, false, false),
 		brain_(layout),
 		teamID_(teamID){
-	updateDirection();
+	setRotation(rotation);
 }
 
-void Tank::updateDirection() {
+
+void Tank::setDirection(Vector2D dir) {
+	dir_= dir;
+	assert(dir_.x >= -1 && dir_.x <= 1 && dir_.y >= -1 && dir_.y <= 1);
+	assert(! (dir_.x == 0 && dir_.y == 0));
+
+	rotation_ = rotationFromDirection(dir);
+}
+
+
+void Tank::setRotation(double r) {
+	rotation_ = normRotation(r);
 	dir_= directionFromRotation(rotation_);
 }
 
@@ -36,11 +47,11 @@ void Tank::calculateFitness() {
 		Coord diff;
 		Coord diffPerfect;
 		Coord diffWorst;
-		if(p.friendHitter_) {
+/*		if(p.friendHitter_) {
 			diff = M_PI;
 		} else if(p.enemyHitter_) {
 			diff = 0;
-		} else {
+		} else {*/
 			Vector2D perfect = (p.nearestEnemyLoc_ - p.startLoc_).normalize();
 			Vector2D worst = (p.nearestFriendLoc_ - p.startLoc_).normalize();
 			Vector2D candidate = (p.loc_ - p.startLoc_).normalize();
@@ -49,18 +60,20 @@ void Tank::calculateFitness() {
 			assert(worst != Vector2D(0,0));
 			assert(candidate != Vector2D(0,0));
 
-			diffPerfect = fabs(fmod((4*M_PI) + rotationFromDirection(perfect) - rotationFromDirection(candidate), M_PI * 2));
-			diffWorst = fabs(fmod((4*M_PI) + rotationFromDirection(worst) - rotationFromDirection(candidate), M_PI * 2));
+			//FIXME
+			diffPerfect = fabs((M_PI + rotationFromDirection(perfect)) - (M_PI + rotationFromDirection(candidate))) / 2;
+			diffWorst = fabs((M_PI + rotationFromDirection(worst)) - (M_PI + rotationFromDirection(candidate))) / 2;
 
-			if(diffPerfect > M_PI)
-				diffPerfect = (2* M_PI) - diffPerfect;
+			assert(diffPerfect >= 0);
+			assert(diffWorst >= 0);
+			assert(diffPerfect <= M_PI);
+			assert(diffWorst <= M_PI);
 
-			if(diffWorst > M_PI)
-				diffWorst = (2* M_PI) - diffWorst;
+			//diff = ((M_PI + diffWorst) - diffPerfect) / 2;
 
-			diff = diffPerfect / (diffWorst + 1);
-	//		diff = diffPerfect;
-		}
+			diff = diffPerfect;
+	//		std::cerr << diffPerfect << std::endl;
+	//	}
 
 		assert(diff >= 0);
 		assert(diff <= M_PI);
@@ -68,17 +81,19 @@ void Tank::calculateFitness() {
 //		std::cerr << "perfect: ("<< perfect.x << "," << perfect.y << ")" << "candidate: ("<< candidate.x << "," << candidate.y << ")" << "diff: " << diff << std::endl;
 	}
 
-	assert(projectiles_.size() <= Params::MAX_PROJECTILES);
+	assert(projectiles_.size() <= Params::MAX_AMMO);
 
 	if(projectiles_.empty())
 		fitness_=0;
 	else
 		fitness_ = (
-				((M_PI - (totalDiff/ Params::MAX_PROJECTILES)))
+				(((M_PI - (totalDiff/ Params::MAX_AMMO)))
 				//+ ((M_PI/2) / ((Params::MAX_DAMAGE - damage_) + 1))
 				//+ ((M_PI/3) / ((Params::MAX_PROJECTILES - ammonition_ ) + 1))
-		)
-		/ (double)((friendly_fire_ / 3) + 1)
+		) / M_PI)
+		+ ((hits_/Params::MAX_AMMO)
+				* (1 /((damage_/ Params::MAX_DAMAGE)+1)));
+//		/
 		;
 
 	//std::cerr << "f:" << fitness_ << std::endl;
@@ -116,9 +131,10 @@ void Tank::move() {
 
 	speed_ = (lthrust_ + rthrust_);
 
-	updateDirection();
+	setRotation(rotation_);
 
 	//std::cerr << dir_.x << "\t" << dir_.y << "\t" << speed_ << "\t" << loc_.x << "\t" <<  loc_.y << std::endl;
+
 	//update location
 	loc_ += (dir_ * speed_);
 }
@@ -139,7 +155,7 @@ Tank Tank::clone() {
 }
 
 void Tank::resetGameState() {
-	ammonition_ = Params::MAX_PROJECTILES;
+	ammonition_ = Params::MAX_AMMO;
 	projectiles_.clear();
 	lthrust_ = 0;
 	rthrust_ = 0;

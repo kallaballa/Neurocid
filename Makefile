@@ -1,9 +1,13 @@
 CXX      := g++-4.8
-CXXFLAGS := -fopenmp -DETLOG -std=c++0x -pedantic -Wall `pkg-config --cflags SDL_gfx sdl SDL_image` 
+CXXFLAGS := -std=c++0x -pedantic -Wall `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf` 
 LDFLAGS  := -L/opt/local/lib 
-LIBS     := -fopenmp -lm `pkg-config --libs SDL_gfx sdl SDL_image` -lfann -lX11
-DIRS     := src tests
+LIBS     := -lm `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf` -lfann -lX11
 .PHONY: all release debug clean distclean 
+
+ifndef NO_OPENMP
+CXXFLAGS += -fopenmp 
+LIBS     += -fopenmp
+endif
 
 ifeq ($(UNAME), Darwin)
  CXXFLAGS +=  -stdlib=libc++

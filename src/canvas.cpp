@@ -6,8 +6,12 @@
 #include "population.hpp"
 #include <thread>
 #include <chrono>
+#include <iostream>
+
 
 namespace tankwar {
+using std::cerr;
+using std::endl;
 
 Canvas* Canvas::instance_ = NULL;
 
@@ -15,16 +19,46 @@ Canvas::Canvas(Coord width, Coord height) :
   screen_(NULL) , enabled_(true), width_(width), height_(height), timeout_(20) {
   if (width > 0 && height > 0) {
     if (SDL_Init(SDL_INIT_VIDEO) == -1) {
-      printf("Can't init SDL:  %s\n", SDL_GetError());
+      cerr << "Can't init SDL: " << SDL_GetError() << endl;
       exit(1);
     }
     atexit(SDL_Quit);
     screen_ = SDL_SetVideoMode(width, height, 16, SDL_SWSURFACE);
     if (screen_ == NULL) {
-      printf("Can't set video mode: %s\n", SDL_GetError());
+      cerr << "Can't set video mode: " << SDL_GetError() << endl;
       exit(1);
     }
   }
+
+  // Initialize SDL_ttf library
+     if (TTF_Init() != 0)
+     {
+    	cerr << "TTF_Init() Failed: " << TTF_GetError() << endl;
+        SDL_Quit();
+        exit(1);
+     }
+
+     // Load a font
+     font_ = TTF_OpenFont("/usr/share/fonts/truetype/DejaVuSerif.ttf", 24);
+     if (font_ == NULL)
+     {
+        cerr << "TTF_OpenFont() Failed: " << TTF_GetError() << endl;
+        TTF_Quit();
+        SDL_Quit();
+        exit(1);
+     }
+}
+
+void Canvas::drawText(const string& s, Coord x0, Coord y0, Color c) {
+	SDL_Surface *text;
+	SDL_Color text_color = { c.r, c.g, c.b };
+	text = TTF_RenderText_Solid(font_, s.c_str(), text_color);
+	assert(text != NULL);
+	SDL_Rect drest = {x0,y0,0,0};
+	if (SDL_BlitSurface(text, NULL, screen_, &drest) != 0) {
+		cerr << "SDL_BlitSurface() Failed: " << SDL_GetError() << endl;
+	}
+	SDL_FreeSurface(text);
 }
 
 void Canvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c) {
@@ -59,6 +93,7 @@ void Canvas::update() {
 }
 
 void Canvas::render(BattleField& field) {
+	assert(field.teams_.size() == 2);
 	assert(teamColors_.size() >= field.teams_.size());
 
 	Color white = {255,255,255};
@@ -85,6 +120,8 @@ void Canvas::render(BattleField& field) {
 		++teamCnt;
 	}
 
+	drawText(std::to_string(field.teams_[0].score_), 50, 50, teamColors_[0]);
+	drawText(std::to_string(field.teams_[1].score_), width_ - 70, 50, teamColors_[1]);
 
 	this->update();
 }

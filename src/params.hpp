@@ -18,7 +18,7 @@ static double ACTIVATION_RESPONSE;
 static double BIAS;
 
 //Tank
-static size_t MAX_PROJECTILES;
+static size_t MAX_AMMO;
 static size_t MAX_DAMAGE;
 static double MAX_TURN_RATE;
 static double MAX_TANK_SPEED;

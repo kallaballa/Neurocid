@@ -5,6 +5,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_gfxPrimitives.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
 #include "2d.hpp"
 #include <string>
 #include <cassert>
@@ -36,6 +37,7 @@ private:
 			{255,255,0}
 	};
 public:
+  void drawText(const string& s, Coord x0, Coord y0, Color c);
   void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
   void drawTank(Tank& tank, Color c);
   void drawProjectile(Projectile& pro, Color& c);
@@ -53,6 +55,7 @@ public:
   }
 private:
   class SDL_Surface *screen_;
+  TTF_Font *font_;
   bool enabled_;
   Coord width_;
   Coord height_;

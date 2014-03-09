@@ -12,6 +12,7 @@ namespace tankwar {
 struct GeneticParams {
 	double mutationRate;
 	double crossoverRate;
+	size_t crossoverIterations;
 	double maxPertubation;
 	size_t numElite_;
 	size_t numEliteCopies_;
@@ -66,7 +67,8 @@ struct Statistics {
 		os << generationCnt_ << ":"
 		<< bestFitness_ << ":"
 		<< averageFitness_ << ":"
-		<< averageFriendlyFire_ << ":"
+		<< averageHits_ << ":"
+		<< averageFriendlyFire_ / 3 << ":"
 		<< averageHits_ << ":"
 		<< averageDamage_ << ":"
 		<< (averageAmmonition_ / 3) << ":"

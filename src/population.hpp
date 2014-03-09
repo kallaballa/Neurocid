@@ -14,6 +14,9 @@
 namespace tankwar {
 
 class Population : public std::vector<Tank> {
+	public:
+		size_t score_ = 0;
+		bool winner_ = false;
 };
 
 }

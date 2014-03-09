@@ -18,7 +18,7 @@ class Tank : public Object {
 public:
 	std::vector<Projectile> projectiles_;
 
-	size_t ammonition_ = Params::MAX_PROJECTILES;
+	size_t ammonition_ = Params::MAX_AMMO;
 	Brain brain_;
 	size_t teamID_;
 	Thrust lthrust_ = 0;
@@ -47,7 +47,10 @@ public:
 		return false;
 	}
 
-	void updateDirection();
+
+	void setDirection(Vector2D dir);
+	void setRotation(double r);
+
 	void calculateFitness();
 	void think(BattleField& field);
 	void move();

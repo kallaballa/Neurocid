@@ -6,7 +6,7 @@ GCH    := ${HEADERS:.h=.gch}
 OBJS    := ${SRCS:.cpp=.o} 
 DEPS    := ${SRCS:.cpp=.dep} 
 
-CXXFLAGS += -I../src/ 
+CXXFLAGS += -I../src/ -I../ 
 LDFLAGS += -L../src/ -ltankwar
 
 .PHONY: all release debug clean distclean 

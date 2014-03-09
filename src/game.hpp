@@ -24,9 +24,10 @@ class Game {
 private:
 	void place();
 	void fight();
+	void score();
 	void mate();
 	void cleanup();
-	void print(float secondsTaken);
+	void print();
 	void prepare();
 public:
 	size_t battleIterations_;

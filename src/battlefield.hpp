@@ -4,6 +4,7 @@
 #include "projectile.hpp"
 #include "canvas.hpp"
 #include <vector>
+#include "bsp.hpp"
 
 namespace tankwar {
 
@@ -14,6 +15,7 @@ class Population;
 class BattleField {
 public:
 	vector<Population>&  teams_;
+	Bsp bsp_;
 
 	BattleField(vector<Population>& teams);
 
@@ -23,10 +25,13 @@ private:
 	void moveTanks();
 	void moveTeamProjectiles(Population& team);
 	void moveProjectiles();
-	void checkHit(Tank& t, Projectile& p);
-	void checkTeamHits(Population& attacker, Population& defender);
+	void buildBsp();
+	void calculateHit(Projectile& p1, Projectile& p2);
+	void calculateHit(Projectile& p, Tank& t);
+	void calculateHits(Projectile& t, Bsp::NodeVector inRange);
 	void checkHits();
 	void letTanksThink();
+	void cleanup();
 };
 
 } /* namespace tankwar */

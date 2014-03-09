@@ -44,8 +44,6 @@ public:
 		//update location
 		loc_ += (dir_ * speed_);
 	}
-
-	Projectile& operator=(const Projectile& other);
 };
 
 }

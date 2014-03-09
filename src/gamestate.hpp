@@ -9,13 +9,26 @@ private:
 	static GameState* instance_;
 	bool run_ = true;
 	bool slow_ = false;
+	bool slower_ = true;
 public:
 	bool isSlow() {
 		return slow_;
 	}
 
+	bool isSlower() {
+		return slower_;
+	}
+
 	void setSlow(bool s) {
 		slow_ = s;
+		if(slow_)
+			slower_ = false;
+	}
+
+	void setSlower(bool s) {
+		slower_ = s;
+		if(slower_)
+			slow_ = false;
 	}
 
 	bool isRunning() {

@@ -9,6 +9,7 @@
 #include "battlefield.hpp"
 #include "population.hpp"
 #include "gamestate.hpp"
+#include "bsp.hpp"
 
 #include <vector>
 #include <list>
@@ -68,9 +69,24 @@ void BattleField::moveTanks() {
 
 void BattleField::moveTeamProjectiles(Population& team) {
 	for(Tank& t : team) {
-		for(Projectile& p : t.projectiles_) {
+		for(size_t j = 0; j < t.projectiles_.size(); ++j) {
+			Projectile& p = t.projectiles_[j];
 			if(!p.dead_)
 				p.move();
+		}
+	}
+}
+
+void BattleField::buildBsp() {
+	for (size_t i = 0; i < teams_.size(); ++i) {
+		Population& team = teams_[i];
+
+		for (size_t j = 0; j < team.size(); ++j) {
+			Tank& t = team[j];
+			bsp_.insert(&t);
+			for (Projectile& p : t.projectiles_) {
+				bsp_.insert(&p);
+			}
 		}
 	}
 }
@@ -81,88 +97,105 @@ void BattleField::moveProjectiles() {
 	}
 }
 
-void BattleField::checkHit(Tank& t, Projectile& p) {
+void BattleField::calculateHit(Projectile& p1, Projectile& p2) {
+	if (!p1.dead_ && !p2.dead_ && p1.owner_->teamID_ != p2.owner_->teamID_) {
+		Coord distance = p1.distance(p2);
+		if (distance < (Params::PROJECTILE_RANGE * 2)){
+			p1.dead_ = true;
+			p2.dead_ = true;
+		}
+	}
+}
+
+void BattleField::calculateHit(Projectile& p, Tank& t) {
 	if (!p.dead_ && !t.dead_ && t != (*p.owner_)) {
+		Coord distance = p.distance(t);
+		p.dead_ = true;
+		t.damage_++;
+
+		if (t.damage_ >= Params::MAX_DAMAGE) {
+			t.dead_ = true;
+		}
+
 		if (p.owner_->teamID_ != t.teamID_) {
-			Coord distance = p.distance(t);
+			p.owner_->friendly_fire_++;
+			p.friendHitter_ = true;
+			p.nearestFriendDis_ = 0;
+			p.nearestFriendLoc_ = t.loc_;
+
 			if (distance < p.nearestEnemyDis_) {
 				p.nearestEnemyDis_ = distance;
 				p.nearestEnemyLoc_ = t.loc_;
 			}
 		} else {
-			Coord distance = p.distance(t);
+			p.owner_->hits_++;
+			p.enemyHitter_ = true;
+			p.nearestEnemyDis_ = 0;
+			p.nearestEnemyLoc_ = t.loc_;
+
 			if (distance < p.nearestEnemyDis_) {
 				p.nearestFriendDis_ = distance;
 				p.nearestFriendLoc_ = t.loc_;
 			}
 		}
-
-		if (p.collides(t)) {
-			p.dead_ = true;
-			t.damage_++;
-			if (p.owner_->teamID_ == t.teamID_) {
-				p.owner_->friendly_fire_++;
-				p.friendHitter_ = true;
-				p.nearestFriendDis_ = 0;
-				p.nearestFriendLoc_ = t.loc_;
-				if (t.damage_ >= Params::MAX_DAMAGE) {
-					t.dead_ = true;
-				}
-			} else {
-				p.owner_->hits_++;
-				p.enemyHitter_ = true;
-				p.nearestEnemyDis_ = 0;
-				p.nearestEnemyLoc_ = t.loc_;
-				if (t.damage_ >= Params::MAX_DAMAGE) {
-					t.dead_ = true;
-				}
-			}
-		}
 	}
 }
 
-void BattleField::checkTeamHits(Population& attacker, Population& defender) {
-	for(size_t i = 0; i < attacker.size(); ++i) {
-		Tank& a = attacker[i];
-		for (Projectile& p : a.projectiles_) {
-			for (Tank& a : attacker) {
-				checkHit(a,p);
-			}
-
-			for (Tank& d : defender) {
-				checkHit(d,p);
-			}
+void BattleField::calculateHits(Projectile& p, Bsp::NodeVector inRange) {
+	Tank* to;
+	Projectile* po;
+	for(size_t i = 0; i < inRange.size(); ++i) {
+		if((to = dynamic_cast<Tank*>(inRange[i]))) {
+			calculateHit(p,*to);
+		} else if((po = dynamic_cast<Projectile*>(inRange[i]))) {
+			calculateHit(p,*po);
 		}
 	}
 }
 
 void BattleField::checkHits() {
-	#pragma omp parallel for
 	for(size_t i = 0; i < teams_.size(); ++i) {
-		for(size_t j = 0; j < teams_.size(); ++j) {
-			if(i == j)
-				continue;
+		Population& team = teams_[i];
 
-			checkTeamHits(teams_[i], teams_[j]);
+		#pragma omp parallel
+		for(size_t j = 0; j < team.size(); ++j) {
+			Tank& t = team[j];
+			Bsp::NodeVector result;
+
+			#pragma omp for
+			for(size_t k = 0; k < t.projectiles_.size(); ++k) {
+				Projectile& p = t.projectiles_[k];
+				bsp_.find_within_range(&p, p.range_ + Params::TANK_RANGE, std::back_inserter(result));
+				calculateHits(p, result);
+				result.clear();
+			}
 		}
 	}
 }
 
 void BattleField::letTanksThink() {
-	#pragma omp parallel for
+	#pragma omp parallel
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		Population& team = teams_[i];
-		for(size_t i = 0; i < team.size(); ++i) {
-			team[i].think(*this);
+
+		#pragma omp for
+		for(size_t j = 0; j < team.size(); ++j) {
+			team[j].think(*this);
 		}
 	}
+}
+
+void BattleField::cleanup() {
+	bsp_.clear();
 }
 
 void BattleField::step() {
 	if(GameState::getInstance()->isRunning()) moveTanks();
 	if(GameState::getInstance()->isRunning()) moveProjectiles();
+	if(GameState::getInstance()->isRunning()) buildBsp();
 	if(GameState::getInstance()->isRunning()) checkHits();
 	if(GameState::getInstance()->isRunning()) letTanksThink();
+	cleanup();
 }
 
 } /* namespace tankwar */

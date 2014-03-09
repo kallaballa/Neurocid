@@ -34,8 +34,10 @@ void runEventHandler() {
 				if (event.key.keysym.sym == SDLKey::SDLK_SPACE) {
 					if (renderer.isEnabled()) {
 						if(gameState.isSlow()) {
+							gameState.setSlower(true);
+						} else if(gameState.isSlower()) {
 							renderer.setEnabled(false);
-							gameState.setSlow(false);
+							gameState.setSlower(false);
 						} else {
 							gameState.setSlow(true);
 						}
@@ -61,13 +63,13 @@ void runEventHandler() {
 
 int main(int argc, char** argv) {
 	std::thread gameThread([&]() {
-		size_t battleIterations = 300;
+		size_t battleIterations = 200;
 		size_t numTeams = 2;
-		size_t teamSize = 10;
+		size_t teamSize = 20;
 
 		BrainLayout l = {
-				4, // inputs
-				3,  // outputs
+				6, // inputs
+				3, // outputs
 				6, // layers
 				12  // neurons per hidden layer
 		};
@@ -75,15 +77,16 @@ int main(int argc, char** argv) {
 		GeneticParams gp = {
 				0.1, // mutationRate
 				0.7, // crossoverRate
+				3,   // crossoverIterations
 				0.3, // maxPertubation
-				4,   // numElite
+				2,   // numElite
 				1    //  numEliteCopies
 		};
 
 		vector<Population> teams = makeTeams(numTeams, teamSize, l);
 		vector<GeneticPool> pools = makePools(numTeams, gp);
 
-		RandomOppositeLinesFacingRandom placer;
+		OppositeLinesFacingRandom placer;
 
 		// do something
 		while(GameState::getInstance()->isRunning()) {

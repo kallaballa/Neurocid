@@ -12,6 +12,8 @@
 #define _USE_MATH_DEFINES
 #include <stdint.h>
 #include <math.h>
+#include <iostream>
+#include <cassert>
 
 namespace tankwar {
 typedef double Coord;
@@ -122,14 +124,36 @@ inline Vector2D operator-(const Vector2D &lhs, const Vector2D &rhs) {
 	return result;
 }
 
-inline Vector2D directionFromRotation(double& rad) {
+inline Vector2D directionFromRotation(double rad) {
+	assert(rad <= M_PI);
+	assert(rad >= -M_PI);
+
 	return Vector2D(cos(rad), sin(rad));
 }
 
-inline double rotationFromDirection(Vector2D& dir) {
-	return atan2(dir.y, dir.x);
+inline double rotationFromDirection(Vector2D dir) {
+	double r = atan2(dir.y, dir.x);
+	assert(r <= M_PI);
+	assert(r >= -M_PI);
+	return r;
 }
 
+inline double normRotation(double rotation) {
+    //2 * pi = 0
+
+	// -pi .. +pi
+
+	//0 -> -pi
+	if(rotation >= 0)
+		return fmod(rotation + M_PI, 2 * M_PI) - M_PI;
+	else
+		return (fmod((-rotation) + M_PI, 2 * M_PI) * -1) + M_PI;
+}
+
+inline std::ostream& operator<<(std::ostream& os, Vector2D v) {
+	os << '(' << v.x << ',' << v.y << ')';
+	return os;
+}
 }
 
 #endif /* TWD_HPP_ */

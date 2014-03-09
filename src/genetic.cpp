@@ -112,56 +112,6 @@ std::pair<Tank, Tank> GeneticPool::crossover(Tank &mum, Tank &dad, size_t iterat
 	return {baby1, baby2};
 }
 
-/*
- * Use the genetic algorithm to construct a new population from the old
- */
-Population GeneticPool::epoch(Population& old_pop) {
-	assert(initialized_);
-	Population new_pop;
-	stats_.reset();
-
-	for(Tank& t : old_pop) {
-		t.calculateFitness();
-	}
-
-	//sort the population (for scaling and elitism)
-	sort(old_pop.begin(), old_pop.end());
-
-	//calculate best, worst, average and total fitness
-	calculateStatistics(old_pop);
-
-	//Now to add a little elitism we shall add in some copies of the
-	//fittest genomes. Make sure we add an EVEN number or the roulette
-	//wheel sampling will crash
-	assert(params_.numElite_ <= old_pop.size());
-	if (!(params_.numEliteCopies_ * (params_.numElite_ % 2))) {
-		copyNBest(params_.numElite_, params_.numEliteCopies_, old_pop, new_pop);
-	}
-
-	//now we enter the GA loop
-	//repeat until a new population is generated
-	while (new_pop.size() < old_pop.size()) {
-		//grab two chromosones
-
-		Tank& mum = pickSpecimen(old_pop);
-		Tank& dad = pickSpecimen(old_pop);
-
-		//create some offspring via crossover
-		std::pair<Tank, Tank> babies = crossover(mum, dad, 1);
-
-		//now we mutate
-		mutate(babies.first.brain_);
-		mutate(babies.second.brain_);
-
-		//now copy into vecNewPop population
-		new_pop.push_back(babies.first);
-		new_pop.push_back(babies.second);
-	}
-	assert(new_pop.size() == old_pop.size());
-	stats_.generationCnt_++;
-	return new_pop;
-}
-
 
 /*
  * copy numCopies copies of the n best specimen into the out population
@@ -221,4 +171,53 @@ void GeneticPool::calculateStatistics(Population& pop) {
 	stats_.averageAmmonition_ = stats_.totalAmmonition_ / size;
 }
 
+/*
+ * Use the genetic algorithm to construct a new population from the old
+ */
+Population GeneticPool::epoch(Population& old_pop) {
+	assert(initialized_);
+	Population new_pop;
+	stats_.reset();
+
+	for(Tank& t : old_pop) {
+		t.calculateFitness();
+	}
+
+	//sort the population (for scaling and elitism)
+	sort(old_pop.begin(), old_pop.end());
+
+	//calculate best, worst, average and total fitness
+	calculateStatistics(old_pop);
+
+	//Now to add a little elitism we shall add in some copies of the
+	//fittest genomes. Make sure we add an EVEN number or the roulette
+	//wheel sampling will crash
+	assert(params_.numElite_ <= old_pop.size());
+	if (!(params_.numEliteCopies_ * (params_.numElite_ % 2))) {
+		copyNBest(params_.numElite_, params_.numEliteCopies_, old_pop, new_pop);
+	}
+
+	//now we enter the GA loop
+	//repeat until a new population is generated
+	while (new_pop.size() < old_pop.size()) {
+		//grab two chromosones
+
+		Tank& mum = pickSpecimen(old_pop);
+		Tank& dad = pickSpecimen(old_pop);
+
+		//create some offspring via crossover
+		std::pair<Tank, Tank> babies = crossover(mum, dad, params_.crossoverIterations);
+
+		//now we mutate
+		mutate(babies.first.brain_);
+		mutate(babies.second.brain_);
+
+		//now copy into vecNewPop population
+		new_pop.push_back(babies.first);
+		new_pop.push_back(babies.second);
+	}
+	assert(new_pop.size() == old_pop.size());
+	stats_.generationCnt_++;
+	return new_pop;
+}
 }

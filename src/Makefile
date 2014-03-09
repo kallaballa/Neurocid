@@ -1,11 +1,11 @@
 TARGET  := libtankwar.so
-SRCS    := battlefield.cpp canvas.cpp params.cpp tank.cpp brain.cpp genetic.cpp util.cpp projectile.cpp placer.cpp renderer.cpp game.cpp options.cpp gamestate.cpp
+SRCS    := battlefield.cpp canvas.cpp params.cpp tank.cpp brain.cpp genetic.cpp util.cpp placer.cpp renderer.cpp game.cpp options.cpp gamestate.cpp
 #precompiled headers
 HEADERS := 
 GCH    := ${HEADERS:.h=.gch}
 OBJS    := ${SRCS:.cpp=.o} 
 DEPS    := ${SRCS:.cpp=.dep} 
-CXXFLAGS += -fpic
+CXXFLAGS += -fpic -I../
 LDFLAGS += -shared 
 .PHONY: all release debug clean distclean 
 
