@@ -42,14 +42,17 @@ std::vector<Vector2D> Tank::scan() const {
 	assert(loc_ != max);
 	assert(loc_ != min);
 
-	Vector2D reference = dir_;
+	assert(dir_ != max);
+	assert(dir_ != min);
+
+/*	Vector2D reference = dir_;
 	Vector2D toNearestEnemy = (scanner_.nearestEnemyLoc_ - loc_).normalize();
 	Vector2D toNearestFriend = (scanner_.nearestFriendLoc_ - loc_).normalize();
-	Vector2D toNearestFriend2 = (scanner_.nearestFriend2Loc_ - loc_).normalize();
+	Vector2D toNearestFriend2 = (scanner_.nearestFriend2Loc_ - loc_).normalize();*/
 
 //	std::cerr << "see: " << reference << "\t" << toNearestEnemy << "\t" << toNearestFriend << "\t" << toNearestFriend2 << std::endl;
 
-	return {reference, toNearestEnemy, toNearestFriend, toNearestFriend2};
+	return {dir_, loc_, scanner_.nearestEnemyLoc_, scanner_.nearestFriendLoc_, scanner_.nearestFriend2Loc_};
 }
 
 void Tank::setDirection(Vector2D dir) {

@@ -75,11 +75,26 @@ void Brain::update(const std::vector<Vector2D>& sight) {
 
 	Vector2D max(std::numeric_limits<Coord>().max(),std::numeric_limits<Coord>().max());
 
-	for(size_t i = 0; i < sight.size(); i++) {
+	Coord w = Options::getInstance()->WINDOW_WIDTH;
+	Coord h = Options::getInstance()->WINDOW_HEIGHT;
+
+	Vector2D n(0,0);
+	n = sight[0];
+    n.normalize(w,h);
+	inputs_[0] = n.x;
+	inputs_[1] = n.y;
+
+	inputs_[2] = sight[1].x;
+	inputs_[3] = sight[1].y;
+
+	for(size_t i = 2; i < sight.size(); i++) {
 		// if we didn't see an object we feed the last input
 		if(sight[i] != max) {
-			inputs_[(i*2)] = sight[i].x;
-			inputs_[(i*2)+1] = sight[i].y;
+			Vector2D n(0,0);
+			n = sight[i];
+		    n.normalize(w,h);
+			inputs_[(i*2)] = n.x;
+			inputs_[(i*2)+1] = n.y;
 		} else {
 			std::cerr << "sight: " << i << " = max" << std::endl;
 		}

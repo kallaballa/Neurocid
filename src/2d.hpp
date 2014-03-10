@@ -66,6 +66,15 @@ struct Vector2D {
 		return sqrt(this->x * this->x + this->y * this->y);
 	}
 
+	Vector2D& normalize(Coord w, Coord h) {
+		assert(w > 0);
+		assert(h > 0);
+
+		this->x = this->x / w;
+		this->y = this->y / h;
+		return *this;
+	}
+
 	Vector2D& normalize() {
 		double vector_length = this->length();
 		if(vector_length == 0)
