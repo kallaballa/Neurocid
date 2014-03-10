@@ -21,10 +21,31 @@ namespace tankwar {
 Tank::Tank(size_t teamID, BrainLayout layout, Vector2D loc, Coord rotation) :
 		Object(loc, rotation, Params::TANK_RANGE, Params::MAX_TANK_SPEED, false, false),
 		brain_(layout),
-		teamID_(teamID){
+		teamID_(teamID),
+		lastLoc_(loc){
 	setRotation(rotation);
 }
 
+std::vector<Vector2D> Tank::scan() const {
+	Coord max = std::numeric_limits<Coord>().max();
+	assert(scanner_.nearestEnemyLoc_ != Vector2D(max,max));
+	assert(scanner_.nearestEnemyLoc_ != Vector2D(0,0));
+
+	assert(scanner_.nearestFriendLoc_ != Vector2D(max,max));
+	assert(scanner_.nearestFriendLoc_ != Vector2D(0,0));
+
+	assert(scanner_.nearestFriend2Loc_ != Vector2D(max,max));
+	assert(scanner_.nearestFriend2Loc_ != Vector2D(0,0));
+
+	Vector2D reference = dir_;
+	Vector2D toNearestEnemy = (scanner_.nearestEnemyLoc_ - loc_).normalize();
+	Vector2D toNearestFriend = (scanner_.nearestFriendLoc_ - loc_).normalize();
+	Vector2D toNearestFriend2 = (scanner_.nearestFriend2Loc_ - loc_).normalize();
+
+	std::cerr << "see: " << reference << "\t" << toNearestEnemy << "\t" << toNearestFriend << "\t" << toNearestFriend2 << std::endl;
+
+	return {reference, toNearestEnemy, toNearestFriend, toNearestFriend2};
+}
 
 void Tank::setDirection(Vector2D dir) {
 	dir_= dir;
@@ -33,7 +54,6 @@ void Tank::setDirection(Vector2D dir) {
 
 	rotation_ = rotationFromDirection(dir);
 }
-
 
 void Tank::setRotation(double r) {
 	rotation_ = normRotation(r);
@@ -56,13 +76,13 @@ void Tank::calculateFitness() {
 				diff = 0;
 			} else {*/
 				Vector2D perfect = (p.nearestEnemyLoc_ - p.startLoc_).normalize();
-				Vector2D worst = (p.nearestFriendLoc_ - p.startLoc_).normalize();
+				//Vector2D worst = (p.nearestFriendLoc_ - p.startLoc_).normalize();
 				Vector2D candidate = (p.loc_ - p.startLoc_).normalize();
 
-				assert(p.nearestFriendLoc_ != Vector2D(0,0));
+				//assert(p.nearestFriendLoc_ != Vector2D(0,0));
 				assert(p.nearestEnemyLoc_ != Vector2D(0,0));
 				assert(perfect != Vector2D(0,0));
-				assert(worst != Vector2D(0,0));
+				//assert(worst != Vector2D(0,0));
 				assert(candidate != Vector2D(0,0));
 
 				diffPerfect = fabs((M_PI + rotationFromDirection(perfect)) - (M_PI + rotationFromDirection(candidate)));
@@ -74,9 +94,9 @@ void Tank::calculateFitness() {
 				//std::cerr << diffPerfect << " c:" << candidate << " p:" << perfect << " e:" << p.nearestEnemyLoc_ <<  std::endl;
 
 				assert(diffPerfect >= 0);
-				assert(diffWorst >= 0);
+				//assert(diffWorst >= 0);
 				assert(diffPerfect <= M_PI);
-				assert(diffWorst <= M_PI);
+				//assert(diffWorst <= M_PI);
 
 				//diff = ((M_PI + diffWorst) - diffPerfect) / 2;
 
@@ -110,11 +130,7 @@ void Tank::calculateFitness() {
 }
 
 void Tank::think(BattleField& field) {
-	assert(field.teams_.size() == 2);
-	if(teamID_ == field.teams_[0][0].teamID_)
-		brain_.update(*this, field.teams_[0], field.teams_[1]);
-	else
-		brain_.update(*this, field.teams_[1], field.teams_[0]);
+	brain_.update(this->scan());
 }
 
 void Tank::move() {
@@ -150,8 +166,13 @@ void Tank::move() {
 
 	//std::cerr << dir_.x << "\t" << dir_.y << "\t" << speed_ << "\t" << loc_.x << "\t" <<  loc_.y << std::endl;
 
+	lastLoc_ = loc_;
 	//update location
 	loc_ += (dir_ * speed_);
+}
+
+void Tank::stepBack() {
+	loc_ = lastLoc_;
 }
 
 Tank Tank::makeChild() {

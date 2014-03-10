@@ -23,9 +23,12 @@ public:
 private:
 	void moveTeamTanks(Population& team);
 	void moveTanks();
+	void initializeScanners();
+	void stepBack();
 	void moveTeamProjectiles(Population& team);
 	void moveProjectiles();
 	void buildBsp();
+	void initializeScanners(Tank& ta);
 	void findNearestTanks(Projectile& p);
 	void calculateHit(Projectile& p1, Projectile& p2);
 	void calculateHit(Projectile& p, Tank& t);

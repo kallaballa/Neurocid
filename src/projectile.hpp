@@ -44,6 +44,10 @@ public:
 		//update location
 		loc_ += (dir_ * speed_);
 	}
+
+	ObjectType type() {
+		return ObjectType::PROJECTILE;
+	}
 };
 
 }

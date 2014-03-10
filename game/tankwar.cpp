@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
 		BrainLayout l = {
 				8, // inputs
 				3, // outputs
-				5, // layers
+				6, // layers
 				6  // neurons per hidden layer
 		};
 
@@ -86,7 +86,7 @@ int main(int argc, char** argv) {
 		vector<Population> teams = makeTeams(numTeams, teamSize, l);
 		vector<GeneticPool> pools = makePools(numTeams, gp);
 
-		OppositeLinesFacingRandom placer;
+		RandomOppositeLinesFacingOutward placer;
 
 		while(GameState::getInstance()->isRunning()) {
 			Game game(battleIterations, teams, pools, placer);

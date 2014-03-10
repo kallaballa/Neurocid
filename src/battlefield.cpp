@@ -29,29 +29,6 @@ void BattleField::moveTeamTanks(Population& team) {
 	for(Tank& t : team) {
 		if(!t.dead_) {
 			t.move();
-			/*Tank clone = t;
-			clone.move();
-
-			bool stepBack = false;
-			for(Tank& ta : teamA_) {
-				if(!ta.dead_ && ta.collides(clone)) {
-					stepBack = true;
-					break;
-				}
-			}
-
-			if(!stepBack) {
-				for(Tank& tb : teamA_) {
-					if(!tb.dead_ && tb.collides(clone)) {
-						stepBack = true;
-						break;
-					}
-				}
-			}
-
-			if(!stepBack) {
-				t = clone;
-			}*/
 		}
 	}
 }
@@ -133,8 +110,90 @@ void BattleField::calculateHits(Projectile& p, Bsp::NodeVector inRange) {
 	}
 }
 
-void BattleField::findNearestTanks(Projectile& p) {
+void BattleField::initializeScanners(Tank& ta) {
+	Tank* nearest = NULL;
+	Tank* nearestEnemy = NULL;
+	Tank* nearestFriend = NULL;
+	Tank* nearestFriend2 = NULL;
 
+	auto result =
+			bsp_.find_nearest_if(&ta, std::numeric_limits<Coord>().max(),
+					[&](Object* o) {
+						Tank* t;
+						//using dynamic_cast is slow
+						if(o->type() == ObjectType::TANK && !t->dead_ && (*t) != ta) {
+							t = static_cast<Tank*>(o);
+							//assert we are not encountering the same tank twice
+							assert(t != nearest);
+							assert(t != nearestEnemy);
+							assert(t != nearestFriend);
+							assert(t != nearestFriend2);
+
+							if(nearest == NULL) {
+								nearest = t;
+							} else if(t->teamID_ != ta.teamID_) {
+								if(nearestEnemy == NULL) {
+									nearestEnemy = t;
+								}
+							} else {
+								if(nearestFriend == NULL) {
+									nearestFriend = t;
+								} else if(nearestFriend2 == NULL) {
+									nearestFriend2 == t;
+								}
+							}
+
+							return nearestEnemy != NULL && nearestFriend2 != NULL && nearestFriend2 != NULL;
+						} else
+						return false;
+					});
+
+	assert(result.second != std::numeric_limits<Coord>().max());
+
+	if(nearest != NULL) {
+		ta.scanner_.nearestLoc_ = nearest->loc_;
+		ta.scanner_.nearestDis_ = ta.distance(*nearest);
+	}
+
+	if (nearestEnemy != NULL)
+		ta.scanner_.nearestEnemyLoc_ = nearestEnemy->loc_;
+
+	if (nearestFriend != NULL)
+		ta.scanner_.nearestFriendLoc_ = nearestFriend->loc_;
+
+	if (nearestFriend2 != NULL)
+		ta.scanner_.nearestFriend2Loc_ = nearestFriend2->loc_;
+}
+
+void BattleField::initializeScanners() {
+	for(size_t i = 0; i < teams_.size(); ++i) {
+		Population& team = teams_[i];
+		for(size_t j = 0; j < team.size(); ++j) {
+			Tank& t = team[j];
+			if(!t.dead_)
+				initializeScanners(t);
+		}
+	}
+}
+
+void BattleField::stepBack() {
+	for(size_t i = 0; i < teams_.size(); ++i) {
+		Population& team = teams_[i];
+		for(size_t j = 0; j < team.size(); ++j) {
+			Tank& t = team[j];
+			if(!t.dead_) {
+				//std::cerr << "nearest:" << nearestTank.second << std::endl;
+
+				if(t.scanner_.nearestDis_ < (Params::TANK_RANGE * 2)) {
+					t.stepBack();
+					//std::cerr << "step back" << std::endl;
+				}
+			}
+		}
+	}
+}
+
+void BattleField::findNearestTanks(Projectile& p) {
 	auto nearestEnemy = bsp_.find_nearest_if(&p,std::numeric_limits<Coord>().max(),[&](Object* o){
 		Tank* t;
 		if((t = dynamic_cast<Tank*>(o)) && !t->dead_ && t->teamID_ != p.owner_->teamID_) {
@@ -142,6 +201,8 @@ void BattleField::findNearestTanks(Projectile& p) {
 		} else
 			return false;
 	});
+
+	assert(nearestEnemy.second != std::numeric_limits<Coord>().max());
 
 	if(p.nearestEnemyDis_ > nearestEnemy.second) {
 		p.nearestEnemyLoc_ = (*nearestEnemy.first)->loc_;
@@ -155,6 +216,8 @@ void BattleField::findNearestTanks(Projectile& p) {
 		} else
 			return false;
 	});
+
+	assert(nearestFriend.second != std::numeric_limits<Coord>().max());
 
 	if(p.nearestFriendDis_ > nearestFriend.second) {
 		p.nearestFriendLoc_ = (*nearestFriend.first)->loc_;
@@ -174,6 +237,10 @@ void BattleField::checkHits() {
 			#pragma omp for ordered schedule(dynamic)
 			for(size_t k = 0; k < t.projectiles_.size(); ++k) {
 				Projectile& p = t.projectiles_[k];
+
+				if(p.dead_)
+					continue;
+
 				findNearestTanks(p);
 				bsp_.find_within_range(&p, p.range_ + Params::TANK_RANGE, std::back_inserter(result));
 
@@ -205,6 +272,8 @@ void BattleField::step() {
 	if(GameState::getInstance()->isRunning()) moveTanks();
 	if(GameState::getInstance()->isRunning()) moveProjectiles();
 	if(GameState::getInstance()->isRunning()) buildBsp();
+	if(GameState::getInstance()->isRunning()) initializeScanners();
+	if(GameState::getInstance()->isRunning()) stepBack();
 	if(GameState::getInstance()->isRunning()) checkHits();
 	if(GameState::getInstance()->isRunning()) letTanksThink();
 	cleanup();

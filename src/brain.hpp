@@ -5,7 +5,10 @@
 #include "2d.hpp"
 #include <memory>
 #include <assert.h>
+#include <vector>
+#ifdef _CHECK_BRAIN_ALLOC
 #include <map>
+#endif
 
 namespace tankwar {
 
@@ -36,7 +39,7 @@ public:
 	Brain(const Brain& other);
 	virtual ~Brain();
 	void destroy();
-	void update(const Tank& tank, Population& ownTeam, Population& otherTeam);
+	void update(const std::vector<Vector2D>& sight);
 	void randomize();
 	size_t size() const;
 	fann_type* weights();

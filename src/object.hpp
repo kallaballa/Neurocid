@@ -9,6 +9,7 @@
 #define OBJECT_HPP_
 
 #include "2d.hpp"
+#include "object_types.hpp"
 #include <math.h>
 #include <stdlib.h>
 
@@ -39,6 +40,7 @@ struct Object {
 	}
 
 	virtual void move() = 0;
+	virtual ObjectType type() = 0;
 };
 }
 
