@@ -34,7 +34,7 @@ public:
 	fann_type lthrust_ = 0;
 	fann_type rthrust_ = 0;
 	fann_type shoot_ = 0;
-
+	fann_type* inputs_;
 	Brain(BrainLayout layout);
 	Brain(const Brain& other);
 	virtual ~Brain();

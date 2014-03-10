@@ -27,22 +27,27 @@ Tank::Tank(size_t teamID, BrainLayout layout, Vector2D loc, Coord rotation) :
 }
 
 std::vector<Vector2D> Tank::scan() const {
-	Coord max = std::numeric_limits<Coord>().max();
-	assert(scanner_.nearestEnemyLoc_ != Vector2D(max,max));
-	assert(scanner_.nearestEnemyLoc_ != Vector2D(0,0));
+	Vector2D max(std::numeric_limits<Coord>().max(), std::numeric_limits<Coord>().max());
+	Vector2D min(0,0);
 
-	assert(scanner_.nearestFriendLoc_ != Vector2D(max,max));
-	assert(scanner_.nearestFriendLoc_ != Vector2D(0,0));
+	assert(scanner_.nearestEnemyLoc_ != max);
+	assert(scanner_.nearestEnemyLoc_ != min);
 
-	assert(scanner_.nearestFriend2Loc_ != Vector2D(max,max));
-	assert(scanner_.nearestFriend2Loc_ != Vector2D(0,0));
+	assert(scanner_.nearestFriendLoc_ != max);
+	assert(scanner_.nearestFriendLoc_ != min);
+
+	assert(scanner_.nearestFriend2Loc_ != max);
+	assert(scanner_.nearestFriend2Loc_ != min);
+
+	assert(loc_ != max);
+	assert(loc_ != min);
 
 	Vector2D reference = dir_;
 	Vector2D toNearestEnemy = (scanner_.nearestEnemyLoc_ - loc_).normalize();
 	Vector2D toNearestFriend = (scanner_.nearestFriendLoc_ - loc_).normalize();
 	Vector2D toNearestFriend2 = (scanner_.nearestFriend2Loc_ - loc_).normalize();
 
-	std::cerr << "see: " << reference << "\t" << toNearestEnemy << "\t" << toNearestFriend << "\t" << toNearestFriend2 << std::endl;
+//	std::cerr << "see: " << reference << "\t" << toNearestEnemy << "\t" << toNearestFriend << "\t" << toNearestFriend2 << std::endl;
 
 	return {reference, toNearestEnemy, toNearestFriend, toNearestFriend2};
 }
@@ -63,73 +68,81 @@ void Tank::setRotation(double r) {
 void Tank::calculateFitness() {
 	Coord totalDiff = 0;
 
-	if(projectiles_.empty()) {
+	if (projectiles_.empty()) {
 		totalDiff = Params::MAX_AMMO * M_PI;
 	} else {
-		for(Projectile& p : projectiles_) {
+		for (Projectile& p : projectiles_) {
+			const Coord max = std::numeric_limits<Coord>().max();
+
+			if(p.nearestEnemyLoc_ == Vector2D(0, 0)
+					|| p.nearestEnemyLoc_ == Vector2D(max, max)
+					|| p.nearestFriendLoc_ == Vector2D(0, 0)
+					|| p.nearestFriendLoc_ == Vector2D(max, max)) {
+				totalDiff+=M_PI;
+				continue;
+			}
+
 			Coord diff = 0;
 			Coord diffPerfect = 0;
 			Coord diffWorst = 0;
-	/*		if(p.friendHitter_) {
-				diff = M_PI;
-			} else if(p.enemyHitter_) {
-				diff = 0;
-			} else {*/
-				Vector2D perfect = (p.nearestEnemyLoc_ - p.startLoc_).normalize();
-				//Vector2D worst = (p.nearestFriendLoc_ - p.startLoc_).normalize();
-				Vector2D candidate = (p.loc_ - p.startLoc_).normalize();
+			Vector2D perfect = (p.nearestEnemyLoc_ - p.startLoc_).normalize();
+			Vector2D worst = (p.nearestFriendLoc_ - p.startLoc_).normalize();
+			Vector2D candidate = (p.loc_ - p.startLoc_).normalize();
 
-				//assert(p.nearestFriendLoc_ != Vector2D(0,0));
-				assert(p.nearestEnemyLoc_ != Vector2D(0,0));
-				assert(perfect != Vector2D(0,0));
-				//assert(worst != Vector2D(0,0));
-				assert(candidate != Vector2D(0,0));
+			assert(perfect != Vector2D(0, 0));
+			assert(worst != Vector2D(0,0));
+			assert(candidate != Vector2D(0, 0));
 
-				diffPerfect = fabs((M_PI + rotationFromDirection(perfect)) - (M_PI + rotationFromDirection(candidate)));
-//				diffWorst = fabs((M_PI + rotationFromDirection(worst)) - (M_PI + rotationFromDirection(candidate))) / 2;
+			diffPerfect = fabs(
+					(M_PI + rotationFromDirection(perfect))
+							- (M_PI + rotationFromDirection(candidate)));
+			diffWorst = fabs(
+					(M_PI + rotationFromDirection(worst))
+							- (M_PI + rotationFromDirection(worst)));
 
-				if(diffPerfect > M_PI)
-					diffPerfect = M_PI - (diffPerfect - M_PI);
+			if (diffPerfect > M_PI)
+				diffPerfect = M_PI - (diffPerfect - M_PI);
 
-				//std::cerr << diffPerfect << " c:" << candidate << " p:" << perfect << " e:" << p.nearestEnemyLoc_ <<  std::endl;
+			if (diffWorst > M_PI)
+				diffWorst = M_PI - (diffWorst - M_PI);
 
-				assert(diffPerfect >= 0);
-				//assert(diffWorst >= 0);
-				assert(diffPerfect <= M_PI);
-				//assert(diffWorst <= M_PI);
+			//std::cerr << diffPerfect << " c:" << candidate << " p:" << perfect << " e:" << p.nearestEnemyLoc_ <<  std::endl;
 
-				//diff = ((M_PI + diffWorst) - diffPerfect) / 2;
+			assert(diffPerfect >= 0);
+			assert(diffWorst >= 0);
+			assert(diffPerfect <= M_PI);
+			assert(diffWorst <= M_PI);
 
-				diff = diffPerfect;
-		//	}
+			//diff = ((M_PI + diffWorst) - diffPerfect) / 2;
+
+			diff = diffPerfect;
+			//	}
 
 			assert(diff >= 0);
 			assert(diff <= M_PI);
 			totalDiff += diff;
-	//		std::cerr << "perfect: ("<< perfect.x << "," << perfect.y << ")" << "candidate: ("<< candidate.x << "," << candidate.y << ")" << "diff: " << diff << std::endl;
+			//		std::cerr << "perfect: ("<< perfect.x << "," << perfect.y << ")" << "candidate: ("<< candidate.x << "," << candidate.y << ")" << "diff: " << diff << std::endl;
 		}
 	}
 
 	assert(projectiles_.size() <= Params::MAX_AMMO);
 
-
-	double aimRatio = (M_PI - (totalDiff/ Params::MAX_AMMO)) / M_PI;
-	double hitRatio = (double(hits_)/Params::MAX_AMMO);
-	double damageRatioInv = (1.0 /((double(damage_)/ Params::MAX_DAMAGE)+1));
+	double aimRatio = (M_PI - (totalDiff / Params::MAX_AMMO)) / M_PI;
+	double hitRatio = (double(hits_) / Params::MAX_AMMO);
+	double damageRatioInv = (1.0 / ((double(damage_) / Params::MAX_DAMAGE) + 1));
 
 	//std::cerr << "aim:" << aimRatio << "\thit:" << hitRatio << "/" << hits_ << "\tdmg:" << damageRatioInv << "/" << damage_ << "\tammo:" << Params::MAX_AMMO - projectiles_.size() << std::endl;
 	fitness_ = aimRatio + (hitRatio * damageRatioInv);
-
-	//std::cerr << "fitness:" << fitness_ << std::endl;
-	//std::cerr << "f:" << fitness_ << std::endl;
 	assert(fitness_ >= 0);
 	assert(!std::isnan(fitness_));
 	assert(!std::isinf(fitness_));	//
+	//std::cerr << "fitness:" << fitness_ << std::endl;
+
 //	fitness_ = hits_;
 //	fitness_ = Params::MAX_PROJECTILES - friendly_fire_;
 }
 
-void Tank::think(BattleField& field) {
+void Tank::think() {
 	brain_.update(this->scan());
 }
 

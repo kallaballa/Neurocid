@@ -56,7 +56,7 @@ public:
 	void setRotation(double r);
 
 	void calculateFitness();
-	void think(BattleField& field);
+	void think();
 	void move();
 	void stepBack();
 	Tank makeChild();

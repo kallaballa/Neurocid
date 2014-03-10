@@ -83,10 +83,17 @@ int main(int argc, char** argv) {
 				1    //  numEliteCopies
 		};
 
+		Tank t(0, l, {10,10}, 0);
+		t.scanner_.nearestDis_ = 10;
+		t.scanner_.nearestEnemyLoc_ = {20,20};
+		t.scanner_.nearestFriendLoc_ = {20,20};
+		t.scanner_.nearestFriend2Loc_ = {20,20};
+
+		t.think();
 		vector<Population> teams = makeTeams(numTeams, teamSize, l);
 		vector<GeneticPool> pools = makePools(numTeams, gp);
 
-		RandomOppositeLinesFacingOutward placer;
+		OppositeLinesFacingRandom placer;
 
 		while(GameState::getInstance()->isRunning()) {
 			Game game(battleIterations, teams, pools, placer);

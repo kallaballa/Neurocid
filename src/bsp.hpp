@@ -7,7 +7,6 @@
 namespace tankwar {
 
 inline Coord centerComponent(const Object* node, const int& k) {
-	assert(k >= 0 && k <= 1);
 	if(k == 0)
 		return node->loc_.x;
 

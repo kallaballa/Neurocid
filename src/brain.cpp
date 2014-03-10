@@ -12,7 +12,7 @@ std::map<fann*, size_t> Brain::nnAllocs_;
 size_t Brain::nnAllocCnt_ = 0;
 #endif
 
-Brain::Brain(BrainLayout layout): layout_(layout), nn_(NULL) {
+Brain::Brain(BrainLayout layout): layout_(layout), nn_(NULL), inputs_(NULL) {
 	assert(layout_.numLayers_ >= 3);
 	assert(layout_.numLayers_ < 20);
 	unsigned int layerArray[layout_.numLayers_];
@@ -26,6 +26,10 @@ Brain::Brain(BrainLayout layout): layout_(layout), nn_(NULL) {
 	nn_ = fann_create_standard_array(layout_.numLayers_, layerArray);
     fann_set_activation_function_hidden(nn_, FANN_SIGMOID_SYMMETRIC);
     fann_set_activation_function_output(nn_, FANN_SIGMOID_SYMMETRIC);
+
+    inputs_ = new fann_type[layout_.numInputs];
+    std::fill_n(inputs_, layout_.numInputs, std::numeric_limits<fann_type>().max());
+
 #ifdef _CHECK_BRAIN_ALLOC
     size_t id = ++nnAllocCnt_;
     nnAllocs_[nn_] = id;
@@ -33,7 +37,7 @@ Brain::Brain(BrainLayout layout): layout_(layout), nn_(NULL) {
 #endif
 }
 
-Brain::Brain(const Brain& other): layout_(other.layout_), nn_(other.nn_) {
+Brain::Brain(const Brain& other): layout_(other.layout_), nn_(other.nn_) , inputs_(other.inputs_) {
 }
 
 Brain::~Brain() {
@@ -49,6 +53,9 @@ void Brain::destroy() {
 #endif
 	fann_destroy(nn_);
 	nn_ = NULL;
+	delete[] inputs_;
+	inputs_ = NULL;
+
 	destroyed_ = true;
 }
 
@@ -56,26 +63,38 @@ void Brain::randomize() {
 	fann_randomize_weights(nn_, -1, 1);
 }
 
-void Brain::update(const vector<Vector2D>& sight) {
+void Brain::update(const std::vector<Vector2D>& sight) {
 	assert(nn_ != NULL);
+	assert(inputs_ != NULL);
+	assert(!destroyed_);
+
 	size_t numInputs = layout_.numInputs;
 	assert(layout_.numInputs == (sight.size() * 2));
 	assert(layout_.numInputs == fann_get_num_input(nn_));
 	assert(layout_.numOutputs == fann_get_num_output(nn_));
 
-	fann_type inputs[numInputs];
+	Vector2D max(std::numeric_limits<Coord>().max(),std::numeric_limits<Coord>().max());
 
 	for(size_t i = 0; i < sight.size(); i++) {
-		inputs[(i*2)] = sight[i].x;
-		inputs[(i*2)+1] = sight[i].y;
+		// if we didn't see an object we feed the last input
+		if(sight[i] != max) {
+			inputs_[(i*2)] = sight[i].x;
+			inputs_[(i*2)+1] = sight[i].y;
+		} else {
+			std::cerr << "sight: " << i << " = max" << std::endl;
+		}
+	}
+
+	for(size_t i = 0; i < numInputs; i++) {
+		assert(inputs_[i] != std::numeric_limits<fann_type>().max());
 	}
 
 	for(size_t i = 0; i < numInputs; ++i) {
-		assert(!std::isinf(inputs[i]));
-		assert(!std::isnan(inputs[i]));
+		assert(!std::isinf(inputs_[i]));
+		assert(!std::isnan(inputs_[i]));
 	}
 
-	fann_type* outputs = fann_run(nn_, inputs);
+	fann_type* outputs = fann_run(nn_, inputs_);
 	lthrust_ = outputs[0];
 	rthrust_ = outputs[1];
 	shoot_ = outputs[2];
