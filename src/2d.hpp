@@ -18,6 +18,8 @@
 namespace tankwar {
 typedef double Coord;
 
+#define NO_COORD std::numeric_limits<Coord>().max()
+
 struct Vector2D {
 	Coord x, y;
 
@@ -67,11 +69,20 @@ struct Vector2D {
 	}
 
 	Vector2D& normalize(Coord w, Coord h) {
-		assert(w > 0);
+ 		assert(w > 0);
 		assert(h > 0);
 
-		this->x = this->x / w;
-		this->y = this->y / h;
+		Coord ox = this->x;
+		Coord oy = this->y;
+
+		this->x = (this->x) / (w);
+		this->y = (this->y) / (h);
+
+		if(!(this->x >= -1 && this->x <= 1 && this->y >= -1 && this->y <= 1))
+			std::cerr << "normalize error: " << "(" << ox << "," << oy << ") -> " << "(" << this->x << "," << this->y << ")" << std::endl;
+		assert(this->x >= -1 && this->x <= 1);
+		assert(this->y >= -1 && this->y <= 1);
+
 		return *this;
 	}
 
@@ -88,15 +99,23 @@ struct Vector2D {
 		return *this;
 	}
 
-	Vector2D& rotate(int degrees) {
+	void rotate(int degrees) {
 		double radians = degrees * (M_PI / 180);
 		double cs = cos(radians);
 		double sn = sin(radians);
 		Coord x1 = this->x * cs - this->y * sn;
 		this->y = this->x * sn + this->y * cs;
 		this->x = x1;
-		return *this;
 	}
+};
+
+#define NO_VECTOR2D Vector2D(NO_COORD, NO_COORD)
+#define ASSERT_LOC(V) assert(V.x != NO_COORD && V.y != NO_COORD);
+#define ASSERT_DIR(V) assert(V.x >= -1 && V.x <= 1 && V.y >= -1 && V.y <= 1 && (V != Vector2D(0,0)));
+
+struct Rect {
+	Vector2D ul_;
+	Vector2D lr_;
 };
 
 inline double dot(Vector2D &v1, Vector2D &v2) {
@@ -132,21 +151,25 @@ inline Vector2D operator-(const Vector2D &lhs, const Vector2D &rhs) {
 	return result;
 }
 
-inline Vector2D directionFromRotation(double rad) {
+inline Vector2D dirFromRad(const double rad) {
 	assert(rad <= M_PI);
 	assert(rad >= -M_PI);
 
 	return Vector2D(cos(rad), sin(rad));
 }
 
-inline double rotationFromDirection(Vector2D dir) {
+inline Vector2D dirFromDeg(const double degrees) {
+	return dirFromRad(degrees * (M_PI / 180));
+}
+
+inline double radFromDir(const Vector2D dir) {
 	double r = atan2(dir.y, dir.x);
 	assert(r <= M_PI);
 	assert(r >= -M_PI);
 	return r;
 }
 
-inline double normRotation(double rotation) {
+inline double normRotation(const double rotation) {
     //2 * pi = 0
 
 	// -pi .. +pi

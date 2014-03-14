@@ -33,6 +33,10 @@ public:
 	  enabled_ = e;
 	}
 
+	void setFramerate(double frameRate) {
+		frameRate_ = frameRate;
+	}
+
 	static Renderer* getInstance() {
 		if(instance_ == NULL)
 			instance_ = new Renderer(Options::getInstance()->FRAMERATE);

@@ -22,13 +22,15 @@ using std::list;
 using std::cerr;
 using std::endl;
 
-BattleField::BattleField(vector<Population>& teams) : teams_(teams) {
+BattleField::BattleField(BattleFieldLayout& bl, vector<Population>& teams) :
+		bfl_(bl),
+		teams_(teams) {
 }
 
 void BattleField::moveTeamTanks(Population& team) {
 	for(Tank& t : team) {
 		if(!t.dead_) {
-			t.move();
+			t.move(bfl_);
 		}
 	}
 }
@@ -45,7 +47,7 @@ void BattleField::moveTeamProjectiles(Population& team) {
 		for(size_t j = 0; j < t.projectiles_.size(); ++j) {
 			Projectile& p = t.projectiles_[j];
 			if(!p.dead_)
-				p.move();
+				p.move(bfl_);
 		}
 	}
 }
@@ -74,7 +76,7 @@ void BattleField::collide(Projectile& p1, Projectile& p2) {
 	if (!p1.dead_ && !p2.dead_ && p1.owner_->teamID_ != p2.owner_->teamID_) {
 		Coord distance = p1.distance(p2);
 
-		if(distance <= (Params::PROJECTILE_RANGE * 2)) {
+		if(distance <= (p1.range_ + p2.range_)) {
 			p1.dead_ = true;
 			p2.dead_ = true;
 		}
@@ -85,10 +87,10 @@ void BattleField::collide(Projectile& p, Tank& t) {
 	if (!p.dead_ && !t.dead_ && t != (*p.owner_)) {
 		Coord distance = p.distance(t);
 
-		if (distance <= (Params::PROJECTILE_RANGE + Params::TANK_RANGE)) {
+		if (distance <= (p.range_ + t.range_)) {
 			p.dead_ = true;
 			t.damage_++;
-			if (t.damage_ >= Params::MAX_DAMAGE) {
+			if (t.damage_ >= t.tl_.max_damage_) {
 				t.dead_ = true;
 			}
 
@@ -191,23 +193,6 @@ void BattleField::initializeTankScanners() {
 			Tank& t = team[j];
 			if(!t.dead_)
 				initializeTankScanner(t);
-		}
-	}
-}
-
-void BattleField::stepBack() {
-	for(size_t i = 0; i < teams_.size(); ++i) {
-		Population& team = teams_[i];
-		for(size_t j = 0; j < team.size(); ++j) {
-			Tank& t = team[j];
-			if(!t.dead_) {
-				//std::cerr << "nearest:" << nearestTank.second << std::endl;
-
-				if(t.scanner_.nearestDis_ < (Params::TANK_RANGE * 2)) {
-					t.stepBack();
-					//std::cerr << "step back" << std::endl;
-				}
-			}
 		}
 	}
 }
@@ -346,7 +331,7 @@ void BattleField::checkHits() {
 				if (p.dead_)
 					continue;
 
-				bsp_.find_within_range(&p, p.range_ + Params::TANK_RANGE, std::back_inserter(result));
+				bsp_.find_within_range(&p, p.range_ + t.range_, std::back_inserter(result));
 				calculateHits(p, result);
 				result.clear();
 
@@ -364,7 +349,7 @@ void BattleField::letTanksThink() {
 
 		#pragma omp for
 		for(size_t j = 0; j < team.size(); ++j) {
-			team[j].think();
+			team[j].think(bfl_);
 		}
 	}
 }
@@ -378,7 +363,6 @@ void BattleField::step() {
 	if(GameState::getInstance()->isRunning()) moveProjectiles();
 	if(GameState::getInstance()->isRunning()) buildBsp();
 	if(GameState::getInstance()->isRunning()) initializeTankScanners();
-	if(GameState::getInstance()->isRunning()) stepBack();
 	if(GameState::getInstance()->isRunning()) checkHits();
 	if(GameState::getInstance()->isRunning()) letTanksThink();
 	cleanup();

@@ -96,7 +96,7 @@ public:
 	GeneticPool();
 
 	//this runs the GA for one generation.
-	Population epoch(Population& old_pop);
+	virtual Population epoch(Population& old_pop);
 
 	Statistics& statistics() {
 		return stats_;

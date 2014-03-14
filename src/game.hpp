@@ -29,14 +29,16 @@ private:
 	void cleanup();
 	void print();
 	void prepare();
+	Placer& placer_;
+	BattleFieldLayout bfl_;
 public:
 	size_t battleIterations_;
 	vector<Population>& teams_;
 	vector<Population> newTeams_;
 	vector<GeneticPool>& pools_;
-	Placer& placer_;
 
-	Game(size_t battleIterations, vector<Population>& teams, vector<GeneticPool>& pools, Placer& placer);
+
+	Game(size_t battleIterations, vector<Population>& teams, vector<GeneticPool>& pools, Placer& placer, BattleFieldLayout& bl);
 
 	vector<Population> play();
 };

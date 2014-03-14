@@ -17,15 +17,6 @@ struct Params {
 static double ACTIVATION_RESPONSE;
 static double BIAS;
 
-//Tank
-static size_t MAX_AMMO;
-static size_t MAX_DAMAGE;
-static double MAX_TURN_RATE;
-static double MAX_TANK_SPEED;
-static double TANK_SCALE;
-static size_t TANK_RANGE;
-static size_t COOL_DOWN;
-
 //Projectile
 static double PROJECTILE_SCALE;
 static double MAX_PROJECTILE_SPEED;

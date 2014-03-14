@@ -9,6 +9,11 @@ CXXFLAGS += -fopenmp
 LIBS     += -fopenmp
 endif
 
+ifdef NO_ASSERT
+CXXFLAGS += -DNDEBUG
+LIBS     += -DNDEBUG
+endif
+
 ifeq ($(UNAME), Darwin)
  CXXFLAGS +=  -stdlib=libc++
 else
@@ -38,4 +43,4 @@ dirs:
 	${MAKE} -C game/ ${MAKEFLAGS} ${MAKECMDGOALS}
 	${MAKE} -C tests/ ${MAKEFLAGS} ${MAKECMDGOALS}
 	${MAKE} -C render/ ${MAKEFLAGS} ${MAKECMDGOALS}
-
+	tests/tests

@@ -30,36 +30,46 @@ private:
 	static Canvas* instance_;
 	Canvas(Coord width, Coord height);
 	std::vector<Color> teamColors_ = {
-			{0,255,0},
-			{0,0,255},
-			{0,255,255},
-			{255,0,255},
-			{255,255,0}
+			{ 0, 255, 0 },
+			{ 0, 0, 255 },
+			{ 0, 255,255 },
+			{ 255, 0, 255 },
+			{ 255, 255, 0 }
 	};
+
+	class SDL_Surface *screen_;
+	TTF_Font *font_;
+	bool enabled_;
+	Coord width_;
+	Coord height_;
+	size_t timeout_;
+	Rect viewPort_;
+	Coord scale_;
+
+	void calculateScale();
+	Coord scaleX(const Coord& c);
+	Coord scaleY(const Coord& c);
+
+	Rect findBounds(BattleField& field);
+	void drawGrid(BattleField& field);
 public:
-  void drawText(const string& s, Coord x0, Coord y0, Color c);
-  void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
-  void drawTank(Tank& tank, Color c);
-  void drawProjectile(Projectile& pro, Color& c);
-  void drawExplosion(Object& o, Color& c);
-  void update();
-  void clear();
-  void render(BattleField& field);
+	void drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c);
+	void drawText(const string& s, Coord x0, Coord y0, Color c);
+	void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
+	void drawTank(Tank& tank, Color c);
+	void drawProjectile(Projectile& pro, Color& c);
+	void drawExplosion(Object& o, Color& c);
+	void update();
+	void clear();
+	void render(BattleField& field);
 
+	static Canvas* getInstance() {
+		if (instance_ == NULL)
+			instance_ = new Canvas(Options::getInstance()->WINDOW_WIDTH,
+					Options::getInstance()->WINDOW_HEIGHT);
 
-  static Canvas* getInstance() {
-	  if(instance_ == NULL)
-		  instance_ = new Canvas(Options::getInstance()->WINDOW_WIDTH, Options::getInstance()->WINDOW_HEIGHT);
-
-	  return instance_;
-  }
-private:
-  class SDL_Surface *screen_;
-  TTF_Font *font_;
-  bool enabled_;
-  Coord width_;
-  Coord height_;
-  size_t timeout_;
+		return instance_;
+	}
 };
 }
 

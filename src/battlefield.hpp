@@ -12,13 +12,19 @@ using std::vector;
 
 class Population;
 
+struct BattleFieldLayout {
+	size_t iterations_;
+	Coord width_;
+	Coord height_;
+};
+
 class BattleField {
 public:
+	BattleFieldLayout bfl_;
 	vector<Population>&  teams_;
 	Bsp bsp_;
 
-	BattleField(vector<Population>& teams);
-
+	BattleField(BattleFieldLayout& bl, vector<Population>& teams);
 	void step();
 private:
 	void moveTeamTanks(Population& team);

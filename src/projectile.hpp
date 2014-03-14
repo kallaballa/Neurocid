@@ -32,19 +32,18 @@ public:
 		Object(loc, rotation, Params::PROJECTILE_RANGE, Params::MAX_PROJECTILE_SPEED, false, false),
 		owner_(&owner),
 		nearestObject_(NULL),
-		nearestEnemyLoc_(std::numeric_limits<Coord>().max(),std::numeric_limits<Coord>().max()),
-		nearestEnemyDis_(std::numeric_limits<Coord>().max()),
-		nearestFriendLoc_(std::numeric_limits<Coord>().max(),std::numeric_limits<Coord>().max()),
-		nearestFriendDis_(std::numeric_limits<Coord>().max()),
+		nearestEnemyLoc_(NO_COORD, NO_COORD),
+		nearestEnemyDis_(NO_COORD),
+		nearestFriendLoc_(NO_COORD, NO_COORD),
+		nearestFriendDis_(NO_COORD),
 		startLoc_(loc),
 		enemyHitter_(false),
 		friendHitter_(false){
-		dir_ = directionFromRotation(rotation);
 	}
 
-	void move() {
+	void move(BattleFieldLayout& bfl) {
 		//update location
-		loc_ += (dir_ * speed_);
+		loc_ += (getDirection() * speed_);
 	}
 
 	ObjectType type() {

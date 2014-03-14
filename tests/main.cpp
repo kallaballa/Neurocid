@@ -124,13 +124,13 @@ void assertNormalized(Vector2D v) {
 }
 
 void testVectorToRadConversion(double rotation) {
-	Vector2D v = directionFromRotation(rotation);
+	Vector2D v = dirFromRad(rotation);
 	assertNormalized(v);
-	assertEq(rotationFromDirection(v),rotation);
+	assertEq(radFromDir(v),rotation);
 }
 
 Vector2D makeVector2D(double rotation) {
-	Vector2D v = directionFromRotation(rotation);
+	Vector2D v = dirFromRad(rotation);
 	testVectorToRadConversion(rotation);
 	return v;
 }
@@ -166,15 +166,35 @@ void testVectorRotation() {
 
 		if(fabs(v.y) < 0.00001)
 			v.y = 0;
-
+/*
 		if(v.x != -1 && v.x != 0 && v.x != 1)
 			std::cerr << i << " " << normRotation(i) << "    " << v.x << "\t" << v.y << std::endl;
 		else
-			std::cerr << i << " " << normRotation(i) << " \t" << v.x << "\t\t" << v.y << std::endl;
+			std::cerr << i << " " << normRotation(i) << " \t" << v.x << "\t\t" << v.y << std::endl;*/
 	}
 }
 
+void testCoordinateNormalization() {
+	Vector2D v(200,600);
+	Vector2D v1(600,200);
+	Vector2D v2(100,700);
+	Vector2D v3(700,100);
+
+	v.normalize(800,800);
+	v1.normalize(800,800);
+	v2.normalize(800,800);
+	v3.normalize(800,800);
+
+	assertVeq(v,Vector2D(0.25,0.75));
+	assertVeq(v1,Vector2D(0.75,0.25));
+	assertVeq(v2,Vector2D(0.125,0.875));
+	assertVeq(v3,Vector2D(0.875,0.125));
+
+}
+
 int main(int argc, char** argv) {
+	testCoordinateNormalization();
 	testVectorRotation();
+	std::cerr << "Tests Successful" << std::endl;
 	return 0;
 }

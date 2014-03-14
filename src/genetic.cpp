@@ -64,15 +64,15 @@ std::pair<Tank, Tank> GeneticPool::crossover(Tank &mum, Tank &dad, size_t iterat
 	Tank baby1 = mum.makeChild();
 	Tank baby2 = mum.makeChild();
 
-	fann_type* wMum = mum.brain_.weights();
-	fann_type* wDad = dad.brain_.weights();
-	fann_type* wBaby1 = baby1.brain_.weights();
-	fann_type* wBaby2 = baby2.brain_.weights();
+	fann_type* wMum = mum.brain_->weights();
+	fann_type* wDad = dad.brain_->weights();
+	fann_type* wBaby1 = baby1.brain_->weights();
+	fann_type* wBaby2 = baby2.brain_->weights();
 
 	//just return parents as offspring dependent on the rate or if parents are the same
 	if ((fRand(0,1) > params_.crossoverRate) || (mum == dad)) {
-		baby1.brain_.destroy();
-		baby2.brain_.destroy();
+		baby1.brain_->destroy();
+		baby2.brain_->destroy();
 		return {mum.clone(), dad.clone()};
 	}
 
@@ -80,9 +80,9 @@ std::pair<Tank, Tank> GeneticPool::crossover(Tank &mum, Tank &dad, size_t iterat
 	size_t cp = 0;
 	bool cross = false;
 
-	for(size_t i = 0; i < iterations && cp < (mum.brain_.size() - 1); ++i) {
+	for(size_t i = 0; i < iterations && cp < (mum.brain_->size() - 1); ++i) {
 		//determine a crossover point
-		cp = iRand(last_cp, mum.brain_.size() - 1);
+		cp = iRand(last_cp, mum.brain_->size() - 1);
 
 		//create the offspring
 		for (size_t j = last_cp; j < cp; ++j) {
@@ -99,7 +99,7 @@ std::pair<Tank, Tank> GeneticPool::crossover(Tank &mum, Tank &dad, size_t iterat
 		cross = !cross;
 	}
 
-	for (size_t i = last_cp; i < mum.brain_.size(); ++i) {
+	for (size_t i = last_cp; i < mum.brain_->size(); ++i) {
 		if(cross) {
 			wBaby1[i] = wMum[i];
 			wBaby2[i] = wDad[i];
@@ -123,7 +123,6 @@ void GeneticPool::copyNBest(size_t n, const size_t numCopies,
 		for (size_t i = 0; i < numCopies; ++i) {
 			Tank &t = in[(in.size() - 1) - n];
 			out.push_back(t.clone());
-			assert(t.brain_ == (*(out.end() - 1)).brain_);
 		}
 	}
 }
@@ -175,7 +174,26 @@ void GeneticPool::calculateStatistics(Population& pop) {
  * Use the genetic algorithm to construct a new population from the old
  */
 Population GeneticPool::epoch(Population& old_pop) {
-	assert(initialized_);
+	if(!initialized_) {
+		Population new_pop;
+		stats_.reset();
+
+		for(Tank& t : old_pop) {
+			t.calculateFitness();
+		}
+
+		//sort the population (for scaling and elitism)
+		sort(old_pop.begin(), old_pop.end());
+
+		//calculate best, worst, average and total fitness
+		calculateStatistics(old_pop);
+
+		for(Tank& t : old_pop) {
+			new_pop.push_back(t.makeChild());
+		}
+		return new_pop;
+	}
+
 	//FIXME preallocate
 	Population new_pop;
 	stats_.reset();
@@ -210,8 +228,8 @@ Population GeneticPool::epoch(Population& old_pop) {
 		std::pair<Tank, Tank> babies = crossover(mum, dad, params_.crossoverIterations);
 
 		//now we mutate
-		mutate(babies.first.brain_);
-		mutate(babies.second.brain_);
+		mutate(*babies.first.brain_);
+		mutate(*babies.second.brain_);
 
 		//now copy into vecNewPop population
 		new_pop.push_back(babies.first);

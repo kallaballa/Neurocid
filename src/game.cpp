@@ -14,12 +14,14 @@
 
 namespace tankwar {
 
-Game::Game(size_t battleIterations, vector<Population>& teams, vector<GeneticPool>& pools, Placer& placer) :
-	battleIterations_(battleIterations),
-	teams_(teams),
-	newTeams_(teams.size()),
-	pools_(pools),
-	placer_(placer){
+Game::Game(size_t battleIterations, vector<Population>& teams,
+		vector<GeneticPool>& pools, Placer& placer, BattleFieldLayout& bfl) :
+		placer_(placer),
+		bfl_(bfl),
+		battleIterations_(battleIterations),
+		teams_(teams),
+		newTeams_(teams.size()),
+		pools_(pools) {
 }
 
 void Game::prepare() {
@@ -33,12 +35,12 @@ void Game::prepare() {
 }
 
 void Game::place() {
-	Options& opts = *Options::getInstance();
-	placer_.place(teams_, Vector2D(opts.WINDOW_WIDTH / 2, opts.WINDOW_HEIGHT / 2), std::min(opts.WINDOW_WIDTH, opts.WINDOW_HEIGHT) - 300, 20);
+	placer_.place(teams_);
 }
 
 void Game::fight() {
-	BattleField field(teams_);
+	//std::cerr << "####### game start #######" << std::endl;
+	BattleField field(bfl_, teams_);
 	GameState& gs = *GameState::getInstance();
 	for(size_t i = 0; (i < battleIterations_) && GameState::getInstance()->isRunning(); ++i) {
 		field.step();
@@ -54,7 +56,7 @@ void Game::fight() {
 
 void Game::score() {
 	assert(teams_.size() == 2);
-	size_t collisions = 			(pools_[0].statistics().totalHits_
+	size_t collisions = (pools_[0].statistics().totalHits_
 			+ pools_[0].statistics().totalFriendlyFire_
 			+ pools_[1].statistics().totalHits_
 			+ pools_[1].statistics().totalFriendlyFire_
@@ -98,8 +100,8 @@ void Game::mate() {
 void Game::cleanup() {
 	for(Population& p : teams_) {
 		for(Tank& t : p) {
-			assert(!t.brain_.isDestroyed());
-			t.brain_.destroy();
+			assert(!t.brain_->isDestroyed());
+			t.brain_->destroy();
 		}
 	}
 }

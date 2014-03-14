@@ -49,57 +49,121 @@ Canvas::Canvas(Coord width, Coord height) :
      }
 }
 
+void Canvas::calculateScale() {
+	Coord scaleX = width_ / (viewPort_.lr_.x - viewPort_.ul_.x);
+	Coord scaleY = height_ / (viewPort_.lr_.y - viewPort_.ul_.y);
+	scale_ = std::min(scaleX, scaleY);
+}
+
+Coord Canvas::scaleX(const Coord& c) {
+	Coord preScale = 0.9;
+	Coord len = (viewPort_.lr_.x - viewPort_.ul_.x) * scale_ * preScale;
+	Coord pos = (c - viewPort_.ul_.x) * scale_ * preScale;
+	Coord scaled = (((width_ - len) / 2) + pos);
+
+	return round(scaled);
+}
+
+Coord Canvas::scaleY(const Coord& c) {
+	Coord preScale = 0.9;
+	Coord len = (viewPort_.lr_.y - viewPort_.ul_.y) * scale_ * preScale;
+	Coord pos = (c - viewPort_.ul_.y) * scale_ * preScale;
+	Coord scaled = (((height_ - len) / 2) + pos);
+
+	return round(scaled);
+}
+
+void Canvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
+	ellipseRGBA(screen_, scaleX(loc.x), scaleY(loc.y), rangeX * scale_, rangeY * scale_ , c.r, c.g, c.b, 255);
+}
+
+void Canvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c) {
+    lineRGBA(screen_, scaleX(x0), scaleY(y0), scaleX(x1), scaleY(y1), c.r, c.g, c.b, 255);
+}
+
 void Canvas::drawText(const string& s, Coord x0, Coord y0, Color c) {
 	SDL_Surface *text;
 	SDL_Color text_color = { c.r, c.g, c.b };
 	text = TTF_RenderText_Solid(font_, s.c_str(), text_color);
 	assert(text != NULL);
-	SDL_Rect drest = {x0,y0,0,0};
+	SDL_Rect drest = {scaleX(x0),scaleY(y0),0,0};
 	if (SDL_BlitSurface(text, NULL, screen_, &drest) != 0) {
 		cerr << "SDL_BlitSurface() Failed: " << SDL_GetError() << endl;
 	}
 	SDL_FreeSurface(text);
 }
 
-void Canvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c) {
-  if(screen_ != NULL) {
-    lineRGBA(screen_, x0, y0, x1, y1, c.r, c.g, c.b, 128);
-  }
-}
-
 void Canvas::drawTank(Tank& tank, Color c) {
-    ellipseRGBA(screen_, (Uint16)tank.loc_.x, (Uint16)tank.loc_.y, (Uint16)tank.range_, (Uint16)tank.range_, c.r, c.g, c.b, 255);
     Vector2D tip = tank.loc_;
-    tip += tank.dir_ * (tank.range_);
-    ellipseRGBA(screen_, (Uint16)tip.x, (Uint16)tip.y, 2, 2, c.r, c.g, c.b, 255);
+    tip += tank.getDirection() * (tank.range_) * 8;
+
+	drawEllipse(tank.loc_, tank.range_, tank.range_, c);
+	drawLine(tank.loc_.x, tank.loc_.y, tip.x, tip.y ,c);
 }
 
 void Canvas::drawProjectile(Projectile& pro, Color& c) {
-    ellipseRGBA(screen_, (Uint16)pro.loc_.x, (Uint16)pro.loc_.y, (Uint16)pro.range_, (Uint16)pro.range_, c.r, c.g, c.b, 255);
+	drawEllipse(pro.loc_, pro.range_, pro.range_, c);
 }
 
 void Canvas::drawExplosion(Object& o, Color& c) {
-	 ellipseRGBA(screen_, (Uint16)o.loc_.x, (Uint16)o.loc_.y, (Uint16)10, (Uint16)10, c.r, c.g, c.b, 255);
+	drawEllipse(o.loc_, 10, 10, c);
 }
 
 void Canvas::clear() {
-  SDL_FillRect(screen_,NULL, 0x000000);
+	SDL_FillRect(screen_,NULL, 0x000000);
 }
 
 void Canvas::update() {
-  if(screen_ != NULL) {
-	  SDL_Flip(screen_);
-  }
+	if(screen_ != NULL) {
+		SDL_Flip(screen_);
+	}
+}
+
+Rect Canvas::findBounds(BattleField& field) {
+	Vector2D min(std::numeric_limits<Coord>().max(), std::numeric_limits<Coord>().max());
+	Vector2D max(0,0);
+
+	for(Population& team : field.teams_) {
+		for(Tank& t : team) {
+			min.x = std::min(t.loc_.x, min.x);
+			min.y = std::min(t.loc_.y, min.y);
+			max.x = std::max(t.loc_.x, max.x);
+			max.y = std::max(t.loc_.y, max.y);
+		}
+	}
+
+	return {min, max};
+}
+
+void Canvas::drawGrid(BattleField& field) {
+	Color grey = {64,64,64};
+	Color darkred = {127,0,0};
+
+	for(Coord x = 0; x < field.bfl_.width_; x+=1000) {
+		drawLine(x,0,x, field.bfl_.height_, grey);
+	}
+	for(Coord y = 0; y < field.bfl_.height_; y+=1000) {
+		drawLine(0,y,field.bfl_.width_,y, grey);
+	}
+
+	drawEllipse(Vector2D(field.bfl_.width_/2, field.bfl_.height_/2), 20, 20, darkred);
+	drawLine(0,0,0, field.bfl_.height_, darkred);
+	drawLine(0,0,field.bfl_.width_, 0, darkred);
+	drawLine(field.bfl_.width_,field.bfl_.height_, field.bfl_.width_,0, darkred);
+	drawLine(field.bfl_.width_,field.bfl_.height_, 0,field.bfl_.height_, darkred);
 }
 
 void Canvas::render(BattleField& field) {
 	assert(field.teams_.size() == 2);
 	assert(teamColors_.size() >= field.teams_.size());
+	viewPort_ = findBounds(field);
+	calculateScale();
+	this->clear();
+	drawGrid(field);
 
 	Color white = {255,255,255};
 	Color red = {255,0,0};
 
-	this->clear();
 	size_t teamCnt = 0;
 	for(Population& team : field.teams_) {
 		for(Tank& t : team) {

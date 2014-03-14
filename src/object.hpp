@@ -15,9 +15,10 @@
 
 namespace tankwar {
 
+class BattleFieldLayout;
+
 struct Object {
 	Vector2D loc_;
-	Vector2D dir_;
 	Coord rotation_;
 	Coord range_;
 	Coord speed_;
@@ -25,7 +26,7 @@ struct Object {
 	bool dead_;
 
 	Object(Vector2D loc, Coord rotation, Coord range, Coord speed, bool explode, bool dead) :
-			loc_(loc), dir_(0,0), rotation_(rotation), range_(range), speed_(speed), explode_(explode), dead_(dead) {
+			loc_(loc), rotation_(rotation), range_(range), speed_(speed), explode_(explode), dead_(dead) {
 	}
 
 	virtual ~Object() {
@@ -39,11 +40,17 @@ struct Object {
 		return distance(other) < (this->range_ + other.range_);
 	}
 
-	virtual void move() = 0;
+	virtual void move(BattleFieldLayout& bfl) = 0;
 	virtual ObjectType type() = 0;
+	void setDirection(Vector2D dir) {
+		ASSERT_DIR(dir);
+		rotation_ = radFromDir(dir);
+	}
+
+	Vector2D getDirection() const {
+		return 	dirFromRad(rotation_);
+	}
 };
 }
-
-
 
 #endif /* OBJECT_HPP_ */

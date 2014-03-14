@@ -1,9 +1,9 @@
 #include "brain.hpp"
-#include "population.hpp"
-#include "tank.hpp"
 #include <fann.h>
 #include <iostream>
 #include <assert.h>
+#include <limits>
+#include <cmath>
 
 namespace tankwar {
 
@@ -69,32 +69,66 @@ void Brain::update(const std::vector<Vector2D>& sight) {
 	assert(!destroyed_);
 
 	size_t numInputs = layout_.numInputs;
-	assert(layout_.numInputs == (sight.size() * 2));
+    assert(layout_.numInputs == (sight.size() - 1) * 2);
 	assert(layout_.numInputs == fann_get_num_input(nn_));
 	assert(layout_.numOutputs == fann_get_num_output(nn_));
 
 	Vector2D max(std::numeric_limits<Coord>().max(),std::numeric_limits<Coord>().max());
 
-	Coord w = Options::getInstance()->WINDOW_WIDTH;
-	Coord h = Options::getInstance()->WINDOW_HEIGHT;
-
-	Vector2D n(0,0);
-	n = sight[0];
-    n.normalize(w,h);
-	inputs_[0] = n.x;
-	inputs_[1] = n.y;
-
-	inputs_[2] = sight[1].x;
-	inputs_[3] = sight[1].y;
-
-	for(size_t i = 2; i < sight.size(); i++) {
+/*	for (size_t i = 0; i < sight.size(); i++) {
 		// if we didn't see an object we feed the last input
-		if(sight[i] != max) {
-			Vector2D n(0,0);
-			n = sight[i];
-		    n.normalize(w,h);
-			inputs_[(i*2)] = n.x;
-			inputs_[(i*2)+1] = n.y;
+		if (sight[i] != max) {
+			inputs_[(2 * i)] = sight[i].x;
+			inputs_[(2 * i) + 1] = sight[i].y;
+		} else {
+			std::cerr << "sight: " << i << " = max" << std::endl;
+		}
+	}*/
+
+	for (size_t i = 1; i < sight.size(); i++) {
+		// if we didn't see an object we feed the last input
+		if (sight[i] != max) {
+			if (i == 1) {
+				Vector2D dir = sight[0];
+
+				double diff = (M_PI + radFromDir(dir))
+						- (M_PI + radFromDir(sight[i]));
+
+				if (diff > M_PI)
+					diff = M_PI - diff;
+
+				else if (diff < -M_PI)
+					diff = M_PI + diff;
+
+				//		std::cerr << "diff:" << diff << std::endl;
+
+				assert(diff > -M_PI && diff < M_PI);
+				inputs_[((i - 1) * 2)] = dirFromRad(diff).x;
+				inputs_[((i - 1) * 2) + 1] = dirFromRad(diff).y;
+			} else if (i > 1) {
+				Vector2D dir = sight[0];
+
+				double diff = (M_PI + radFromDir(dir))
+						- (M_PI + radFromDir(sight[i]));
+
+				if (diff > M_PI)
+					diff = M_PI - diff;
+
+				else if (diff < -M_PI)
+					diff = M_PI + diff;
+
+				if(diff < 0)
+					diff = (M_PI/2) + diff;
+
+				if(diff > 0)
+					diff = (M_PI/2) - diff;
+
+				//		std::cerr << "diff:" << diff << std::endl;
+
+				assert(diff > -M_PI && diff < M_PI);
+				inputs_[((i - 1) * 2)] = dirFromRad(diff).x;
+				inputs_[((i - 1) * 2) + 1] = dirFromRad(diff).y;
+			}
 		} else {
 			std::cerr << "sight: " << i << " = max" << std::endl;
 		}
