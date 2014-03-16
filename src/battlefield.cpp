@@ -22,34 +22,30 @@ using std::list;
 using std::cerr;
 using std::endl;
 
-BattleField::BattleField(BattleFieldLayout& bl, vector<Population>& teams) :
-		bfl_(bl),
-		teams_(teams) {
+BattleField::BattleField(BattleFieldLayout& bfl, PhysicsLayout& pl, vector<Population>& teams) :
+		layout_(bfl),
+		teams_(teams),
+		bsp_(),
+		physics_(pl) {
+	physics_.create(*this);
 }
 
-void BattleField::moveTeamTanks(Population& team) {
-	for(Tank& t : team) {
-		if(!t.dead_) {
-			t.move(bfl_);
+void BattleField::move() {
+	//mpve tanks and update the simulation with spawned projectiles
+	vector<Projectile*> spawned;
+	for(Population& team : teams_)  {
+		for(Tank& t : team)  {
+			t.move(layout_);
+			if(t.willShoot()) {
+				Projectile* p = t.shoot();
+				spawned.push_back(p);
+			}
 		}
 	}
-}
 
-//FIXME make move order random
-void BattleField::moveTanks() {
-	for(Population& team : teams_) {
-		moveTeamTanks(team);
-	}
-}
-
-void BattleField::moveTeamProjectiles(Population& team) {
-	for(Tank& t : team) {
-		for(size_t j = 0; j < t.projectiles_.size(); ++j) {
-			Projectile& p = t.projectiles_[j];
-			if(!p.dead_)
-				p.move(bfl_);
-		}
-	}
+	physics_.update(spawned);
+	physics_.step();
+    spawned.clear();
 }
 
 void BattleField::buildBsp() {
@@ -59,16 +55,10 @@ void BattleField::buildBsp() {
 		for (size_t j = 0; j < team.size(); ++j) {
 			Tank& t = team[j];
 			bsp_.insert(&t);
-			for (Projectile& p : t.projectiles_) {
-				bsp_.insert(&p);
+			for (Projectile* p : t.projectiles_) {
+				bsp_.insert(p);
 			}
 		}
-	}
-}
-
-void BattleField::moveProjectiles() {
-	for(Population& team : teams_) {
-		moveTeamProjectiles(team);
 	}
 }
 
@@ -317,22 +307,22 @@ void BattleField::checkHits() {
 			//find nearest tanks before calculating hits or we might up with a projectile without the information
 			#pragma omp parallel for
 			for(size_t k = 0; k < t.projectiles_.size(); ++k) {
-				Projectile& p = t.projectiles_[k];
+				Projectile* p = t.projectiles_[k];
 
-				if(p.dead_)
+				if(p->dead_)
 					continue;
 
-				updateScanner(p);
+				updateScanner(*p);
 			}
 
 			for (size_t k = 0; k < t.projectiles_.size(); ++k) {
-				Projectile& p = t.projectiles_[k];
+				Projectile* p = t.projectiles_[k];
 
-				if (p.dead_)
+				if (p->dead_)
 					continue;
 
-				bsp_.find_within_range(&p, p.range_ + t.range_, std::back_inserter(result));
-				calculateHits(p, result);
+				bsp_.find_within_range(p, p->range_ + t.range_, std::back_inserter(result));
+				calculateHits(*p, result);
 				result.clear();
 
 				//FIXME collision detection using only this doesn't work
@@ -343,29 +333,28 @@ void BattleField::checkHits() {
 }
 
 void BattleField::letTanksThink() {
-	#pragma omp parallel
+	//#pragma omp parallel
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		Population& team = teams_[i];
 
-		#pragma omp for
+		//#pragma omp for
 		for(size_t j = 0; j < team.size(); ++j) {
-			team[j].think(bfl_);
+			team[j].think(layout_);
 		}
 	}
 }
 
 void BattleField::cleanup() {
-	bsp_.clear();
+  bsp_.clear();
 }
 
 void BattleField::step() {
-	if(GameState::getInstance()->isRunning()) moveTanks();
-	if(GameState::getInstance()->isRunning()) moveProjectiles();
 	if(GameState::getInstance()->isRunning()) buildBsp();
 	if(GameState::getInstance()->isRunning()) initializeTankScanners();
 	if(GameState::getInstance()->isRunning()) checkHits();
 	if(GameState::getInstance()->isRunning()) letTanksThink();
 	cleanup();
+	if(GameState::getInstance()->isRunning()) move();
 }
 
 } /* namespace tankwar */

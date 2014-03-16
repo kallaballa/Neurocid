@@ -19,12 +19,12 @@ struct PopulationLayout {
 			true, // canMove
 
 			5.0, // range_
-			6.0, // max_speed_
-			0.1, // max_rotation
+			10, // max_speed_
+			1, // max_rotation
 
 			20,  // max_cooldown
 			10,  // max_ammo_
-			5    // max_damage_
+			3    // max_damage_
 	};
 
 	BrainLayout bl_ = {

@@ -28,8 +28,8 @@ public:
 	bool enemyHitter_;
 	bool friendHitter_;
 
-	Projectile(Tank& owner, Vector2D& loc, Coord rotation) :
-		Object(loc, rotation, Params::PROJECTILE_RANGE, Params::MAX_PROJECTILE_SPEED, false, false),
+	Projectile(Tank& owner, Vector2D loc, Coord rotation) :
+		Object(PROJECTILE, loc, rotation, Params::PROJECTILE_RANGE, false, false),
 		owner_(&owner),
 		nearestObject_(NULL),
 		nearestEnemyLoc_(NO_COORD, NO_COORD),
@@ -39,15 +39,13 @@ public:
 		startLoc_(loc),
 		enemyHitter_(false),
 		friendHitter_(false){
+		speed_ = Params::MAX_PROJECTILE_SPEED;
+		rotForce_ = 0;
 	}
 
 	void move(BattleFieldLayout& bfl) {
-		//update location
-		loc_ += (getDirection() * speed_);
-	}
-
-	ObjectType type() {
-		return ObjectType::PROJECTILE;
+		speed_ = Params::MAX_PROJECTILE_SPEED;
+		rotForce_ = 0;
 	}
 };
 

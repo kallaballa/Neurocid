@@ -8,9 +8,11 @@
 #include "game.hpp"
 #include "gamestate.hpp"
 #include "renderer.hpp"
+#include "physics.hpp"
 #include <algorithm>
 #include <chrono>
 #include <thread>
+
 
 namespace tankwar {
 
@@ -40,14 +42,21 @@ void Game::place() {
 
 void Game::fight() {
 	//std::cerr << "####### game start #######" << std::endl;
-	BattleField field(bfl_, teams_);
+	PhysicsLayout pl;
+	BattleField field(bfl_, pl, teams_);
 	GameState& gs = *GameState::getInstance();
 	for(size_t i = 0; (i < battleIterations_) && GameState::getInstance()->isRunning(); ++i) {
-		field.step();
-		if(gs.isSlow())
-			std::this_thread::sleep_for(std::chrono::milliseconds(20));
-		else if(gs.isSlower())
+		size_t remain = 16 -measure<>::execution( [&]() {
+			field.step();
+		});
+
+		if(gs.isSlow()) {
+			if(remain > 0)
+				std::this_thread::sleep_for(std::chrono::milliseconds(remain));
+		}
+		else if(gs.isSlower()) {
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		}
 
 		Renderer::getInstance()->update(&field);
 	}
@@ -102,6 +111,7 @@ void Game::cleanup() {
 		for(Tank& t : p) {
 			assert(!t.brain_->isDestroyed());
 			t.brain_->destroy();
+			t.resetGameState();
 		}
 	}
 }
@@ -113,20 +123,6 @@ void Game::print() {
 	}
 	std::cout << std::endl;
 }
-
-template<typename TimeT = std::chrono::milliseconds>
-struct measure
-{
-    template<typename F>
-    static typename TimeT::rep execution(F const &func)
-    {
-        auto start = std::chrono::system_clock::now();
-        func();
-        auto duration = std::chrono::duration_cast< TimeT>(
-            std::chrono::system_clock::now() - start);
-        return duration.count();
-    }
-};
 
 vector<Population> Game::play() {
 	std::cerr << 1000.0 / measure<>::execution( [&]() {

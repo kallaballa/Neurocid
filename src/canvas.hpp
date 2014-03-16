@@ -10,6 +10,7 @@
 #include <string>
 #include <cassert>
 #include "options.hpp"
+#include "projectile.hpp"
 
 namespace tankwar {
 using std::string;
@@ -22,7 +23,6 @@ struct Color {
 
 class BattleField;
 class Tank;
-class Projectile;
 class Object;
 
 class Canvas {

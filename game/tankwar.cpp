@@ -13,6 +13,7 @@
 #include <thread>
 #include <SDL/SDL_events.h>
 #include <X11/Xlib.h>
+#include <limits>
 
 using namespace tankwar;
 using std::cerr;
@@ -76,7 +77,7 @@ public:
 	size_t numTeams_ = 2;
 
 	BattleFieldLayout bfl_ = {
-			300,   // battle iterations
+			600,   // battle iterations
 			3000, // width
 			3000  // height;
 	};
@@ -285,15 +286,15 @@ int main(int argc, char** argv) {
 		//delete scenario;
 		//delete &placer;
 
-		AimOnOne* scenario1 = new AimOnOne(pl);
+	/*	AimOnOne* scenario1 = new AimOnOne(pl);
 		scenario1->configureTeams(teams);
 		scenario1->configurePools(pools);
-		placer = scenario1->createPlacer();
+		Placer& placer = scenario1->createPlacer();
 
-		playGame(2000, scenario1, teams, pools, placer);
+		playGame(2000, scenario1, teams, pools, placer);*
 		//delete scenario1;
 		//delete &placer;
-
+/*
 		SymmetricLines* scenario2 = new SymmetricLines(pl);
 		teams[1].clear();
 		pools[1] = GeneticPool(gp);
@@ -308,10 +309,10 @@ int main(int argc, char** argv) {
 		scenario2->configurePools(pools);
 		placer = scenario2->createPlacer();
 
-		playGame(100000, scenario2, teams, pools, placer);
+		playGame(std::numeric_limits<size_t>().max(), scenario2, teams, pools, placer);
 		//delete scenario1;
 		//delete &placer;
-
+*/
 
 		//make sure we destroyed all brains left so valgrind doesn't complain
 		for(Population& p : teams) {

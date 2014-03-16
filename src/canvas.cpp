@@ -139,18 +139,18 @@ void Canvas::drawGrid(BattleField& field) {
 	Color grey = {64,64,64};
 	Color darkred = {127,0,0};
 
-	for(Coord x = 0; x < field.bfl_.width_; x+=1000) {
-		drawLine(x,0,x, field.bfl_.height_, grey);
+	for(Coord x = 0; x < field.layout_.width_; x+=1000) {
+		drawLine(x,0,x, field.layout_.height_, grey);
 	}
-	for(Coord y = 0; y < field.bfl_.height_; y+=1000) {
-		drawLine(0,y,field.bfl_.width_,y, grey);
+	for(Coord y = 0; y < field.layout_.height_; y+=1000) {
+		drawLine(0,y,field.layout_.width_,y, grey);
 	}
 
-	drawEllipse(Vector2D(field.bfl_.width_/2, field.bfl_.height_/2), 20, 20, darkred);
-	drawLine(0,0,0, field.bfl_.height_, darkred);
-	drawLine(0,0,field.bfl_.width_, 0, darkred);
-	drawLine(field.bfl_.width_,field.bfl_.height_, field.bfl_.width_,0, darkred);
-	drawLine(field.bfl_.width_,field.bfl_.height_, 0,field.bfl_.height_, darkred);
+	drawEllipse(Vector2D(field.layout_.width_/2, field.layout_.height_/2), 20, 20, darkred);
+	drawLine(0,0,0, field.layout_.height_, darkred);
+	drawLine(0,0,field.layout_.width_, 0, darkred);
+	drawLine(field.layout_.width_,field.layout_.height_, field.layout_.width_,0, darkred);
+	drawLine(field.layout_.width_,field.layout_.height_, 0,field.layout_.height_, darkred);
 }
 
 void Canvas::render(BattleField& field) {
@@ -173,12 +173,12 @@ void Canvas::render(BattleField& field) {
 				this->drawTank(t, teamColors_[teamCnt]);
 			t.explode_ = false;
 
-			for(Projectile& p : t.projectiles_) {
-				if(p.explode_)
-					this->drawExplosion(p, red);
-				else if(!p.dead_)
-					this->drawProjectile(p,white);
-				p.explode_ = false;
+			for(Projectile* p : t.projectiles_) {
+				if(p->explode_)
+					this->drawExplosion(*p, red);
+				else if(!p->dead_)
+					this->drawProjectile(*p,white);
+				p->explode_ = false;
 			}
 		}
 		++teamCnt;

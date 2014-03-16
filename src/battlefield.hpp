@@ -5,6 +5,7 @@
 #include "canvas.hpp"
 #include <vector>
 #include "bsp.hpp"
+#include "physics.hpp"
 
 namespace tankwar {
 
@@ -20,19 +21,17 @@ struct BattleFieldLayout {
 
 class BattleField {
 public:
-	BattleFieldLayout bfl_;
+	BattleFieldLayout layout_;
 	vector<Population>&  teams_;
 	Bsp bsp_;
+	Physics physics_;
 
-	BattleField(BattleFieldLayout& bl, vector<Population>& teams);
+	BattleField(BattleFieldLayout& bfl, PhysicsLayout& pl, vector<Population>& teams);
 	void step();
 private:
-	void moveTeamTanks(Population& team);
-	void moveTanks();
+	void move();
 	void initializeTankScanners();
 	void stepBack();
-	void moveTeamProjectiles(Population& team);
-	void moveProjectiles();
 	void buildBsp();
 	void initializeTankScanner(Tank& ta);
 	void updateScanner(Projectile& p);

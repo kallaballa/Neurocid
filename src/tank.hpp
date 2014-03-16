@@ -28,7 +28,7 @@ struct TankLayout {
 
 using std::numeric_limits;
 class Tank : public Object {
-	bool wantsShoot_ = false;
+	bool willShoot_ = false;
 public:
 	struct Scanner {
 		Vector2D nearestLoc_ = {numeric_limits<Coord>().max(), numeric_limits<Coord>().max()};
@@ -38,7 +38,7 @@ public:
 		Vector2D nearestFriend2Loc_ = {numeric_limits<Coord>().max(), numeric_limits<Coord>().max()};
 	};
 
-	std::vector<Projectile> projectiles_;
+	std::vector<Projectile*> projectiles_;
 
 	size_t teamID_;
 	TankLayout tl_;
@@ -55,7 +55,8 @@ public:
 	Scanner scanner_;
 
 	Tank(size_t teamID, TankLayout tl);
-	~Tank() {};
+	~Tank() {
+	};
 
 	void setBrain(Brain* b);
 	vector<Vector2D> scan(BattleFieldLayout& bfl);
@@ -72,11 +73,9 @@ public:
 	bool operator==(const Tank& other) const;
 	bool operator!=(const Tank& other) const;
 
-	ObjectType type() {
-		return ObjectType::TANK;
-	}
+	Projectile* shoot();
+	bool willShoot();
 private:
-	Projectile& shoot();
 };
 
 

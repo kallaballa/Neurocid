@@ -1,7 +1,7 @@
 CXX      := g++-4.8
 CXXFLAGS := -std=c++0x -pedantic -Wall `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf` 
 LDFLAGS  := -L/opt/local/lib 
-LIBS     := -lm `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf` -lfann -lX11
+LIBS     := -lm `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf` -lfann -lBox2D -lX11
 .PHONY: all release debug clean distclean 
 
 ifndef NO_OPENMP

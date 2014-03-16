@@ -19,12 +19,13 @@
 namespace tankwar {
 
 Tank::Tank(size_t teamID, TankLayout tl) :
-		Object({0,0}, 0, tl.range_, tl.max_speed_, false, false),
+		Object(TANK, {0,0}, 0, tl.range_, false, false),
 		teamID_(teamID),
 		tl_(tl),
 		brain_(NULL) {
 	resetGameState();
 }
+
 
 void Tank::setBrain(Brain* b) {
 	assert(brain_ == NULL);
@@ -32,31 +33,37 @@ void Tank::setBrain(Brain* b) {
 }
 
 std::vector<Vector2D> Tank::scan(BattleFieldLayout& bfl) {
-	Vector2D min(0,0);
-
-	if(scanner_.nearestEnemyLoc_ == NO_VECTOR2D) {
-			scanner_.nearestFriendLoc_ = Vector2D(0,0);
-	}
-
-	if(scanner_.nearestFriendLoc_ == NO_VECTOR2D) {
-		scanner_.nearestFriendLoc_ = Vector2D(0,0);
-	}
-
-	if(scanner_.nearestFriend2Loc_ == NO_VECTOR2D) {
-		scanner_.nearestFriend2Loc_ = Vector2D(0,0);
-	}
-
 	ASSERT_LOC(loc_);
 
 	Coord w = bfl.width_;
 	Coord h = bfl.height_;
 
+	Vector2D toNearestEnemy;
+	Vector2D toNearestFriend;
+	Vector2D toNearestFriend2;
+
+	if(scanner_.nearestEnemyLoc_ == NO_VECTOR2D) {
+		toNearestEnemy = {0,0};
+	} else {
+		toNearestEnemy = (scanner_.nearestEnemyLoc_ - loc_).normalize(w,h);
+	}
+
+	if(scanner_.nearestFriendLoc_ == NO_VECTOR2D) {
+		toNearestFriend = {0,0};
+	} else {
+		toNearestFriend = (scanner_.nearestFriendLoc_ - loc_).normalize(w,h);
+	}
+
+	if(scanner_.nearestFriend2Loc_ == NO_VECTOR2D) {
+		toNearestFriend2 = {0,0};
+	} else {
+		toNearestFriend2 = (scanner_.nearestFriend2Loc_ - loc_).normalize(w,h);
+	}
+
+
 	//std::cerr << "see: " <<  loc_ << " " << scanner_.nearestEnemyLoc_ << " " << scanner_.nearestFriendLoc_ << " " << scanner_.nearestFriend2Loc_ << " " << std::endl;
 
 	Vector2D reference = getDirection();
-	Vector2D toNearestEnemy = (scanner_.nearestEnemyLoc_ - loc_).normalize(w,h);
-	Vector2D toNearestFriend = (scanner_.nearestFriendLoc_ - loc_).normalize(w,h);
-	Vector2D toNearestFriend2 = (scanner_.nearestFriend2Loc_ - loc_).normalize(w,h);
 
 //	if(teamID_ == 0)
 //		std::cerr << "see: " <<  reference << "\t" << toNearestEnemy << std::endl;
@@ -69,12 +76,12 @@ void Tank::calculateFitness() {
 	if (projectiles_.empty()) {
 		totalDiff =  tl_.max_ammo_ * M_PI;
 	} else {
-		for (Projectile& p : projectiles_) {
-			if(p.nearestEnemyLoc_ == NO_VECTOR2D) {
+		for (Projectile* p : projectiles_) {
+			if(p->nearestEnemyLoc_ == NO_VECTOR2D) {
 				continue;
 			}
 
-			if(p.nearestFriendLoc_ == NO_VECTOR2D) {
+			if(p->nearestFriendLoc_ == NO_VECTOR2D) {
 				totalDiff += M_PI;
 				continue;
 			}
@@ -82,9 +89,9 @@ void Tank::calculateFitness() {
 			Coord diff = 0;
 			Coord diffPerfect = 0;
 			Coord diffWorst = 0;
-			Vector2D perfect = (p.nearestEnemyLoc_ - p.startLoc_).normalize();
-			Vector2D worst = (p.nearestFriendLoc_ - p.startLoc_).normalize();
-			Vector2D candidate = (p.loc_ - p.startLoc_).normalize();
+			Vector2D perfect = (p->nearestEnemyLoc_ - p->startLoc_).normalize();
+			Vector2D worst = (p->nearestFriendLoc_ - p->startLoc_).normalize();
+			Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
 
 			ASSERT_DIR(perfect);
 		    //FIXME we need collision detection
@@ -148,8 +155,8 @@ void Tank::think(BattleFieldLayout& bfl) {
 void Tank::move(BattleFieldLayout& bfl) {
 	assert(brain_ != NULL);
 	//assign the outputs
-	lthrust_ = brain_->lthrust_;
-	rthrust_ = brain_->rthrust_;
+	lthrust_ = 1;//brain_->lthrust_;
+	rthrust_ = 1;//brain_->rthrust_;
 
 	assert(!std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(brain_->shoot_));
 
@@ -157,41 +164,29 @@ void Tank::move(BattleFieldLayout& bfl) {
 	bool wantsShoot = (brain_->shoot_ > 0.0);
 
 	if(canShoot && wantsShoot) {
-		this->shoot();
-		cool_down = tl_.max_cooldown;
+		willShoot_ = true;
 	} else if(cool_down > 0){
+		willShoot_ = false;
 		--cool_down;
 	}
 
-	speed_ = ((lthrust_ + rthrust_) / 2) * tl_.max_speed_;
+	//update location
+	if(tl_.canMove_)
+		speed_ = ((lthrust_ + rthrust_) / 2) * tl_.max_speed_;
+	else
+		speed_ = 0;
 
-	//update rotation
+
+	//update rotation force
 	if(tl_.canRotate_) {
 		//calculate steering forces
 		Coord rotForce = lthrust_ - rthrust_;
 		clamp(rotForce, -tl_.max_rotation_, tl_.max_rotation_);
-		rotation_ += rotForce;
-		rotation_ = normRotation(rotation_);
-	}
+		rotForce_ = rotForce;
+	} else
+		rotForce_ = 0;
 
-	//update location
-	if(tl_.canMove_) {
-		loc_ += (getDirection() * speed_);
-		Coord maxX = bfl.width_;
-		Coord maxY = bfl.height_;
-
-		if(loc_.x < 0)
-			loc_.x = 0;
-		else if(loc_.x > maxX)
-			loc_.x = maxX;
-
-		if(loc_.y < 0)
-			loc_.y = 0;
-		else if(loc_.y > maxY)
-			loc_.y = maxY;
-	}
-
-	//std::cerr << dir_.x << "\t" << dir_.y << "\t" << speed_ << "\t" << loc_.x << "\t" <<  loc_.y << std::endl;
+	//std::cerr << "canMove: " << tl_.canMove_ << "\tspeed: " << speed_ << "\trotForce:" << rotForce_  << std::endl;
 }
 
 Tank Tank::makeChild() {
@@ -217,12 +212,18 @@ Tank Tank::clone() {
 
 void Tank::resetGameState() {
 	ammonition_ = tl_.max_ammo_;
+	for(Projectile* p : projectiles_) {
+		delete p;
+	}
 	projectiles_.clear();
 	lthrust_ = 0;
 	rthrust_ = 0;
 	dead_ = false;
 	explode_ = false;
 	cool_down = 0;
+	willShoot_ = false;
+	speed_ = 0;
+	rotForce_ = 0;
 }
 
 void Tank::resetScore() {
@@ -249,11 +250,18 @@ bool Tank::operator<(const Tank& other) const {
 	return (this->fitness_ < other.fitness_);
 }
 
-Projectile& Tank::shoot() {
+bool Tank::willShoot() {
+	return willShoot_;
+}
+
+Projectile* Tank::shoot() {
+	assert(cool_down == 0);
 	assert(ammonition_ > 0);
 	--ammonition_;
-	projectiles_.push_back(Projectile(*this, loc_, rotation_));
-	return *(projectiles_.end() - 1);
+	cool_down = tl_.max_cooldown;
+	Projectile* p = new Projectile(*this, loc_, rotation_);
+	projectiles_.push_back(p);
+	return p;
 }
 
 } /* namespace tankwar */

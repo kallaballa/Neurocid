@@ -15,12 +15,12 @@ int main(int argc, char** argv) {
 			t.explode_;
 			t.dead_;*/
 			//render here
-			for (Projectile& p : t.projectiles_) {
-				/*p.loc_;
-				p.rotation_;
-				p.range_;
-				p.explode_;
-				p.dead_;*/
+			for (Projectile* p : t.projectiles_) {
+				/*p->loc_;
+				p->rotation_;
+				p->range_;
+				p->explode_;
+				p->dead_;*/
 				//render here
 			}
 		}
