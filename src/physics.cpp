@@ -33,10 +33,8 @@ void Physics::collide(Projectile& p, Tank& t) {
 
 		if (p.owner_->teamID_ != t.teamID_) {
 			p.owner_->hits_++;
-			p.enemyHitter_ = true;
 		} else {
 			p.owner_->friendly_fire_++;
-			p.friendHitter_ = true;
 		}
 	}
 }
@@ -45,19 +43,30 @@ void Physics::BeginContact(b2Contact* contact) {
   Object* oA = static_cast<Object*>(contact->GetFixtureA()->GetBody()->GetUserData());
   Object* oB = static_cast<Object*>(contact->GetFixtureB()->GetBody()->GetUserData());
 
-  if(oA != NULL && oB != NULL && !oA->dead_ && !oB->dead_) {
-	  if(oA->type() == PROJECTILE && oB->type() == PROJECTILE) {
-		  collide(*static_cast<Projectile*>(oA), *static_cast<Projectile*>(oB));
-	  } else if(oA->type() == PROJECTILE && oB->type() == TANK) {
-		  collide(*static_cast<Projectile*>(oA), *static_cast<Tank*>(oB));
-	  } else if(oA->type() == TANK && oB->type() == PROJECTILE) {
-		  collide(*static_cast<Projectile*>(oB), *static_cast<Tank*>(oA));
+  if(oA != NULL || oB != NULL) {
+	  if(oA == NULL && oB != NULL && oB->type() == PROJECTILE) {
+		  //projectile -> world box
+		  oB->dead_ = true;
+	  } else if(oB == NULL && oA != NULL && oA->type() == PROJECTILE) {
+		  //projectile -> world box
+		  oA->dead_ = true;
+	  } else if(oA != NULL && oB != NULL && !oA->dead_ && !oB->dead_) {
+		  if(oA->type() == PROJECTILE && oB->type() == PROJECTILE) {
+			  //projectile -> projectile
+			  collide(*static_cast<Projectile*>(oA), *static_cast<Projectile*>(oB));
+		  } else if(oA->type() == PROJECTILE && oB->type() == TANK) {
+			  //projectile -> tank
+			  collide(*static_cast<Projectile*>(oA), *static_cast<Tank*>(oB));
+		  } else if(oA->type() == TANK && oB->type() == PROJECTILE) {
+			  //projectile -> tank
+			  collide(*static_cast<Projectile*>(oB), *static_cast<Tank*>(oA));
+		  }
 	  }
 
-	  if(oA->dead_)
+	  if(oA != NULL && oA->dead_)
 		  deadBodies_.push_back(contact->GetFixtureA()->GetBody());
 
-	  if(oB->dead_)
+	  if(oB != NULL && oB->dead_)
 		  deadBodies_.push_back(contact->GetFixtureB()->GetBody());
   }
 }

@@ -189,7 +189,7 @@ public:
 		bfl_.height_ = 10000;
 		gl_.center_ = Vector2D(5000,5000);
 		gl_.distance_ = 1500;
-		bfl_.iterations_ = 4000;
+		bfl_.iterations_ = 1000;
 
 		TankLayout attackerTL = teams[0].layout_.tl_;
 		attackerTL.max_ammo_ = 20;
@@ -276,6 +276,7 @@ int main(int argc, char** argv) {
 		//delete &placer;
 
 		SymmetricLines* scenario3 = new SymmetricLines(pl);
+		scenario3->bfl_.iterations_ = 6000;
 
 		Population newA;
 		for(Tank& t : teams[0]) {

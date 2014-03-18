@@ -53,7 +53,6 @@ public:
 	void update(vector<Projectile*> spawned);
 	void update(vector<Tank*> spawned);
 	void step();
-
 };
 
 } /* namespace tankwar */

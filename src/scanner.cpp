@@ -51,7 +51,6 @@ std::pair<Object*,Coord> Scanner::findNearest(Bsp& bsp, Object& from) {
 }
 
 void Scanner::teamScan(Population& active, Population& passive, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl) {
-	#pragma omp parallel for ordered schedule(dynamic)
 	for(size_t i = 0; i < active.size(); ++i) {
 		Tank& t = active[i];
 		if(t.dead_)
@@ -68,7 +67,6 @@ void Scanner::teamScan(Population& active, Population& passive, Bsp& bspFriends,
 		result = findNearest(bspFriends, t);
 		Tank* tfriend = static_cast<Tank*>(result.first);
 
-		#pragma omp ordered
 		scan.objects_.push_back(ScanObject {
 						ENEMY,
 						tenemy->loc_,
