@@ -33,8 +33,11 @@ BattleField::BattleField(BattleFieldLayout& bfl, PhysicsLayout& pl, vector<Popul
 void BattleField::move() {
 	//mpve tanks and update the simulation with spawned projectiles
 	vector<Projectile*> spawned;
-	for(Population& team : teams_)  {
-		for(Tank& t : team)  {
+
+	for(size_t i = 0; i < teams_.size(); ++i)  {
+		Population& team  = teams_[i];
+		for(size_t j = 0; j < team.size(); ++j)  {
+			Tank& t = team[j];
 			t.move(layout_);
 			if(t.willShoot()) {
 				Projectile* p = t.shoot();
@@ -59,47 +62,6 @@ void BattleField::buildBsp() {
 				bsp_.insert(p);
 			}
 		}
-	}
-}
-
-void BattleField::collide(Projectile& p1, Projectile& p2) {
-	if (!p1.dead_ && !p2.dead_ && p1.owner_->teamID_ != p2.owner_->teamID_) {
-		Coord distance = p1.distance(p2);
-
-		if(distance <= (p1.range_ + p2.range_)) {
-			p1.dead_ = true;
-			p2.dead_ = true;
-		}
-	}
-}
-
-void BattleField::collide(Projectile& p, Tank& t) {
-	if (!p.dead_ && !t.dead_ && t != (*p.owner_)) {
-		Coord distance = p.distance(t);
-
-		if (distance <= (p.range_ + t.range_)) {
-			p.dead_ = true;
-			t.damage_++;
-			if (t.damage_ >= t.tl_.max_damage_) {
-				t.dead_ = true;
-			}
-
-			if (p.owner_->teamID_ != t.teamID_) {
-				p.owner_->hits_++;
-				p.enemyHitter_ = true;
-			} else {
-				p.owner_->friendly_fire_++;
-				p.friendHitter_ = true;
-			}
-		}
-	}
-}
-
-void BattleField::calculateHits(Projectile& p) {
-	if(p.nearestObject_->type() == ObjectType::TANK) {
-		collide(p,*static_cast<Tank*>(p.nearestObject_));
-	} else if(p.nearestObject_->type() == ObjectType::PROJECTILE) {
-		collide(p,*static_cast<Projectile*>(p.nearestObject_));
 	}
 }
 
@@ -177,8 +139,10 @@ void BattleField::initializeTankScanner(Tank& ta) {
 }
 
 void BattleField::initializeTankScanners() {
+	#pragma omp parallel
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		Population& team = teams_[i];
+		#pragma omp for
 		for(size_t j = 0; j < team.size(); ++j) {
 			Tank& t = team[j];
 			if(!t.dead_)
@@ -284,19 +248,8 @@ void BattleField::updateScanner(Projectile& p) {
 	}
 }
 
-void BattleField::calculateHits(Projectile& p, Bsp::NodeVector inRange) {
-	Tank* to;
-	Projectile* po;
-	for (size_t i = 0; i < inRange.size(); ++i) {
-		if ((to = dynamic_cast<Tank*>(inRange[i]))) {
-			collide(p, *to);
-		} else if ((po = dynamic_cast<Projectile*>(inRange[i]))) {
-			collide(p, *po);
-		}
-	}
-}
-
 void BattleField::checkHits() {
+	#pragma omp parallel
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		Population& team = teams_[i];
 
@@ -305,7 +258,7 @@ void BattleField::checkHits() {
 			Bsp::NodeVector result;
 
 			//find nearest tanks before calculating hits or we might up with a projectile without the information
-			#pragma omp parallel for
+			#pragma omp for
 			for(size_t k = 0; k < t.projectiles_.size(); ++k) {
 				Projectile* p = t.projectiles_[k];
 
@@ -314,30 +267,16 @@ void BattleField::checkHits() {
 
 				updateScanner(*p);
 			}
-
-			for (size_t k = 0; k < t.projectiles_.size(); ++k) {
-				Projectile* p = t.projectiles_[k];
-
-				if (p->dead_)
-					continue;
-
-				bsp_.find_within_range(p, p->range_ + t.range_, std::back_inserter(result));
-				calculateHits(*p, result);
-				result.clear();
-
-				//FIXME collision detection using only this doesn't work
-				//calculateHits(p);
-			}
 		}
 	}
 }
 
 void BattleField::letTanksThink() {
-	//#pragma omp parallel
+	#pragma omp parallel
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		Population& team = teams_[i];
 
-		//#pragma omp for
+		#pragma omp for
 		for(size_t j = 0; j < team.size(); ++j) {
 			team[j].think(layout_);
 		}

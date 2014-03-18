@@ -95,7 +95,7 @@ void Canvas::drawText(const string& s, Coord x0, Coord y0, Color c) {
 
 void Canvas::drawTank(Tank& tank, Color c) {
     Vector2D tip = tank.loc_;
-    tip += tank.getDirection() * (tank.range_) * 8;
+    tip += tank.getDirection() * (tank.range_) * 5;
 
 	drawEllipse(tank.loc_, tank.range_, tank.range_, c);
 	drawLine(tank.loc_.x, tank.loc_.y, tip.x, tip.y ,c);

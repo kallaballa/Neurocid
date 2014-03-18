@@ -43,19 +43,24 @@ void Game::place() {
 void Game::fight() {
 	//std::cerr << "####### game start #######" << std::endl;
 	PhysicsLayout pl;
+	pl.gravity_ = {0,0};
+	pl.timeStep_ = 1.0f/60.0f;
+	pl.positionIterations_ = 2;
+	pl.velocityIterations_ = 6;
+	pl.coordToMetersFactor_ = 1.0f;
+
 	BattleField field(bfl_, pl, teams_);
 	GameState& gs = *GameState::getInstance();
 	for(size_t i = 0; (i < battleIterations_) && GameState::getInstance()->isRunning(); ++i) {
-		size_t remain = 16 -measure<>::execution( [&]() {
+		int remain = pl.timeStep_ - measure<>::execution( [&]() {
 			field.step();
 		});
 
 		if(gs.isSlow()) {
-			if(remain > 0)
-				std::this_thread::sleep_for(std::chrono::milliseconds(remain));
+			std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		}
 		else if(gs.isSlower()) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		}
 
 		Renderer::getInstance()->update(&field);

@@ -155,8 +155,8 @@ void Tank::think(BattleFieldLayout& bfl) {
 void Tank::move(BattleFieldLayout& bfl) {
 	assert(brain_ != NULL);
 	//assign the outputs
-	lthrust_ = 1;//brain_->lthrust_;
-	rthrust_ = 1;//brain_->rthrust_;
+	lthrust_ = brain_->lthrust_;
+	rthrust_ = brain_->rthrust_;
 
 	assert(!std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(brain_->shoot_));
 
@@ -181,12 +181,12 @@ void Tank::move(BattleFieldLayout& bfl) {
 	if(tl_.canRotate_) {
 		//calculate steering forces
 		Coord rotForce = lthrust_ - rthrust_;
-		clamp(rotForce, -tl_.max_rotation_, tl_.max_rotation_);
+		//clamp(rotForce, -tl_.max_rotation_, tl_.max_rotation_);
 		rotForce_ = rotForce;
 	} else
 		rotForce_ = 0;
 
-	//std::cerr << "canMove: " << tl_.canMove_ << "\tspeed: " << speed_ << "\trotForce:" << rotForce_  << std::endl;
+	//std::cerr << "canMove: " << tl_.canMove_ << "\tcanRotate: " << tl_.canRotate_ << "\tspeed: " << speed_ << "\trotForce:" << rotForce_  << std::endl;
 }
 
 Tank Tank::makeChild() {
@@ -259,7 +259,9 @@ Projectile* Tank::shoot() {
 	assert(ammonition_ > 0);
 	--ammonition_;
 	cool_down = tl_.max_cooldown;
-	Projectile* p = new Projectile(*this, loc_, rotation_);
+	Vector2D loc = loc_;
+	loc += (getDirection() * range_);
+	Projectile* p = new Projectile(*this, loc, rotation_);
 	projectiles_.push_back(p);
 	return p;
 }
