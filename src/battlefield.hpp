@@ -1,11 +1,9 @@
 #ifndef BATTLEFIELD_HPP_
 #define BATTLEFIELD_HPP_
 
-#include "projectile.hpp"
-#include "canvas.hpp"
-#include <vector>
-#include "bsp.hpp"
 #include "physics.hpp"
+#include "scanner.hpp"
+#include <vector>
 
 namespace tankwar {
 
@@ -23,20 +21,15 @@ class BattleField {
 public:
 	BattleFieldLayout layout_;
 	vector<Population>&  teams_;
-	Bsp bsp_;
 	Physics physics_;
+	Scanner scanner_;
 
 	BattleField(BattleFieldLayout& bfl, PhysicsLayout& pl, vector<Population>& teams);
 	void step();
 private:
+	void scan();
+	void think();
 	void move();
-	void initializeTankScanners();
-	void stepBack();
-	void buildBsp();
-	void initializeTankScanner(Tank& ta);
-	void updateScanner(Projectile& p);
-	void checkHits();
-	void letTanksThink();
 	void cleanup();
 };
 

@@ -26,9 +26,9 @@ void Scanner::buildBsps(BattleField& field) {
 		Tank& t = teamA[i];
 		if(!t.dead_)
 			bspA_.insert(&t);
-		for (Projectile& p : t.projectiles_) {
-			if(!p.dead_)
-				bspPA_.insert(&p);
+		for (Projectile* p : t.projectiles_) {
+			if(!p->dead_)
+				bspPA_.insert(p);
 		}
 	}
 
@@ -36,57 +36,9 @@ void Scanner::buildBsps(BattleField& field) {
 		Tank& t = teamB[i];
 		if(!t.dead_)
 			bspB_.insert(&t);
-		for (Projectile& p : t.projectiles_) {
-			if(!p.dead_)
-				bspPB_.insert(&p);
-		}
-	}
-}
-
-void Scanner::transform(Scan& scan) {
-	Vector2D& dir = scan.dir_;
-
-	for (ScanObject so : scan.objects_) {
-		if (so.normLoc_ == NO_VECTOR2D) {
-			//not found
-			continue;
-		} else {
-			if (so.type_ == ENEMY) {
-				// the closer the is to dir the closer it's output is to zero (+ = left, - = rights)
-				double diff = (M_PI + radFromDir(dir))
-						- (M_PI + radFromDir(so.normLoc_));
-
-				if (diff > M_PI)
-					diff = M_PI - diff;
-				else if (diff < -M_PI)
-					diff = M_PI + diff;
-
-				//		std::cerr << "diff:" << diff << std::endl;
-
-				assert(diff > -M_PI && diff < M_PI);
-				so.normLoc_ = dirFromRad(diff).x;
-				so.normLoc_ = dirFromRad(diff).y;
-			} else if (so.type_ == FRIEND) {
-				// the closer it is to one of the perpendicular vectors to dir the closer it's output is to zero (+ = left, - = rights)
-				double diff = (M_PI + radFromDir(dir))
-						- (M_PI + radFromDir(so.normLoc_));
-
-				if (diff > M_PI)
-					diff = M_PI - diff;
-				else if (diff < -M_PI)
-					diff = M_PI + diff;
-
-				if (diff < 0)
-					diff = (M_PI / 2) + diff;
-				else if (diff > 0)
-					diff = (M_PI / 2) - diff;
-
-				//		std::cerr << "diff:" << diff << std::endl;
-
-				assert(diff > -M_PI && diff < M_PI);
-				so.normLoc_ = dirFromRad(diff).x;
-				so.normLoc_ = dirFromRad(diff).y;
-			}
+		for (Projectile* p : t.projectiles_) {
+			if(!p->dead_)
+				bspPB_.insert(p);
 		}
 	}
 }
@@ -98,89 +50,65 @@ std::pair<Object*,Coord> Scanner::findNearest(Bsp& bsp, Object& from) {
 	return {*result.first, result.second};
 }
 
-
-void Scanner::pushBackNearest(Bsp& bsp, Object& from, ScanObjectType type, Scan& scan) {
-	auto result = findNearest(bsp, from);
-	Tank* enemy = static_cast<Tank*>(result.first);
-
-	if (result.second != NO_COORD) {
-		scan.objects_.push_back(ScanObject {
-					ENEMY,
-					(enemy->loc_ - from.loc_).normalize(scan.scale_.x, scan.scale_.y),
-					result.second
-				});
-	} else {
-		scan.objects_.push_back(ScanObject {
-					ENEMY,
-					NO_VECTOR2D,
-					NO_COORD
-				});
-	}
-}
-
 void Scanner::teamScan(Population& active, Population& passive, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl) {
+	#pragma omp parallel for ordered schedule(dynamic)
 	for(size_t i = 0; i < active.size(); ++i) {
 		Tank& t = active[i];
+		if(t.dead_)
+			continue;
+
 		Scan& scan = t.scan_;
 		scan.dir_ = t.getDirection();
 		scan.scale_ = {bfl.width_, bfl.height_};
+		scan.loc_ = t.loc_;
 		scan.objects_.clear();
 
-		for(Tank& enemy : passive) {
-			scan.objects_.push_back(ScanObject {
-							ENEMY,
-							(enemy.loc_ - t.loc_).normalize(scan.scale_.x, scan.scale_.y),
-							NO_COORD
-						});
-		}
+		auto result = findNearest(bspEnemies, t);
+		Tank* tenemy = static_cast<Tank*>(result.first);
+		result = findNearest(bspFriends, t);
+		Tank* tfriend = static_cast<Tank*>(result.first);
 
-		for(Projectile& p : t.projectiles_) {
-			auto result = findNearest(bspEnemies, t);
-			Tank* penemy = static_cast<Tank*>(result.first);
-			assert(p.scan_.objects_.empty() || p.scan_.objects_.size() == 2);
-
-			if(result.second != NO_COORD) {
-				if(p.scan_.objects_.empty()) {
-					p.scan_.objects_.push_back(ScanObject{
+		#pragma omp ordered
+		scan.objects_.push_back(ScanObject {
 						ENEMY,
-						(penemy->loc_ - p.startLoc_).normalize(),
+						tenemy->loc_,
 						result.second
 					});
-				} else if(result.second < p.scan_.objects_[0].normDis_){
-					p.scan_.objects_[0].normLoc_ = (penemy->loc_ - p.startLoc_).normalize();
-					p.scan_.objects_[0].normDis_ = result.second;
+
+		scan.objects_.push_back(ScanObject {
+								FRIEND,
+								tfriend->loc_ ,
+								result.second
+							});
+
+		for(Projectile* p : t.projectiles_) {
+			if(p->dead_)
+				continue;
+
+			p->scan_.loc_ = p->loc_;
+			auto result = findNearest(bspEnemies, *p);
+			Tank* penemy = static_cast<Tank*>(result.first);
+			assert(p->scan_.objects_.empty() || p->scan_.objects_.size() == 1);
+
+			if(result.second != NO_COORD) {
+				if(p->scan_.objects_.empty()) {
+					p->scan_.objects_.push_back(ScanObject{
+						ENEMY,
+						penemy->loc_,
+						result.second
+					});
+				} else if(result.second < p->scan_.objects_[0].dis_){
+					p->scan_.objects_[0].loc_ = penemy->loc_;
+					p->scan_.objects_[0].dis_ = result.second;
 				}
 			} else {
-				p.scan_.objects_.push_back(ScanObject{
+				p->scan_.objects_.push_back(ScanObject{
 					ENEMY,
 					NO_VECTOR2D,
 					NO_COORD
 				});
 			}
-
-			result = findNearest(bspFriends, t);
-			Tank* pfriend = static_cast<Tank*>(result.first);
-			if (result.second != NO_COORD) {
-				if(p.scan_.objects_.size() == 1) {
-					p.scan_.objects_.push_back(ScanObject {
-								FRIEND,
-								(pfriend->loc_ - p.startLoc_).normalize(),
-								result.second
-							});
-				} else if(result.second < p.scan_.objects_[1].normDis_) {
-					p.scan_.objects_[1].normLoc_ = (penemy->loc_ - p.startLoc_).normalize();
-					p.scan_.objects_[1].normDis_ = result.second;
-				}
-			} else {
-				p.scan_.objects_.push_back(ScanObject {
-							ENEMY,
-							NO_VECTOR2D,
-							NO_COORD
-						});
-			}
-
 		}
-		transform(scan);
 	}
 }
 

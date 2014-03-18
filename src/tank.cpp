@@ -32,44 +32,6 @@ void Tank::setBrain(Brain* b) {
 	brain_ = b;
 }
 
-std::vector<Vector2D> Tank::scan(BattleFieldLayout& bfl) {
-	ASSERT_LOC(loc_);
-
-	Coord w = bfl.width_;
-	Coord h = bfl.height_;
-
-	Vector2D toNearestEnemy;
-	Vector2D toNearestFriend;
-	Vector2D toNearestFriend2;
-
-	if(scanner_.nearestEnemyLoc_ == NO_VECTOR2D) {
-		toNearestEnemy = {0,0};
-	} else {
-		toNearestEnemy = (scanner_.nearestEnemyLoc_ - loc_).normalize(w,h);
-	}
-
-	if(scanner_.nearestFriendLoc_ == NO_VECTOR2D) {
-		toNearestFriend = {0,0};
-	} else {
-		toNearestFriend = (scanner_.nearestFriendLoc_ - loc_).normalize(w,h);
-	}
-
-	if(scanner_.nearestFriend2Loc_ == NO_VECTOR2D) {
-		toNearestFriend2 = {0,0};
-	} else {
-		toNearestFriend2 = (scanner_.nearestFriend2Loc_ - loc_).normalize(w,h);
-	}
-
-
-	//std::cerr << "see: " <<  loc_ << " " << scanner_.nearestEnemyLoc_ << " " << scanner_.nearestFriendLoc_ << " " << scanner_.nearestFriend2Loc_ << " " << std::endl;
-
-	Vector2D reference = getDirection();
-
-//	if(teamID_ == 0)
-//		std::cerr << "see: " <<  reference << "\t" << toNearestEnemy << std::endl;
-	return {reference, toNearestEnemy, toNearestFriend, toNearestFriend2};
-}
-
 void Tank::calculateFitness() {
 	Coord totalDiff = 0;
 
@@ -77,56 +39,32 @@ void Tank::calculateFitness() {
 		totalDiff =  tl_.max_ammo_ * M_PI;
 	} else {
 		for (Projectile* p : projectiles_) {
-			if(p->nearestEnemyLoc_ == NO_VECTOR2D) {
-				continue;
+			if(!p->scan_.objects_.empty()) {
+				ScanObject & so = p->scan_.objects_[0];
+				if(so.type_ == ScanObjectType::ENEMY) {
+					Coord diffPerfect = 0;
+					Vector2D perfect = (so.loc_ - p->startLoc_).normalize();
+					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
+
+					ASSERT_DIR(perfect);
+					ASSERT_DIR(candidate);
+
+					diffPerfect = fabs(
+							(M_PI + radFromDir(perfect))
+									- (M_PI + radFromDir(candidate)));
+
+					if (diffPerfect > M_PI)
+						diffPerfect = M_PI - (diffPerfect - M_PI);
+
+					//std::cerr << diffPerfect << " c:" << candidate << " p:" << perfect << " e:" << p.nearestEnemyLoc_ <<  std::endl;
+
+					assert(diffPerfect >= 0);
+					assert(diffPerfect <= M_PI);
+
+					totalDiff += diffPerfect;
+					//		std::cerr << "perfect: ("<< perfect.x << "," << perfect.y << ")" << "candidate: ("<< candidate.x << "," << candidate.y << ")" << "diff: " << diff << std::endl;
+				}
 			}
-
-			if(p->nearestFriendLoc_ == NO_VECTOR2D) {
-				totalDiff += M_PI;
-				continue;
-			}
-
-			Coord diff = 0;
-			Coord diffPerfect = 0;
-			Coord diffWorst = 0;
-			Vector2D perfect = (p->nearestEnemyLoc_ - p->startLoc_).normalize();
-			Vector2D worst = (p->nearestFriendLoc_ - p->startLoc_).normalize();
-			Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
-
-			ASSERT_DIR(perfect);
-		    //FIXME we need collision detection
-			//ASSERT_DIR(worst);
-			ASSERT_DIR(candidate);
-
-			diffPerfect = fabs(
-					(M_PI + radFromDir(perfect))
-							- (M_PI + radFromDir(candidate)));
-			diffWorst = fabs(
-					(M_PI + radFromDir(worst))
-							- (M_PI + radFromDir(worst)));
-
-			if (diffPerfect > M_PI)
-				diffPerfect = M_PI - (diffPerfect - M_PI);
-
-			if (diffWorst > M_PI)
-				diffWorst = M_PI - (diffWorst - M_PI);
-
-			//std::cerr << diffPerfect << " c:" << candidate << " p:" << perfect << " e:" << p.nearestEnemyLoc_ <<  std::endl;
-
-			assert(diffPerfect >= 0);
-			assert(diffWorst >= 0);
-			assert(diffPerfect <= M_PI);
-			assert(diffWorst <= M_PI);
-
-			//diff = ((M_PI + diffWorst) - diffPerfect) / 2;
-
-			diff = diffPerfect;
-			//	}
-
-			assert(diff >= 0);
-			assert(diff <= M_PI);
-			totalDiff += diff;
-			//		std::cerr << "perfect: ("<< perfect.x << "," << perfect.y << ")" << "candidate: ("<< candidate.x << "," << candidate.y << ")" << "diff: " << diff << std::endl;
 		}
 	}
 
@@ -149,7 +87,7 @@ void Tank::calculateFitness() {
 
 void Tank::think(BattleFieldLayout& bfl) {
 	assert(brain_ != NULL);
-	brain_->update(this->scan(bfl));
+	brain_->update(this->scan_);
 }
 
 void Tank::move(BattleFieldLayout& bfl) {
@@ -181,7 +119,7 @@ void Tank::move(BattleFieldLayout& bfl) {
 	if(tl_.canRotate_) {
 		//calculate steering forces
 		Coord rotForce = lthrust_ - rthrust_;
-		//clamp(rotForce, -tl_.max_rotation_, tl_.max_rotation_);
+		clamp(rotForce, -tl_.max_rotation_, tl_.max_rotation_);
 		rotForce_ = rotForce;
 	} else
 		rotForce_ = 0;

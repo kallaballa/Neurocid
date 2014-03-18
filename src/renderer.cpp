@@ -7,6 +7,7 @@
 
 #include "renderer.hpp"
 #include "gamestate.hpp"
+#include "canvas.hpp"
 #include <thread>
 #include <chrono>
 #include <stddef.h>

@@ -22,13 +22,13 @@ struct PopulationLayout {
 			10, // max_speed_
 			1, // max_rotation
 
-			20,  // max_cooldown
+			200,  // max_cooldown
 			10,  // max_ammo_
 			3    // max_damage_
 	};
 
 	BrainLayout bl_ = {
-			6, // inputs
+			4, // inputs
 			3, // outputs
 			5, // layers
 			6  // neurons per hidden layer

@@ -28,13 +28,14 @@ enum ScanObjectType {
 
 struct ScanObject {
 	ScanObjectType type_;
-	Vector2D normLoc_;
-	Coord normDis_;
+	Vector2D loc_;
+	Coord dis_;
 };
 
 struct Scan {
 	Vector2D scale_ = NO_VECTOR2D;
 	Vector2D dir_ = NO_VECTOR2D;
+	Vector2D loc_ = NO_VECTOR2D;
 	vector<ScanObject> objects_;
 };
 
@@ -46,10 +47,8 @@ private:
 	Bsp bspPB_;
 
 	std::pair<Object*,Coord> findNearest(Bsp& bsp, Object& from);
-	void pushBackNearest(Bsp& bsp, Object& from, ScanObjectType type, Scan& scan);
 	void teamScan(Population& active, Population& passive, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl);
 	void buildBsps(BattleField& field);
-	void transform(Scan& scan);
 public:
 	void scan(BattleField& field);
 };

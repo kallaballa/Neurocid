@@ -63,36 +63,30 @@ void Brain::randomize() {
 	fann_randomize_weights(nn_, -1, 1);
 }
 
-void Brain::update(const std::vector<Vector2D>& sight) {
+void Brain::update(const Scan& scan) {
 	assert(nn_ != NULL);
 	assert(inputs_ != NULL);
 	assert(!destroyed_);
 
 	size_t numInputs = layout_.numInputs;
-    assert(layout_.numInputs == (sight.size() - 1) * 2);
+    assert(layout_.numInputs == (scan.objects_.size() * 2));
 	assert(layout_.numInputs == fann_get_num_input(nn_));
 	assert(layout_.numOutputs == fann_get_num_output(nn_));
 
-	Vector2D max(std::numeric_limits<Coord>().max(),std::numeric_limits<Coord>().max());
+	for(size_t i = 0; i < numInputs; i++) {
+		inputs_[i] = std::numeric_limits<fann_type>().max();
+	}
 
-/*	for (size_t i = 0; i < sight.size(); i++) {
-		// if we didn't see an object we feed the last input
-		if (sight[i] != max) {
-			inputs_[(2 * i)] = sight[i].x;
-			inputs_[(2 * i) + 1] = sight[i].y;
-		} else {
-			std::cerr << "sight: " << i << " = max" << std::endl;
-		}
-	}*/
+	for (size_t i = 0; i < scan.objects_.size(); i++) {
+		const ScanObject& so = scan.objects_[i];
 
-	for (size_t i = 1; i < sight.size(); i++) {
 		// if we didn't see an object we feed the last input
-		if (sight[i] != max) {
-			if (i == 1) {
-				Vector2D dir = sight[0];
+		if (so.loc_ != NO_VECTOR2D) {
+			if (so.type_ == ScanObjectType::ENEMY) {
+				Vector2D dir = scan.dir_;
 
 				double diff = (M_PI + radFromDir(dir))
-						- (M_PI + radFromDir(sight[i]));
+						- (M_PI + radFromDir(so.loc_ - scan.loc_));
 
 				if (diff > M_PI)
 					diff = M_PI - diff;
@@ -103,13 +97,16 @@ void Brain::update(const std::vector<Vector2D>& sight) {
 				//		std::cerr << "diff:" << diff << std::endl;
 
 				assert(diff > -M_PI && diff < M_PI);
-				inputs_[((i - 1) * 2)] = dirFromRad(diff).x;
-				inputs_[((i - 1) * 2) + 1] = dirFromRad(diff).y;
-			} else if (i > 1) {
-				Vector2D dir = sight[0];
+
+				Vector2D vDiff = dirFromRad(diff);
+
+				inputs_[i * 2] = dirFromRad(diff).x;
+				inputs_[i * 2 + 1] = dirFromRad(diff).y;
+			} else if (so.type_ == ScanObjectType::FRIEND) {
+				Vector2D dir = scan.dir_;
 
 				double diff = (M_PI + radFromDir(dir))
-						- (M_PI + radFromDir(sight[i]));
+						- (M_PI + radFromDir(so.loc_ - scan.loc_));
 
 				if (diff > M_PI)
 					diff = M_PI - diff;
@@ -126,19 +123,16 @@ void Brain::update(const std::vector<Vector2D>& sight) {
 				//		std::cerr << "diff:" << diff << std::endl;
 
 				assert(diff > -M_PI && diff < M_PI);
-				inputs_[((i - 1) * 2)] = dirFromRad(diff).x;
-				inputs_[((i - 1) * 2) + 1] = dirFromRad(diff).y;
+				inputs_[i * 2] = dirFromRad(diff).x;
+				inputs_[i * 2 + 1] = dirFromRad(diff).y;
 			}
 		} else {
 			std::cerr << "sight: " << i << " = max" << std::endl;
 		}
 	}
 
-	for(size_t i = 0; i < numInputs; i++) {
-		assert(inputs_[i] != std::numeric_limits<fann_type>().max());
-	}
-
 	for(size_t i = 0; i < numInputs; ++i) {
+		assert(inputs_[i] != std::numeric_limits<fann_type>().max());
 		assert(!std::isinf(inputs_[i]));
 		assert(!std::isnan(inputs_[i]));
 	}

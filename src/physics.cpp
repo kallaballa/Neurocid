@@ -80,6 +80,8 @@ b2Body* Physics::makeWorldBox(BattleFieldLayout& bfl) {
 	bodyDef.type = b2_staticBody;
     bodyDef.position.Set(0, 0);
     bodyDef.userData = NULL;
+    bodyDef.allowSleep = true;
+    bodyDef.awake = false;
     //shape definition
     b2EdgeShape topShape;
     b2EdgeShape leftShape;
@@ -97,18 +99,26 @@ b2Body* Physics::makeWorldBox(BattleFieldLayout& bfl) {
 	b2FixtureDef topFixdef;
 	topFixdef.shape = &topShape;
 	topFixdef.density = 1;
+	topFixdef.filter.maskBits = 3;
+	topFixdef.filter.categoryBits = 3;
 
 	b2FixtureDef leftFixdef;
 	leftFixdef.shape = &leftShape;
 	leftFixdef.density = 1;
+	leftFixdef.filter.maskBits = 3;
+	leftFixdef.filter.categoryBits = 3;
 
 	b2FixtureDef bottomFixdef;
 	bottomFixdef.shape = &bottomShape;
 	bottomFixdef.density = 1;
+	bottomFixdef.filter.maskBits = 3;
+	bottomFixdef.filter.categoryBits = 3;
 
 	b2FixtureDef rightFixdef;
 	rightFixdef.shape = &rightShape;
 	rightFixdef.density = 1;
+	rightFixdef.filter.maskBits = 3;
+	rightFixdef.filter.categoryBits = 3;
 
 	body = world_.CreateBody(&bodyDef);
 	body->CreateFixture(&topFixdef);
@@ -126,6 +136,8 @@ b2Body* Physics::makeTankBody(Tank& t) {
     assert(t.rotation_ < M_PI);
     bodyDef.angle = t.rotation_;
     bodyDef.userData = static_cast<Object*>(&t);
+    bodyDef.allowSleep = true;
+    bodyDef.awake = true;
     b2Body* body = world_.CreateBody(&bodyDef);
 
     // Define another box shape for our dynamic body.
@@ -144,7 +156,8 @@ b2Body* Physics::makeTankBody(Tank& t) {
 
     // Override the default friction.
     fixtureDef.friction = 0.3f;
-
+    fixtureDef.filter.maskBits = 1;
+    fixtureDef.filter.categoryBits = 3;
 
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
@@ -159,6 +172,8 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
     assert(p.rotation_ < M_PI);
     bodyDef.angle = p.rotation_;
     bodyDef.linearDamping = 0.0f;
+    bodyDef.allowSleep = true;
+    bodyDef.awake = true;
     bodyDef.userData = static_cast<Object*>(&p);
     b2Body* body = world_.CreateBody(&bodyDef);
 
@@ -176,6 +191,8 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
 
     // Override the default friction.
     fixtureDef.friction = 0.3f;
+    fixtureDef.filter.maskBits = 2;
+    fixtureDef.filter.categoryBits = 1;
 
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
@@ -226,7 +243,7 @@ void Physics::step() {
 		if(body->GetUserData() != NULL) {
 			Object* o = (Object*)body->GetUserData();
 			if(o->type() == TANK) {
-				Vector2D force = o->getDirection() * o->speed_ * 20;
+				Vector2D force = o->getDirection() * o->speed_ * 3;
 	//			std::cerr << "tank: " << force << std::endl;
 			    body->SetLinearVelocity(b2Vec2(force.x, force.y));
 	//		    std::cerr << "rotforce:" << o->rotForce_ << std::endl;

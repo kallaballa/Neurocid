@@ -9,6 +9,7 @@
 #ifdef _CHECK_BRAIN_ALLOC
 #include <map>
 #endif
+#include "scanner.hpp"
 
 namespace tankwar {
 
@@ -39,7 +40,7 @@ public:
 	Brain(const Brain& other);
 	virtual ~Brain();
 	void destroy();
-	void update(const std::vector<Vector2D>& sight);
+	void update(const Scan& scan);
 	void randomize();
 	size_t size() const;
 	fann_type* weights();

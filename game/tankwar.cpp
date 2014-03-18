@@ -1,5 +1,6 @@
 #include "battlefield.hpp"
 #include "population.hpp"
+#include "canvas.hpp"
 #include "tank.hpp"
 #include "2d.hpp"
 #include <iostream>
@@ -92,56 +93,6 @@ public:
 	virtual void configurePools(vector<GeneticPool>& pools) = 0;
 };
 
-class AimOnOne : public Scenario {
-public:
-	size_t teamSizeAttacker = 20;
-	AimOnOne(PopulationLayout pl) :
-		Scenario(pl){
-	}
-
-	GameLayout gl_ = {
-			Vector2D(bfl_.width_ / 2, bfl_.height_/ 2), // center
-			std::min(bfl_.width_, bfl_.height_) / 3,    // distance
-			40										    // spacing
-	};
-
-	void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
-
-		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.max_ammo_ = 5;
-		attackerTL.max_rotation_ = 0.1;
-		teams[0].update(attackerTL);
-
-		TankLayout dummyTL = teams[1].layout_.tl_;
-		dummyTL.canMove_ = false;
-		dummyTL.canRotate_ = false;
-		dummyTL.canShoot_ = false;
-		dummyTL.max_damage_ = 1000;
-		teams[1].update(dummyTL);
-	}
-
-	void configurePools(vector<GeneticPool>& pools) {
-		assert(pools.size() == 2);
-	}
-
-	Placer& createPlacer() {
-//		OppositePlacer<IterRot, OppositeFacer, Layouter>* oppositeLinesInward = new OppositePlacer<IterRot, OppositeFacer, Layouter>(        {0,M_PI/2}, {M_PI},       {gl_});
-//		OppositePlacer<IterRot, OppositeFacer, Layouter>* oppositeLinesOutward = new OppositePlacer<IterRot, OppositeFacer, Layouter>(       {0,M_PI}, {0},          {gl_});
-//		OppositePlacer<IterRot, OppositeFacer, Layouter>* oppositeLinesSheerInward = new OppositePlacer<IterRot, OppositeFacer, Layouter>(   {0,M_PI/2}, {M_PI/4 * 3}, {gl_});
-//		OppositePlacer<IterRot, OppositeFacer, Layouter>* oppositeLinesSheerOutward = new OppositePlacer<IterRot, OppositeFacer, Layouter>(  {0,M_PI/2}, {M_PI/4},     {gl_});
-//		OppositePlacer<IterRot, RandomFacer,   Layouter>* oppositeLinesRandom = new OppositePlacer<IterRot, RandomFacer, Layouter>(        {0,M_PI}, { },          {gl_});
-
-//		OppositePlacer<RandomRot, OppositeFacer, Layouter>* randomOppositeLinesInward = new OppositePlacer<RandomRot, OppositeFacer, Layouter>(       { }, {M_PI},       {gl_});
-//		OppositePlacer<RandomRot, OppositeFacer, Layouter>* randomOppositeLinesOutward = new OppositePlacer<RandomRot, OppositeFacer, Layouter>(      { }, {0},          {gl_});
-//		OppositePlacer<RandomRot, OppositeFacer, Layouter>* randomOppositeLinesSheerInward = new OppositePlacer<RandomRot, OppositeFacer, Layouter>(  { }, {M_PI/4 * 3}, {gl_});
-//		OppositePlacer<RandomRot, OppositeFacer, Layouter>* randomOppositeLinesSheerOutward = new OppositePlacer<RandomRot, OppositeFacer, Layouter>( { }, {M_PI/4},     {gl_});
-		OppositePlacer<RandomRot, RandomFacer,   Layouter>* randomOppositeLinesRandom = new OppositePlacer<RandomRot, RandomFacer, Layouter>(       { }, { },          {gl_});
-
-		return *randomOppositeLinesRandom;
-	}
-};
-
 class AimOnOneNoMove : public Scenario {
 public:
 	AimOnOneNoMove(PopulationLayout pl) :
@@ -150,19 +101,21 @@ public:
 
 	size_t teamSizeAttacker = 20;
 
-	GameLayout gl_ = {
-			Vector2D(bfl_.width_ / 2, bfl_.height_/ 2), // center
-			std::min(bfl_.width_, bfl_.height_) / 3,    // distance
-			40										    // spacing
-	};
-
 	void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
 
+		gl_ = {
+				Vector2D(bfl_.width_ / 2, bfl_.height_/ 2), // center
+				std::min(bfl_.width_, bfl_.height_) / 3,    // distance
+				40										    // spacing
+		};
+
 		TankLayout attackerTL = teams[0].layout_.tl_;
 		attackerTL.canMove_ = false;
-		attackerTL.max_ammo_ = 5;
-		attackerTL.max_rotation_ = 0.1;
+		attackerTL.max_ammo_ = 10;
+		attackerTL.max_damage_ = 10;
+		attackerTL.max_cooldown = 20;
+
 		teams[0].update(attackerTL);
 
 		TankLayout dummyTL = teams[1].layout_.tl_;
@@ -178,21 +131,50 @@ public:
 	}
 
 	Placer& createPlacer() {
-//		OppositePlacer<IterRot, OppositeFacer, Layouter>* oppositeLinesInward = new OppositePlacer<IterRot, OppositeFacer, Layouter>(        {0,M_PI/2}, {M_PI},       {gl_});
-//		OppositePlacer<IterRot, OppositeFacer, Layouter>* oppositeLinesOutward = new OppositePlacer<IterRot, OppositeFacer, Layouter>(       {0,M_PI}, {0},          {gl_});
-//		OppositePlacer<IterRot, OppositeFacer, Layouter>* oppositeLinesSheerInward = new OppositePlacer<IterRot, OppositeFacer, Layouter>(   {0,M_PI/2}, {M_PI/4 * 3}, {gl_});
-//		OppositePlacer<IterRot, OppositeFacer, Layouter>* oppositeLinesSheerOutward = new OppositePlacer<IterRot, OppositeFacer, Layouter>(  {0,M_PI/2}, {M_PI/4},     {gl_});
-//		OppositePlacer<IterRot, RandomFacer,   Layouter>* oppositeLinesRandom = new OppositePlacer<IterRot, RandomFacer, Layouter>(        {0,M_PI}, { },          {gl_});
-
-//		OppositePlacer<RandomRot, OppositeFacer, Layouter>* randomOppositeLinesInward = new OppositePlacer<RandomRot, OppositeFacer, Layouter>(       { }, {M_PI},       {gl_});
-//		OppositePlacer<RandomRot, OppositeFacer, Layouter>* randomOppositeLinesOutward = new OppositePlacer<RandomRot, OppositeFacer, Layouter>(      { }, {0},          {gl_});
-//		OppositePlacer<RandomRot, OppositeFacer, Layouter>* randomOppositeLinesSheerInward = new OppositePlacer<RandomRot, OppositeFacer, Layouter>(  { }, {M_PI/4 * 3}, {gl_});
-//		OppositePlacer<RandomRot, OppositeFacer, Layouter>* randomOppositeLinesSheerOutward = new OppositePlacer<RandomRot, OppositeFacer, Layouter>( { }, {M_PI/4},     {gl_});
 		OppositePlacer<RandomRot, RandomFacer,   Layouter>* randomOppositeLinesRandom = new OppositePlacer<RandomRot, RandomFacer, Layouter>(       { }, { },          {gl_});
-
 		return *randomOppositeLinesRandom;
 	}
 };
+
+class AimOnOne : public Scenario {
+public:
+	size_t teamSizeAttacker = 20;
+	AimOnOne(PopulationLayout pl) :
+		Scenario(pl){
+	}
+
+	void configureTeams(vector<Population>& teams) {
+		assert(teams.size() == 2);
+
+		gl_ = {
+					Vector2D(bfl_.width_ / 2, bfl_.height_/ 2), // center
+					std::min(bfl_.width_, bfl_.height_) / 3,    // distance
+					40										    // spacing
+		};
+
+		TankLayout attackerTL = teams[0].layout_.tl_;
+		attackerTL.max_ammo_ = 10;
+		attackerTL.max_cooldown = 20;
+		teams[0].update(attackerTL);
+
+		TankLayout dummyTL = teams[1].layout_.tl_;
+		dummyTL.canMove_ = false;
+		dummyTL.canRotate_ = false;
+		dummyTL.canShoot_ = false;
+		dummyTL.max_damage_ = 1000;
+		teams[1].update(dummyTL);
+	}
+
+	void configurePools(vector<GeneticPool>& pools) {
+		assert(pools.size() == 2);
+	}
+
+	Placer& createPlacer() {
+		OppositePlacer<RandomRot, RandomFacer,   Layouter>* randomOppositeLinesRandom = new OppositePlacer<RandomRot, RandomFacer, Layouter>(       { }, { },          {gl_});
+		return *randomOppositeLinesRandom;
+	}
+};
+
 
 
 class SymmetricLines : public Scenario {
@@ -201,30 +183,23 @@ public:
 		Scenario(pl) {
 	}
 
-	BattleFieldLayout bfl_ = {
-			500,  // battle iterations
-			6000, // width
-			6000  // height;
-	};
-
-	GameLayout gl_ = {
-			Vector2D(bfl_.width_ / 2, bfl_.height_/ 2), // center
-			std::min(bfl_.width_, bfl_.height_) / 4,    // distance
-			40										    // spacing
-	};
-
 	void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
+		bfl_.width_ = 10000;
+		bfl_.height_ = 10000;
+		gl_.center_ = Vector2D(5000,5000);
+		gl_.distance_ = 1500;
+		bfl_.iterations_ = 4000;
 
 		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.max_cooldown = 20;
 		attackerTL.max_ammo_ = 20;
+		attackerTL.max_cooldown = 200;
 		attackerTL.max_damage_ = 3;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
-		defenderTL.max_cooldown = 20;
 		defenderTL.max_ammo_ = 20;
+		attackerTL.max_cooldown = 200;
 		attackerTL.max_damage_ = 3;
 		teams[1].update(defenderTL);
 	}
@@ -234,18 +209,7 @@ public:
 	}
 
 	Placer& createPlacer() {
-//		OppositePlacer<IterRot, OppositeFacer, Layouter>* oppositeLinesInward = new OppositePlacer<IterRot, OppositeFacer, Layouter>(        {0,M_PI/2}, {M_PI},       {gl_});
-//		OppositePlacer<IterRot, OppositeFacer, Layouter>* oppositeLinesOutward = new OppositePlacer<IterRot, OppositeFacer, Layouter>(       {0,M_PI}, {0},          {gl_});
-//		OppositePlacer<IterRot, OppositeFacer, Layouter>* oppositeLinesSheerInward = new OppositePlacer<IterRot, OppositeFacer, Layouter>(   {0,M_PI/2}, {M_PI/4 * 3}, {gl_});
-//		OppositePlacer<IterRot, OppositeFacer, Layouter>* oppositeLinesSheerOutward = new OppositePlacer<IterRot, OppositeFacer, Layouter>(  {0,M_PI/2}, {M_PI/4},     {gl_});
-//		OppositePlacer<IterRot, RandomFacer,   Layouter>* oppositeLinesRandom = new OppositePlacer<IterRot, RandomFacer, Layouter>(        {0,M_PI}, { },          {gl_});
-
-//		OppositePlacer<RandomRot, OppositeFacer, Layouter>* randomOppositeLinesInward = new OppositePlacer<RandomRot, OppositeFacer, Layouter>(       { }, {M_PI},       {gl_});
-//		OppositePlacer<RandomRot, OppositeFacer, Layouter>* randomOppositeLinesOutward = new OppositePlacer<RandomRot, OppositeFacer, Layouter>(      { }, {0},          {gl_});
-//		OppositePlacer<RandomRot, OppositeFacer, Layouter>* randomOppositeLinesSheerInward = new OppositePlacer<RandomRot, OppositeFacer, Layouter>(  { }, {M_PI/4 * 3}, {gl_});
-//		OppositePlacer<RandomRot, OppositeFacer, Layouter>* randomOppositeLinesSheerOutward = new OppositePlacer<RandomRot, OppositeFacer, Layouter>( { }, {M_PI/4},     {gl_});
 		OppositePlacer<RandomRot, RandomFacer,   Layouter>* randomOppositeLinesRandom = new OppositePlacer<RandomRot, RandomFacer, Layouter>(       { }, { },          {gl_});
-
 		return *randomOppositeLinesRandom;
 	}
 };
@@ -281,8 +245,7 @@ int main(int argc, char** argv) {
 		scenario->configureTeams(teams);
 		scenario->configurePools(pools);
 		Placer& placer = scenario->createPlacer();
-
-		playGame(300, scenario, teams, pools, placer);
+		playGame(500, scenario, teams, pools, placer);
 		//delete scenario;
 		//delete &placer;
 
@@ -290,14 +253,11 @@ int main(int argc, char** argv) {
 		scenario1->configureTeams(teams);
 		scenario1->configurePools(pools);
 		placer = scenario1->createPlacer();
-
 		playGame(1000, scenario1, teams, pools, placer);
 		//delete scenario1;
 		//delete &placer;
 
-
 		SymmetricLines* scenario2 = new SymmetricLines(pl);
-		scenario2->bfl_.iterations_ = 10000;
 		teams[1].clear();
 		pools[1] = GeneticPool(gp);
 
@@ -311,9 +271,34 @@ int main(int argc, char** argv) {
 		scenario2->configurePools(pools);
 		placer = scenario2->createPlacer();
 
-		playGame(std::numeric_limits<size_t>().max(), scenario2, teams, pools, placer);
+		playGame(1000, scenario2, teams, pools, placer);
 		//delete scenario1;
 		//delete &placer;
+
+		SymmetricLines* scenario3 = new SymmetricLines(pl);
+
+		Population newA;
+		for(Tank& t : teams[0]) {
+			for(size_t j = 0; j < 5; ++j) {
+				newA.push_back(t.clone());
+			}
+		}
+
+		Population newB;
+		for(Tank& t : teams[1]) {
+			for(size_t j = 0; j < 5; ++j) {
+				newB.push_back(t.clone());
+			}
+		}
+
+		teams[0] = newA;
+		teams[1] = newB;
+
+		scenario3->configureTeams(teams);
+		scenario3->configurePools(pools);
+		placer = scenario3->createPlacer();
+
+		playGame(std::numeric_limits<size_t>().max(), scenario3, teams, pools, placer);
 
 
 		//make sure we destroyed all brains left so valgrind doesn't complain
