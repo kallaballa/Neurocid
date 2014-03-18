@@ -91,7 +91,7 @@ b2Body* Physics::makeWorldBox(BattleFieldLayout& bfl) {
     topShape.Set(	b2Vec2(0,0),  b2Vec2(w,0));
     leftShape.Set(	b2Vec2(0,0),  b2Vec2(0,h));
     bottomShape.Set(b2Vec2(0,h),  b2Vec2(w,h));
-    rightShape.Set(	b2Vec2(0,w),  b2Vec2(w,h));
+    rightShape.Set(	b2Vec2(w,0),  b2Vec2(w,h));
 
 	//fixture definition
 	b2FixtureDef topFixdef;
