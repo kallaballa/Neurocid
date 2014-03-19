@@ -114,7 +114,8 @@ public:
 		attackerTL.canMove_ = false;
 		attackerTL.max_ammo_ = 10;
 		attackerTL.max_damage_ = 10;
-		attackerTL.max_cooldown = 20;
+		attackerTL.max_cooldown = 10;
+		attackerTL.max_rotation_ = 1;
 
 		teams[0].update(attackerTL);
 

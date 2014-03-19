@@ -47,7 +47,7 @@ void Game::fight() {
 	pl.timeStep_ = 1.0f/60.0f;
 	pl.positionIterations_ = 1;
 	pl.velocityIterations_ = 3;
-	pl.coordToMetersFactor_ = 1.0f;
+	pl.coordToMetersFactor_ = 0.05f;
 
 	BattleField field(bfl_, pl, teams_);
 	GameState& gs = *GameState::getInstance();

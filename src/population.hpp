@@ -19,7 +19,7 @@ struct PopulationLayout {
 			true, // canMove
 
 			10.0, // range_
-			10, // max_speed_
+			1, // max_speed_
 			1, // max_rotation
 
 			200,  // max_cooldown

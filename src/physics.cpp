@@ -44,12 +44,14 @@ void Physics::BeginContact(b2Contact* contact) {
   Object* oB = static_cast<Object*>(contact->GetFixtureB()->GetBody()->GetUserData());
 
   if(oA != NULL || oB != NULL) {
-	  if(oA == NULL && oB != NULL && oB->type() == PROJECTILE) {
+	  if(oA == NULL && oB != NULL && oB->type() == PROJECTILE && !oB->dead_) {
 		  //projectile -> world box
 		  oB->dead_ = true;
-	  } else if(oB == NULL && oA != NULL && oA->type() == PROJECTILE) {
+		  deadBodies_.push_back(contact->GetFixtureB()->GetBody());
+	  } else if(oB == NULL && oA != NULL && oA->type() == PROJECTILE && !oA->dead_) {
 		  //projectile -> world box
 		  oA->dead_ = true;
+		  deadBodies_.push_back(contact->GetFixtureA()->GetBody());
 	  } else if(oA != NULL && oB != NULL && !oA->dead_ && !oB->dead_) {
 		  if(oA->type() == PROJECTILE && oB->type() == PROJECTILE) {
 			  //projectile -> projectile
@@ -61,13 +63,14 @@ void Physics::BeginContact(b2Contact* contact) {
 			  //projectile -> tank
 			  collide(*static_cast<Projectile*>(oB), *static_cast<Tank*>(oA));
 		  }
+
+		  if(oA->dead_)
+			  deadBodies_.push_back(contact->GetFixtureA()->GetBody());
+
+		  if(oB->dead_)
+			  deadBodies_.push_back(contact->GetFixtureB()->GetBody());
 	  }
 
-	  if(oA != NULL && oA->dead_)
-		  deadBodies_.push_back(contact->GetFixtureA()->GetBody());
-
-	  if(oB != NULL && oB->dead_)
-		  deadBodies_.push_back(contact->GetFixtureB()->GetBody());
   }
 }
 
@@ -76,7 +79,7 @@ void Physics::EndContact(b2Contact* contact) {
 }
 
 float32 Physics::toMeters(Coord c) {
-	return round(c * layout_.coordToMetersFactor_);
+	return c * layout_.coordToMetersFactor_;
 }
 
 Coord Physics::toCoord(float32 m) {
@@ -252,7 +255,7 @@ void Physics::step() {
 		if(body->GetUserData() != NULL) {
 			Object* o = (Object*)body->GetUserData();
 			if(o->type() == TANK) {
-				Vector2D force = o->getDirection() * o->speed_ * 3;
+				Vector2D force = o->getDirection() * o->speed_ * 2;
 	//			std::cerr << "tank: " << force << std::endl;
 			    body->SetLinearVelocity(b2Vec2(force.x, force.y));
 	//		    std::cerr << "rotforce:" << o->rotForce_ << std::endl;
@@ -260,7 +263,7 @@ void Physics::step() {
 			    assert(o->rotation_ < M_PI);
 			} else if(o->type() == PROJECTILE) {
 				//body->ApplyTorque(o->rotForce_ * 200);
-				Vector2D force = o->getDirection() * 1000;
+				Vector2D force = o->getDirection() * o->speed_ * 16;
 			    body->SetAwake(true);
 				body->SetLinearVelocity(b2Vec2(force.x, force.y));
 	//			std::cerr << "projectile: " << force << std::endl;
