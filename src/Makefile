@@ -1,5 +1,5 @@
 TARGET  := libtankwar.so
-SRCS    := battlefield.cpp canvas.cpp params.cpp tank.cpp brain.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner.cpp
+SRCS    := battlefield.cpp canvas.cpp tank.cpp brain.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner.cpp
 #precompiled headers
 HEADERS := 
 GCH    := ${HEADERS:.h=.gch}

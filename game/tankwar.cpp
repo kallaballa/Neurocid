@@ -15,11 +15,20 @@
 #include <SDL/SDL_events.h>
 #include <X11/Xlib.h>
 #include <limits>
+#include <boost/program_options.hpp>
+#include <fstream>
 
 using namespace tankwar;
+namespace po = boost::program_options;
 using std::cerr;
 using std::endl;
 using std::vector;
+using std::ifstream;
+using std::ofstream;
+
+void dumpTeams() {
+
+}
 
 void runEventHandler() {
 	Canvas& canvas = *Canvas::getInstance();
@@ -50,6 +59,11 @@ void runEventHandler() {
 						renderer.setEnabled(true);
 						renderer.setFramerate(12);
 					}
+				} else if (event.key.keysym.sym == SDLKey::SDLK_p) {
+					if (gameState.isPaused())
+						gameState.resume();
+					else
+						gameState.pause();
 				} else if (event.key.keysym.sym == SDLKey::SDLK_ESCAPE) {
 					std::cerr << "Quitting" << std::endl;
 					gameState.stop();
@@ -69,25 +83,9 @@ void runEventHandler() {
 
 class Scenario {
 public:
-	Scenario(PopulationLayout pl) :
-		pl_(pl){
-	}
-
-	PopulationLayout pl_;
-
-	size_t numTeams_ = 2;
-
-	BattleFieldLayout bfl_ = {
-			800,   // battle iterations
-			3000, // width
-			3000  // height;
-	};
-
-	GameLayout gl_ = {
-			Vector2D(bfl_.width_ / 2, bfl_.height_/ 2), // center
-			std::min(bfl_.width_, bfl_.height_) / 4,    // distance
-			20										    // spacing
-	};
+	BattleFieldLayout bfl_;
+	GameLayout gl_;
+	PhysicsLayout phl_;
 
 	virtual void configureTeams(vector<Population>& teams) = 0;
 	virtual void configurePools(vector<GeneticPool>& pools) = 0;
@@ -95,24 +93,29 @@ public:
 
 class AimOnOneNoMove : public Scenario {
 public:
-	AimOnOneNoMove(PopulationLayout pl) :
-		Scenario(pl) {
-	}
+	AimOnOneNoMove() :
+		Scenario() {
+		bfl_.iterations_ = 700;
+		bfl_.width_ = 3000;
+		bfl_.height_ = 3000;
 
-	size_t teamSizeAttacker = 20;
+		gl_.center_ = Vector2D(bfl_.width_ / 2, bfl_.height_/ 2);
+		gl_.distance_ = std::min(bfl_.width_, bfl_.height_) / 3;
+		gl_.spacing_ = 40;
+
+		phl_.gravity_ = {0,0};
+		phl_.timeStep_ = 1.0f/60.0f;
+		phl_.positionIterations_ = 2;
+		phl_.velocityIterations_ = 6;
+		phl_.coordToMetersFactor_ = 0.05f;
+	}
 
 	void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
 
-		gl_ = {
-				Vector2D(bfl_.width_ / 2, bfl_.height_/ 2), // center
-				std::min(bfl_.width_, bfl_.height_) / 3,    // distance
-				40										    // spacing
-		};
-
 		TankLayout attackerTL = teams[0].layout_.tl_;
 		attackerTL.canMove_ = false;
-		attackerTL.max_ammo_ = 20;
+		attackerTL.max_ammo_ = 10;
 		attackerTL.max_damage_ = 10;
 		attackerTL.max_cooldown = 10;
 
@@ -130,27 +133,31 @@ public:
 		assert(pools.size() == 2);
 	}
 
-	Placer& createPlacer() {
-		OppositePlacer<RandomRot, RandomFacer,   Layouter>* randomOppositeLinesRandom = new OppositePlacer<RandomRot, RandomFacer, Layouter>(       { }, { },          {gl_});
-		return *randomOppositeLinesRandom;
+	Placer* createPlacer() {
+		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
 	}
 };
 
 class AimOnOne : public Scenario {
 public:
-	size_t teamSizeAttacker = 20;
-	AimOnOne(PopulationLayout pl) :
-		Scenario(pl){
+	AimOnOne() : Scenario(){
+		bfl_.iterations_ = 600;
+		bfl_.width_ = 3000;
+		bfl_.height_ = 3000;
+
+		gl_.center_ = Vector2D(bfl_.width_ / 2, bfl_.height_/ 2);
+		gl_.distance_ = std::min(bfl_.width_, bfl_.height_) / 2;
+		gl_.spacing_ = 40;
+
+		phl_.gravity_ = {0,0};
+		phl_.timeStep_ = 1.0f/60.0f;
+		phl_.positionIterations_ = 2;
+		phl_.velocityIterations_ = 6;
+		phl_.coordToMetersFactor_ = 0.05f;
 	}
 
 	void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
-
-		gl_ = {
-					Vector2D(bfl_.width_ / 2, bfl_.height_/ 2), // center
-					std::min(bfl_.width_, bfl_.height_) / 3,    // distance
-					40										    // spacing
-		};
 
 		TankLayout attackerTL = teams[0].layout_.tl_;
 		attackerTL.max_ammo_ = 3;
@@ -169,9 +176,8 @@ public:
 		assert(pools.size() == 2);
 	}
 
-	Placer& createPlacer() {
-		OppositePlacer<RandomRot, RandomFacer,   Layouter>* randomOppositeLinesRandom = new OppositePlacer<RandomRot, RandomFacer, Layouter>(       { }, { },          {gl_});
-		return *randomOppositeLinesRandom;
+	Placer* createPlacer() {
+		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
 	}
 };
 
@@ -179,17 +185,24 @@ public:
 
 class SymmetricLines : public Scenario {
 public:
-	SymmetricLines(PopulationLayout pl) :
-		Scenario(pl) {
+	SymmetricLines() : Scenario() {
+		bfl_.width_ = 10000;
+		bfl_.height_ = 10000;
+		bfl_.iterations_ = 1000;
+
+		gl_.center_ = Vector2D(5000,5000);
+		gl_.distance_ = 1500;
+		gl_.spacing_ = 40;
+
+		phl_.gravity_ = {0,0};
+		phl_.timeStep_ = 1.0f/60.0f;
+		phl_.positionIterations_ = 2;
+		phl_.velocityIterations_ = 6;
+		phl_.coordToMetersFactor_ = 0.05f;
 	}
 
 	void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
-		Scenario::bfl_.width_ = 10000;
-		Scenario::bfl_.height_ = 10000;
-		Scenario::gl_.center_ = Vector2D(5000,5000);
-		Scenario::gl_.distance_ = 1500;
-		Scenario::bfl_.iterations_ = 1000;
 
 		TankLayout attackerTL = teams[0].layout_.tl_;
 		attackerTL.max_ammo_ = 30;
@@ -208,24 +221,142 @@ public:
 		assert(pools.size() == 2);
 	}
 
-	Placer& createPlacer() {
-		OppositePlacer<RandomRot, RandomFacer,   Layouter>* randomOppositeLinesRandom = new OppositePlacer<RandomRot, RandomFacer, Layouter>(       { }, { },          {gl_});
-		return *randomOppositeLinesRandom;
+	Placer* createPlacer() {
+		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
+	}
+};
+
+class SymmetricLinesHuge : public Scenario {
+public:
+	SymmetricLinesHuge() : Scenario() {
+		bfl_.width_ = 30000;
+		bfl_.height_ = 30000;
+		bfl_.iterations_ = 5000;
+
+		gl_.center_ = Vector2D(15000,15000);
+		gl_.distance_ = 5000;
+		gl_.spacing_ = 40;
+
+		phl_.gravity_ = {0,0};
+		phl_.timeStep_ = 1.0f/60.0f;
+		phl_.positionIterations_ = 2;
+		phl_.velocityIterations_ = 6;
+		phl_.coordToMetersFactor_ = 0.04f;
+	}
+
+	void configureTeams(vector<Population>& teams) {
+		assert(teams.size() == 2);
+
+		TankLayout attackerTL = teams[0].layout_.tl_;
+		attackerTL.max_ammo_ = 30;
+		attackerTL.max_cooldown = 100;
+		attackerTL.max_damage_ = 3;
+		attackerTL.max_speed_ = 3;
+		attackerTL.pl_.max_speed_ = 3;
+		teams[0].update(attackerTL);
+
+		TankLayout defenderTL = teams[1].layout_.tl_;
+		defenderTL.max_ammo_ = 30;
+		defenderTL.max_cooldown = 100;
+		defenderTL.max_damage_ = 3;
+		defenderTL.max_speed_ = 3;
+		defenderTL.pl_.max_speed_ = 3;
+
+		teams[1].update(defenderTL);
+	}
+
+	void configurePools(vector<GeneticPool>& pools) {
+		assert(pools.size() == 2);
+	}
+
+	Placer* createPlacer() {
+		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
 	}
 };
 
 void playGame(size_t gameIter, Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools, Placer& placer) {
 	std::cerr << "iterations:"  << scenario->bfl_.iterations_ << std::endl;
 	while(GameState::getInstance()->isRunning() && --gameIter > 0) {
-		Game game(scenario->bfl_.iterations_, teams, pools, placer, scenario->bfl_);
+		Game game(teams, pools, placer, scenario->bfl_, scenario->phl_);
 		teams = game.play();
-		assert(teams.size() == scenario->numTeams_);
 	}
 }
 
 int main(int argc, char** argv) {
+	string trainingFile;
+	string populationFile;
+
+	po::options_description genericDesc("Options");
+	genericDesc.add_options()
+		("train,t", "Train a population and save it to the file")
+		("play,p", "Load a population from file and play the game")
+		("help,h", "Produce help message");
+
+
+    po::options_description hidden("Hidden options");
+    hidden.add_options()
+    	("file", po::value< string >(), "file");
+
+	po::options_description cmdline_options;
+    cmdline_options.add(genericDesc).add(hidden);
+
+
+    po::positional_options_description p;
+    p.add("file", -1);
+
+    po::options_description visible;
+    visible.add(genericDesc);
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv).options(cmdline_options).positional(p).run(), vm);
+    po::notify(vm);
+
+    if (vm.count("help")) {
+        std::cerr << "Usage: tankwar [options]\n";
+        std::cerr << visible;
+        return 0;
+    }
+
+    if(vm.count("train") > 0 && vm.count("play") > 0) {
+		std::cerr << "You can only use either -t or -p" << std::endl;
+		exit(1);
+    }
+
+    if(vm.count("train")) {
+    	trainingFile = vm["file"].as<string>();
+    } else if(vm.count("play")) {
+    	populationFile = vm["file"].as<string>();
+    }
+
 	std::thread gameThread([&]() {
-		PopulationLayout pl;
+		PopulationLayout pl = {
+			//Tank Layout
+			{
+			    //Projectile Layout
+				{
+					1, // max_speed
+					5   // range
+				},
+				true,// canShoot
+				true,// canRotate
+				true,// canMove
+
+				10.0,// range_
+				1,// max_speed_
+				1,// max_rotation
+
+				200,// max_cooldown
+				10,// max_ammo_
+				3// max_damage_
+			},
+			//BrainLayout
+			{
+				4, // inputs
+				3,// outputs
+				5,// layers
+				6// neurons per hidden layer
+			}
+		};
 
 		GeneticParams gp = {
 				0.1, // mutationRate
@@ -235,83 +366,95 @@ int main(int argc, char** argv) {
 				4,   // numElite
 				1    //  numEliteCopies
 		};
-		vector<Population> teams(2);
-		teams[0] = makePopulation(0, 20, pl);
-		teams[1] = makePopulation(1, 1, pl);
-		vector<GeneticPool> pools(2);
-		pools[0] = GeneticPool(gp);
-		pools[1] = GeneticPool(); // dummy pool
 
-		AimOnOneNoMove* scenario = new AimOnOneNoMove(pl);
-		scenario->configureTeams(teams);
-		scenario->configurePools(pools);
-		Placer& placer = scenario->createPlacer();
-		playGame(300, scenario, teams, pools, placer);
-		//delete scenario;
-		//delete &placer;
+		if(!trainingFile.empty()) {
+			vector<Population> teams(2);
+			teams[0] = makePopulation(0, 20, pl);
+			teams[1] = makePopulation(1, 1, pl);
+			vector<GeneticPool> pools(2);
+			pools[0] = GeneticPool(gp);
+			pools[1] = GeneticPool(); // dummy pool
 
-		AimOnOne* scenario1 = new AimOnOne(pl);
-		scenario1->configureTeams(teams);
-		scenario1->configurePools(pools);
-		placer = scenario1->createPlacer();
-		playGame(500, scenario1, teams, pools, placer);
-		//delete scenario1;
-		//delete &placer;
+			AimOnOneNoMove* scenario = new AimOnOneNoMove();
+			scenario->configureTeams(teams);
+			scenario->configurePools(pools);
+			Placer* placer = scenario->createPlacer();
+			playGame(500, scenario, teams, pools, *placer);
+			//delete scenario;
+			//delete &placer;
 
-		SymmetricLines* scenario2 = new SymmetricLines(pl);
-		teams[1].clear();
-		pools[1] = GeneticPool(gp);
+			AimOnOne* scenario1 = new AimOnOne();
+			scenario1->configureTeams(teams);
+			scenario1->configurePools(pools);
+			placer = scenario1->createPlacer();
+			playGame(500, scenario1, teams, pools, *placer);
+			//delete scenario1;
+			//delete &placer;
 
-		for(Tank& t : teams[0]) {
-			Tank c = t.clone();
-			c.teamID_ = 1;
-			teams[1].push_back(c);
-		}
-
-		scenario2->configureTeams(teams);
-		scenario2->configurePools(pools);
-		placer = scenario2->createPlacer();
-
-		playGame(1000, scenario2, teams, pools, placer);
-		//delete scenario1;
-		//delete &placer;
-
-		SymmetricLines* scenario3 = new SymmetricLines(pl);
-
-		Population newA;
-		for(Tank& t : teams[0]) {
-			for(size_t j = 0; j < 5; ++j) {
-				newA.push_back(t.clone());
+			teams[1].clear();
+			//clone teamB from teamA
+			for(Tank& t : teams[0]) {
+				Tank c = t.clone();
+				c.teamID_ = 1;
+				teams[1].push_back(c);
 			}
-		}
 
-		Population newB;
-		for(Tank& t : teams[1]) {
-			for(size_t j = 0; j < 5; ++j) {
-				newB.push_back(t.clone());
+			SymmetricLines* scenario2 = new SymmetricLines();
+
+			pools[1] = GeneticPool(gp);
+
+			scenario2->configureTeams(teams);
+			scenario2->configurePools(pools);
+			placer = scenario2->createPlacer();
+
+			playGame(1000, scenario2, teams, pools, *placer);
+			//delete scenario1;
+			//delete &placer;
+			ofstream os(trainingFile);
+			write_teams(teams,os);
+		} else if(!populationFile.empty()) {
+			vector<Population> teams(2);
+			ifstream is(populationFile);
+			read_teams(teams,is);
+
+			vector<GeneticPool> pools(2);
+			pools[0] = GeneticPool(gp);
+			pools[1] = GeneticPool(gp); // dummy pool
+
+				//make 5 copies of each tank
+			Population newA = teams[0];
+			for(Tank& t : teams[0]) {
+				for(size_t j = 0; j < 2; ++j) {
+					newA.push_back(t.clone());
+				}
 			}
-		}
 
-		teams[0] = newA;
-		teams[1] = newB;
-
-		scenario3->configureTeams(teams);
-		scenario3->configurePools(pools);
-		placer = scenario3->createPlacer();
-		scenario3->bfl_.iterations_ = 10000;
-		scenario3->gl_.distance_ = 5000;
-
-		playGame(std::numeric_limits<size_t>().max(), scenario3, teams, pools, placer);
-
-
-		//make sure we destroyed all brains left so valgrind doesn't complain
-		for(Population& p : teams) {
-			for(Tank& t : p) {
-				if(!t.brain_->isDestroyed())
-					t.brain_->destroy();
+			Population newB = teams[1];
+			for(Tank& t : teams[1]) {
+				for(size_t j = 0; j < 2; ++j) {
+					newB.push_back(t.clone());
+				}
 			}
+
+			teams[0] = newA;
+			teams[1] = newB;
+
+			SymmetricLinesHuge* scenario3 = new SymmetricLinesHuge();
+			scenario3->configureTeams(teams);
+			scenario3->configurePools(pools);
+			Placer* placer = scenario3->createPlacer();
+
+			playGame(std::numeric_limits<size_t>().max(), scenario3, teams, pools, *placer);
+
+			//make sure we destroyed all brains left so valgrind doesn't complain
+			for(Population& p : teams) {
+				for(Tank& t : p) {
+					if(!t.brain_->isDestroyed())
+						t.brain_->destroy();
+				}
+			}
+			std::cerr << "Done" << std::endl;
 		}
-		std::cerr << "Done" << std::endl;
 		exit(0);
 	});
 

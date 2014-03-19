@@ -174,7 +174,8 @@ void GeneticPool::calculateStatistics(Population& pop) {
  */
 Population GeneticPool::epoch(Population& old_pop) {
 	if(!initialized_) {
-		Population new_pop;
+		Population new_pop = old_pop;
+		new_pop.clear();
 		old_pop.stats_.reset();
 
 		for(Tank& t : old_pop) {
@@ -195,7 +196,8 @@ Population GeneticPool::epoch(Population& old_pop) {
 	}
 
 	//FIXME preallocate
-	Population new_pop;
+	Population new_pop = old_pop;
+	new_pop.clear();
 	old_pop.stats_.reset();
 
 	for(Tank& t : old_pop) {

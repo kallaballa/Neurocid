@@ -16,11 +16,11 @@
 
 namespace tankwar {
 
-Game::Game(size_t battleIterations, vector<Population>& teams,
-		vector<GeneticPool>& pools, Placer& placer, BattleFieldLayout& bfl) :
+Game::Game(vector<Population>& teams,
+		vector<GeneticPool>& pools, Placer& placer, BattleFieldLayout& bfl, PhysicsLayout& phl) :
 		placer_(placer),
 		bfl_(bfl),
-		battleIterations_(battleIterations),
+		phl_(phl),
 		teams_(teams),
 		newTeams_(teams.size()),
 		pools_(pools) {
@@ -42,17 +42,12 @@ void Game::place() {
 
 void Game::fight() {
 	//std::cerr << "####### game start #######" << std::endl;
-	PhysicsLayout pl;
-	pl.gravity_ = {0,0};
-	pl.timeStep_ = 1.0f/60.0f;
-	pl.positionIterations_ = 1;
-	pl.velocityIterations_ = 3;
-	pl.coordToMetersFactor_ = 0.05f;
 
-	BattleField field(bfl_, pl, teams_);
+	BattleField field(bfl_, phl_, teams_);
 	GameState& gs = *GameState::getInstance();
-	for(size_t i = 0; (i < battleIterations_) && GameState::getInstance()->isRunning(); ++i) {
+	for(size_t i = 0; (i < bfl_.iterations_) && gs.isRunning(); ++i) {
 		field.step();
+		while(gs.tryPause()) {};
 
 		if(gs.isSlow()) {
 			std::this_thread::sleep_for(std::chrono::milliseconds(4));

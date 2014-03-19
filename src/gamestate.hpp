@@ -2,12 +2,16 @@
 #define GAMESTATE_HPP_
 
 #include <stddef.h>
+#include <thread>
+#include <chrono>
+#include <iostream>
 
 namespace tankwar {
 class GameState {
 private:
 	static GameState* instance_;
 	bool run_ = true;
+	bool paused_ = false;
 	bool slow_ = false;
 	bool slower_ = true;
 public:
@@ -33,6 +37,28 @@ public:
 
 	bool isRunning() {
 		return run_;
+	}
+
+	bool tryPause() {
+		if(paused_) {
+			std::cerr << "pause" << std::endl;
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		}
+		return paused_ && run_;
+	}
+
+	bool isPaused() {
+		return paused_;
+	}
+
+	void pause() {
+		paused_ = true;
+		std::cerr << "paused" << std::endl;
+	}
+
+	void resume() {
+		paused_ = false;
+		std::cerr << "resumed" << std::endl;
 	}
 
 	void stop() {

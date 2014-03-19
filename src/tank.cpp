@@ -6,7 +6,6 @@
  */
 
 #include "tank.hpp"
-#include "params.hpp"
 #include "battlefield.hpp"
 #include "population.hpp"
 #include <cstdlib>
@@ -18,11 +17,11 @@
 #include <limits>
 namespace tankwar {
 
-Tank::Tank(size_t teamID, TankLayout tl) :
+Tank::Tank(size_t teamID, TankLayout tl, Brain* brain) :
 		Object(TANK, {0,0}, 0, tl.range_, false, false),
 		teamID_(teamID),
-		tl_(tl),
-		brain_(NULL) {
+		layout_(tl),
+		brain_(brain) {
 	resetGameState();
 }
 
@@ -36,7 +35,7 @@ void Tank::calculateFitness() {
 	Coord totalDiff = 0;
 
 	if (projectiles_.empty()) {
-		totalDiff =  tl_.max_ammo_ * M_PI;
+		totalDiff =  layout_.max_ammo_ * M_PI;
 	} else {
 		for (Projectile* p : projectiles_) {
 			if(!p->scan_.objects_.empty()) {
@@ -68,11 +67,11 @@ void Tank::calculateFitness() {
 		}
 	}
 
-	assert(projectiles_.size() <= tl_.max_ammo_);
+	assert(projectiles_.size() <= layout_.max_ammo_);
 
-	double aimRatio = (M_PI - (totalDiff / tl_.max_ammo_)) / M_PI;
-	double hitRatio = (double(hits_) / tl_.max_ammo_);
-	double damageRatioInv = (1.0 / ((double(damage_) / tl_.max_damage_) + 1));
+	double aimRatio = (M_PI - (totalDiff / layout_.max_ammo_)) / M_PI;
+	double hitRatio = (double(hits_) / layout_.max_ammo_);
+	double damageRatioInv = (1.0 / ((double(damage_) / layout_.max_damage_) + 1));
 
 	//std::cerr << "aim:" << aimRatio << "\thit:" << hitRatio << "/" << hits_ << "\tdmg:" << damageRatioInv << "/" << damage_ << "\tammo:" << tl_.max_ammo_- projectiles_.size() << std::endl;
 	fitness_ = aimRatio + (hitRatio * damageRatioInv);
@@ -98,7 +97,7 @@ void Tank::move(BattleFieldLayout& bfl) {
 
 	assert(!std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(brain_->shoot_));
 
-	bool canShoot = tl_.canShoot_ && (cool_down == 0 && ammonition_ > 0);
+	bool canShoot = layout_.canShoot_ && (cool_down == 0 && ammonition_ > 0);
 	bool wantsShoot = (brain_->shoot_ > 0.0);
 
 	if(canShoot && wantsShoot) {
@@ -109,17 +108,17 @@ void Tank::move(BattleFieldLayout& bfl) {
 	}
 
 	//update location
-	if(tl_.canMove_)
-		speed_ = ((lthrust_ + rthrust_) / 2) * tl_.max_speed_;
+	if(layout_.canMove_)
+		speed_ = ((lthrust_ + rthrust_) / 2) * layout_.max_speed_;
 	else
 		speed_ = 0;
 
 
 	//update rotation force
-	if(tl_.canRotate_) {
+	if(layout_.canRotate_) {
 		//calculate steering forces
 		Coord rotForce = lthrust_ - rthrust_;
-		clamp(rotForce, -tl_.max_rotation_, tl_.max_rotation_);
+		clamp(rotForce, -layout_.max_rotation_, layout_.max_rotation_);
 		rotForce_ = rotForce;
 	} else
 		rotForce_ = 0;
@@ -129,7 +128,7 @@ void Tank::move(BattleFieldLayout& bfl) {
 
 Tank Tank::makeChild() {
 	assert(brain_ != NULL);
-	Tank child(teamID_, tl_);
+	Tank child(teamID_, layout_);
 	Brain* fresh  = new Brain(brain_->layout_);
 	child.setBrain(fresh);
 	return child;
@@ -137,7 +136,7 @@ Tank Tank::makeChild() {
 
 Tank Tank::clone() {
 	assert(brain_ != NULL);
-	Tank child(teamID_, tl_);
+	Tank child(teamID_, layout_);
 	Brain* fresh  = new Brain(brain_->layout_);
 	child.setBrain(fresh);
 
@@ -149,7 +148,7 @@ Tank Tank::clone() {
 }
 
 void Tank::resetGameState() {
-	ammonition_ = tl_.max_ammo_;
+	ammonition_ = layout_.max_ammo_;
 	for(Projectile* p : projectiles_) {
 		delete p;
 	}
@@ -172,7 +171,7 @@ void Tank::resetScore() {
 }
 
 void Tank::update(TankLayout tl) {
-	this->tl_ = tl;
+	this->layout_ = tl;
 	resetGameState();
 }
 
@@ -196,10 +195,10 @@ Projectile* Tank::shoot() {
 	assert(cool_down == 0);
 	assert(ammonition_ > 0);
 	--ammonition_;
-	cool_down = tl_.max_cooldown;
+	cool_down = layout_.max_cooldown;
 	Vector2D loc = loc_;
 	loc += (getDirection() * range_);
-	Projectile* p = new Projectile(*this, loc, rotation_);
+	Projectile* p = new Projectile(*this,layout_.pl_, loc, rotation_);
 	projectiles_.push_back(p);
 	return p;
 }

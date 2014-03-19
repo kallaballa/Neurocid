@@ -8,32 +8,32 @@
 #ifndef POPULATION_HPP_
 #define POPULATION_HPP_
 
+#include <boost/serialization/vector.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 #include <vector>
+#include <iostream>
 #include "tank.hpp"
 
 namespace tankwar {
+using std::vector;
+using std::istream;
+using std::ostream;
+
 struct PopulationLayout {
-	TankLayout tl_ = { true, // canShoot
-			true, // canRotate
-			true, // canMove
+	friend class boost::serialization::access;
+	TankLayout tl_;
+	BrainLayout bl_;
 
-			10.0, // range_
-			1, // max_speed_
-			1, // max_rotation
-
-			200,  // max_cooldown
-			10,  // max_ammo_
-			3    // max_damage_
-			};
-
-	BrainLayout bl_ = { 4, // inputs
-			3, // outputs
-			5, // layers
-			6  // neurons per hidden layer
-			};
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version) {
+	  ar & tl_;
+	  ar & bl_;
+	}
 };
 
-class Population: public std::vector<Tank> {
+class Population: public vector<Tank> {
+	  friend class boost::serialization::access;
 public:
 	struct Statistics {
 		Statistics() {
@@ -89,6 +89,7 @@ public:
 					<< (score_);
 		}
 	};
+
 	PopulationLayout layout_;
 	size_t score_ = 0;
 	bool winner_ = false;
@@ -108,7 +109,35 @@ public:
 		}
 		return cnt;
 	}
+
+	Population& operator=(const Population& other) {
+		layout_ = other.layout_;
+		score_ = other.score_;
+		winner_ = other.winner_;
+		stats_ = other.stats_;
+		vector<Tank>::operator=(other);
+		return *this;
+	}
+
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version) {
+	  ar & layout_;
+	  ar & score_;
+	  ar & winner_;
+	  ar & *((vector<Tank>*)this);
+	}
 };
+
+
+inline void read_teams(vector<Population>& teams, istream& is) {
+  boost::archive::text_iarchive ia(is);
+  ia >> teams;
+}
+
+inline void write_teams(vector<Population>& teams, ostream& os) {
+  boost::archive::text_oarchive oa(os);
+  oa << teams;
+}
 }
 
 #endif /* POPULATION_HPP_ */

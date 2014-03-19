@@ -12,7 +12,22 @@ std::map<fann*, size_t> Brain::nnAllocs_;
 size_t Brain::nnAllocCnt_ = 0;
 #endif
 
-Brain::Brain(BrainLayout layout): layout_(layout), nn_(NULL), inputs_(NULL) {
+Brain::Brain(BrainLayout layout, fann_type* weight): layout_(layout), nn_(NULL), inputs_(NULL) {
+	makeNN();
+    if(weight != NULL) {
+    	for(size_t i = 0; i < size(); ++i) {
+    		weights()[i] = weight[i];
+    	}
+    }
+}
+
+Brain::Brain(const Brain& other): layout_(other.layout_), nn_(other.nn_) , inputs_(other.inputs_) {
+}
+
+Brain::~Brain() {
+}
+
+fann* Brain::makeNN() {
 	assert(layout_.numLayers_ >= 3);
 	assert(layout_.numLayers_ < 20);
 	unsigned int layerArray[layout_.numLayers_];
@@ -30,17 +45,11 @@ Brain::Brain(BrainLayout layout): layout_(layout), nn_(NULL), inputs_(NULL) {
     inputs_ = new fann_type[layout_.numInputs];
     std::fill_n(inputs_, layout_.numInputs, std::numeric_limits<fann_type>().max());
 
-#ifdef _CHECK_BRAIN_ALLOC
+	#ifdef _CHECK_BRAIN_ALLOC
     size_t id = ++nnAllocCnt_;
     nnAllocs_[nn_] = id;
     std::cerr << "alloc: " << id << std::endl;
 #endif
-}
-
-Brain::Brain(const Brain& other): layout_(other.layout_), nn_(other.nn_) , inputs_(other.inputs_) {
-}
-
-Brain::~Brain() {
 }
 
 void Brain::destroy() {

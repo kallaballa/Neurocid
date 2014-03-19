@@ -26,7 +26,7 @@ void Physics::collide(Projectile& p, Tank& t) {
 		p.dead_ = true;
 		p.explode_ = true;
 		t.damage_++;
-		if (t.damage_ >= t.tl_.max_damage_) {
+		if (t.damage_ >= t.layout_.max_damage_) {
 			t.dead_ = true;
 			t.explode_ = true;
 		}
@@ -203,8 +203,12 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
 
     // Override the default friction.
     fixtureDef.friction = 0.3f;
-    fixtureDef.filter.maskBits = 2;
-    fixtureDef.filter.categoryBits = 1;
+
+//Deativate projectile collisions
+//    fixtureDef.filter.maskBits = 2;
+//    fixtureDef.filter.categoryBits = 1;
+    fixtureDef.filter.maskBits = 1;
+    fixtureDef.filter.categoryBits = 3;
 
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
@@ -262,10 +266,16 @@ void Physics::step() {
 			    body->SetAngularVelocity(o->rotForce_);
 			    assert(o->rotation_ < M_PI);
 			} else if(o->type() == PROJECTILE) {
-				//body->ApplyTorque(o->rotForce_ * 200);
-				Vector2D force = o->getDirection() * o->speed_ * 16;
-			    body->SetAwake(true);
-				body->SetLinearVelocity(b2Vec2(force.x, force.y));
+				Projectile* p = static_cast<Projectile*>(o);
+				if(hypot(p->loc_.x - p->startLoc_.x, p->loc_.y - p->startLoc_.y) > 3000) {
+					p->dead_ = true;
+					deadBodies_.push_back(body);
+				} else {
+					//body->ApplyTorque(o->rotForce_ * 200);
+					Vector2D force = o->getDirection() * o->speed_ * 16;
+					body->SetAwake(true);
+					body->SetLinearVelocity(b2Vec2(force.x, force.y));
+				}
 	//			std::cerr << "projectile: " << force << std::endl;
 				//body->ApplyLinearImpulse(b2Vec2(force.x,force.y), body->GetWorldCenter());
 			}

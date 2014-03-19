@@ -10,14 +10,26 @@
 #include <map>
 #endif
 #include "scanner.hpp"
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
 namespace tankwar {
 
 struct BrainLayout  {
+	friend class boost::serialization::access;
+
 	size_t numInputs;
 	size_t numOutputs;
 	size_t numLayers_;
 	size_t neuronsPerHidden;
+
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version) {
+	  ar & numInputs;
+	  ar & numOutputs;
+	  ar & numLayers_;
+	  ar & neuronsPerHidden;
+	}
 };
 
 class Tank;
@@ -29,6 +41,7 @@ class Brain {
 	static std::map<fann*, size_t> nnAllocs_;
 	static size_t nnAllocCnt_;
 #endif
+	friend class boost::serialization::access;
 public:
 	BrainLayout  layout_;
 	fann *nn_;
@@ -36,14 +49,27 @@ public:
 	fann_type rthrust_ = 0;
 	fann_type shoot_ = 0;
 	fann_type* inputs_;
-	Brain(BrainLayout layout);
+	Brain() :  layout_(), nn_(NULL), inputs_(NULL) {}
+	Brain(BrainLayout layout, fann_type* weights = NULL);
 	Brain(const Brain& other);
 	virtual ~Brain();
+	fann* makeNN();
 	void destroy();
 	void update(const Scan& scan);
 	void randomize();
 	size_t size() const;
 	fann_type* weights();
+
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version) {
+	  ar & layout_;
+	  if(nn_ == NULL) {
+		  makeNN();
+	  }
+	  size_t s = size();
+	  ar & s;
+	  ar & boost::serialization::make_array(weights(), s);
+	}
 
 	bool isDestroyed() {
 		return destroyed_;
