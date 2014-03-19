@@ -4,10 +4,10 @@ LDFLAGS  := -L/opt/local/lib
 LIBS     := -lm `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf` -lfann -lBox2D -lX11
 .PHONY: all release debug clean distclean 
 
-ifndef NO_OPENMP
-CXXFLAGS += -fopenmp 
-LIBS     += -fopenmp
-endif
+#ifndef NO_OPENMP
+#CXXFLAGS += -fopenmp 
+#LIBS     += -fopenmp
+#endif
 
 ifdef NO_ASSERT
 CXXFLAGS += -DNDEBUG
