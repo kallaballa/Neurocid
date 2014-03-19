@@ -112,10 +112,9 @@ public:
 
 		TankLayout attackerTL = teams[0].layout_.tl_;
 		attackerTL.canMove_ = false;
-		attackerTL.max_ammo_ = 10;
+		attackerTL.max_ammo_ = 20;
 		attackerTL.max_damage_ = 10;
 		attackerTL.max_cooldown = 10;
-		attackerTL.max_rotation_ = 1;
 
 		teams[0].update(attackerTL);
 
@@ -154,7 +153,7 @@ public:
 		};
 
 		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.max_ammo_ = 10;
+		attackerTL.max_ammo_ = 3;
 		attackerTL.max_cooldown = 20;
 		teams[0].update(attackerTL);
 
@@ -186,20 +185,20 @@ public:
 
 	void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
-		bfl_.width_ = 10000;
-		bfl_.height_ = 10000;
-		gl_.center_ = Vector2D(5000,5000);
-		gl_.distance_ = 1500;
-		bfl_.iterations_ = 1000;
+		Scenario::bfl_.width_ = 10000;
+		Scenario::bfl_.height_ = 10000;
+		Scenario::gl_.center_ = Vector2D(5000,5000);
+		Scenario::gl_.distance_ = 1500;
+		Scenario::bfl_.iterations_ = 1000;
 
 		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.max_ammo_ = 20;
+		attackerTL.max_ammo_ = 30;
 		attackerTL.max_cooldown = 200;
 		attackerTL.max_damage_ = 3;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
-		defenderTL.max_ammo_ = 20;
+		defenderTL.max_ammo_ = 30;
 		attackerTL.max_cooldown = 200;
 		attackerTL.max_damage_ = 3;
 		teams[1].update(defenderTL);
@@ -216,6 +215,7 @@ public:
 };
 
 void playGame(size_t gameIter, Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools, Placer& placer) {
+	std::cerr << "iterations:"  << scenario->bfl_.iterations_ << std::endl;
 	while(GameState::getInstance()->isRunning() && --gameIter > 0) {
 		Game game(scenario->bfl_.iterations_, teams, pools, placer, scenario->bfl_);
 		teams = game.play();
@@ -246,7 +246,7 @@ int main(int argc, char** argv) {
 		scenario->configureTeams(teams);
 		scenario->configurePools(pools);
 		Placer& placer = scenario->createPlacer();
-		playGame(500, scenario, teams, pools, placer);
+		playGame(300, scenario, teams, pools, placer);
 		//delete scenario;
 		//delete &placer;
 
@@ -254,7 +254,7 @@ int main(int argc, char** argv) {
 		scenario1->configureTeams(teams);
 		scenario1->configurePools(pools);
 		placer = scenario1->createPlacer();
-		playGame(1000, scenario1, teams, pools, placer);
+		playGame(500, scenario1, teams, pools, placer);
 		//delete scenario1;
 		//delete &placer;
 
@@ -277,7 +277,6 @@ int main(int argc, char** argv) {
 		//delete &placer;
 
 		SymmetricLines* scenario3 = new SymmetricLines(pl);
-		scenario3->bfl_.iterations_ = 6000;
 
 		Population newA;
 		for(Tank& t : teams[0]) {
@@ -299,6 +298,8 @@ int main(int argc, char** argv) {
 		scenario3->configureTeams(teams);
 		scenario3->configurePools(pools);
 		placer = scenario3->createPlacer();
+		scenario3->bfl_.iterations_ = 10000;
+		scenario3->gl_.distance_ = 5000;
 
 		playGame(std::numeric_limits<size_t>().max(), scenario3, teams, pools, placer);
 

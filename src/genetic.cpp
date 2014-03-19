@@ -8,13 +8,12 @@
 namespace tankwar {
 
 GeneticPool::GeneticPool(GeneticParams params) :
-		params_(params), stats_() {
-	statistics().generationCnt_ = 0;
+		params_(params) {
 	initialized_ = true;
 }
 
 GeneticPool::GeneticPool() :
-		params_(), stats_() {
+		params_() {
 	initialized_ = false;
 }
 
@@ -39,7 +38,7 @@ void GeneticPool::mutate(Brain& brain) {
  */
 Tank& GeneticPool::pickSpecimen(Population& pop) {
 	//generate a random number between 0 & total fitness count
-	double slice = (double) (fRand(0, 1) * stats_.totalFitness_);
+	double slice = (double) (fRand(0, 1) * pop.stats_.totalFitness_);
 
 	//this will be set to the chosen tank go through the tanks adding up the fitness so far
 	double fitnessSoFar = 0;
@@ -136,38 +135,38 @@ void GeneticPool::calculateStatistics(Population& pop) {
 	double highestSoFar = 0;
 	double lowestSoFar = 9999999;
 
-	stats_.bestFitness_ = std::numeric_limits<double>().max();
+	pop.stats_.bestFitness_ = std::numeric_limits<double>().max();
 
 	for (size_t i = 0; i < size; ++i) {
-		stats_.totalFriendlyFire_ += pop[i].friendly_fire_;
-		stats_.totalHits_  += pop[i].hits_;
-		stats_.totalDamage_  += pop[i].damage_;
-		stats_.totalAmmonition_ += pop[i].ammonition_;
+		pop.stats_.totalFriendlyFire_ += pop[i].friendly_fire_;
+		pop.stats_.totalHits_  += pop[i].hits_;
+		pop.stats_.totalDamage_  += pop[i].damage_;
+		pop.stats_.totalAmmonition_ += pop[i].ammonition_;
 
 		//update fittest if necessary
 		if (highestSoFar == 0 || pop[i].fitness_ > highestSoFar) {
 			highestSoFar = pop[i].fitness_;
-			stats_.fittestGenome_ = i;
-			stats_.bestFitness_ = highestSoFar;
+			pop.stats_.fittestGenome_ = i;
+			pop.stats_.bestFitness_ = highestSoFar;
 		}
 
 		//update worst if necessary
 		if (pop[i].fitness_ < lowestSoFar) {
 			lowestSoFar = pop[i].fitness_;
-			stats_.worstFitness_ = lowestSoFar;
+			pop.stats_.worstFitness_ = lowestSoFar;
 		}
 
-		stats_.totalFitness_ += pop[i].fitness_;
+		pop.stats_.totalFitness_ += pop[i].fitness_;
 	}
 
-	assert(stats_.bestFitness_ != std::numeric_limits<double>().max());
+	assert(pop.stats_.bestFitness_ != std::numeric_limits<double>().max());
 
-	stats_.score_ = stats_.totalHits_ - stats_.totalDamage_;
-	stats_.averageFitness_ = stats_.totalFitness_ / size;
-	stats_.averageFriendlyFire_ = stats_.totalFriendlyFire_ / size;
-	stats_.averageHits_ = stats_.totalHits_ / size;
-	stats_.averageDamage_ = stats_.totalDamage_ / size;
-	stats_.averageAmmonition_ = stats_.totalAmmonition_ / size;
+	pop.stats_.score_ = pop.stats_.totalHits_ - pop.stats_.totalDamage_;
+	pop.stats_.averageFitness_ = pop.stats_.totalFitness_ / size;
+	pop.stats_.averageFriendlyFire_ = pop.stats_.totalFriendlyFire_ / size;
+	pop.stats_.averageHits_ = pop.stats_.totalHits_ / size;
+	pop.stats_.averageDamage_ = pop.stats_.totalDamage_ / size;
+	pop.stats_.averageAmmonition_ = pop.stats_.totalAmmonition_ / size;
 }
 
 /*
@@ -176,7 +175,7 @@ void GeneticPool::calculateStatistics(Population& pop) {
 Population GeneticPool::epoch(Population& old_pop) {
 	if(!initialized_) {
 		Population new_pop;
-		stats_.reset();
+		old_pop.stats_.reset();
 
 		for(Tank& t : old_pop) {
 			t.calculateFitness();
@@ -191,12 +190,13 @@ Population GeneticPool::epoch(Population& old_pop) {
 		for(Tank& t : old_pop) {
 			new_pop.push_back(t.makeChild());
 		}
+		new_pop.stats_ = old_pop.stats_;
 		return new_pop;
 	}
 
 	//FIXME preallocate
 	Population new_pop;
-	stats_.reset();
+	old_pop.stats_.reset();
 
 	for(Tank& t : old_pop) {
 		t.calculateFitness();
@@ -236,7 +236,8 @@ Population GeneticPool::epoch(Population& old_pop) {
 		new_pop.push_back(babies.second);
 	}
 	assert(new_pop.size() == old_pop.size());
-	stats_.generationCnt_++;
+	old_pop.stats_.generationCnt_++;
+	new_pop.stats_ = old_pop.stats_;
 	return new_pop;
 }
 }

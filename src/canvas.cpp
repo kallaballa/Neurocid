@@ -16,37 +16,41 @@ using std::endl;
 Canvas* Canvas::instance_ = NULL;
 
 Canvas::Canvas(Coord width, Coord height) :
-  screen_(NULL) , enabled_(true), width_(width), height_(height), timeout_(20) {
-  if (width > 0 && height > 0) {
-    if (SDL_Init(SDL_INIT_VIDEO) == -1) {
-      cerr << "Can't init SDL: " << SDL_GetError() << endl;
-      exit(1);
-    }
-    atexit(SDL_Quit);
-    screen_ = SDL_SetVideoMode(width, height, 16, SDL_SWSURFACE);
-    if (screen_ == NULL) {
-      cerr << "Can't set video mode: " << SDL_GetError() << endl;
-      exit(1);
-    }
-  }
+		screen_(NULL),
+		enabled_(true),
+		width_(width),
+		height_(height),
+		timeout_(20),
+		scale_(1),
+		viewPort_() {
+	if (width > 0 && height > 0) {
+		if (SDL_Init(SDL_INIT_VIDEO) == -1) {
+			cerr << "Can't init SDL: " << SDL_GetError() << endl;
+			exit(1);
+		}
+		atexit(SDL_Quit);
+		screen_ = SDL_SetVideoMode(width, height, 16, SDL_SWSURFACE);
+		if (screen_ == NULL) {
+			cerr << "Can't set video mode: " << SDL_GetError() << endl;
+			exit(1);
+		}
+	}
 
-  // Initialize SDL_ttf library
-     if (TTF_Init() != 0)
-     {
-    	cerr << "TTF_Init() Failed: " << TTF_GetError() << endl;
-        SDL_Quit();
-        exit(1);
-     }
+	// Initialize SDL_ttf library
+	if (TTF_Init() != 0) {
+		cerr << "TTF_Init() Failed: " << TTF_GetError() << endl;
+		SDL_Quit();
+		exit(1);
+	}
 
-     // Load a font
-     font_ = TTF_OpenFont("/usr/share/fonts/truetype/DejaVuSerif.ttf", 24);
-     if (font_ == NULL)
-     {
-        cerr << "TTF_OpenFont() Failed: " << TTF_GetError() << endl;
-        TTF_Quit();
-        SDL_Quit();
-        exit(1);
-     }
+	// Load a font
+	font_ = TTF_OpenFont("/usr/share/fonts/truetype/DejaVuSerif.ttf", 12);
+	if (font_ == NULL) {
+		cerr << "TTF_OpenFont() Failed: " << TTF_GetError() << endl;
+		TTF_Quit();
+		SDL_Quit();
+		exit(1);
+	}
 }
 
 void Canvas::calculateScale() {
@@ -91,6 +95,27 @@ void Canvas::drawText(const string& s, Coord x0, Coord y0, Color c) {
 		cerr << "SDL_BlitSurface() Failed: " << SDL_GetError() << endl;
 	}
 	SDL_FreeSurface(text);
+}
+
+void Canvas::updateOSD(const string& key, const string& value) {
+	osdMap_[key] = value;
+}
+
+void Canvas::renderOSD() {
+	Coord y = 20;
+	for(auto it : osdMap_) {
+		SDL_Surface *text;
+		SDL_Color text_color = { 255, 255, 255 };
+		text = TTF_RenderText_Solid(font_, (it.first + ": " + it.second).c_str(), text_color);
+		assert(text != NULL);
+		SDL_Rect drest = {20,y,0,0};
+		y += (text->h + 5);
+
+		if (SDL_BlitSurface(text, NULL, screen_, &drest) != 0) {
+			cerr << "SDL_BlitSurface() Failed: " << SDL_GetError() << endl;
+		}
+		SDL_FreeSurface(text);
+	}
 }
 
 void Canvas::drawTank(Tank& tank, Color c) {
@@ -184,9 +209,12 @@ void Canvas::render(BattleField& field) {
 		++teamCnt;
 	}
 
-	drawText(std::to_string(field.teams_[0].score_), 50, 50, teamColors_[0]);
-	drawText(std::to_string(field.teams_[1].score_), width_ - 70, 50, teamColors_[1]);
+	updateOSD("Score", std::to_string(field.teams_[0].score_) + " : " + std::to_string(field.teams_[1].score_));
+	updateOSD("Best", std::to_string(field.teams_[0].stats_.bestFitness_) + " / " + std::to_string(field.teams_[1].stats_.bestFitness_));
+	updateOSD("Avg", std::to_string(field.teams_[0].stats_.averageFitness_) + " / " + std::to_string(field.teams_[0].stats_.averageFitness_));
+	updateOSD("Gen", std::to_string(field.teams_[0].stats_.generationCnt_) + " / " + std::to_string(field.teams_[1].stats_.generationCnt_));
 
+	renderOSD();
 	this->update();
 }
 }

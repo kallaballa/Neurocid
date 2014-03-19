@@ -68,13 +68,13 @@ void Game::fight() {
 
 void Game::score() {
 	assert(teams_.size() == 2);
-	size_t collisions = (pools_[0].statistics().totalHits_
-			+ pools_[0].statistics().totalFriendlyFire_
-			+ pools_[1].statistics().totalHits_
-			+ pools_[1].statistics().totalFriendlyFire_
+	size_t collisions = (teams_[0].stats_.totalHits_
+			+ teams_[0].stats_.totalFriendlyFire_
+			+ teams_[1].stats_.totalHits_
+			+ teams_[1].stats_.totalFriendlyFire_
 	);
 
-	size_t damage = (pools_[0].statistics().totalDamage_+ pools_[1].statistics().totalDamage_);
+	size_t damage = (teams_[0].stats_.totalDamage_+ teams_[1].stats_.totalDamage_);
 
 	assert(collisions == damage);
 	vector<size_t> alive(2,0);
@@ -120,8 +120,8 @@ void Game::cleanup() {
 }
 
 void Game::print() {
-	for(GeneticPool& pool : pools_) {
-		pool.statistics().print(std::cout);
+	for(Population& team : teams_) {
+		team.stats_.print(std::cout);
 		std::cout << ":";
 	}
 	std::cout << std::endl;

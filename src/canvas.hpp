@@ -9,11 +9,13 @@
 #include "2d.hpp"
 #include <string>
 #include <cassert>
+#include <map>
 #include "options.hpp"
 #include "projectile.hpp"
 
 namespace tankwar {
 using std::string;
+using std::map;
 
 struct Color {
 	uint8_t r;
@@ -45,6 +47,7 @@ private:
 	size_t timeout_;
 	Rect viewPort_;
 	Coord scale_;
+	map<string,string> osdMap_;
 
 	void calculateScale();
 	Coord scaleX(const Coord& c);
@@ -55,13 +58,15 @@ private:
 public:
 	void drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c);
 	void drawText(const string& s, Coord x0, Coord y0, Color c);
+	void updateOSD(const string& key, const string& value);
+	void renderOSD();
 	void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
 	void drawTank(Tank& tank, Color c);
 	void drawProjectile(Projectile& pro, Color& c);
 	void drawExplosion(Object& o, Color& c);
 	void update();
 	void clear();
-	void render(BattleField& field);
+	void render(BattleField& fiseld);
 
 	static Canvas* getInstance() {
 		if (instance_ == NULL)
