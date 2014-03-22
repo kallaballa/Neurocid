@@ -1,13 +1,13 @@
 CXX      := g++-4.8
-CXXFLAGS := -std=c++0x -pedantic -Wall `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf` 
-LDFLAGS  := -L/opt/local/lib 
-LIBS     := -lboost_serialization -lboost_program_options -lm `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf` -lfann -lBox2D -lX11
-.PHONY: all release debug clean distclean 
+CXXFLAGS := -std=c++0x -pedantic -Wall -I../kmlocal-1.7.2/src/ `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf` 
+LDFLAGS  := -L/opt/local/lib -L../kmlocal-1.7.2/src/
+LIBS     := -lboost_serialization -lboost_program_options -lklocal -lm `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf` -lfann -lBox2D -lX11
+.PHONY: all release info debug clean distclean 
 
-#ifndef NO_OPENMP
-#CXXFLAGS += -fopenmp 
-#LIBS     += -fopenmp
-#endif
+ifndef NO_OPENMP
+CXXFLAGS += -fopenmp 
+LIBS     += -fopenmp
+endif
 
 ifdef NO_ASSERT
 CXXFLAGS += -DNDEBUG
@@ -26,6 +26,10 @@ release: LDFLAGS += -s
 release: CXXFLAGS += -g0 -O3
 release: dirs
 
+info: CXXFLAGS += -g3 -O3 -rdynamic
+info: LDFLAGS += -Wl,--export-dynamic
+info: dirs
+
 debug: CXXFLAGS += -g3 -O0 -rdynamic -D_CHECK_BRAIN_ALLOC
 debug: LDFLAGS += -Wl,--export-dynamic
 debug: dirs
@@ -43,4 +47,4 @@ dirs:
 	${MAKE} -C game/ ${MAKEFLAGS} ${MAKECMDGOALS}
 	${MAKE} -C tests/ ${MAKEFLAGS} ${MAKECMDGOALS}
 	${MAKE} -C render/ ${MAKEFLAGS} ${MAKECMDGOALS}
-	tests/tests
+	./run.sh tests/tests

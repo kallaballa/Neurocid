@@ -35,11 +35,15 @@ struct Object {
 	virtual ~Object() {
 	}
 
-	Coord distance(const Object& other) const {
-		return hypot(this->loc_.x - other.loc_.x, this->loc_.y - other.loc_.y);
+	inline Coord distance(const Object& other) const {
+		return loc_.distance(other.loc_);
 	}
 
-	bool collides(const Object& other) const {
+	inline Coord distance(const Vector2D& loc) const {
+		return loc_.distance(loc);
+	}
+
+	inline bool collides(const Object& other) const {
 		return distance(other) < (this->range_ + other.range_);
 	}
 

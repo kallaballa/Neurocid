@@ -12,6 +12,7 @@
 #include <vector>
 #include "2d.hpp"
 #include "bsp.hpp"
+#include "KMlocal.h"
 
 namespace tankwar {
 using std::numeric_limits;
@@ -19,6 +20,7 @@ using std::vector;
 
 class BattleField;
 class Population;
+class Tank;
 
 enum ScanObjectType {
 	FRIEND,
@@ -39,19 +41,46 @@ struct Scan {
 	vector<ScanObject> objects_;
 };
 
-class Scanner {
+class ScannerImpl {
+public:
+	virtual void scan(BattleField& field) = 0;
+};
+
+class BspScanner : public ScannerImpl {
 private:
+	void teamScan(Population& active, Population& passive, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl);
+public:
 	Bsp bspA_;
 	Bsp bspB_;
 	Bsp bspPA_;
 	Bsp bspPB_;
 
+	void findInRange(Bsp& bsp, Object& from, ScanObjectType type, vector<ScanObject>& result, size_t range);
 	std::pair<Object*,Coord> findNearest(Bsp& bsp, Object& from);
-	void teamScan(Population& active, Population& passive, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl);
 	void buildBsps(BattleField& field);
+	void scan(BattleField& field);
+};
+
+class SwarmScanner : public BspScanner {
+private:
+	void pickRandomN(ScanObjectType type, Tank& t, Population& team, vector<ScanObject>& result, size_t n);
+	void teamScan(Population& active, Population& passive, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl);
 public:
 	void scan(BattleField& field);
 };
+
+class ClusterScanner : public ScannerImpl {
+private:
+	pair<Vector2D, Coord> findNearestCenter(const vector<Vector2D>& centers, const Vector2D& loc);
+	void scanClusterCenters(Population& team, vector<Vector2D>& result, size_t numCenters);
+	void teamScan(Population& active, Population& passive, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, BattleFieldLayout& bfl);
+public:
+	vector<Vector2D> centersA_;
+	vector<Vector2D> centersB_;
+	void scan(BattleField& field);
+};
+
+typedef ClusterScanner Scanner;
 
 } /* namespace tankwar */
 

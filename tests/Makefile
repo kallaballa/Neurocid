@@ -13,6 +13,7 @@ CXXFLAGS += -I../ -I../src/
 all: release
 release: ${TARGET}
 debug: ${TARGET}
+info: ${TARGET}
 
 ${TARGET}: ${OBJS} 
 	${CXX} ${LDFLAGS} -o $@ $^ ${LIBS} 

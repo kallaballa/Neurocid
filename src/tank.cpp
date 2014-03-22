@@ -62,6 +62,31 @@ void Tank::calculateFitness() {
 
 					totalDiff += diffPerfect;
 					//		std::cerr << "perfect: ("<< perfect.x << "," << perfect.y << ")" << "candidate: ("<< candidate.x << "," << candidate.y << ")" << "diff: " << diff << std::endl;
+				} else if(so.type_ == ScanObjectType::FRIEND) {
+					Coord diffWorst = 0;
+					Vector2D worst = (so.loc_ - p->startLoc_).normalize();
+					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
+
+					ASSERT_DIR(worst);
+					ASSERT_DIR(candidate);
+
+					diffWorst = fabs(
+							(M_PI + radFromDir(worst))
+									- (M_PI + radFromDir(candidate)));
+
+					if (diffWorst > M_PI)
+						diffWorst = M_PI - (diffWorst - M_PI);
+
+					// a perpendicular friend is a good friend
+					diffWorst = fabs(M_PI/2 - diffWorst) * 2;
+
+					//std::cerr << diffPerfect << " c:" << candidate << " p:" << perfect << " e:" << p.nearestEnemyLoc_ <<  std::endl;
+
+					assert(diffWorst >= 0);
+					assert(diffWorst <= M_PI);
+
+					totalDiff += diffWorst;
+					//		std::cerr << "perfect: ("<< perfect.x << "," << perfect.y << ")" << "candidate: ("<< candidate.x << "," << candidate.y << ")" << "diff: " << diff << std::endl;
 				}
 			}
 		}
@@ -71,10 +96,12 @@ void Tank::calculateFitness() {
 
 	double aimRatio = (M_PI - (totalDiff / layout_.max_ammo_)) / M_PI;
 	double hitRatio = (double(hits_) / layout_.max_ammo_);
+	double friendlyRatioInv = (1.0 / ((double(friendlyFire_) / layout_.max_ammo_) + 1));
 	double damageRatioInv = (1.0 / ((double(damage_) / layout_.max_damage_) + 1));
 
 	//std::cerr << "aim:" << aimRatio << "\thit:" << hitRatio << "/" << hits_ << "\tdmg:" << damageRatioInv << "/" << damage_ << "\tammo:" << tl_.max_ammo_- projectiles_.size() << std::endl;
-	fitness_ = aimRatio + (hitRatio * damageRatioInv);
+	fitness_ = (aimRatio + ((hitRatio * damageRatioInv))) * friendlyRatioInv;
+
 	assert(fitness_ >= 0);
 	assert(!std::isnan(fitness_));
 	assert(!std::isinf(fitness_));	//
@@ -86,7 +113,7 @@ void Tank::calculateFitness() {
 
 void Tank::think(BattleFieldLayout& bfl) {
 	assert(brain_ != NULL);
-	brain_->update(this->scan_);
+	brain_->update(bfl, this->scan_);
 }
 
 void Tank::move(BattleFieldLayout& bfl) {
@@ -164,7 +191,8 @@ void Tank::resetGameState() {
 }
 
 void Tank::resetScore() {
-	friendly_fire_ = 0;
+	friendlyFire_ = 0;
+	crash_ = 0;
 	hits_ = 0;
 	damage_ = 0;
 	fitness_ = 0;

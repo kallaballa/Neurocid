@@ -6,10 +6,16 @@
 #include <chrono>
 #include <iostream>
 
+
+
 namespace tankwar {
+
+class Game;
+
 class GameState {
 private:
 	static GameState* instance_;
+	Game* currentGame_ = NULL;
 	bool run_ = true;
 	bool paused_ = false;
 	bool slow_ = false;
@@ -41,7 +47,6 @@ public:
 
 	bool tryPause() {
 		if(paused_) {
-			std::cerr << "pause" << std::endl;
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
 		return paused_ && run_;
@@ -53,12 +58,10 @@ public:
 
 	void pause() {
 		paused_ = true;
-		std::cerr << "paused" << std::endl;
 	}
 
 	void resume() {
 		paused_ = false;
-		std::cerr << "resumed" << std::endl;
 	}
 
 	void stop() {
@@ -70,6 +73,9 @@ public:
 			instance_ = new GameState();
 		return instance_;
 	}
+
+	void setCurrentGame(Game* g);
+	Game* getCurrentGame();
 };
 }
 

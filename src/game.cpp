@@ -32,6 +32,7 @@ void Game::prepare() {
 		random_shuffle(team.begin(), team.end());
 		for(Tank& t : team) {
 			t.resetScore();
+			t.brain_->reset();
 		}
 	}
 }
@@ -63,7 +64,8 @@ void Game::fight() {
 
 void Game::score() {
 	assert(teams_.size() == 2);
-	size_t collisions = (teams_[0].stats_.totalHits_
+/*	size_t collisions = (teams_[0].stats_.totalHits_
+
 			+ teams_[0].stats_.totalFriendlyFire_
 			+ teams_[1].stats_.totalHits_
 			+ teams_[1].stats_.totalFriendlyFire_
@@ -71,7 +73,7 @@ void Game::score() {
 
 	size_t damage = (teams_[0].stats_.totalDamage_+ teams_[1].stats_.totalDamage_);
 
-	assert(collisions == damage);
+	assert(collisions == damage);*/
 	vector<size_t> alive(2,0);
 
 	for(size_t i = 0; i < teams_.size(); ++i) {

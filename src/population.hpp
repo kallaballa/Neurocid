@@ -49,13 +49,14 @@ public:
 		double averageFitness_;
 		//worst
 		double worstFitness_;
-		//keeps track of the best genome
-		//generation counter
+
 		double totalFriendlyFire_;
+		double totalCrash_;
 		double totalHits_;
 		double totalDamage_;
 		double totalAmmonition_;
 		double averageFriendlyFire_;
+		double averageCrash_;
 		double averageHits_;
 		double averageDamage_;
 		double averageAmmonition_;
@@ -71,9 +72,11 @@ public:
 			worstFitness_ = std::numeric_limits<double>().max();
 			averageFitness_ = 0;
 			averageFriendlyFire_ = 0;
+			averageCrash_ = 0;
 			averageDamage_ = 0;
 			averageAmmonition_ = 0;
 			totalFitness_ = 0;
+			totalCrash_ = 0;
 			totalFriendlyFire_ = 0;
 			totalHits_ = 0;
 			totalDamage_ = 0;
@@ -84,7 +87,7 @@ public:
 		void print(std::ostream& os) {
 			os << generationCnt_ << ":" << bestFitness_ << ":"
 					<< averageFitness_ << ":" << averageHits_ << ":"
-					<< averageFriendlyFire_ / 3 << ":" << averageHits_ << ":"
+					<< averageFriendlyFire_ << ":" << averageCrash_ << ":" << averageHits_ << ":"
 					<< averageDamage_ << ":" << (averageAmmonition_ / 3) << ":"
 					<< (score_);
 		}

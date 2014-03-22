@@ -43,6 +43,7 @@ private:
 	b2Body* makeProjectileBody(Projectile& p);
 	void collide(Projectile& p1, Projectile& p2);
 	void collide(Projectile& p, Tank& t);
+	void collide(Tank& t1, Tank& t2);
 	void BeginContact(b2Contact* contact);
 	void EndContact(b2Contact* contact);
 public:

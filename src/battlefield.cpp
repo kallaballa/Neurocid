@@ -35,11 +35,12 @@ void BattleField::scan() {
 }
 
 void BattleField::think() {
-	#pragma omp parallel for collapse(1)
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		Population& team = teams_[i];
 
-		for(size_t j = 0; j < team.size(); ++j) {
+		size_t s = team.size();
+		#pragma omp parallel for num_threads(4)
+		for(size_t j = 0; j < s; ++j) {
 			if(!team[j].dead_)
 				team[j].think(layout_);
 		}

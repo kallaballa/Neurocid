@@ -161,7 +161,7 @@ Rect Canvas::findBounds(BattleField& field) {
 }
 
 void Canvas::drawGrid(BattleField& field) {
-	Color grey = {64,64,64};
+	Color grey = {32,32,32};
 	Color darkred = {127,0,0};
 
 	for(Coord x = 0; x < field.layout_.width_; x+=1000) {

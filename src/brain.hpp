@@ -18,14 +18,14 @@ namespace tankwar {
 struct BrainLayout  {
 	friend class boost::serialization::access;
 
-	size_t numInputs;
+	size_t numInputs_;
 	size_t numOutputs;
 	size_t numLayers_;
 	size_t neuronsPerHidden;
 
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
-	  ar & numInputs;
+	  ar & numInputs_;
 	  ar & numOutputs;
 	  ar & numLayers_;
 	  ar & neuronsPerHidden;
@@ -35,30 +35,37 @@ struct BrainLayout  {
 class Tank;
 class Population;
 
-class Brain {
-	bool destroyed_ = false;
-#ifdef _CHECK_BRAIN_ALLOC
+class BasicBrain {
+	#ifdef _CHECK_BRAIN_ALLOC
 	static std::map<fann*, size_t> nnAllocs_;
 	static size_t nnAllocCnt_;
 #endif
 	friend class boost::serialization::access;
 public:
+	bool destroyed_ = false;
 	BrainLayout  layout_;
 	fann *nn_;
 	fann_type lthrust_ = 0;
 	fann_type rthrust_ = 0;
 	fann_type shoot_ = 0;
 	fann_type* inputs_;
-	Brain() :  layout_(), nn_(NULL), inputs_(NULL) {}
-	Brain(BrainLayout layout, fann_type* weights = NULL);
-	Brain(const Brain& other);
-	virtual ~Brain();
-	fann* makeNN();
+
+	BasicBrain() :  layout_(), nn_(NULL), inputs_(NULL) {}
+	BasicBrain(BrainLayout layout, fann_type* weights = NULL);
+	BasicBrain(const BasicBrain& other);
+	virtual ~BasicBrain();
+
+	void makeNN();
 	void destroy();
-	void update(const Scan& scan);
+	void reset();
 	void randomize();
 	size_t size() const;
 	fann_type* weights();
+	bool isDestroyed();
+	bool operator==(BasicBrain& other);
+	bool operator!=(BasicBrain& other);
+
+	virtual void update(const BattleFieldLayout& bfl, const Scan& scan) = 0;
 
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
@@ -70,25 +77,28 @@ public:
 	  ar & s;
 	  ar & boost::serialization::make_array(weights(), s);
 	}
-
-	bool isDestroyed() {
-		return destroyed_;
-	}
-
-	bool operator==(Brain& other) {
-		assert(other.size() == this->size());
-		for(size_t i = 0; i < this->size(); ++i){
-			if(this->weights()[i] != other.weights()[i])
-				return false;
-		}
-		return true;
-	}
-
-	bool operator!=(Brain& other) {
-		return !operator==(other);
-	}
 };
 
+class BrainNearest : public BasicBrain {
+public:
+	BrainNearest();
+	BrainNearest(BrainLayout layout, fann_type* weights = NULL);
+	virtual void update(const BattleFieldLayout& bfl, const Scan& scan);
+};
+
+class BrainSwarm : public BasicBrain {
+private:
+	Coord calculateEnemyAngularDistance(const Vector2D& dir, const Vector2D& loc);
+	Coord calculateFriendAngularDistance(const Vector2D& dir, const Vector2D& loc);
+	void scaleByBattleFieldDistance(Vector2D& v, const Coord& distance, const BattleFieldLayout& bfl) const;
+	void applyInput(const size_t& i, const fann_type& value);
+public:
+	BrainSwarm();
+	BrainSwarm(BrainLayout layout, fann_type* weights = NULL);
+	virtual void update(const BattleFieldLayout& bfl, const Scan& scan);
+};
+
+typedef BrainSwarm Brain;
 } /* namespace tankwar */
 
 #endif /* BRAIN_HPP_ */

@@ -27,6 +27,10 @@ struct Vector2D {
 			x(a), y(b) {
 	}
 
+	inline Coord distance(const Vector2D& loc) const {
+		return hypot(x - loc.x, y - loc.y);
+	}
+
 	//we need some overloaded operators
 	Vector2D &operator+=(const Vector2D &rhs) {
 		x += rhs.x;

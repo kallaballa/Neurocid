@@ -62,7 +62,8 @@ public:
 	size_t ammonition_;
 	Coord lthrust_;
 	Coord rthrust_;
-	size_t friendly_fire_;
+	size_t friendlyFire_;
+	size_t crash_;
 	size_t hits_;
 	size_t damage_;
 	size_t cool_down;

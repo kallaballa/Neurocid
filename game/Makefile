@@ -14,6 +14,7 @@ LDFLAGS += -L../src/ -ltankwar
 all: release
 release: ${TARGET}
 debug: ${TARGET}
+info: ${TARGET}
 
 ${TARGET}: ${OBJS} 
 	${CXX} ${LDFLAGS} -o $@ $^ ${LIBS} 

@@ -34,8 +34,26 @@ void Physics::collide(Projectile& p, Tank& t) {
 		if (p.owner_->teamID_ != t.teamID_) {
 			p.owner_->hits_++;
 		} else {
-			p.owner_->friendly_fire_++;
+			p.owner_->friendlyFire_++;
 		}
+	}
+}
+
+void Physics::collide(Tank& t1, Tank& t2) {
+	return;
+	t1.damage_++;
+	t2.damage_++;
+	t1.crash_++;
+	t2.crash_++;
+
+	if (t1.damage_ >= t1.layout_.max_damage_) {
+		t1.dead_ = true;
+		t1.explode_ = true;
+	}
+
+	if (t2.damage_ >= t2.layout_.max_damage_) {
+		t2.dead_ = true;
+		t2.explode_ = true;
 	}
 }
 
@@ -62,6 +80,9 @@ void Physics::BeginContact(b2Contact* contact) {
 		  } else if(oA->type() == TANK && oB->type() == PROJECTILE) {
 			  //projectile -> tank
 			  collide(*static_cast<Projectile*>(oB), *static_cast<Tank*>(oA));
+		  } else if(oA->type() == TANK && oB->type() == TANK) {
+			  //tank -> tank
+			  collide(*static_cast<Tank*>(oB), *static_cast<Tank*>(oA));
 		  }
 
 		  if(oA->dead_)
@@ -263,7 +284,7 @@ void Physics::step() {
 	//			std::cerr << "tank: " << force << std::endl;
 			    body->SetLinearVelocity(b2Vec2(force.x, force.y));
 	//		    std::cerr << "rotforce:" << o->rotForce_ << std::endl;
-			    body->SetAngularVelocity(o->rotForce_);
+			    body->SetAngularVelocity(o->rotForce_ * 2);
 			    assert(o->rotation_ < M_PI);
 			} else if(o->type() == PROJECTILE) {
 				Projectile* p = static_cast<Projectile*>(o);

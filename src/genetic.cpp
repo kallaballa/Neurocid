@@ -138,7 +138,8 @@ void GeneticPool::calculateStatistics(Population& pop) {
 	pop.stats_.bestFitness_ = std::numeric_limits<double>().max();
 
 	for (size_t i = 0; i < size; ++i) {
-		pop.stats_.totalFriendlyFire_ += pop[i].friendly_fire_;
+		pop.stats_.totalFriendlyFire_ += pop[i].friendlyFire_;
+		pop.stats_.totalCrash_ += pop[i].crash_;
 		pop.stats_.totalHits_  += pop[i].hits_;
 		pop.stats_.totalDamage_  += pop[i].damage_;
 		pop.stats_.totalAmmonition_ += pop[i].ammonition_;
@@ -164,6 +165,7 @@ void GeneticPool::calculateStatistics(Population& pop) {
 	pop.stats_.score_ = pop.stats_.totalHits_ - pop.stats_.totalDamage_;
 	pop.stats_.averageFitness_ = pop.stats_.totalFitness_ / size;
 	pop.stats_.averageFriendlyFire_ = pop.stats_.totalFriendlyFire_ / size;
+	pop.stats_.averageCrash_ = pop.stats_.totalCrash_ / size;
 	pop.stats_.averageHits_ = pop.stats_.totalHits_ / size;
 	pop.stats_.averageDamage_ = pop.stats_.totalDamage_ / size;
 	pop.stats_.averageAmmonition_ = pop.stats_.totalAmmonition_ / size;

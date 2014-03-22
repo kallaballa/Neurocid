@@ -1,5 +1,5 @@
 TARGET  := libtankwar.so
-SRCS    := battlefield.cpp canvas.cpp tank.cpp brain.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner.cpp
+SRCS    := brain_basic.cpp brain_swarm.cpp brain_nearest.cpp battlefield.cpp canvas.cpp tank.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner_bsp.cpp scanner_swarm.cpp scanner_cluster.cpp
 #precompiled headers
 HEADERS := 
 GCH    := ${HEADERS:.h=.gch}
@@ -12,6 +12,7 @@ LDFLAGS += -shared
 all: release
 release: ${TARGET}
 debug: ${TARGET}
+info: ${TARGET}
 
 ${TARGET}: ${OBJS} 
 	${CXX} ${LDFLAGS} -o $@ $^ ${LIBS} 
