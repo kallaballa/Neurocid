@@ -10,6 +10,7 @@
 #include "renderer.hpp"
 #include "game.hpp"
 #include "gamestate.hpp"
+#include "time_tracker.hpp"
 #include <ctime>
 #include <thread>
 #include <SDL/SDL_events.h>
@@ -53,6 +54,7 @@ void runEventHandler() {
 	Canvas& canvas = *Canvas::getInstance();
 	Renderer& renderer = *Renderer::getInstance();
 	GameState& gameState = *GameState::getInstance();
+	TimeTracker& timeTracker = *TimeTracker::getInstance();
 	SDL_Event event;
 
 	while (gameState.isRunning()) {
@@ -83,6 +85,12 @@ void runEventHandler() {
 						gameState.resume();
 					else
 						gameState.pause();
+				} else if (event.key.keysym.sym == SDLKey::SDLK_t) {
+					if (timeTracker.isEnabled())
+						timeTracker.setEnabled(false);
+					else
+						timeTracker.setEnabled(true);
+
 				} else if (event.key.keysym.sym == SDLKey::SDLK_d) {
 					dumpTeams();
 				} else if (event.key.keysym.sym == SDLKey::SDLK_ESCAPE) {
@@ -485,13 +493,15 @@ public:
 };
 
 void playGame(size_t gameIter, Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools, Placer& placer) {
-	std::cerr << "iterations:"  << scenario->bfl_.iterations_ << std::endl;
 	GameState& gs = *GameState::getInstance();
+	TimeTracker& tt = *TimeTracker::getInstance();
 	while(gs.isRunning() && --gameIter > 0) {
-		Game game(teams, pools, placer, scenario->bfl_, scenario->phl_);
-		gs.setCurrentGame(&game);
-		teams = game.play();
-		gs.setCurrentGame(NULL);
+		tt.execute("game", [&](){
+			Game game(teams, pools, placer, scenario->bfl_, scenario->phl_);
+			gs.setCurrentGame(&game);
+			teams = game.play();
+			gs.setCurrentGame(NULL);
+		});
 	}
 }
 

@@ -1,10 +1,13 @@
 TARGET  := libtankwar.so
-SRCS    := brain_basic.cpp brain_swarm.cpp brain_nearest.cpp battlefield.cpp canvas.cpp tank.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner_bsp.cpp scanner_swarm.cpp scanner_cluster.cpp
+SRCS    := brain_basic.cpp brain_swarm.cpp brain_nearest.cpp battlefield.cpp canvas.cpp tank.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner_bsp.cpp scanner_swarm.cpp scanner_cluster.cpp time_tracker.cpp
 #precompiled headers
 HEADERS := 
+CU      := KMeansKernels.cu
+CUO     := ${CU:.cu=.o}
 GCH    := ${HEADERS:.h=.gch}
 OBJS    := ${SRCS:.cpp=.o} 
 DEPS    := ${SRCS:.cpp=.dep} 
+
 CXXFLAGS += -fpic -I../
 LDFLAGS += -shared 
 .PHONY: all release debug clean distclean 
@@ -14,7 +17,10 @@ release: ${TARGET}
 debug: ${TARGET}
 info: ${TARGET}
 
-${TARGET}: ${OBJS} 
+${CUO}: ${CU} 
+	${NVCC} ${NVCC_CXXFLAGS} --compiler-bindir ${NVCC_HOST_CXX} -c $< 
+
+${TARGET}: ${OBJS} ${CUO}
 	${CXX} ${LDFLAGS} -o $@ $^ ${LIBS} 
 
 ${OBJS}: %.o: %.cpp %.dep ${GCH}
@@ -37,6 +43,4 @@ clean:
 	rm -f *~ ${DEPS} ${OBJS} ${GCH} ${TARGET} 
 
 distclean: clean
-
-
 

@@ -23,6 +23,7 @@ public:
 	vector<Population>&  teams_;
 	Physics physics_;
 	Scanner scanner_;
+	vector<Projectile*> spawned_;
 
 	BattleField(BattleFieldLayout& bfl, PhysicsLayout& pl, vector<Population>& teams);
 	void step();

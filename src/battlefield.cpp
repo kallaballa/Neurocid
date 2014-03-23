@@ -9,7 +9,7 @@
 #include "battlefield.hpp"
 #include "population.hpp"
 #include "gamestate.hpp"
-#include "bsp.hpp"
+#include "time_tracker.hpp"
 
 #include <vector>
 #include <list>
@@ -39,7 +39,6 @@ void BattleField::think() {
 		Population& team = teams_[i];
 
 		size_t s = team.size();
-		#pragma omp parallel for num_threads(4)
 		for(size_t j = 0; j < s; ++j) {
 			if(!team[j].dead_)
 				team[j].think(layout_);
@@ -49,8 +48,7 @@ void BattleField::think() {
 
 void BattleField::move() {
 	//mpve tanks and update the simulation with spawned projectiles
-	vector<Projectile*> spawned;
-
+	spawned_.clear();
 	for(size_t i = 0; i < teams_.size(); ++i)  {
 		Population& team  = teams_[i];
 		for(size_t j = 0; j < team.size(); ++j)  {
@@ -60,25 +58,32 @@ void BattleField::move() {
 
 			t.move(layout_);
 			if(t.willShoot()) {
-				Projectile* p = t.shoot();
-				spawned.push_back(p);
+				spawned_.push_back(t.shoot());
 			}
 		}
 	}
 
-	physics_.update(spawned);
+	physics_.update(spawned_);
 	physics_.step();
-    spawned.clear();
 }
 
 void BattleField::cleanup() {
 }
 
 void BattleField::step() {
-	if(GameState::getInstance()->isRunning()) scan();
-	if(GameState::getInstance()->isRunning()) think();
-	if(GameState::getInstance()->isRunning()) move();
-	cleanup();
+	TimeTracker& tt = *TimeTracker::getInstance();
+	tt.execute("battlefield", "scan", [&](){
+		scan();
+	});
+	tt.execute("battlefield", "think", [&](){
+		think();
+	});
+	tt.execute("battlefield", "move", [&](){
+		move();
+	});
+	tt.execute("battlefield", "cleanup", [&](){
+		cleanup();
+	});
 }
 
 } /* namespace tankwar */

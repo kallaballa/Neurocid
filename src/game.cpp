@@ -9,10 +9,10 @@
 #include "gamestate.hpp"
 #include "renderer.hpp"
 #include "physics.hpp"
+#include "time_tracker.hpp"
 #include <algorithm>
 #include <chrono>
 #include <thread>
-
 
 namespace tankwar {
 
@@ -46,8 +46,11 @@ void Game::fight() {
 
 	BattleField field(bfl_, phl_, teams_);
 	GameState& gs = *GameState::getInstance();
+	TimeTracker& tt = *TimeTracker::getInstance();
+
+	tt.execute("battlefield", [&](){
 	for(size_t i = 0; (i < bfl_.iterations_) && gs.isRunning(); ++i) {
-		field.step();
+			field.step();
 		while(gs.tryPause()) {};
 
 		if(gs.isSlow()) {
@@ -59,6 +62,8 @@ void Game::fight() {
 
 		Renderer::getInstance()->update(&field);
 	}
+	});
+
 	Renderer::getInstance()->update(NULL);
 }
 
@@ -125,16 +130,39 @@ void Game::print() {
 }
 
 vector<Population> Game::play() {
-	std::cerr << 1000.0 / measure<>::execution( [&]() {
-		if(GameState::getInstance()->isRunning()) prepare();
-		if(GameState::getInstance()->isRunning()) place();
-		if(GameState::getInstance()->isRunning()) fight();
-		if(GameState::getInstance()->isRunning()) mate();
-		if(GameState::getInstance()->isRunning()) score();
-		cleanup();
+	TimeTracker& tt = *TimeTracker::getInstance();
 
-		if(GameState::getInstance()->isRunning()) print();
-	}) << std::endl;
+	size_t dur = tt.measure([&]() {
+		tt.execute("game", "prepare", [&]() {
+					prepare();
+				});
+
+		tt.execute("game", "place", [&]() {
+					place();
+				});
+
+		tt.execute("game", "fight", [&]() {
+					fight();
+				});
+
+		tt.execute("game", "mate", [&]() {
+					mate();
+				});
+
+		tt.execute("game", "score", [&]() {
+					score();
+				});
+
+		tt.execute("game", "cleanup", [&]() {
+					cleanup();
+				});
+
+		tt.execute("game", "print", [&]() {
+					print();
+				});
+	});
+
+	std::cerr << "game/s: " << 1000000.0f/dur << std::endl;
 
 	return newTeams_;
 }

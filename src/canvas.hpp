@@ -60,6 +60,8 @@ public:
 	void drawText(const string& s, Coord x0, Coord y0, Color c);
 	void updateOSD(const string& key, const string& value);
 	void renderOSD();
+	Coord renderText(const string& s, Coord x, Color c, bool left);
+	void renderTackerInfo();
 	void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
 	void drawTank(Tank& tank, Color c);
 	void drawProjectile(Projectile& pro, Color& c);

@@ -4,12 +4,15 @@
 #include "projectile.hpp"
 #include "battlefield.hpp"
 #include "population.hpp"
+#include "time_tracker.hpp"
+#include <sstream>
 #include <thread>
 #include <chrono>
 #include <iostream>
 
 
 namespace tankwar {
+using std::stringstream;
 using std::cerr;
 using std::endl;
 
@@ -44,7 +47,7 @@ Canvas::Canvas(Coord width, Coord height) :
 	}
 
 	// Load a font
-	font_ = TTF_OpenFont("/usr/share/fonts/truetype/DejaVuSerif.ttf", 12);
+	font_ = TTF_OpenFont("/usr/share/fonts/truetype/DejaVuSansMono.ttf", 12);
 	if (font_ == NULL) {
 		cerr << "TTF_OpenFont() Failed: " << TTF_GetError() << endl;
 		TTF_Quit();
@@ -115,6 +118,46 @@ void Canvas::renderOSD() {
 			cerr << "SDL_BlitSurface() Failed: " << SDL_GetError() << endl;
 		}
 		SDL_FreeSurface(text);
+	}
+}
+
+Coord Canvas::renderText(const string& s, Coord y, Color c, bool left) {
+	SDL_Surface *text;
+	SDL_Color text_color = { c.r, c.g, c.b };
+	text = TTF_RenderText_Solid(font_, s.c_str(), text_color);
+	assert(text != NULL);
+
+	SDL_Rect drest;
+	if(!left)
+		drest = {width_ - text->w, y,0,0};
+	else
+		drest = {20, y,0,0};
+
+	if (SDL_BlitSurface(text, NULL, screen_, &drest) != 0) {
+		cerr << "SDL_BlitSurface() Failed: " << SDL_GetError() << endl;
+	}
+	Coord h = text->h;
+	SDL_FreeSurface(text);
+	return h;
+}
+
+void Canvas::renderTackerInfo() {
+	Coord y = 20;
+	const map<string, TimeInfo>& tiMap = TimeTracker::getInstance()->getMap();
+	Color c = {200,200,200};
+	stringstream ss;
+	for(auto it : tiMap) {
+		if(it.first == "game")
+			continue;
+		ss << std::left << std::setw(45) << std::setfill(' ') << (it.first + ": " + it.second.str());
+		y += renderText(ss.str(), y, c, false) + 5;
+		ss.str("");
+
+		for(auto itc : it.second.children_) {
+			ss << std::left << std::setw(45) << std::setfill(' ') << ("  "  + itc.first + ": " + itc.second.str());
+			y += renderText(ss.str(), y, c, false) + 5;
+			ss.str("");
+		}
 	}
 }
 
@@ -215,6 +258,8 @@ void Canvas::render(BattleField& field) {
 	updateOSD("Gen", std::to_string(field.teams_[0].stats_.generationCnt_) + " / " + std::to_string(field.teams_[1].stats_.generationCnt_));
 
 	renderOSD();
+	if(TimeTracker::getInstance()->isEnabled())
+		renderTackerInfo();
 	this->update();
 }
 }

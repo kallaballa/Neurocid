@@ -22,19 +22,6 @@ vector<GeneticPool> makePools(size_t numTeams, GeneticParams& gp);
 double fRand(double fMin, double fMax);
 int iRand(int x,int y);
 
-template<typename TimeT = std::chrono::milliseconds>
-struct measure
-{
-    template<typename F>
-    static typename TimeT::rep execution(F const &func)
-    {
-        auto start = std::chrono::system_clock::now();
-        func();
-        auto duration = std::chrono::duration_cast< TimeT>(
-            std::chrono::system_clock::now() - start);
-        return duration.count();
-    }
-};
 
 template<class T>
 void clamp(T &arg, T min, T max)
