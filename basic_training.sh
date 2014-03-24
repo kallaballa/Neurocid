@@ -1,0 +1,21 @@
+#!/bin/bash
+
+function run() {
+  m=1
+	[ -n "$4" ] && m=$4;
+  if [ -n "$3" ]; then
+		./run.sh game/tankwar -m $m  -i $1  -s $2.pop -l $3 $2 > timeseries.csv 
+	else
+    ./run.sh game/tankwar -m $m  -i $1  -s $2.pop $2 > timeseries.csv             
+	fi
+  echo $2.pop
+}
+
+
+POP=`run 500 AimOnOneNoMove`
+POP=`run 500 SymmetricLinesNoMove $POP`
+POP=`run 500 AimOnOne $POP`
+POP=`run 1000 SymmetricLines $POP`
+POP=`run 2000 SymmetricLinesFar $POP`
+
+
