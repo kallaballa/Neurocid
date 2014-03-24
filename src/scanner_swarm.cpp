@@ -13,7 +13,7 @@
 
 namespace tankwar {
 
-void SwarmScanner::pickRandomN(ScanObjectType type, Tank& t, Population& team, vector<ScanObject>& result, size_t n) {
+void SwarmScanner::pickRandomN(ScanObjectType type, Tank& t, Population& team, ScanObjectVector& result, size_t n) {
 	size_t s = team.size();
 
 	if(s > 0) {

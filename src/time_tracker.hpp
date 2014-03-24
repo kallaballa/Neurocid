@@ -31,6 +31,10 @@ struct TimeInfo {
 	void add(size_t t) {
 		totalTime_ += t;
 		++cnt_;
+		if(cnt_ == 100) {
+			cnt_ = 1;
+			totalTime_ /= 100;
+		}
 	}
 
 	string str() {
@@ -113,6 +117,11 @@ public:
 	const map<string, TimeInfo>& getMap() {
 		return tiMap_;
 	}
+
+	void reset() {
+		tiMap_.clear();
+	}
+
 	static TimeTracker* getInstance() {
 		if(instance_ == NULL)
 			instance_ = new TimeTracker();

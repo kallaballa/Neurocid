@@ -11,6 +11,11 @@
 #include "bsp.hpp"
 #include "util.hpp"
 
+#ifdef TANKWAR_GPU
+#include "../src/KMeans.hpp"
+#include <ctime>
+#endif
+
 namespace tankwar {
 
 pair<Vector2D, Coord> ClusterScanner::findNearestCenter(const vector<Vector2D>& centers, const Vector2D& loc) {
@@ -32,70 +37,95 @@ pair<Vector2D, Coord> ClusterScanner::findNearestCenter(const vector<Vector2D>& 
 }
 
 void ClusterScanner::scanClusterCenters(Population& team, vector<Vector2D>& result, size_t numCenters) {
-	int	stages = 20;		// number of stages
-
-	KMterm term(100, 0, 0, 0,		// run for 100 stages
-			0.10,			// min consec RDL
-			0.10,			// min accum RDL
-			3,			// max run stages
-			0.50,			// init. prob. of acceptance
-			10,			// temp. run length
-			0.95);			// temp. reduction factor
-
-    term.setAbsMaxTotStage(stages);		// set number of stages
-
     size_t teamSize = team.size();
-	KMdata dataPts(2, std::max(teamSize, numCenters));		// allocate data storage
-	KMdataArray pts = dataPts.getPts();
-    if(teamSize < numCenters) {
-    	size_t n = 0;
-    	while(n < numCenters) {
-			for(size_t i = 0;  i < team.size(); ++i) {
-				result.push_back(team[i].loc_);
+	if(teamSize < numCenters) {
+	    	size_t n = 0;
+	    	while(n < numCenters) {
+				for(size_t i = 0;  i < team.size(); ++i) {
+					result.push_back(team[i].loc_);
 
-				if(++n == numCenters)
-					break;
+					if(++n == numCenters)
+						break;
+				}
+	    	}
+	    } else {
+	#ifndef TANKWAR_GPU
+			int	stages = 5;		// number of stages
+
+			KMterm term(100, 0, 0, 0,		// run for 100 stages
+					0.10,			// min consec RDL
+					0.10,			// min accum RDL
+					3,			// max run stages
+					0.50,			// init. prob. of acceptance
+					10,			// temp. run length
+					0.95);			// temp. reduction factor
+
+			term.setAbsMaxTotStage(stages);		// set number of stages
+
+			KMdata dataPts(2, std::max(teamSize, numCenters));		// allocate data storage
+			KMdataArray pts = dataPts.getPts();
+
+			for(size_t i = 0;  i < team.size(); ++i) {
+				Tank& t = team[i];
+				pts[i][0] = t.loc_.x;
+				pts[i][1] = t.loc_.y;
 			}
-    	}
-    } else {
-		for(size_t i = 0;  i < team.size(); ++i) {
-			Tank& t = team[i];
-			pts[i][0] = t.loc_.x;
-			pts[i][1] = t.loc_.y;
+
+			dataPts.buildKcTree();			// build filtering structure
+			KMfilterCenters ctrs(numCenters, dataPts);		// allocate centers
+
+	/*	    KMlocalLloyds kmLloyds(ctrs, term);		// repeated Lloyd's
+			ctrs = kmLloyds.execute();			// execute
+
+			KMlocalSwap kmSwap(ctrs, term);		// Swap heuristic
+			ctrs = kmSwap.execute();
+	*/
+
+			KMlocalEZ_Hybrid kmEZ_Hybrid(ctrs, term);	// EZ-Hybrid heuristic
+			ctrs = kmEZ_Hybrid.execute();
+	/*
+			cout << "\nExecuting Clustering Algorithm: Hybrid\n";
+			KMlocalHybrid kmHybrid(ctrs, term);		// Hybrid heuristic
+			ctrs = kmHybrid.execute();
+	*/
+
+			for (size_t i = 0; i < numCenters; i++) {
+				result.push_back(Vector2D(ctrs[i][0], ctrs[i][1]));
+			}
+		   // std::cerr << "### stages: " << kmHybrid.getTotalStages() << std::endl;
+#else
+		using namespace GPUMLib;
+
+		HostMatrix<float> data(teamSize,2);
+		float* pd = data.Pointer();
+		for(size_t i = 0; i < teamSize; ++i) {
+			pd[i * 2] = team[i].loc_.x;
+			pd[i * 2 + 1] = team[i].loc_.y;
 		}
 
-	    dataPts.buildKcTree();			// build filtering structure
-	    KMfilterCenters ctrs(numCenters, dataPts);		// allocate centers
+		DeviceMatrix<float> dData(data);
+		KMeans km;
+		km.SetSeed(time(0));
+        DeviceMatrix<float> dCenters = km.Execute(dData, numCenters);
+		assert(dCenters.Rows() == numCenters);
+		assert(dCenters.Elements() == (numCenters * 2));
+		HostMatrix<float> centers(dCenters);
 
-/*	    KMlocalLloyds kmLloyds(ctrs, term);		// repeated Lloyd's
-	    ctrs = kmLloyds.execute();			// execute
-*/
+		float *pc = centers.Pointer();
 
-	    cout << "\nExecuting Clustering Algorithm: Swap\n";
-	    KMlocalSwap kmSwap(ctrs, term);		// Swap heuristic
-	    ctrs = kmSwap.execute();
+		for (size_t i = 0; i < numCenters; ++i) {
+			result.push_back(Vector2D(pc[ i ], pc[ i + 1]));
+		}
+#endif
+	}
 
-/*	    cout << "\nExecuting Clustering Algorithm: EZ-Hybrid\n";
-	    KMlocalEZ_Hybrid kmEZ_Hybrid(ctrs, term);	// EZ-Hybrid heuristic
-	    ctrs = kmEZ_Hybrid.execute();
-
-	    cout << "\nExecuting Clustering Algorithm: Hybrid\n";
-	    KMlocalHybrid kmHybrid(ctrs, term);		// Hybrid heuristic
-	    ctrs = kmHybrid.execute();
-*/
-
-	    for (size_t i = 0; i < numCenters; i++) {
-	    	result.push_back(Vector2D(ctrs[i][0], ctrs[i][1]));
-	    }
-	   // std::cerr << "### stages: " << kmHybrid.getTotalStages() << std::endl;
-    }
-    assert(result.size() == numCenters);
+	assert(result.size() == numCenters);
 }
 
 void ClusterScanner::teamScan(Population& active, Population& passive, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, BattleFieldLayout& bfl) {
 	for(size_t i = 0; i < active.size(); ++i) {
 		Tank& t = active[i];
-		if(t.dead_)
+		if(t.dead_ || t.layout_.isDummy_)
 			continue;
 
 		Scan& scan = t.scan_;

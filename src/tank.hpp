@@ -18,9 +18,11 @@ struct TankLayout {
 	friend class boost::serialization::access;
 
 	ProjectileLayout pl_;
+	bool isDummy_;
 	bool canShoot_;
 	bool canRotate_;
 	bool canMove_;
+	bool disableProjectileFitness_;
 
 	Coord range_;
 	Coord max_speed_;
@@ -29,14 +31,17 @@ struct TankLayout {
 	size_t max_cooldown;
 	size_t max_ammo_;
 	size_t max_damage_;
+	size_t crashes_per_damage_;
 
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
 	  ar & pl_;
 
+	  ar & isDummy_;
 	  ar & canShoot_;
 	  ar & canRotate_;
 	  ar & canMove_;
+	  ar & disableProjectileFitness_;
 
 	  ar & range_;
 	  ar & max_speed_;
@@ -45,6 +50,7 @@ struct TankLayout {
 	  ar & max_cooldown;
 	  ar & max_ammo_;
 	  ar & max_damage_;
+	  ar & crashes_per_damage_;
 	}
 };
 
@@ -103,7 +109,6 @@ public:
 	bool willShoot();
 private:
 };
-
 
 } /* namespace tankwar */
 

@@ -147,8 +147,6 @@ void Canvas::renderTackerInfo() {
 	Color c = {200,200,200};
 	stringstream ss;
 	for(auto it : tiMap) {
-		if(it.first == "game")
-			continue;
 		ss << std::left << std::setw(45) << std::setfill(' ') << (it.first + ": " + it.second.str());
 		y += renderText(ss.str(), y, c, false) + 5;
 		ss.str("");

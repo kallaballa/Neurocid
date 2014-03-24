@@ -248,61 +248,62 @@ public:
 		centerA += (axisDir * (gl.distance_/2));
 		centerB -= (axisDir * (gl.distance_/2));
 
-		Coord lengthA = (((teams[0][0].range_ + gl.spacing_) * (teams[0].size() - 1)) / 2);
-		Coord lengthB = (((teams[1][0].range_ + gl.spacing_) * (teams[1].size() - 1)) / 2);
+		Coord lengthA = gl.distance_ / 2;
+		Coord lengthB = gl.distance_ / 2;
 
 		Vector2D startA = centerA;
+		Vector2D startA2 = centerA;
 		startA += (sideDirA * lengthA);
+		startA2 += (sideDirA * -lengthA);
+
 		Vector2D startB = centerB;
+		Vector2D startB2 = centerB;
 		startB += (sideDirB * lengthB);
+		startB2 += (sideDirB * -lengthB);
 
 		size_t s = teams[0].size();
 		size_t firstHalf = s/2;
 		size_t secondHalf = firstHalf + s%2;
 
 		assert(s == (firstHalf + secondHalf));
-		bool swap = iRand(0,1);
+
+		Vector2D halfDirA = sideDirA;
+		Vector2D halfDirA2 = sideDirA;
+		Vector2D halfDirB = sideDirB;
+		Vector2D halfDirB2 = sideDirB;
+
+		halfDirA = dirFromRad(fRand(0, M_PI));
+		halfDirA2 = dirFromRad(fRand(0, M_PI));
+		halfDirB = dirFromRad(fRand(0, M_PI));
+		halfDirB2 = dirFromRad(fRand(0, M_PI));
+
+		size_t tA = iRand(0,1);
+		size_t tB = tA == 0 ? 1 : 0;
+
 		for(size_t i = 0; i < firstHalf; i++) {
-			teams[0][i].loc_ = centerA;
-			Vector2D shift = (sideDirA * ((teams[0][i].range_ + gl.spacing_) * (i + 5)));
-			if(swap)
-				teams[0][i].loc_ -= shift;
-			else
-				teams[0][i].loc_ += shift;
+			teams[tA][i].loc_ = startA;
+			Vector2D shift = (halfDirA * ((teams[0][i].range_ + gl.spacing_) * (i)));
+			teams[tA][i].loc_ += shift;
+			teams[tA][i].rotation_ = facer_(tick(), 0, rotation);
 
-			teams[0][i].rotation_ = facer_(tick(), 0, rotation);
-			teams[1][i].loc_ = centerA;
-			shift = (sideDirA * ((teams[1][i].range_ + gl.spacing_) * (i + 5)));
-			if(swap)
-				teams[1][i].loc_ += shift;
-			else
-				teams[1][i].loc_ -= shift;
-
-			teams[1][i].rotation_ = facer_(tick(), 1, rotation);
+			teams[tB][i].loc_ = startA2;
+			shift = (halfDirA2 * ((teams[1][i].range_ + gl.spacing_) * (i)));
+			teams[tB][i].loc_ -= shift;
+			teams[tB][i].rotation_ = facer_(tick(), 1, rotation);
 		}
 
-		swap = iRand(0,1);
+		tA = iRand(0,1);
+		tB = tA == 0 ? 1 : 0;
 		for(size_t i = 0; i < secondHalf; i++) {
-			teams[0][firstHalf + i].loc_ = centerB;
-			Vector2D shift = (sideDirB * ((teams[0][firstHalf + i].range_ + gl.spacing_) * (i + 5)));
+			teams[tA][firstHalf + i].loc_ = startB;
+			Vector2D shift = (halfDirB * ((teams[0][firstHalf + i].range_ + gl.spacing_) * (i)));
+			teams[tA][firstHalf + i].loc_ += shift;
+			teams[tA][firstHalf + i].rotation_ = facer_(tick(), 0, rotation);
 
-			if(swap)
-				teams[0][firstHalf + i].loc_ -= shift;
-			else
-				teams[0][firstHalf + i].loc_ += shift;
-
-
-			teams[0][firstHalf + i].rotation_ = facer_(tick(), 0, rotation);
-			teams[1][firstHalf + i].loc_ = centerB;
-
-
-			shift = (sideDirB * ((teams[1][firstHalf + i].range_ + gl.spacing_) * (i + 5)));
-			if(swap)
-				teams[1][firstHalf + i].loc_ += shift;
-			else
-				teams[1][firstHalf + i].loc_ -= shift;
-
-			teams[1][firstHalf + i].rotation_ = facer_(tick(), 1, rotation);
+			teams[tB][firstHalf + i].loc_ = startB2;
+			shift = (halfDirB2 * ((teams[1][firstHalf + i].range_ + gl.spacing_) * (i)));
+			teams[tB][firstHalf + i].loc_ -= shift;
+			teams[tB][firstHalf + i].rotation_ = facer_(tick(), 1, rotation);
 		}
 
 		Placer::place(teams);

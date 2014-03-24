@@ -34,11 +34,12 @@ struct ScanObject {
 	Coord dis_;
 };
 
+typedef vector<ScanObject> ScanObjectVector;
 struct Scan {
 	Vector2D scale_ = NO_VECTOR2D;
 	Vector2D dir_ = NO_VECTOR2D;
 	Vector2D loc_ = NO_VECTOR2D;
-	vector<ScanObject> objects_;
+	ScanObjectVector objects_;
 };
 
 class ScannerImpl {
@@ -55,7 +56,7 @@ public:
 	Bsp bspPA_;
 	Bsp bspPB_;
 
-	void findInRange(Bsp& bsp, Object& from, ScanObjectType type, vector<ScanObject>& result, size_t range);
+	void findInRange(Bsp& bsp, Object& from, ScanObjectType type, ScanObjectVector& result, size_t range);
 	std::pair<Object*,Coord> findNearest(Bsp& bsp, Object& from);
 	void buildBsps(BattleField& field);
 	void scan(BattleField& field);
@@ -63,7 +64,7 @@ public:
 
 class SwarmScanner : public BspScanner {
 private:
-	void pickRandomN(ScanObjectType type, Tank& t, Population& team, vector<ScanObject>& result, size_t n);
+	void pickRandomN(ScanObjectType type, Tank& t, Population& team, ScanObjectVector& result, size_t n);
 	void teamScan(Population& active, Population& passive, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl);
 public:
 	void scan(BattleField& field);
@@ -71,16 +72,24 @@ public:
 
 class ClusterScanner : public ScannerImpl {
 private:
-	pair<Vector2D, Coord> findNearestCenter(const vector<Vector2D>& centers, const Vector2D& loc);
-	void scanClusterCenters(Population& team, vector<Vector2D>& result, size_t numCenters);
 	void teamScan(Population& active, Population& passive, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, BattleFieldLayout& bfl);
 public:
+	pair<Vector2D, Coord> findNearestCenter(const vector<Vector2D>& centers, const Vector2D& loc);
+	void scanClusterCenters(Population& team, vector<Vector2D>& result, size_t numCenters);
+
 	vector<Vector2D> centersA_;
 	vector<Vector2D> centersB_;
 	void scan(BattleField& field);
 };
 
-typedef ClusterScanner Scanner;
+class HybridScanner : public ClusterScanner, public BspScanner {
+private:
+	void teamScan(Population& active, Population& passive, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl);
+public:
+	void scan(BattleField& field);
+};
+
+typedef HybridScanner Scanner;
 
 } /* namespace tankwar */
 

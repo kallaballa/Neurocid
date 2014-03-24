@@ -22,23 +22,6 @@ BrainSwarm::BrainSwarm(BrainLayout layout, fann_type* weight) : BasicBrain(layou
 }
 
 /*
- * Calculates the smaller angle between dir and loc (angular distance).
- */
-Coord BrainSwarm::calculateEnemyAngularDistance(const Vector2D& dir, const Vector2D& loc) {
-	Coord diff = (M_PI + radFromDir(dir))
-			- (M_PI + radFromDir(loc));
-
-	if (diff > M_PI)
-		diff = M_PI - diff;
-
-	else if (diff < -M_PI)
-		diff = M_PI + diff;
-
-	assert(diff > -M_PI && diff < M_PI);
-
-	return diff;
-}
-
 Coord BrainSwarm::calculateFriendAngularDistance(const Vector2D& dir, const Vector2D& loc) {
 	double diff = (M_PI + radFromDir(dir)) - (M_PI + radFromDir(loc));
 
@@ -56,6 +39,49 @@ Coord BrainSwarm::calculateFriendAngularDistance(const Vector2D& dir, const Vect
 //		std::cerr << "diff:" << diff << std::endl;
 	assert(diff > -M_PI && diff < M_PI);
 	return diff;
+}
+
+Coord BrainSwarm::calculateEnemyAngularDistance(const Vector2D& dir, const Vector2D& dirEnemy) {
+	Coord diff = (M_PI + radFromDir(dir))
+			- (M_PI + radFromDir(dirEnemy));
+
+	if (diff > M_PI)
+		diff = M_PI - diff;
+
+	else if (diff < -M_PI)
+		diff = M_PI + diff;
+
+	assert(diff > -M_PI && diff < M_PI);
+
+	return diff;
+}
+*/
+Coord BrainSwarm::calculateEnemyAngularDistance(const Vector2D& dir, const Vector2D& enemyDir) {
+	Vector2D result;
+
+	result.y = (enemyDir.x * dir.y - enemyDir.y * dir.x);
+	result.x = (enemyDir.x * dir.x + enemyDir.y * dir.y);
+
+	Coord diff = radFromDir(result);
+
+	if (diff > M_PI)
+		diff = M_PI - diff;
+
+	else if (diff < -M_PI)
+		diff = M_PI + diff;
+
+	assert(diff >= -M_PI && diff <= M_PI);
+
+	return diff;
+}
+
+Vector2D BrainSwarm::calculateEnemyAngularDistanceVector(const Vector2D& dir, const Vector2D& enemyDir) {
+	Vector2D result;
+
+	result.y = (enemyDir.x * dir.y - enemyDir.y * dir.x);
+	result.x = (enemyDir.x * dir.x + enemyDir.y * dir.y);
+
+	return result;
 }
 
 void BrainSwarm::scaleByBattleFieldDistance(Vector2D& v, const Coord& distance, const BattleFieldLayout& bfl) const {
@@ -80,16 +106,19 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	assert(layout_.numInputs_ == fann_get_num_input(nn_));
 	assert(layout_.numOutputs == fann_get_num_output(nn_));
 
-	map<Coord, ScanObject> friendObj;
-	map<Coord, ScanObject> enemyObj;
+	map<Coord, pair<Vector2D,Coord>> friendObj;
+	map<Coord, pair<Vector2D,Coord>> enemyObj;
 
 	//sort the friendly and enemy scan objects by their angular distance
 	for (const ScanObject& so : scan.objects_) {
 		if(so.type_ == FRIEND) {
-			Coord diff = calculateEnemyAngularDistance(scan.dir_, so.loc_ - scan.loc_);
+			Vector2D toFriend = (so.loc_ - scan.loc_).normalize();
+			Vector2D vdiff = calculateEnemyAngularDistanceVector(scan.dir_, toFriend);
+			Coord diff = (vdiff - Vector2D(0,-1)).length();
+
 			auto it = friendObj.find(diff);
 			while(it != friendObj.end()) {
-				if(diff > (M_PI - 0.1))
+				if(diff > 1)
 					diff -= fRand(0.00000001, 0.00009);
 				else
 					diff += fRand(0.00000001, 0.00009);
@@ -97,16 +126,19 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 				it = friendObj.find(diff);
 			}
 
-			friendObj[diff] = so;
+			friendObj[diff] = {vdiff, so.dis_};
 		}
 	}
 
 	for (const ScanObject& so : scan.objects_) {
 		if(so.type_ == ENEMY) {
-			Coord diff = calculateEnemyAngularDistance(scan.dir_, so.loc_ - scan.loc_);
+			Vector2D toEnemy = (so.loc_ - scan.loc_).normalize();
+			Vector2D vdiff = calculateEnemyAngularDistanceVector(scan.dir_, toEnemy);
+			Coord diff = (vdiff - Vector2D(0,-1)).length();
+
 			auto it = enemyObj.find(diff);
 			while(it != enemyObj.end()) {
-				if(diff > (M_PI - 0.1))
+				if(diff > 1)
 					diff -= fRand(0.00000001, 0.00009);
 				else
 					diff += fRand(0.00000001, 0.00009);
@@ -114,20 +146,19 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 				it = enemyObj.find(diff);
 			}
 
-			enemyObj[diff] = so;
+			enemyObj[diff] = {vdiff, so.dis_};
 		}
 	}
 
-	assert(enemyObj.size() == scan.objects_.size() / 2);
-	assert(friendObj.size() == scan.objects_.size() / 2);
+	assert(enemyObj.size() + friendObj.size() == scan.objects_.size());
 
 	size_t inputCnt = 0;
 	for (auto it : friendObj) {
 		Coord diff = it.first;
-		ScanObject& so = it.second;
-		if (so.loc_ != NO_VECTOR2D) {
-			Vector2D vdiff = dirFromRad(diff);
-			scaleByBattleFieldDistance(vdiff, so.dis_, bfl);
+		Vector2D vdiff = it.second.first;
+		Coord distance = it.second.second;
+		if (vdiff != NO_VECTOR2D) {
+			scaleByBattleFieldDistance(vdiff, distance, bfl);
 			applyInput(inputCnt * 2, vdiff.x);
 			applyInput(inputCnt * 2 + 1, vdiff.y);
 		}
@@ -136,10 +167,11 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 	for (auto it : enemyObj) {
 		Coord diff = it.first;
-		ScanObject& so = it.second;
-		if (so.loc_ != NO_VECTOR2D) {
-			Vector2D vdiff = dirFromRad(diff);
-			scaleByBattleFieldDistance(vdiff, so.dis_, bfl);
+		Vector2D vdiff = it.second.first;
+		Coord distance = it.second.second;
+
+		if (vdiff != NO_VECTOR2D) {
+			scaleByBattleFieldDistance(vdiff, distance, bfl);
 			applyInput(inputCnt * 2, vdiff.x);
 			applyInput(inputCnt * 2 + 1, vdiff.y);
 		}

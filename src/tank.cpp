@@ -34,8 +34,10 @@ void Tank::setBrain(Brain* b) {
 void Tank::calculateFitness() {
 	Coord totalDiff = 0;
 
-	if (projectiles_.empty()) {
-		totalDiff =  layout_.max_ammo_ * M_PI;
+	if(layout_.disableProjectileFitness_) {
+		totalDiff = 0;
+	} else if (projectiles_.empty()) {
+		totalDiff =  M_PI;
 	} else {
 		for (Projectile* p : projectiles_) {
 			if(!p->scan_.objects_.empty()) {
@@ -59,6 +61,14 @@ void Tank::calculateFitness() {
 
 					assert(diffPerfect >= 0);
 					assert(diffPerfect <= M_PI);
+					Coord distance = so.dis_;
+					Coord maxDistance = p->layout_.max_travel_ * 2;
+					if(distance > maxDistance)
+						distance = maxDistance;
+
+					diffPerfect *= ((distance / maxDistance) + 1);
+					if(diffPerfect > M_PI)
+						diffPerfect = M_PI;
 
 					totalDiff += diffPerfect;
 					//		std::cerr << "perfect: ("<< perfect.x << "," << perfect.y << ")" << "candidate: ("<< candidate.x << "," << candidate.y << ")" << "diff: " << diff << std::endl;
@@ -94,13 +104,13 @@ void Tank::calculateFitness() {
 
 	assert(projectiles_.size() <= layout_.max_ammo_);
 
-	double aimRatio = (M_PI - (totalDiff / layout_.max_ammo_)) / M_PI;
+	double aimRatio = (M_PI - (totalDiff / (projectiles_.size() + 1))) / M_PI;
 	double hitRatio = (double(hits_) / layout_.max_ammo_);
 	double friendlyRatioInv = (1.0 / ((double(friendlyFire_) / layout_.max_ammo_) + 1));
 	double damageRatioInv = (1.0 / ((double(damage_) / layout_.max_damage_) + 1));
 
 	//std::cerr << "aim:" << aimRatio << "\thit:" << hitRatio << "/" << hits_ << "\tdmg:" << damageRatioInv << "/" << damage_ << "\tammo:" << tl_.max_ammo_- projectiles_.size() << std::endl;
-	fitness_ = (aimRatio + ((hitRatio * damageRatioInv))) * friendlyRatioInv;
+	fitness_ = (aimRatio + ((hitRatio * damageRatioInv)));
 
 	assert(fitness_ >= 0);
 	assert(!std::isnan(fitness_));
@@ -112,11 +122,17 @@ void Tank::calculateFitness() {
 }
 
 void Tank::think(BattleFieldLayout& bfl) {
+	if(layout_.isDummy_)
+		return;
+
 	assert(brain_ != NULL);
 	brain_->update(bfl, this->scan_);
 }
 
 void Tank::move(BattleFieldLayout& bfl) {
+	if(layout_.isDummy_)
+		return;
+
 	assert(brain_ != NULL);
 	//assign the outputs
 	lthrust_ = brain_->lthrust_;

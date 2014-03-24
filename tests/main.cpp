@@ -123,20 +123,20 @@ void assertNormalized(Vector2D v) {
 	assertGe(v.y,-1.0);
 }
 
-void testVectorToRadConversion(double rotation) {
+void testVectorToRadConversion(Coord rotation) {
 	Vector2D v = dirFromRad(rotation);
 	assertNormalized(v);
 	assertEq(radFromDir(v),rotation);
 }
 
-Vector2D makeVector2D(double rotation) {
+Vector2D makeVector2D(Coord rotation) {
 	Vector2D v = dirFromRad(rotation);
 	testVectorToRadConversion(rotation);
 	return v;
 }
 
 void testVectorRotation() {
-	double r = 0;
+	Coord r = 0;
 	Vector2D right = makeVector2D(r);
 	assertVeq(right,Vector2D(1,0));
 
@@ -159,7 +159,7 @@ void testVectorRotation() {
 
 
 
-	for(double i = -(2 * M_PI); i < 2 * M_PI; i+=(M_PI / 2)) {
+	for(Coord i = -(2 * M_PI); i < 2 * M_PI; i+=(M_PI / 2)) {
 		Vector2D v = makeVector2D(normRotation(i));
 		if(fabs(v.x) < 0.00001)
 			v.x = 0;

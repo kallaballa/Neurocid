@@ -9,4 +9,4 @@ timeseries.csv
 game/tankwar
 render/makeAndRender
 src/libtankwar.so
-
+*.pop

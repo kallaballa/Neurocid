@@ -68,7 +68,7 @@ struct Vector2D {
 		return !operator==(other);
 	}
 
-	inline double length() {
+	inline Coord length() {
 		return sqrt(this->x * this->x + this->y * this->y);
 	}
 
@@ -91,7 +91,7 @@ struct Vector2D {
 	}
 
 	Vector2D& normalize() {
-		double vector_length = this->length();
+		Coord vector_length = this->length();
 		if(vector_length == 0)
 		{
 			this->x = 0;
@@ -104,9 +104,9 @@ struct Vector2D {
 	}
 
 	void rotate(int degrees) {
-		double radians = degrees * (M_PI / 180);
-		double cs = cos(radians);
-		double sn = sin(radians);
+		Coord radians = degrees * (M_PI / 180);
+		Coord cs = cos(radians);
+		Coord sn = sin(radians);
 		Coord x1 = this->x * cs - this->y * sn;
 		this->y = this->x * sn + this->y * cs;
 		this->x = x1;
@@ -122,7 +122,7 @@ struct Rect {
 	Vector2D lr_;
 };
 
-inline double dot(Vector2D &v1, Vector2D &v2) {
+inline Coord dot(Vector2D &v1, Vector2D &v2) {
 	return v1.x * v2.x + v1.y * v2.y;
 }
 
@@ -155,25 +155,25 @@ inline Vector2D operator-(const Vector2D &lhs, const Vector2D &rhs) {
 	return result;
 }
 
-inline Vector2D dirFromRad(const double rad) {
+inline Vector2D dirFromRad(const Coord rad) {
 	assert(rad <= M_PI);
 	assert(rad >= -M_PI);
 
 	return Vector2D(cos(rad), sin(rad));
 }
 
-inline Vector2D dirFromDeg(const double degrees) {
+inline Vector2D dirFromDeg(const Coord degrees) {
 	return dirFromRad(degrees * (M_PI / 180));
 }
 
-inline double radFromDir(const Vector2D dir) {
-	double r = atan2(dir.y, dir.x);
+inline Coord radFromDir(const Vector2D dir) {
+	Coord r = atan2(dir.y, dir.x);
 	assert(r <= M_PI);
 	assert(r >= -M_PI);
 	return r;
 }
 
-inline double normRotation(const double rotation) {
+inline Coord normRotation(const Coord rotation) {
     //2 * pi = 0
 
 	// -pi .. +pi

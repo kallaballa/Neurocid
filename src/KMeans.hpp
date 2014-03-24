@@ -29,11 +29,11 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 
-#include "../common/CudaDefinitions.h"
-#include "../common/CudaStreams.h"
-#include "../memory/HostMatrix.h"
-#include "../memory/DeviceMatrix.h"
-#include "../memory/DeviceAccessibleVariable.h"
+#include "common/CudaDefinitions.h"
+#include "common/CudaStreams.h"
+#include "memory/HostMatrix.h"
+#include "memory/DeviceMatrix.h"
+#include "memory/DeviceAccessibleVariable.h"
 
 #include <iostream>
 #include <ctime>

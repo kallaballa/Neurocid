@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "KMeans.h"
+#include "KMeans.hpp"
 #include "kmeanskernels.h"
 
 namespace GPUMLib {

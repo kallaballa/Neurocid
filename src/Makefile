@@ -1,5 +1,5 @@
 TARGET  := libtankwar.so
-SRCS    := brain_basic.cpp brain_swarm.cpp brain_nearest.cpp battlefield.cpp canvas.cpp tank.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner_bsp.cpp scanner_swarm.cpp scanner_cluster.cpp time_tracker.cpp
+SRCS    := brain_basic.cpp brain_swarm.cpp brain_nearest.cpp battlefield.cpp canvas.cpp tank.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner_bsp.cpp scanner_swarm.cpp scanner_cluster.cpp time_tracker.cpp KMeans.cpp scanner_hybrid.cpp
 #precompiled headers
 HEADERS := 
 CU      := KMeansKernels.cu
@@ -8,8 +8,8 @@ GCH    := ${HEADERS:.h=.gch}
 OBJS    := ${SRCS:.cpp=.o} 
 DEPS    := ${SRCS:.cpp=.dep} 
 
-CXXFLAGS += -fpic -I../
-LDFLAGS += -shared 
+CXXFLAGS += -fpic -I../ -I/usr/local/cula/include -I/usr/local/cuda-5.0/include/
+LDFLAGS += -L/usr/local/cuda/lib64/ -shared -lcuda -lcublas -lcudart
 .PHONY: all release debug clean distclean 
 
 all: release
@@ -24,7 +24,7 @@ ${TARGET}: ${OBJS} ${CUO}
 	${CXX} ${LDFLAGS} -o $@ $^ ${LIBS} 
 
 ${OBJS}: %.o: %.cpp %.dep ${GCH}
-	${CXX} ${CXXFLAGS} -o $@ -c $< 
+	${CXX} ${CXXFLAGS} -o $@ -c $<
 
 ${DEPS}: %.dep: %.cpp Makefile 
 	${CXX} ${CXXFLAGS} -MM $< > $@ 

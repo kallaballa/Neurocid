@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -x
 function run() {
   m=1
 	[ -n "$4" ] && m=$4;
@@ -15,7 +16,8 @@ rm AimOnOneNoMove.pop
 POP=`run 500 AimOnOneNoMove`
 POP=`run 500 SymmetricLinesNoMove $POP`
 POP=`run 500 AimOnOne $POP`
-POP=`run 1000 SymmetricLines $POP`
-POP=`run 2000 SymmetricLinesFar $POP`
+POP=`run 500 SymmetricLinesAttackerMoveFar $POP`
+POP=`run 500 SymmetricLines $POP`
+POP=`run 500 SymmetricLinesFar $POP`
 cp $POP basic_training.pop
 

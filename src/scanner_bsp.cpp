@@ -42,7 +42,7 @@ void BspScanner::buildBsps(BattleField& field) {
 		}
 	}
 }
-void BspScanner::findInRange(Bsp& bsp, Object& from, ScanObjectType type, vector<ScanObject>& result, size_t range) {
+void BspScanner::findInRange(Bsp& bsp, Object& from, ScanObjectType type, ScanObjectVector& result, size_t range) {
 	vector<Object*> objects;
 	bsp.find_within_range(&from, range, std::back_inserter(objects));
 

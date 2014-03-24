@@ -164,6 +164,9 @@ vector<Population> Game::play() {
 
 	std::cerr << "game/s: " << 1000000.0f/dur << std::endl;
 
-	return newTeams_;
+	if(!GameState::getInstance()->isRunning())
+		return teams_;
+	else
+		return newTeams_;
 }
 } /* namespace tankwar */

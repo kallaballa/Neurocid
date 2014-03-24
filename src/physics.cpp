@@ -40,11 +40,18 @@ void Physics::collide(Projectile& p, Tank& t) {
 }
 
 void Physics::collide(Tank& t1, Tank& t2) {
-	return;
-	t1.damage_++;
-	t2.damage_++;
 	t1.crash_++;
 	t2.crash_++;
+
+	if(t1.crash_ >= t1.layout_.crashes_per_damage_) {
+		t1.crash_ = 0;
+		t1.damage_++;
+	}
+
+	if(t2.crash_ >= t2.layout_.crashes_per_damage_) {
+		t2.crash_ = 0;
+		t2.damage_++;
+	}
 
 	if (t1.damage_ >= t1.layout_.max_damage_) {
 		t1.dead_ = true;
@@ -288,7 +295,7 @@ void Physics::step() {
 			    assert(o->rotation_ < M_PI);
 			} else if(o->type() == PROJECTILE) {
 				Projectile* p = static_cast<Projectile*>(o);
-				if(hypot(p->loc_.x - p->startLoc_.x, p->loc_.y - p->startLoc_.y) > 3000) {
+				if(hypot(p->loc_.x - p->startLoc_.x, p->loc_.y - p->startLoc_.y) > p->layout_.max_travel_) {
 					p->dead_ = true;
 					deadBodies_.push_back(body);
 				} else {

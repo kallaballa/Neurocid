@@ -23,9 +23,9 @@
 #ifndef KMeanskernels_h
 #define KMeanskernels_h
 
-#include "../GPUMLib/src/common/CudaDefinitions.h"
-#include "../GPUMLib/src/memory/DeviceArray.h"
-#include "../GPUMLib/src/memory/DeviceMatrix.h"
+#include "common/CudaDefinitions.h"
+#include "memory/DeviceArray.h"
+#include "memory/DeviceMatrix.h"
 
 #define imax(X, Y)  ((X) > (Y) ? (X) : (Y))
 #define imin(X, Y)  ((X) < (Y) ? (X) : (Y))
