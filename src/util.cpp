@@ -43,9 +43,9 @@ int iRand(int x,int y) {
 	return rand()%(y-x+1)+x;
 }
 
-double fRand(double fMin, double fMax)
+Coord fRand(Coord fMin, Coord fMax)
 {
-    double f = (double)rand() / RAND_MAX;
+	Coord f = (Coord)rand() / RAND_MAX;
     return fMin + f * (fMax - fMin);
 }
 

@@ -168,7 +168,9 @@ void Canvas::drawTank(Tank& tank, Color c) {
 }
 
 void Canvas::drawProjectile(Projectile& pro, Color& c) {
-	drawEllipse(pro.loc_, pro.range_, pro.range_, c);
+	Vector2D trail = pro.loc_;
+	trail += pro.getDirection() * -50;
+	drawLine(trail.x,trail.y, pro.loc_.x, pro.loc_.y, c);
 }
 
 void Canvas::drawExplosion(Object& o, Color& c) {
@@ -229,6 +231,8 @@ void Canvas::render(BattleField& field) {
 
 	Color white = {255,255,255};
 	Color red = {255,0,0};
+	Color neonYellow = {243,243,21};
+	Color neonOrange = {255, 100, 100};
 
 	size_t teamCnt = 0;
 	for(Population& team : field.teams_) {
@@ -242,8 +246,12 @@ void Canvas::render(BattleField& field) {
 			for(Projectile* p : t.projectiles_) {
 				if(p->explode_)
 					this->drawExplosion(*p, red);
-				else if(!p->dead_)
-					this->drawProjectile(*p,white);
+				else if(!p->dead_) {
+					if(t.teamID_ == 0)
+						this->drawProjectile(*p,neonYellow);
+					else
+						this->drawProjectile(*p,neonOrange);
+				}
 				p->explode_ = false;
 			}
 		}

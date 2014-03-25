@@ -36,7 +36,7 @@ void BrainNearest::update(const BattleFieldLayout& bfl, const Scan& scan) {
 			//if (so.type_ == ScanObjectType::ENEMY) {
 				Vector2D dir = scan.dir_;
 				Vector2D sub = so.loc_ - scan.loc_;
-				double diff = (M_PI + radFromDir(dir))
+				Coord diff = (M_PI + radFromDir(dir))
 						- (M_PI + radFromDir(sub));
 
 				if (diff > M_PI)
@@ -59,7 +59,7 @@ void BrainNearest::update(const BattleFieldLayout& bfl, const Scan& scan) {
 /*			} else if (so.type_ == ScanObjectType::FRIEND) {
 				Vector2D dir = scan.dir_;
 				Vector2D sub = so.loc_ - scan.loc_;
-				double diff = (M_PI + radFromDir(dir))
+				Coord diff = (M_PI + radFromDir(dir))
 						- (M_PI + radFromDir(sub));
 
 				if (diff > M_PI)

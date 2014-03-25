@@ -27,10 +27,10 @@ public:
 };
 
 class IterRot {
-	double startInRad_;
-	double iterateByInRad_;
+	Coord startInRad_;
+	Coord iterateByInRad_;
 public:
-	IterRot(double startInRad, double iterateByInRad) :
+	IterRot(Coord startInRad, Coord iterateByInRad) :
 		startInRad_(startInRad),
 		iterateByInRad_(iterateByInRad){
 
@@ -101,7 +101,7 @@ public:
 
 	virtual void place(vector<Population>& teams) {
 		assert(teams.size() == 2);
-		double rotation = rotator_(tick());
+		Coord rotation = rotator_(tick());
 		GameLayout gl = layouter_(tick(), 0);
 		Vector2D axisDir = dirFromRad(rotation);
 
@@ -154,7 +154,7 @@ public:
 
 	virtual void place(vector<Population>& teams) {
 		assert(teams.size() == 2);
-		double rotation = rotator_(tick());
+		Coord rotation = rotator_(tick());
 		GameLayout gl = layouter_(tick(), 0);
 		Vector2D axisDir = dirFromRad(rotation);
 
@@ -233,7 +233,7 @@ public:
 		assert(teams.size() == 2);
 		assert(teams[0].size() == teams[1].size());
 
-		double rotation = rotator_(tick());
+		Coord rotation = rotator_(tick());
 		GameLayout gl = layouter_(tick(), 0);
 		Vector2D axisDir = dirFromRad(rotation);
 

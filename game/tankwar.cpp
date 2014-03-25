@@ -127,12 +127,12 @@ class AimOnOneNoMove : public Scenario {
 public:
 	AimOnOneNoMove() :
 		Scenario() {
-		bfl_.iterations_ = 600;
+		bfl_.iterations_ = 800;
 		bfl_.width_ = 30000;
 		bfl_.height_ = 30000;
 
 		gl_.center_ = Vector2D(bfl_.width_ / 2, bfl_.height_/ 2);
-		gl_.distance_ = 1500;
+		gl_.distance_ = 1000;
 		gl_.spacing_ = 40;
 
 		phl_.gravity_ = {0,0};
@@ -148,9 +148,10 @@ public:
 		TankLayout attackerTL = teams[0].layout_.tl_;
 		attackerTL.isDummy_ = false;
 		attackerTL.canMove_ = false;
-		attackerTL.max_ammo_ = 10;
+		attackerTL.max_ammo_ = 5;
 		attackerTL.max_damage_ = 10;
-		attackerTL.max_cooldown = 50;
+		attackerTL.max_cooldown = 20;
+		attackerTL.max_rotation_ = 0.5;
 
 		teams[0].update(attackerTL);
 
@@ -170,7 +171,7 @@ public:
 		pools[1] = GeneticPool(); //dummy pool;
 	}
 
-	void restorePools(vector<GeneticPool>& pools) {
+	virtual void restorePools(vector<GeneticPool>& pools) {
 		pools[1] = pools[0];
 	};
 
@@ -178,7 +179,7 @@ public:
 		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
 	}
 
-	void restoreTeams(vector<Population>& teams) {
+	virtual void restoreTeams(vector<Population>& teams) {
 		teams[1].clear();
 		//clone teamB from teamA
 		for(Tank& t : teams[0]) {
@@ -197,7 +198,7 @@ public:
 		bfl_.height_ = 30000;
 
 		gl_.center_ = Vector2D(bfl_.width_ / 2, bfl_.height_/ 2);
-		gl_.distance_ = 1500;
+		gl_.distance_ = 2500;
 		gl_.spacing_ = 100;
 
 		phl_.gravity_ = {0,0};
@@ -216,7 +217,7 @@ public:
 		attackerTL.max_ammo_ = 3;
 		attackerTL.max_cooldown = 20;
 		attackerTL.max_damage_ = 6;
-		attackerTL.max_speed_ = 0.2;
+		attackerTL.max_rotation_ = 0.5;
 
 		teams[0].update(attackerTL);
 
@@ -236,7 +237,7 @@ public:
 		pools[1] = GeneticPool(); //dummy pool;
 	}
 
-	void restorePools(vector<GeneticPool>& pools) {
+	virtual void restorePools(vector<GeneticPool>& pools) {
 		pools[1] = pools[0];
 	};
 
@@ -245,7 +246,7 @@ public:
 		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
 	}
 
-	void restoreTeams(vector<Population>& teams) {
+	virtual void restoreTeams(vector<Population>& teams) {
 		teams[1].clear();
 		//clone teamB from teamA
 		for(Tank& t : teams[0]) {
@@ -297,6 +298,20 @@ public:
 
 	Placer* createPlacer() {
 		return new CrossPlacerTwoRows<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
+	}
+
+	virtual void restorePools(vector<GeneticPool>& pools) {
+		pools[1] = pools[0];
+	};
+
+	virtual void restoreTeams(vector<Population>& teams) {
+		teams[1].clear();
+		//clone teamB from teamA
+		for(Tank& t : teams[0]) {
+			Tank c = t.clone();
+			c.teamID_ = 1;
+			teams[1].push_back(c);
+		}
 	}
 };
 
@@ -385,6 +400,19 @@ public:
 		return new OppositePlacerTwoRows<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
 	}
 
+	virtual void restorePools(vector<GeneticPool>& pools) {
+		pools[1] = pools[0];
+	};
+
+	virtual void restoreTeams(vector<Population>& teams) {
+		teams[1].clear();
+		//clone teamB from teamA
+		for(Tank& t : teams[0]) {
+			Tank c = t.clone();
+			c.teamID_ = 1;
+			teams[1].push_back(c);
+		}
+	}
 };
 
 
@@ -430,6 +458,19 @@ public:
 		return new OppositePlacerTwoRows<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
 	}
 
+	virtual void restorePools(vector<GeneticPool>& pools) {
+		pools[1] = pools[0];
+	};
+
+	virtual void restoreTeams(vector<Population>& teams) {
+		teams[1].clear();
+		//clone teamB from teamA
+		for(Tank& t : teams[0]) {
+			Tank c = t.clone();
+			c.teamID_ = 1;
+			teams[1].push_back(c);
+		}
+	}
 };
 
 
@@ -495,6 +536,20 @@ public:
 		TankLayout defenderTL = teams[1].layout_.tl_;
 		defenderTL.isDummy_ = true;
 		teams[1].update(defenderTL);
+	}
+
+	virtual void restorePools(vector<GeneticPool>& pools) {
+		pools[1] = pools[0];
+	};
+
+	virtual void restoreTeams(vector<Population>& teams) {
+		teams[1].clear();
+		//clone teamB from teamA
+		for(Tank& t : teams[0]) {
+			Tank c = t.clone();
+			c.teamID_ = 1;
+			teams[1].push_back(c);
+		}
 	}
 };
 
@@ -577,6 +632,7 @@ public:
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
 		defenderTL.isDummy_ = true;
+		attackerTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
 	}
 
@@ -588,7 +644,19 @@ public:
 		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
 	}
 
+	virtual void restorePools(vector<GeneticPool>& pools) {
+		pools[1] = pools[0];
+	};
 
+	virtual void restoreTeams(vector<Population>& teams) {
+		teams[1].clear();
+		//clone teamB from teamA
+		for(Tank& t : teams[0]) {
+			Tank c = t.clone();
+			c.teamID_ = 1;
+			teams[1].push_back(c);
+		}
+	}
 };
 
 class CrossSmall : public Scenario {
@@ -606,7 +674,7 @@ public:
 		phl_.timeStep_ = 1.0f/60.0f;
 		phl_.positionIterations_ = 2;
 		phl_.velocityIterations_ = 6;
-		phl_.coordToMetersFactor_ = 0.04f;
+		phl_.coordToMetersFactor_ = 0.05f;
 	}
 
 	void configureTeams(vector<Population>& teams) {
@@ -658,7 +726,7 @@ public:
 		phl_.timeStep_ = 1.0f/60.0f;
 		phl_.positionIterations_ = 2;
 		phl_.velocityIterations_ = 6;
-		phl_.coordToMetersFactor_ = 0.04f;
+		phl_.coordToMetersFactor_ = 0.05f;
 	}
 
 	void configureTeams(vector<Population>& teams) {
@@ -704,7 +772,7 @@ public:
 		bfl_.iterations_ = 5000;
 
 		gl_.center_ = Vector2D(15000,15000);
-		gl_.distance_ = 5000;
+		gl_.distance_ = 10000;
 		gl_.spacing_ = 200;
 
 		phl_.gravity_ = {0,0};
@@ -729,7 +797,7 @@ public:
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
 		defenderTL.isDummy_ = false;
-		attackerTL.disableProjectileFitness_ = true;
+		defenderTL.disableProjectileFitness_ = true;
 		defenderTL.max_ammo_ = 30;
 		defenderTL.max_cooldown = 100;
 		defenderTL.max_damage_ = 6;
@@ -838,7 +906,7 @@ int main(int argc, char** argv) {
 			true,// canShoot
 			true,// canRotate
 			true,// canMove
-			true,// calcProjectileFitness
+			false,// disableProjectileFitness
 
 			10.0,// range_
 			1,// max_speed_
@@ -851,9 +919,9 @@ int main(int argc, char** argv) {
 		},
 		//BrainLayout
 		{
-		    40, // inputs
+		    43, // inputs
 			3,  // outputs
-			6,  // layers
+			7,  // layers
 			6  // neurons per hidden layer
 		}
 	};

@@ -190,7 +190,7 @@ b2Body* Physics::makeTankBody(Tank& t) {
     fixtureDef.shape = &dynamicCircle;
 
     // Set the box density to be non-zero, so it will be dynamic.
-    fixtureDef.density = 1.0f;
+    fixtureDef.density = 10.0f;
 
     fixtureDef.restitution = 0.3f;
 
@@ -201,7 +201,8 @@ b2Body* Physics::makeTankBody(Tank& t) {
 
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
-
+    body->SetLinearDamping(0.3);
+    body->SetAngularDamping(1);
     return body;
 }
 
@@ -227,7 +228,7 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
     fixtureDef.shape = &dynamicCircle;
 
     // Set the box density to be non-zero, so it will be dynamic.
-    fixtureDef.density = 1;
+    fixtureDef.density = 0.1;
 
     // Override the default friction.
     fixtureDef.friction = 0.3f;
@@ -237,10 +238,12 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
 //    fixtureDef.filter.categoryBits = 1;
     fixtureDef.filter.maskBits = 1;
     fixtureDef.filter.categoryBits = 3;
+    body->SetFixedRotation(true);
 
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
-    body->SetFixedRotation(true);
+    body->SetLinearDamping(0);
+    body->SetAngularDamping(0);
     return body;
 }
 
@@ -287,25 +290,29 @@ void Physics::step() {
 		if(body->GetUserData() != NULL) {
 			Object* o = (Object*)body->GetUserData();
 			if(o->type() == TANK) {
-				Vector2D force = o->getDirection() * o->speed_ * 2;
-	//			std::cerr << "tank: " << force << std::endl;
-			    body->SetLinearVelocity(b2Vec2(force.x, force.y));
-	//		    std::cerr << "rotforce:" << o->rotForce_ << std::endl;
-			    body->SetAngularVelocity(o->rotForce_ * 2);
-			    assert(o->rotation_ < M_PI);
+				Tank* t = static_cast<Tank*>(o);
+				Vector2D force = o->getDirection() * (o->speed_ * 20);
+				if(t->layout_.canMove_ && !t->layout_.isDummy_)
+					body->ApplyForce(b2Vec2(force.x, force.y), body->GetWorldCenter());
+				else
+					body->SetLinearVelocity(b2Vec2(0,0));
+
+				if(t->layout_.canRotate_ && !t->layout_.isDummy_)
+					body->ApplyTorque(o->rotForce_ * 3);
+				else
+					body->SetAngularVelocity(0);
+
+				assert(o->rotation_ < M_PI);
 			} else if(o->type() == PROJECTILE) {
 				Projectile* p = static_cast<Projectile*>(o);
 				if(hypot(p->loc_.x - p->startLoc_.x, p->loc_.y - p->startLoc_.y) > p->layout_.max_travel_) {
 					p->dead_ = true;
 					deadBodies_.push_back(body);
 				} else {
-					//body->ApplyTorque(o->rotForce_ * 200);
-					Vector2D force = o->getDirection() * o->speed_ * 16;
+					Vector2D force = o->getDirection() * o->speed_ * 30;
 					body->SetAwake(true);
 					body->SetLinearVelocity(b2Vec2(force.x, force.y));
 				}
-	//			std::cerr << "projectile: " << force << std::endl;
-				//body->ApplyLinearImpulse(b2Vec2(force.x,force.y), body->GetWorldCenter());
 			}
 		}
 	}
@@ -322,6 +329,11 @@ void Physics::step() {
 		if(body->GetUserData() != NULL) {
 			b2Vec2 pos = body->GetPosition();
 			Object* obj = (Object*)body->GetUserData();
+			b2Vec2 vel = body->GetLinearVelocity();
+			Coord angVel = body->GetAngularVelocity();
+			obj->vel_.x = vel.x;
+			obj->vel_.y = vel.y;
+			obj->angVel_ = angVel;
 			obj->loc_.x = toCoord(pos.x);
 			obj->loc_.y = toCoord(pos.y);
 			obj->rotation_ = normRotation(body->GetAngle());

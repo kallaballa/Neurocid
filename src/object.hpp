@@ -20,6 +20,8 @@ class BattleFieldLayout;
 struct Object {
 	ObjectType type_;
 	Vector2D loc_;
+	Vector2D vel_;
+	Coord angVel_;
 	Coord rotation_;
 	Coord range_;
 	Coord speed_;

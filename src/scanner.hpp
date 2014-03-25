@@ -38,6 +38,8 @@ typedef vector<ScanObject> ScanObjectVector;
 struct Scan {
 	Vector2D scale_ = NO_VECTOR2D;
 	Vector2D dir_ = NO_VECTOR2D;
+	Vector2D vel_ = NO_VECTOR2D;
+	Coord angVel_ = NO_COORD;
 	Vector2D loc_ = NO_VECTOR2D;
 	ScanObjectVector objects_;
 };

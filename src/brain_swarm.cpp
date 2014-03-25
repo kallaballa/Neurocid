@@ -92,6 +92,7 @@ void BrainSwarm::scaleByBattleFieldDistance(Vector2D& v, const Coord& distance, 
 }
 
 void BrainSwarm::applyInput(const size_t& i, const fann_type& value) {
+	assert(i < layout_.numInputs_);
 	inputs_[i] = value;
 	assert(!std::isnan(inputs_[i]) && !std::isinf(inputs_[i]) && inputs_[i] >= -1 && inputs_[i] <= 1);
 }
@@ -102,7 +103,7 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	assert(!destroyed_);
 
 	size_t numInputs = layout_.numInputs_;
-    assert(layout_.numInputs_ == (scan.objects_.size() * 2));
+	assert(layout_.numInputs_ == (scan.objects_.size() * 2) + 3);
 	assert(layout_.numInputs_ == fann_get_num_input(nn_));
 	assert(layout_.numOutputs == fann_get_num_output(nn_));
 
@@ -177,6 +178,12 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 		}
 		inputCnt+=1;
 	}
+
+	Vector2D vel = scan.vel_;
+	vel.normalize();
+	applyInput(inputCnt, vel.x);
+	applyInput(inputCnt+1, vel.y);
+	applyInput(inputCnt+2, scan.angVel_ / 120);
 
 	for(size_t i = 0; i < numInputs; ++i) {
 		assert(!std::isinf(inputs_[i]));

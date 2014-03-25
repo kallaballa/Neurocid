@@ -4,6 +4,7 @@
 #include <vector>
 #include <stddef.h>
 #include <chrono>
+#include "2d.hpp"
 
 namespace tankwar {
 
@@ -19,7 +20,7 @@ Population makePopulation(size_t teamID, size_t size, PopulationLayout& pl);
 vector<Population> makeTeams(size_t numTeams, size_t teamSize, PopulationLayout& pl);
 vector<GeneticPool> makePools(size_t numTeams, GeneticParams& gp);
 
-double fRand(double fMin, double fMax);
+Coord fRand(Coord fMin, Coord fMax);
 int iRand(int x,int y);
 
 

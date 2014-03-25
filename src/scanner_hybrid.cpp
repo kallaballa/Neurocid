@@ -19,6 +19,9 @@
 namespace tankwar {
 
 void HybridScanner::teamScan(Population& active, Population& passive, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl) {
+	Coord numFriends = 10;
+	Coord numEnemies = 10;
+
 	for(size_t i = 0; i < active.size(); ++i) {
 		Tank& t = active[i];
 		if(t.dead_ || t.layout_.isDummy_)
@@ -28,10 +31,12 @@ void HybridScanner::teamScan(Population& active, Population& passive, vector<Vec
 		scan.dir_ = t.getDirection();
 		scan.scale_ = {bfl.width_, bfl.height_};
 		scan.loc_ = t.loc_;
+		scan.vel_ = t.vel_;
+		scan.angVel_ = t.angVel_;
 		scan.objects_.clear();
 
 		findInRange(bspFriends, t, FRIEND, scan.objects_, 300);
-		Coord numFriends = ctrFriends.size();
+
 		if(scan.objects_.size() > numFriends) {
 			scan.objects_.resize(numFriends);
 		} else if(scan.objects_.empty()) {
@@ -55,7 +60,16 @@ void HybridScanner::teamScan(Population& active, Population& passive, vector<Vec
 			}
 		}
 
-		assert(scan.objects_.size() == 10);
+		assert(scan.objects_.size() == numFriends);
+
+		auto result = findNearest(bspEnemies, t);
+		Tank* tenemy = static_cast<Tank*>(result.first);
+
+		scan.objects_.push_back(ScanObject {
+						ENEMY,
+						tenemy->loc_,
+						result.second
+					});
 
 		for(Vector2D ce : ctrEnemies) {
 			scan.objects_.push_back(ScanObject{
@@ -65,7 +79,22 @@ void HybridScanner::teamScan(Population& active, Population& passive, vector<Vec
 			});
 		}
 
-		assert(scan.objects_.size() == 20);
+		findInRange(bspEnemies, t, ENEMY, scan.objects_, 300);
+		if(scan.objects_.size() > (numFriends + numEnemies)) {
+			scan.objects_.resize(numFriends + numEnemies);
+		}
+
+		while(scan.objects_.size() < (numFriends + numEnemies)) {
+			size_t s = scan.objects_.size();
+			for(size_t i = numFriends; i < s; ++i) {
+				ScanObject& so = scan.objects_[i];
+				scan.objects_.push_back(so);
+				if(scan.objects_.size() == (numFriends + numEnemies))
+					break;
+			}
+		}
+
+		assert(scan.objects_.size() == (numFriends + numEnemies));
 		if(t.layout_.disableProjectileFitness_)
 			continue;
 
@@ -75,6 +104,10 @@ void HybridScanner::teamScan(Population& active, Population& passive, vector<Vec
 
 			p->scan_.dir_ = p->getDirection();
 			p->scan_.loc_ = p->loc_;
+			p->scan_.vel_ = p->vel_;
+			p->scan_.angVel_ = p->angVel_;
+
+
 			auto result = findNearestCenter(ctrEnemies, p->loc_);
 			Vector2D enemyLoc = result.first;
 			assert(p->scan_.objects_.empty() || p->scan_.objects_.size() == 2);
@@ -131,11 +164,11 @@ void HybridScanner::scan(BattleField& field) {
 	buildBsps(field);
 	centersA_.clear();
 	centersB_.clear();
-	scanClusterCenters(teamA, centersA_, 10);
-	scanClusterCenters(teamB, centersB_, 10);
+	scanClusterCenters(teamA, centersA_, 3);
+	scanClusterCenters(teamB, centersB_, 3);
 
-	assert(centersA_.size() == 10);
-	assert(centersB_.size() == 10);
+	assert(centersA_.size() == 3);
+	assert(centersB_.size() == 3);
 
 	teamScan(teamA, teamB, centersA_, centersB_, bspA_, bspB_, field.layout_);
 	teamScan(teamB, teamA, centersB_, centersA_, bspB_, bspA_, field.layout_);

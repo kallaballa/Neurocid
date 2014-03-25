@@ -73,7 +73,7 @@ public:
 	size_t hits_;
 	size_t damage_;
 	size_t cool_down;
-	double fitness_ = 0;
+	Coord fitness_ = 0;
 	Scan scan_;
 
 	template<class Archive>

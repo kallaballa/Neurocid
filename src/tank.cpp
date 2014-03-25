@@ -104,10 +104,10 @@ void Tank::calculateFitness() {
 
 	assert(projectiles_.size() <= layout_.max_ammo_);
 
-	double aimRatio = (M_PI - (totalDiff / (projectiles_.size() + 1))) / M_PI;
-	double hitRatio = (double(hits_) / layout_.max_ammo_);
-	double friendlyRatioInv = (1.0 / ((double(friendlyFire_) / layout_.max_ammo_) + 1));
-	double damageRatioInv = (1.0 / ((double(damage_) / layout_.max_damage_) + 1));
+	Coord aimRatio = (M_PI - (totalDiff / (projectiles_.size() + 1))) / M_PI;
+	Coord hitRatio = (Coord(hits_) / layout_.max_ammo_);
+	Coord friendlyRatioInv = (1.0 / ((Coord(friendlyFire_) / layout_.max_ammo_) + 1));
+	Coord damageRatioInv = (1.0 / ((Coord(damage_) / layout_.max_damage_) + 1));
 
 	//std::cerr << "aim:" << aimRatio << "\thit:" << hitRatio << "/" << hits_ << "\tdmg:" << damageRatioInv << "/" << damage_ << "\tammo:" << tl_.max_ammo_- projectiles_.size() << std::endl;
 	fitness_ = (aimRatio + ((hitRatio * damageRatioInv)));
