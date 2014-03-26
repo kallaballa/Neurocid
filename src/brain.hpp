@@ -88,8 +88,6 @@ public:
 
 class BrainSwarm : public BasicBrain {
 private:
-	Coord calculateEnemyAngularDistance(const Vector2D& dir, const Vector2D& enemyDir);
-	Vector2D calculateEnemyAngularDistanceVector(const Vector2D& dir, const Vector2D& enemyDir);
 	void scaleByBattleFieldDistance(Vector2D& v, const Coord& distance, const BattleFieldLayout& bfl) const;
 	void applyInput(const size_t& i, const fann_type& value);
 public:

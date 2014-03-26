@@ -33,32 +33,37 @@ void Tank::setBrain(Brain* b) {
 
 void Tank::calculateFitness() {
 	Coord totalDiff = 0;
+	size_t ratedProjectiles = 0;
 
-	if(layout_.disableProjectileFitness_) {
-		totalDiff = 0;
-	} else if (projectiles_.empty()) {
-		totalDiff =  M_PI;
-	} else {
+	if (!layout_.disableProjectileFitness_) {
+		if(projectiles_.empty()) {
+			ratedProjectiles = 1;
+			totalDiff = M_PI * 2;
+		}
+
 		for (Projectile* p : projectiles_) {
-			if(!p->scan_.objects_.empty()) {
-				ScanObject & so = p->scan_.objects_[0];
+			if(p->scan_.objects_.empty())
+				continue;
+			else
+				++ratedProjectiles;
+
+			assert(p->scan_.objects_.size() == 2);
+			assert(p->scan_.objects_[0].type_ == ENEMY);
+			assert(p->scan_.objects_[1].type_ == FRIEND);
+
+			for(ScanObject& so : p->scan_.objects_) {
 				if(so.type_ == ScanObjectType::ENEMY) {
 					Coord diffPerfect = 0;
 					Vector2D perfect = (so.loc_ - p->startLoc_).normalize();
 					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
-
+					Vector2D vdiff = candidate;
 					ASSERT_DIR(perfect);
 					ASSERT_DIR(candidate);
 
-					diffPerfect = fabs(
-							(M_PI + radFromDir(perfect))
-									- (M_PI + radFromDir(candidate)));
+					vdiff.rotate(perfect);
+					diffPerfect = fabs(radFromDir(vdiff));
 
-					if (diffPerfect > M_PI)
-						diffPerfect = M_PI - (diffPerfect - M_PI);
-
-					//std::cerr << diffPerfect << " c:" << candidate << " p:" << perfect << " e:" << p.nearestEnemyLoc_ <<  std::endl;
-
+//					std::cerr << perfect << "\t" << candidate << "\t" << vdiff << "\t" << diffPerfect << std::endl;
 					assert(diffPerfect >= 0);
 					assert(diffPerfect <= M_PI);
 					Coord distance = so.dis_;
@@ -66,59 +71,74 @@ void Tank::calculateFitness() {
 					if(distance > maxDistance)
 						distance = maxDistance;
 
-					diffPerfect *= ((distance / maxDistance) + 1);
-					if(diffPerfect > M_PI)
-						diffPerfect = M_PI;
+					//higher distance -> higher diff
+					//diffPerfect *= ((distance / maxDistance) + 1);
 
+					assert(diffPerfect >= 0);
+					assert(diffPerfect <= M_PI);
 					totalDiff += diffPerfect;
-					//		std::cerr << "perfect: ("<< perfect.x << "," << perfect.y << ")" << "candidate: ("<< candidate.x << "," << candidate.y << ")" << "diff: " << diff << std::endl;
 				} else if(so.type_ == ScanObjectType::FRIEND) {
-					Coord diffWorst = 0;
+/*					Coord diffWorst = 0;
 					Vector2D worst = (so.loc_ - p->startLoc_).normalize();
 					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
 
 					ASSERT_DIR(worst);
 					ASSERT_DIR(candidate);
 
-					diffWorst = fabs(
-							(M_PI + radFromDir(worst))
-									- (M_PI + radFromDir(candidate)));
+					candidate.rotate(worst);
+					diffWorst = fabs(radFromDir(candidate));
 
-					if (diffWorst > M_PI)
-						diffWorst = M_PI - (diffWorst - M_PI);
+					if(diffWorst > M_PI)
+						diffWorst = diffWorst - M_PI;
 
-					// a perpendicular friend is a good friend
-					diffWorst = fabs(M_PI/2 - diffWorst) * 2;
-
-					//std::cerr << diffPerfect << " c:" << candidate << " p:" << perfect << " e:" << p.nearestEnemyLoc_ <<  std::endl;
+					//a perpendicular friend is a good friend
+					diffWorst = fabs(M_PI_2 - diffWorst) * 2;
 
 					assert(diffWorst >= 0);
 					assert(diffWorst <= M_PI);
 
-					totalDiff += diffWorst;
-					//		std::cerr << "perfect: ("<< perfect.x << "," << perfect.y << ")" << "candidate: ("<< candidate.x << "," << candidate.y << ")" << "diff: " << diff << std::endl;
+					Coord distance = so.dis_;
+					Coord maxDistance = p->layout_.max_travel_ * 2;
+					if(distance > maxDistance)
+						distance = maxDistance;
+
+					//higher distance -> lower diff
+					//diffWorst /= ((distance / maxDistance) + 1);
+					assert(diffWorst >= 0);
+					assert(diffWorst <= M_PI);
+					totalDiff += diffWorst;*/
+					totalDiff += 0;
 				}
 			}
 		}
 	}
 
 	assert(projectiles_.size() <= layout_.max_ammo_);
+	assert((projectiles_.empty() && ratedProjectiles == 1) || (ratedProjectiles <= projectiles_.size()));
+	assert(projectiles_.empty() || (totalDiff) <= ((ratedProjectiles * 2 * M_PI) + 0.01));
 
-	Coord aimRatio = (M_PI - (totalDiff / (projectiles_.size() + 1))) / M_PI;
+	Coord aimRatio = (M_PI - (totalDiff / ((ratedProjectiles * 2) + 1))) / M_PI;
 	Coord hitRatio = (Coord(hits_) / layout_.max_ammo_);
 	Coord friendlyRatioInv = (1.0 / ((Coord(friendlyFire_) / layout_.max_ammo_) + 1));
 	Coord damageRatioInv = (1.0 / ((Coord(damage_) / layout_.max_damage_) + 1));
+
+	assert(aimRatio >= 0);
+	assert(aimRatio <= 1);
+	assert(hitRatio >= 0);
+	assert(hitRatio <= 1);
+	assert(damageRatioInv >= 0.5);
+	assert(damageRatioInv <= 1);
+	assert(friendlyRatioInv >= 0.5);
+	assert(friendlyRatioInv <= 1);
 
 	//std::cerr << "aim:" << aimRatio << "\thit:" << hitRatio << "/" << hits_ << "\tdmg:" << damageRatioInv << "/" << damage_ << "\tammo:" << tl_.max_ammo_- projectiles_.size() << std::endl;
 	fitness_ = (aimRatio + ((hitRatio * damageRatioInv)));
 
 	assert(fitness_ >= 0);
+	assert(fitness_ <= 2);
 	assert(!std::isnan(fitness_));
 	assert(!std::isinf(fitness_));	//
 	//std::cerr << "fitness:" << fitness_ << std::endl;
-
-//	fitness_ = hits_;
-//	fitness_ = Params::MAX_PROJECTILES - friendly_fire_;
 }
 
 void Tank::think(BattleFieldLayout& bfl) {
@@ -169,6 +189,52 @@ void Tank::move(BattleFieldLayout& bfl) {
 	//std::cerr << "canMove: " << tl_.canMove_ << "\tcanRotate: " << tl_.canRotate_ << "\tspeed: " << speed_ << "\trotForce:" << rotForce_  << std::endl;
 }
 
+void Tank::damage() {
+	damage_++;
+	if (damage_ >= layout_.max_damage_) {
+		death();
+	}
+}
+
+void Tank::death() {
+	damage_ = layout_.max_damage_;
+	dead_ = true;
+	explode_ = true;
+}
+
+// demote and execute this unit
+void Tank::kill() {
+	friendlyFire_ = layout_.max_ammo_;
+	hits_ = 0;
+	death();
+}
+
+void Tank::crash() {
+	crash_++;
+	crashDamage_++;
+
+	if(crashDamage_ >= layout_.crashes_per_damage_) {
+		crashDamage_ = 0;
+		damage();
+	}
+}
+
+void Tank::impact(Tank& other) {
+	crash();
+	other.crash();
+}
+
+void Tank::impact(Projectile& p) {
+	p.death();
+	damage();
+
+	if (p.owner_->teamID_ != teamID_) {
+		p.owner_->hits_++;
+	} else {
+		p.owner_->friendlyFire_++;
+	}
+}
+
 Tank Tank::makeChild() {
 	assert(brain_ != NULL);
 	Tank child(teamID_, layout_);
@@ -209,6 +275,7 @@ void Tank::resetGameState() {
 void Tank::resetScore() {
 	friendlyFire_ = 0;
 	crash_ = 0;
+	crashDamage_ = 0;
 	hits_ = 0;
 	damage_ = 0;
 	fitness_ = 0;

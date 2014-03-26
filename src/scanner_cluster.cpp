@@ -67,8 +67,8 @@ void ClusterScanner::scanClusterCenters(Population& team, vector<Vector2D>& resu
 
 			for(size_t i = 0;  i < team.size(); ++i) {
 				Tank& t = team[i];
-				pts[i][0] = t.loc_.x;
-				pts[i][1] = t.loc_.y;
+				pts[i][0] = t.loc_.x_;
+				pts[i][1] = t.loc_.y_;
 			}
 
 			dataPts.buildKcTree();			// build filtering structure
@@ -99,8 +99,8 @@ void ClusterScanner::scanClusterCenters(Population& team, vector<Vector2D>& resu
 		HostMatrix<float> data(teamSize,2);
 		float* pd = data.Pointer();
 		for(size_t i = 0; i < teamSize; ++i) {
-			pd[i * 2] = team[i].loc_.x;
-			pd[i * 2 + 1] = team[i].loc_.y;
+			pd[i * 2] = team[i].loc_.x_;
+			pd[i * 2 + 1] = team[i].loc_.y_;
 		}
 
 		DeviceMatrix<float> dData(data);

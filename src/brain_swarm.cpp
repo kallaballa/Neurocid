@@ -21,74 +21,11 @@ BrainSwarm::BrainSwarm(BrainLayout layout, fann_type* weight) : BasicBrain(layou
 	}
 }
 
-/*
-Coord BrainSwarm::calculateFriendAngularDistance(const Vector2D& dir, const Vector2D& loc) {
-	double diff = (M_PI + radFromDir(dir)) - (M_PI + radFromDir(loc));
-
-	if (diff > M_PI)
-		diff = M_PI - diff;
-	else if (diff < -M_PI)
-		diff = M_PI + diff;
-
-	if (diff <= 0)
-		diff = (M_PI / 2) + diff;
-
-	if (diff > 0)
-		diff = -(M_PI / 2) + diff;
-
-//		std::cerr << "diff:" << diff << std::endl;
-	assert(diff > -M_PI && diff < M_PI);
-	return diff;
-}
-
-Coord BrainSwarm::calculateEnemyAngularDistance(const Vector2D& dir, const Vector2D& dirEnemy) {
-	Coord diff = (M_PI + radFromDir(dir))
-			- (M_PI + radFromDir(dirEnemy));
-
-	if (diff > M_PI)
-		diff = M_PI - diff;
-
-	else if (diff < -M_PI)
-		diff = M_PI + diff;
-
-	assert(diff > -M_PI && diff < M_PI);
-
-	return diff;
-}
-*/
-Coord BrainSwarm::calculateEnemyAngularDistance(const Vector2D& dir, const Vector2D& enemyDir) {
-	Vector2D result;
-
-	result.y = (enemyDir.x * dir.y - enemyDir.y * dir.x);
-	result.x = (enemyDir.x * dir.x + enemyDir.y * dir.y);
-
-	Coord diff = radFromDir(result);
-
-	if (diff > M_PI)
-		diff = M_PI - diff;
-
-	else if (diff < -M_PI)
-		diff = M_PI + diff;
-
-	assert(diff >= -M_PI && diff <= M_PI);
-
-	return diff;
-}
-
-Vector2D BrainSwarm::calculateEnemyAngularDistanceVector(const Vector2D& dir, const Vector2D& enemyDir) {
-	Vector2D result;
-
-	result.y = (enemyDir.x * dir.y - enemyDir.y * dir.x);
-	result.x = (enemyDir.x * dir.x + enemyDir.y * dir.y);
-
-	return result;
-}
-
 void BrainSwarm::scaleByBattleFieldDistance(Vector2D& v, const Coord& distance, const BattleFieldLayout& bfl) const {
 	Coord scale = 1 / ((distance / hypot(bfl.width_,bfl.height_) + 1));
-	v.x *= scale;
-	v.y *= scale;
-	assert(v.x >= -1 && v.x <= 1 && v.y >= -1 && v.y <= 1);
+	v.x_ *= scale;
+	v.y_ *= scale;
+	assert(v.x_ >= -1 && v.x_ <= 1 && v.y_ >= -1 && v.y_ <= 1);
 }
 
 void BrainSwarm::applyInput(const size_t& i, const fann_type& value) {
@@ -114,12 +51,13 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	for (const ScanObject& so : scan.objects_) {
 		if(so.type_ == FRIEND) {
 			Vector2D toFriend = (so.loc_ - scan.loc_).normalize();
-			Vector2D vdiff = calculateEnemyAngularDistanceVector(scan.dir_, toFriend);
-			Coord diff = (vdiff - Vector2D(0,-1)).length();
+			Vector2D vdiff = toFriend;
+			vdiff.rotate(scan.dir_);
+			Coord diff = radFromDir(vdiff);
 
 			auto it = friendObj.find(diff);
 			while(it != friendObj.end()) {
-				if(diff > 1)
+				if(diff > 0)
 					diff -= fRand(0.00000001, 0.00009);
 				else
 					diff += fRand(0.00000001, 0.00009);
@@ -134,12 +72,13 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	for (const ScanObject& so : scan.objects_) {
 		if(so.type_ == ENEMY) {
 			Vector2D toEnemy = (so.loc_ - scan.loc_).normalize();
-			Vector2D vdiff = calculateEnemyAngularDistanceVector(scan.dir_, toEnemy);
-			Coord diff = (vdiff - Vector2D(0,-1)).length();
+			Vector2D vdiff = toEnemy;
+			vdiff.rotate(scan.dir_);
+			Coord diff = radFromDir(vdiff);
 
 			auto it = enemyObj.find(diff);
 			while(it != enemyObj.end()) {
-				if(diff > 1)
+				if(diff > 0)
 					diff -= fRand(0.00000001, 0.00009);
 				else
 					diff += fRand(0.00000001, 0.00009);
@@ -160,8 +99,8 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 		Coord distance = it.second.second;
 		if (vdiff != NO_VECTOR2D) {
 			scaleByBattleFieldDistance(vdiff, distance, bfl);
-			applyInput(inputCnt * 2, vdiff.x);
-			applyInput(inputCnt * 2 + 1, vdiff.y);
+			applyInput(inputCnt * 2, vdiff.x_);
+			applyInput(inputCnt * 2 + 1, vdiff.y_);
 		}
 		inputCnt+=1;
 	}
@@ -173,17 +112,24 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 		if (vdiff != NO_VECTOR2D) {
 			scaleByBattleFieldDistance(vdiff, distance, bfl);
-			applyInput(inputCnt * 2, vdiff.x);
-			applyInput(inputCnt * 2 + 1, vdiff.y);
+			applyInput(inputCnt * 2, vdiff.x_);
+			applyInput(inputCnt * 2 + 1, vdiff.y_);
 		}
 		inputCnt+=1;
 	}
 
 	Vector2D vel = scan.vel_;
 	vel.normalize();
-	applyInput(inputCnt, vel.x);
-	applyInput(inputCnt+1, vel.y);
-	applyInput(inputCnt+2, scan.angVel_ / 120);
+	applyInput(inputCnt, vel.x_);
+	applyInput(inputCnt+1, vel.y_);
+
+	Coord angVel = scan.angVel_;
+	if(angVel > 20)
+		angVel = 20;
+	else if(angVel < -20)
+		angVel = -20;
+
+	applyInput(inputCnt+2, angVel / 20);
 
 	for(size_t i = 0; i < numInputs; ++i) {
 		assert(!std::isinf(inputs_[i]));

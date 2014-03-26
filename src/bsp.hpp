@@ -8,9 +8,9 @@ namespace tankwar {
 
 inline Coord centerComponent(const Object* node, const int& k) {
 	if(k == 0)
-		return node->loc_.x;
+		return node->loc_.x_;
 
-	return node->loc_.y;
+	return node->loc_.y_;
 }
 
 

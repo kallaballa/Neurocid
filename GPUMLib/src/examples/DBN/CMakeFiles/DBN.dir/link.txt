@@ -1,0 +1,1 @@
+/usr/bin/g++-4.6   -m64    CMakeFiles/DBN.dir/DBNapp.cpp.o  -o DBN -rdynamic /usr/local/cuda/lib64/libcudart.so ../../libGPUMLibDBN.a /usr/local/cuda/lib64/libcurand.so ../../libGPUMLibUtils.a /usr/local/cuda/lib64/libcudart.so -Wl,-rpath,/usr/local/cuda/lib64 

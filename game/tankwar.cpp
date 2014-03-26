@@ -123,17 +123,20 @@ public:
 	virtual Placer* createPlacer() = 0;
 };
 
-class AimOnOneNoMove : public Scenario {
+/* *************************
+ * SYMMETRIC LINES SCENARIOS
+ * *************************/
+
+class SymmetricLines : public Scenario {
 public:
-	AimOnOneNoMove() :
-		Scenario() {
-		bfl_.iterations_ = 800;
+	SymmetricLines() : Scenario() {
 		bfl_.width_ = 30000;
 		bfl_.height_ = 30000;
+		bfl_.iterations_ = 1000;
 
-		gl_.center_ = Vector2D(bfl_.width_ / 2, bfl_.height_/ 2);
-		gl_.distance_ = 1000;
-		gl_.spacing_ = 40;
+		gl_.center_ = Vector2D(15000,15000);
+		gl_.distance_ = 1500;
+		gl_.spacing_ = 100;
 
 		phl_.gravity_ = {0,0};
 		phl_.timeStep_ = 1.0f/60.0f;
@@ -142,16 +145,244 @@ public:
 		phl_.coordToMetersFactor_ = 0.05f;
 	}
 
-	void configureTeams(vector<Population>& teams) {
+	virtual void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
 
 		TankLayout attackerTL = teams[0].layout_.tl_;
 		attackerTL.isDummy_ = false;
+		attackerTL.max_ammo_ = 30;
+		attackerTL.max_cooldown = 200;
+		attackerTL.max_damage_ = 12;
+		teams[0].update(attackerTL);
+
+		TankLayout defenderTL = teams[1].layout_.tl_;
+		defenderTL.isDummy_ = false;
+		defenderTL.max_ammo_ = 30;
+		defenderTL.max_cooldown = 200;
+		defenderTL.max_damage_ = 12;
+		teams[1].update(defenderTL);
+	}
+
+	virtual Placer* createPlacer() {
+		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
+	}
+};
+
+class SymmetricLinesFacingInward : public SymmetricLines {
+public:
+	SymmetricLinesFacingInward() : SymmetricLines() {
+	}
+
+	virtual void configureTeams(vector<Population>& teams) {
+		assert(teams.size() == 2);
+
+		TankLayout attackerTL = teams[0].layout_.tl_;
+		attackerTL.canRotate_ = false;
 		attackerTL.canMove_ = false;
+		attackerTL.max_ammo_ = 30;
+		attackerTL.max_cooldown = 200;
+		attackerTL.max_damage_ = 12;
+		teams[0].update(attackerTL);
+
+		TankLayout defenderTL = teams[1].layout_.tl_;
+		defenderTL.isDummy_ = true;
+		defenderTL.max_damage_ = 100;
+		teams[1].update(defenderTL);
+	}
+
+	virtual Placer* createPlacer() {
+		return new OppositePlacer<IterRot, OppositeFacer, Layouter>({0, M_PI}, {0}, {Scenario::gl_});
+	}
+};
+
+class SymmetricLinesShort : public SymmetricLines {
+public:
+	SymmetricLinesShort() : SymmetricLines() {
+		bfl_.iterations_ = 300;
+		gl_.spacing_ = 40;
+	}
+
+	virtual void configureTeams(vector<Population>& teams) {
+		SymmetricLines::configureTeams(teams);
+
+		TankLayout attackerTL = teams[0].layout_.tl_;
+		attackerTL.max_cooldown = 10;
+		attackerTL.max_damage_ = 20;
+		teams[0].update(attackerTL);
+
+		TankLayout defenderTL = teams[1].layout_.tl_;
+		defenderTL.isDummy_ = true;
+		defenderTL.max_damage_ = 100;
+		teams[1].update(defenderTL);
+	}
+};
+
+class SymmetricLinesNoMoveTwoRows : public SymmetricLines {
+public:
+	SymmetricLinesNoMoveTwoRows() : SymmetricLines() {
+	}
+
+	virtual Placer* createPlacer() {
+		return new OppositePlacerTwoRows<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
+	}
+
+	virtual void restorePools(vector<GeneticPool>& pools) {
+		pools[1] = pools[0];
+	};
+
+	virtual void restoreTeams(vector<Population>& teams) {
+		teams[1].clear();
+		//clone teamB from teamA
+		for(Tank& t : teams[0]) {
+			Tank c = t.clone();
+			c.teamID_ = 1;
+			teams[1].push_back(c);
+		}
+	}
+
+	virtual void configureTeams(vector<Population>& teams) {
+		SymmetricLines::configureTeams(teams);
+
+		TankLayout attackerTL = teams[0].layout_.tl_;
+		attackerTL.canMove_ = false;
+		teams[0].update(attackerTL);
+
+		TankLayout defenderTL = teams[1].layout_.tl_;
+		defenderTL.isDummy_ = true;
+		defenderTL.max_damage_ = 100;
+		teams[1].update(defenderTL);
+	}
+};
+
+class SymmetricLinesAttackerMoveTwoRows : public SymmetricLinesNoMoveTwoRows {
+public:
+	SymmetricLinesAttackerMoveTwoRows() : SymmetricLinesNoMoveTwoRows() {
+	}
+
+	virtual void configureTeams(vector<Population>& teams) {
+		SymmetricLinesNoMoveTwoRows::configureTeams(teams);
+
+		TankLayout attackerTL = teams[0].layout_.tl_;
+		attackerTL.canMove_ = true;
+		attackerTL.max_ammo_ = 3;
+		attackerTL.max_cooldown = 200;
+		attackerTL.max_damage_ = 8;
+		teams[0].update(attackerTL);
+	}
+};
+
+
+class SymmetricLinesFar : public SymmetricLines {
+public:
+	SymmetricLinesFar() : SymmetricLines() {
+		bfl_.iterations_ = 2000;
+		gl_.distance_ = 6000;
+		gl_.spacing_ = 200;
+	}
+
+	virtual void configureTeams(vector<Population>& teams) {
+		SymmetricLines::configureTeams(teams);
+
+		TankLayout attackerTL = teams[0].layout_.tl_;
 		attackerTL.max_ammo_ = 5;
-		attackerTL.max_damage_ = 10;
 		attackerTL.max_cooldown = 20;
-		attackerTL.max_rotation_ = 0.5;
+		attackerTL.max_damage_ = 5;
+		teams[0].update(attackerTL);
+
+		TankLayout defenderTL = teams[1].layout_.tl_;
+		defenderTL.max_ammo_ = 5;
+		defenderTL.max_cooldown = 20;
+		defenderTL.max_damage_ = 5;
+		teams[1].update(defenderTL);
+	}
+};
+
+class SymmetricLinesAttackerMoveFar : public SymmetricLinesFar {
+public:
+	SymmetricLinesAttackerMoveFar() : SymmetricLinesFar() {
+	}
+
+	virtual void configureTeams(vector<Population>& teams) {
+		SymmetricLinesFar::configureTeams(teams);
+		TankLayout defenderTL = teams[1].layout_.tl_;
+		defenderTL.isDummy_ = true;
+		defenderTL.max_damage_ = 100;
+		teams[1].update(defenderTL);
+	}
+
+	virtual void restorePools(vector<GeneticPool>& pools) {
+		pools[1] = pools[0];
+	};
+
+	virtual void restoreTeams(vector<Population>& teams) {
+		teams[1].clear();
+		//clone teamB from teamA
+		for(Tank& t : teams[0]) {
+			Tank c = t.clone();
+			c.teamID_ = 1;
+			teams[1].push_back(c);
+		}
+	}
+};
+
+
+class SymmetricLinesHuge : public SymmetricLines {
+public:
+	SymmetricLinesHuge() : SymmetricLines() {
+		bfl_.width_ = 60000;
+		bfl_.height_ = 60000;
+		bfl_.iterations_ = 5000;
+		gl_.center_ = {30000,30000};
+		gl_.distance_ = 20000;
+		gl_.spacing_ = 400;
+	}
+
+	virtual void configureTeams(vector<Population>& teams) {
+		SymmetricLines::configureTeams(teams);
+
+		TankLayout attackerTL = teams[0].layout_.tl_;
+		attackerTL.max_ammo_ = 10;
+		attackerTL.max_cooldown = 30;
+		attackerTL.max_damage_ = 3;
+		attackerTL.max_speed_ = 1.5;
+		teams[0].update(attackerTL);
+
+		TankLayout defenderTL = teams[1].layout_.tl_;
+		defenderTL.max_ammo_ = 10;
+		defenderTL.max_cooldown = 30;
+		defenderTL.max_damage_ = 3;
+		defenderTL.max_speed_ = 1.5;
+		teams[1].update(defenderTL);
+	}
+};
+
+class AimOnOne : public Scenario {
+public:
+	AimOnOne() : Scenario(){
+		bfl_.iterations_ = 800;
+		bfl_.width_ = 30000;
+		bfl_.height_ = 30000;
+
+		gl_.center_ = Vector2D(bfl_.width_ / 2, bfl_.height_/ 2);
+		gl_.distance_ = 2500;
+		gl_.spacing_ = 300;
+
+		phl_.gravity_ = {0,0};
+		phl_.timeStep_ = 1.0f/60.0f;
+		phl_.positionIterations_ = 2;
+		phl_.velocityIterations_ = 6;
+		phl_.coordToMetersFactor_ = 0.05f;
+	}
+
+	virtual void configureTeams(vector<Population>& teams) {
+		assert(teams.size() == 2);
+
+		TankLayout attackerTL = teams[0].layout_.tl_;
+		attackerTL.isDummy_ = false;
+		attackerTL.canMove_ = true;
+		attackerTL.max_ammo_ = 3;
+		attackerTL.max_cooldown = 20;
+		attackerTL.max_damage_ = 6;
 
 		teams[0].update(attackerTL);
 
@@ -162,11 +393,11 @@ public:
 
 		TankLayout dummyTL = teams[1].layout_.tl_;
 		dummyTL.isDummy_ = true;
-		dummyTL.max_damage_ = 1000;
+		dummyTL.max_damage_ = 100;
 		teams[1].update(dummyTL);
 	}
 
-	void configurePools(vector<GeneticPool>& pools) {
+	virtual void configurePools(vector<GeneticPool>& pools) {
 		assert(pools.size() == 2);
 		pools[1] = GeneticPool(); //dummy pool;
 	}
@@ -175,7 +406,8 @@ public:
 		pools[1] = pools[0];
 	};
 
-	Placer* createPlacer() {
+
+	virtual Placer* createPlacer() {
 		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
 	}
 
@@ -190,70 +422,22 @@ public:
 	}
 };
 
-class AimOnOne : public Scenario {
+class AimOnOneNoMove : public AimOnOne {
 public:
-	AimOnOne() : Scenario(){
-		bfl_.iterations_ = 600;
-		bfl_.width_ = 30000;
-		bfl_.height_ = 30000;
-
-		gl_.center_ = Vector2D(bfl_.width_ / 2, bfl_.height_/ 2);
-		gl_.distance_ = 2500;
-		gl_.spacing_ = 100;
-
-		phl_.gravity_ = {0,0};
-		phl_.timeStep_ = 1.0f/60.0f;
-		phl_.positionIterations_ = 2;
-		phl_.velocityIterations_ = 6;
-		phl_.coordToMetersFactor_ = 0.05f;
+	AimOnOneNoMove() : AimOnOne() {
+		bfl_.iterations_ = 300;
+		gl_.distance_ = 1000;
+		gl_.spacing_ = 40;
 	}
 
-	void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
-
+	virtual void configureTeams(vector<Population>& teams) {
+		AimOnOne::configureTeams(teams);
 		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.isDummy_ = false;
-		attackerTL.canMove_ = true;
-		attackerTL.max_ammo_ = 3;
-		attackerTL.max_cooldown = 20;
-		attackerTL.max_damage_ = 6;
-		attackerTL.max_rotation_ = 0.5;
+		attackerTL.canMove_ = false;
+		attackerTL.max_cooldown = 10;
+		attackerTL.max_damage_ = 20;
 
 		teams[0].update(attackerTL);
-
-		teams[1].clear();
-		Tank c = teams[0][0].clone();
-		c.teamID_ = 1;
-		teams[1].push_back(c);
-
-		TankLayout dummyTL = teams[1].layout_.tl_;
-		dummyTL.isDummy_ = true;
-		dummyTL.max_damage_ = 1000;
-		teams[1].update(dummyTL);
-	}
-
-	void configurePools(vector<GeneticPool>& pools) {
-		assert(pools.size() == 2);
-		pools[1] = GeneticPool(); //dummy pool;
-	}
-
-	virtual void restorePools(vector<GeneticPool>& pools) {
-		pools[1] = pools[0];
-	};
-
-
-	Placer* createPlacer() {
-		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
-	}
-
-	virtual void restoreTeams(vector<Population>& teams) {
-		teams[1].clear();
-		//clone teamB from teamA
-		for(Tank& t : teams[0]) {
-			Tank c = t.clone();
-			c.teamID_ = 1;
-			teams[1].push_back(c);
-		}
 	}
 };
 
@@ -284,11 +468,11 @@ public:
 		attackerTL.max_ammo_ = 3;
 		attackerTL.max_cooldown = 200;
 		attackerTL.max_damage_ = 8;
-		attackerTL.max_speed_ = 1;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
 		defenderTL.isDummy_ = true;
+		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
 	}
 
@@ -341,7 +525,6 @@ public:
 		attackerTL.max_ammo_ = 10;
 		attackerTL.max_cooldown = 100;
 		attackerTL.max_damage_ = 10;
-		attackerTL.max_speed_ = 1;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
@@ -358,306 +541,7 @@ public:
 	}
 
 };
-class SymmetricLinesNoMoveTwoRows : public Scenario {
-public:
-	SymmetricLinesNoMoveTwoRows() : Scenario() {
-		bfl_.width_ = 30000;
-		bfl_.height_ = 30000;
-		bfl_.iterations_ = 600;
 
-		gl_.center_ = Vector2D(5000,5000);
-		gl_.distance_ = 1500;
-		gl_.spacing_ = 15;
-
-		phl_.gravity_ = {0,0};
-		phl_.timeStep_ = 1.0f/60.0f;
-		phl_.positionIterations_ = 2;
-		phl_.velocityIterations_ = 6;
-		phl_.coordToMetersFactor_ = 0.05f;
-	}
-
-	void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
-
-		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.canMove_ = false;
-		attackerTL.max_ammo_ = 3;
-		attackerTL.max_cooldown = 200;
-		attackerTL.max_damage_ = 8;
-		attackerTL.max_speed_ = 1;
-		teams[0].update(attackerTL);
-
-		TankLayout defenderTL = teams[1].layout_.tl_;
-		defenderTL.isDummy_ = true;
-		teams[1].update(defenderTL);
-	}
-
-	void configurePools(vector<GeneticPool>& pools) {
-		assert(pools.size() == 2);
-	}
-
-	Placer* createPlacer() {
-		return new OppositePlacerTwoRows<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
-	}
-
-	virtual void restorePools(vector<GeneticPool>& pools) {
-		pools[1] = pools[0];
-	};
-
-	virtual void restoreTeams(vector<Population>& teams) {
-		teams[1].clear();
-		//clone teamB from teamA
-		for(Tank& t : teams[0]) {
-			Tank c = t.clone();
-			c.teamID_ = 1;
-			teams[1].push_back(c);
-		}
-	}
-};
-
-
-class SymmetricLinesAttackerMoveTwoRows : public Scenario {
-public:
-	SymmetricLinesAttackerMoveTwoRows() : Scenario() {
-		bfl_.width_ = 30000;
-		bfl_.height_ = 30000;
-		bfl_.iterations_ = 1000;
-
-		gl_.center_ = Vector2D(5000,5000);
-		gl_.distance_ = 1500;
-		gl_.spacing_ = 100;
-
-		phl_.gravity_ = {0,0};
-		phl_.timeStep_ = 1.0f/60.0f;
-		phl_.positionIterations_ = 2;
-		phl_.velocityIterations_ = 6;
-		phl_.coordToMetersFactor_ = 0.05f;
-	}
-
-	void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
-
-		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.isDummy_ = false;
-		attackerTL.max_ammo_ = 3;
-		attackerTL.max_cooldown = 200;
-		attackerTL.max_damage_ = 8;
-		attackerTL.max_speed_ = 1;
-		teams[0].update(attackerTL);
-
-		TankLayout defenderTL = teams[1].layout_.tl_;
-		defenderTL.isDummy_ = true;
-		teams[1].update(defenderTL);
-	}
-
-	void configurePools(vector<GeneticPool>& pools) {
-		assert(pools.size() == 2);
-	}
-
-	Placer* createPlacer() {
-		return new OppositePlacerTwoRows<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
-	}
-
-	virtual void restorePools(vector<GeneticPool>& pools) {
-		pools[1] = pools[0];
-	};
-
-	virtual void restoreTeams(vector<Population>& teams) {
-		teams[1].clear();
-		//clone teamB from teamA
-		for(Tank& t : teams[0]) {
-			Tank c = t.clone();
-			c.teamID_ = 1;
-			teams[1].push_back(c);
-		}
-	}
-};
-
-
-class SymmetricLines : public Scenario {
-public:
-	SymmetricLines() : Scenario() {
-		bfl_.width_ = 30000;
-		bfl_.height_ = 30000;
-		bfl_.iterations_ = 1000;
-
-		gl_.center_ = Vector2D(5000,5000);
-		gl_.distance_ = 1500;
-		gl_.spacing_ = 100;
-
-		phl_.gravity_ = {0,0};
-		phl_.timeStep_ = 1.0f/60.0f;
-		phl_.positionIterations_ = 2;
-		phl_.velocityIterations_ = 6;
-		phl_.coordToMetersFactor_ = 0.05f;
-	}
-
-	virtual void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
-
-		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.isDummy_ = false;
-		attackerTL.max_ammo_ = 30;
-		attackerTL.max_cooldown = 200;
-		attackerTL.max_damage_ = 12;
-		attackerTL.max_speed_ = 3;
-		teams[0].update(attackerTL);
-
-		TankLayout defenderTL = teams[1].layout_.tl_;
-		defenderTL.isDummy_ = false;
-		defenderTL.max_ammo_ = 30;
-		defenderTL.max_cooldown = 200;
-		defenderTL.max_damage_ = 12;
-		defenderTL.max_speed_ = 3;
-		defenderTL.pl_.max_speed_ = 3;
-		teams[1].update(defenderTL);
-	}
-
-	virtual Placer* createPlacer() {
-		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
-	}
-
-};
-
-class SymmetricLinesNoMove : public SymmetricLines {
-public:
-	SymmetricLinesNoMove() : SymmetricLines() {
-	}
-
-	virtual void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
-
-		SymmetricLines::configureTeams(teams);
-		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.isDummy_ = false;
-		attackerTL.canMove_ = false;
-		teams[0].update(attackerTL);
-
-		TankLayout defenderTL = teams[1].layout_.tl_;
-		defenderTL.isDummy_ = true;
-		teams[1].update(defenderTL);
-	}
-
-	virtual void restorePools(vector<GeneticPool>& pools) {
-		pools[1] = pools[0];
-	};
-
-	virtual void restoreTeams(vector<Population>& teams) {
-		teams[1].clear();
-		//clone teamB from teamA
-		for(Tank& t : teams[0]) {
-			Tank c = t.clone();
-			c.teamID_ = 1;
-			teams[1].push_back(c);
-		}
-	}
-};
-
-class SymmetricLinesFar : public Scenario {
-public:
-	SymmetricLinesFar() : Scenario() {
-		bfl_.width_ = 30000;
-		bfl_.height_ = 30000;
-		bfl_.iterations_ = 5000;
-
-		gl_.center_ = Vector2D(15000,15000);
-		gl_.distance_ = 5000;
-		gl_.spacing_ = 100;
-
-		phl_.gravity_ = {0,0};
-		phl_.timeStep_ = 1.0f/60.0f;
-		phl_.positionIterations_ = 2;
-		phl_.velocityIterations_ = 6;
-		phl_.coordToMetersFactor_ = 0.04f;
-	}
-
-	void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
-
-		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.isDummy_ = false;
-		attackerTL.max_ammo_ = 5;
-		attackerTL.max_cooldown = 200;
-		attackerTL.max_damage_ = 12;
-		attackerTL.max_speed_ = 3;
-		teams[0].update(attackerTL);
-
-		TankLayout defenderTL = teams[1].layout_.tl_;
-		defenderTL.isDummy_ = false;
-		defenderTL.max_ammo_ = 5;
-		defenderTL.max_cooldown = 200;
-		defenderTL.max_damage_ = 12;
-		defenderTL.max_speed_ = 3;
-		defenderTL.pl_.max_speed_ = 3;
-		teams[1].update(defenderTL);
-	}
-
-	void configurePools(vector<GeneticPool>& pools) {
-		assert(pools.size() == 2);
-	}
-
-	Placer* createPlacer() {
-		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
-	}
-};
-
-class SymmetricLinesAttackerMoveFar : public Scenario {
-public:
-	SymmetricLinesAttackerMoveFar() : Scenario() {
-		bfl_.width_ = 30000;
-		bfl_.height_ = 30000;
-		bfl_.iterations_ = 5000;
-
-		gl_.center_ = Vector2D(15000,15000);
-		gl_.distance_ = 5000;
-		gl_.spacing_ = 100;
-
-		phl_.gravity_ = {0,0};
-		phl_.timeStep_ = 1.0f/60.0f;
-		phl_.positionIterations_ = 2;
-		phl_.velocityIterations_ = 6;
-		phl_.coordToMetersFactor_ = 0.04f;
-	}
-
-	void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
-
-		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.isDummy_ = false;
-		attackerTL.max_ammo_ = 5;
-		attackerTL.max_cooldown = 200;
-		attackerTL.max_damage_ = 12;
-		attackerTL.max_speed_ = 3;
-		teams[0].update(attackerTL);
-
-		TankLayout defenderTL = teams[1].layout_.tl_;
-		defenderTL.isDummy_ = true;
-		attackerTL.max_damage_ = 100;
-		teams[1].update(defenderTL);
-	}
-
-	void configurePools(vector<GeneticPool>& pools) {
-		assert(pools.size() == 2);
-	}
-
-	Placer* createPlacer() {
-		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
-	}
-
-	virtual void restorePools(vector<GeneticPool>& pools) {
-		pools[1] = pools[0];
-	};
-
-	virtual void restoreTeams(vector<Population>& teams) {
-		teams[1].clear();
-		//clone teamB from teamA
-		for(Tank& t : teams[0]) {
-			Tank c = t.clone();
-			c.teamID_ = 1;
-			teams[1].push_back(c);
-		}
-	}
-};
 
 class CrossSmall : public Scenario {
 public:
@@ -685,8 +569,6 @@ public:
 		attackerTL.max_ammo_ = 5;
 		attackerTL.max_cooldown = 100;
 		attackerTL.max_damage_ = 6;
-		attackerTL.max_speed_ = 3;
-		attackerTL.pl_.max_speed_ = 3;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
@@ -694,8 +576,6 @@ public:
 		defenderTL.max_ammo_ = 5;
 		defenderTL.max_cooldown = 100;
 		defenderTL.max_damage_ = 6;
-		defenderTL.max_speed_ = 3;
-		defenderTL.pl_.max_speed_ = 3;
 
 		teams[1].update(defenderTL);
 	}
@@ -711,45 +591,30 @@ public:
 };
 
 
-class CrossBig : public Scenario {
+class CrossHuge : public SymmetricLines {
 public:
-	CrossBig() : Scenario() {
-		bfl_.width_ = 30000;
-		bfl_.height_ = 30000;
+	CrossHuge() : SymmetricLines() {
+		bfl_.width_ = 60000;
+		bfl_.height_ = 60000;
 		bfl_.iterations_ = 5000;
-
-		gl_.center_ = Vector2D(15000,15000);
-		gl_.distance_ = 3000;
-		gl_.spacing_ = 200;
-
-		phl_.gravity_ = {0,0};
-		phl_.timeStep_ = 1.0f/60.0f;
-		phl_.positionIterations_ = 2;
-		phl_.velocityIterations_ = 6;
-		phl_.coordToMetersFactor_ = 0.05f;
+		gl_.center_ = {30000,30000};
+		gl_.distance_ = 15000;
+		gl_.spacing_ = 400;
 	}
 
 	void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
 
 		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.isDummy_ = false;
-		attackerTL.disableProjectileFitness_ = true;
 		attackerTL.max_ammo_ = 30;
-		attackerTL.max_cooldown = 200;
+		attackerTL.max_cooldown = 20;
 		attackerTL.max_damage_ = 6;
-		attackerTL.max_speed_ = 3;
-		attackerTL.pl_.max_speed_ = 3;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
-		defenderTL.isDummy_ = false;
-		defenderTL.disableProjectileFitness_ = true;
 		defenderTL.max_ammo_ = 30;
-		defenderTL.max_cooldown = 200;
+		defenderTL.max_cooldown = 20;
 		defenderTL.max_damage_ = 6;
-		defenderTL.max_speed_ = 3;
-		defenderTL.pl_.max_speed_ = 3;
 
 		teams[1].update(defenderTL);
 	}
@@ -761,60 +626,6 @@ public:
 	Placer* createPlacer() {
 		return new CrossPlacerTwoRows<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
 	}
-};
-
-
-class SymmetricLinesHuge : public Scenario {
-public:
-	SymmetricLinesHuge() : Scenario() {
-		bfl_.width_ = 30000;
-		bfl_.height_ = 30000;
-		bfl_.iterations_ = 5000;
-
-		gl_.center_ = Vector2D(15000,15000);
-		gl_.distance_ = 10000;
-		gl_.spacing_ = 200;
-
-		phl_.gravity_ = {0,0};
-		phl_.timeStep_ = 1.0f/60.0f;
-		phl_.positionIterations_ = 2;
-		phl_.velocityIterations_ = 6;
-		phl_.coordToMetersFactor_ = 0.05f;
-	}
-
-	void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
-
-		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.isDummy_ = false;
-		attackerTL.disableProjectileFitness_ = true;
-		attackerTL.max_ammo_ = 30;
-		attackerTL.max_cooldown = 100;
-		attackerTL.max_damage_ = 6;
-		attackerTL.max_speed_ = 3;
-		attackerTL.pl_.max_speed_ = 3;
-		teams[0].update(attackerTL);
-
-		TankLayout defenderTL = teams[1].layout_.tl_;
-		defenderTL.isDummy_ = false;
-		defenderTL.disableProjectileFitness_ = true;
-		defenderTL.max_ammo_ = 30;
-		defenderTL.max_cooldown = 100;
-		defenderTL.max_damage_ = 6;
-		defenderTL.max_speed_ = 3;
-		defenderTL.pl_.max_speed_ = 3;
-
-		teams[1].update(defenderTL);
-	}
-
-	void configurePools(vector<GeneticPool>& pools) {
-		assert(pools.size() == 2);
-	}
-
-	Placer* createPlacer() {
-		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
-	}
-
 };
 
 void playGame(size_t gameIter, Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools, Placer& placer) {
@@ -848,10 +659,11 @@ void loadScenarios() {
 	registerScenario("SymmetricLines", new SymmetricLines());
 	registerScenario("SymmetricLinesFar", new SymmetricLinesFar());
 	registerScenario("SymmetricLinesAttackerMoveFar", new SymmetricLinesAttackerMoveFar());
-	registerScenario("SymmetricLinesNoMove", new SymmetricLinesNoMove());
+	registerScenario("SymmetricLinesShort", new SymmetricLinesShort());
 	registerScenario("CrossSmall", new CrossSmall());
-	registerScenario("CrossBig", new CrossBig());
+	registerScenario("CrossHuge", new CrossHuge());
 	registerScenario("SymmetricLinesHuge", new SymmetricLinesHuge());
+	registerScenario("SymmetricLinesFacingInward", new SymmetricLinesFacingInward());
 }
 
 Scenario* getScenario(const string& name) {
@@ -915,14 +727,14 @@ int main(int argc, char** argv) {
 			200,// max_cooldown
 			10,// max_ammo_
 			3,  // max_damage_
-			3  // crashes_per_damage
+			2  // crashes_per_damage
 		},
 		//BrainLayout
 		{
 		    43, // inputs
 			3,  // outputs
 			7,  // layers
-			6  // neurons per hidden layer
+			11  // neurons per hidden layer
 		}
 	};
 

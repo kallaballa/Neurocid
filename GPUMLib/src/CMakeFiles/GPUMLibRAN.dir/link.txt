@@ -1,0 +1,2 @@
+/usr/bin/ar cr libGPUMLibRAN.a  CMakeFiles/GPUMLibRAN.dir/RAN/ResourceAllocatingNetwork.cpp.o CMakeFiles/GPUMLibRAN.dir/RAN/utils.cpp.o CMakeFiles/GPUMLibRAN.dir/RAN/./GPUMLibRAN_generated_RANKernels.cu.o
+/usr/bin/ranlib libGPUMLibRAN.a

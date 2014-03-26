@@ -1,0 +1,10 @@
+/home/elchaschab/devel/TankWar/GPUMLib/src/examples/ATS/CMakeFiles/ATS.dir
+/home/elchaschab/devel/TankWar/GPUMLib/src/examples/BP/CMakeFiles/BP.dir
+/home/elchaschab/devel/TankWar/GPUMLib/src/examples/DBN/CMakeFiles/DBN.dir
+/home/elchaschab/devel/TankWar/GPUMLib/src/CMakeFiles/GPUMLibDBN.dir
+/home/elchaschab/devel/TankWar/GPUMLib/src/CMakeFiles/GPUMLibMBP.dir
+/home/elchaschab/devel/TankWar/GPUMLib/src/CMakeFiles/GPUMLibNMF.dir
+/home/elchaschab/devel/TankWar/GPUMLib/src/CMakeFiles/GPUMLibUtils.dir
+/home/elchaschab/devel/TankWar/GPUMLib/src/examples/MBP/CMakeFiles/MBP.dir
+/home/elchaschab/devel/TankWar/GPUMLib/src/examples/reduction/CMakeFiles/reductionapp.dir
+/home/elchaschab/devel/TankWar/GPUMLib/src/examples/SVM/CMakeFiles/svm.dir

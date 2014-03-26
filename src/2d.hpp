@@ -21,47 +21,47 @@ typedef double Coord;
 #define NO_COORD std::numeric_limits<Coord>().max()
 
 struct Vector2D {
-	Coord x, y;
+	Coord x_, y_;
 
 	Vector2D(Coord a = 0.0f, Coord b = 0.0f) :
-			x(a), y(b) {
+			x_(a), y_(b) {
 	}
 
 	inline Coord distance(const Vector2D& loc) const {
-		return hypot(x - loc.x, y - loc.y);
+		return hypot(x_ - loc.x_, y_ - loc.y_);
 	}
 
 	//we need some overloaded operators
 	Vector2D &operator+=(const Vector2D &rhs) {
-		x += rhs.x;
-		y += rhs.y;
+		x_ += rhs.x_;
+		y_ += rhs.y_;
 
 		return *this;
 	}
 
 	Vector2D &operator-=(const Vector2D &rhs) {
-		x -= rhs.x;
-		y -= rhs.y;
+		x_ -= rhs.x_;
+		y_ -= rhs.y_;
 
 		return *this;
 	}
 
 	Vector2D &operator*=(const Coord &rhs) {
-		x *= rhs;
-		y *= rhs;
+		x_ *= rhs;
+		y_ *= rhs;
 
 		return *this;
 	}
 
 	Vector2D &operator/=(const Coord &rhs) {
-		x /= rhs;
-		y /= rhs;
+		x_ /= rhs;
+		y_ /= rhs;
 
 		return *this;
 	}
 
 	bool operator==(const Vector2D &other) const {
-		return this->x == other.x && this->y == other.y;
+		return this->x_ == other.x_ && this->y_ == other.y_;
 	}
 
 	bool operator!=(const Vector2D &other) const {
@@ -69,23 +69,23 @@ struct Vector2D {
 	}
 
 	inline Coord length() {
-		return sqrt(this->x * this->x + this->y * this->y);
+		return sqrt(this->x_ * this->x_ + this->y_ * this->y_);
 	}
 
 	Vector2D& normalize(Coord w, Coord h) {
  		assert(w > 0);
 		assert(h > 0);
 
-		Coord ox = this->x;
-		Coord oy = this->y;
+		Coord ox = this->x_;
+		Coord oy = this->y_;
 
-		this->x = (this->x) / (w);
-		this->y = (this->y) / (h);
+		this->x_ = (this->x_) / (w);
+		this->y_ = (this->y_) / (h);
 
-		if(!(this->x >= -1 && this->x <= 1 && this->y >= -1 && this->y <= 1))
-			std::cerr << "normalize error: " << "(" << ox << "," << oy << ") -> " << "(" << this->x << "," << this->y << ")" << std::endl;
-		assert(this->x >= -1 && this->x <= 1);
-		assert(this->y >= -1 && this->y <= 1);
+		if(!(this->x_ >= -1 && this->x_ <= 1 && this->y_ >= -1 && this->y_ <= 1))
+			std::cerr << "normalize error: " << "(" << ox << "," << oy << ") -> " << "(" << this->x_ << "," << this->y_ << ")" << std::endl;
+		assert(this->x_ >= -1 && this->x_ <= 1);
+		assert(this->y_ >= -1 && this->y_ <= 1);
 
 		return *this;
 	}
@@ -94,12 +94,12 @@ struct Vector2D {
 		Coord vector_length = this->length();
 		if(vector_length == 0)
 		{
-			this->x = 0;
-			this->y = 0;
+			this->x_ = 0;
+			this->y_ = 0;
 			return *this;
 		}
-		this->x = this->x / vector_length;
-		this->y = this->y / vector_length;
+		this->x_ = this->x_ / vector_length;
+		this->y_ = this->y_ / vector_length;
 		return *this;
 	}
 
@@ -107,15 +107,23 @@ struct Vector2D {
 		Coord radians = degrees * (M_PI / 180);
 		Coord cs = cos(radians);
 		Coord sn = sin(radians);
-		Coord x1 = this->x * cs - this->y * sn;
-		this->y = this->x * sn + this->y * cs;
-		this->x = x1;
+		Coord x1 = this->x_ * cs - this->y_ * sn;
+		this->y_ = this->x_ * sn + this->y_ * cs;
+		this->x_ = x1;
+	}
+
+	void rotate(Vector2D by) {
+		Coord x1 = (by.y_ * -x_ + -by.x_ * -y_);
+		Coord y1 = (by.y_ * -y_ + by.x_ * -x_);
+
+		x_ = x1;
+		y_ = y1;
 	}
 };
 
 #define NO_VECTOR2D Vector2D(NO_COORD, NO_COORD)
-#define ASSERT_LOC(V) assert(V.x != NO_COORD && V.y != NO_COORD);
-#define ASSERT_DIR(V) assert(V.x >= -1 && V.x <= 1 && V.y >= -1 && V.y <= 1 && (V != Vector2D(0,0)));
+#define ASSERT_LOC(V) assert(V.x_ != NO_COORD && V.y_ != NO_COORD);
+#define ASSERT_DIR(V) assert(V.x_ >= -1 && V.x_ <= 1 && V.y_ >= -1 && V.y_ <= 1 && (V != Vector2D(0,0)));
 
 struct Rect {
 	Vector2D ul_;
@@ -123,11 +131,11 @@ struct Rect {
 };
 
 inline Coord dot(Vector2D &v1, Vector2D &v2) {
-	return v1.x * v2.x + v1.y * v2.y;
+	return v1.x_ * v2.x_ + v1.y_ * v2.y_;
 }
 
 inline int sign(Vector2D &v1, Vector2D &v2) {
-	if (v1.y * v2.x > v1.x * v2.y) {
+	if (v1.y_ * v2.x_ > v1.x_ * v2.y_) {
 		return 1;
 	} else {
 		return -1;
@@ -149,8 +157,8 @@ inline Vector2D operator*(Coord lhs, const Vector2D &rhs) {
 //overload the - operator
 inline Vector2D operator-(const Vector2D &lhs, const Vector2D &rhs) {
 	Vector2D result(lhs);
-	result.x -= rhs.x;
-	result.y -= rhs.y;
+	result.x_ -= rhs.x_;
+	result.y_ -= rhs.y_;
 
 	return result;
 }
@@ -159,7 +167,7 @@ inline Vector2D dirFromRad(const Coord rad) {
 	assert(rad <= M_PI);
 	assert(rad >= -M_PI);
 
-	return Vector2D(cos(rad), sin(rad));
+	return Vector2D(sin(rad), -cos(rad));
 }
 
 inline Vector2D dirFromDeg(const Coord degrees) {
@@ -167,7 +175,7 @@ inline Vector2D dirFromDeg(const Coord degrees) {
 }
 
 inline Coord radFromDir(const Vector2D dir) {
-	Coord r = atan2(dir.y, dir.x);
+	Coord r = atan2(dir.x_, -dir.y_);
 	assert(r <= M_PI);
 	assert(r >= -M_PI);
 	return r;
@@ -186,7 +194,7 @@ inline Coord normRotation(const Coord rotation) {
 }
 
 inline std::ostream& operator<<(std::ostream& os, Vector2D v) {
-	os << '(' << v.x << ',' << v.y << ')';
+	os << '(' << v.x_ << ',' << v.y_ << ')';
 	return os;
 }
 }

@@ -1,5 +1,9 @@
 TARGET  := libtankwar.so
-SRCS    := brain_basic.cpp brain_swarm.cpp brain_nearest.cpp battlefield.cpp canvas.cpp tank.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner_bsp.cpp scanner_swarm.cpp scanner_cluster.cpp time_tracker.cpp KMeans.cpp scanner_hybrid.cpp
+SRCS    := brain_basic.cpp brain_swarm.cpp brain_nearest.cpp battlefield.cpp canvas.cpp tank.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner_bsp.cpp scanner_swarm.cpp scanner_cluster.cpp time_tracker.cpp scanner_hybrid.cpp
+ifdef TANKWAR_GPU
+SRCS += KMeans.cpp
+endif
+
 #precompiled headers
 HEADERS := 
 CU      := KMeansKernels.cu
@@ -8,20 +12,33 @@ GCH    := ${HEADERS:.h=.gch}
 OBJS    := ${SRCS:.cpp=.o} 
 DEPS    := ${SRCS:.cpp=.dep} 
 
-CXXFLAGS += -fpic -I../ -I/usr/local/cula/include -I/usr/local/cuda-5.0/include/
-LDFLAGS += -L/usr/local/cuda/lib64/ -shared -lcuda -lcublas -lcudart
+CXXFLAGS += -fpic -I../ 
+LDFLAGS += -shared 
 .PHONY: all release debug clean distclean 
+
+ifdef TANKWAR_GPU
+CXXFLAGS += -I/usr/local/cula/include/ -I/usr/local/cuda/include/ -DTANKWAR_GPU
+LIBS += -lcuda -lcublas -lcudart
+LDFLAGS += -L/usr/local/cuda/lib64/
+endif
 
 all: release
 release: ${TARGET}
 debug: ${TARGET}
 info: ${TARGET}
 
+ifdef TANKWAR_GPU
 ${CUO}: ${CU} 
 	${NVCC} ${NVCC_CXXFLAGS} --compiler-bindir ${NVCC_HOST_CXX} -c $< 
+endif
 
+ifdef TANKWAR_GPU
 ${TARGET}: ${OBJS} ${CUO}
 	${CXX} ${LDFLAGS} -o $@ $^ ${LIBS} 
+else
+${TARGET}: ${OBJS}
+	${CXX} ${LDFLAGS} -o $@ $^ ${LIBS}
+endif
 
 ${OBJS}: %.o: %.cpp %.dep ${GCH}
 	${CXX} ${CXXFLAGS} -o $@ -c $<
@@ -40,7 +57,7 @@ uninstall:
 	rm ${DESTDIR}/${PREFIX}/${TARGET}
 
 clean:
-	rm -f *~ ${DEPS} ${OBJS} ${GCH} ${TARGET} 
+	rm -f *~ ${DEPS} ${OBJS} ${CUO} ${GCH} ${TARGET} 
 
 distclean: clean
 

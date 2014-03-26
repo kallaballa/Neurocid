@@ -41,6 +41,8 @@ private:
 	b2Body* makeWorldBox(BattleFieldLayout& bfl);
 	b2Body* makeTankBody(Tank& t);
 	b2Body* makeProjectileBody(Projectile& p);
+	void wallHit(Tank& t);
+	void wallHit(Projectile& p);
 	void collide(Projectile& p1, Projectile& p2);
 	void collide(Projectile& p, Tank& t);
 	void collide(Tank& t1, Tank& t2);

@@ -54,6 +54,11 @@ public:
 		speed_ = layout_.max_speed_;
 		rotForce_ = 0;
 	}
+
+	void death() {
+		dead_ = true;
+		explode_ = true;
+	}
 };
 
 }

@@ -30,7 +30,7 @@ struct Object {
 	bool dead_;
 
 	Object(ObjectType type, Vector2D loc, Coord rotation, Coord range, bool explode, bool dead) :
-			type_(type), loc_(loc), rotation_(rotation), range_(range), speed_(0), rotForce_(0), explode_(explode), dead_(dead) {
+			type_(type), loc_(loc), vel_(), angVel_(0), rotation_(rotation), range_(range), speed_(0), rotForce_(0), explode_(explode), dead_(dead) {
 		assert(rotation != 10);
 	}
 

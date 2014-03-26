@@ -14,54 +14,27 @@
 namespace tankwar {
 using std::vector;
 
+void Physics::wallHit(Tank& t) {
+	t.kill();
+}
+
+void Physics::wallHit(Projectile& p) {
+	p.death();
+}
+
 void Physics::collide(Projectile& p1, Projectile& p2) {
-	p1.dead_ = true;
-	p1.explode_ = true;
-	p2.dead_ = true;
-	p2.explode_ = true;
+	p1.death();
+	p2.death();
 }
 
 void Physics::collide(Projectile& p, Tank& t) {
 	if (t != (*p.owner_)) {
-		p.dead_ = true;
-		p.explode_ = true;
-		t.damage_++;
-		if (t.damage_ >= t.layout_.max_damage_) {
-			t.dead_ = true;
-			t.explode_ = true;
-		}
-
-		if (p.owner_->teamID_ != t.teamID_) {
-			p.owner_->hits_++;
-		} else {
-			p.owner_->friendlyFire_++;
-		}
+		t.impact(p);
 	}
 }
 
 void Physics::collide(Tank& t1, Tank& t2) {
-	t1.crash_++;
-	t2.crash_++;
-
-	if(t1.crash_ >= t1.layout_.crashes_per_damage_) {
-		t1.crash_ = 0;
-		t1.damage_++;
-	}
-
-	if(t2.crash_ >= t2.layout_.crashes_per_damage_) {
-		t2.crash_ = 0;
-		t2.damage_++;
-	}
-
-	if (t1.damage_ >= t1.layout_.max_damage_) {
-		t1.dead_ = true;
-		t1.explode_ = true;
-	}
-
-	if (t2.damage_ >= t2.layout_.max_damage_) {
-		t2.dead_ = true;
-		t2.explode_ = true;
-	}
+	t1.impact(t2);
 }
 
 void Physics::BeginContact(b2Contact* contact) {
@@ -70,25 +43,25 @@ void Physics::BeginContact(b2Contact* contact) {
 
   if(oA != NULL || oB != NULL) {
 	  if(oA == NULL && oB != NULL && oB->type() == PROJECTILE && !oB->dead_) {
-		  //projectile -> world box
-		  oB->dead_ = true;
+		  wallHit(*static_cast<Projectile*>(oB));
 		  deadBodies_.push_back(contact->GetFixtureB()->GetBody());
 	  } else if(oB == NULL && oA != NULL && oA->type() == PROJECTILE && !oA->dead_) {
-		  //projectile -> world box
-		  oA->dead_ = true;
+		  wallHit(*static_cast<Projectile*>(oA));
+		  deadBodies_.push_back(contact->GetFixtureA()->GetBody());
+	  } else if(oA == NULL && oB != NULL && oB->type() == TANK && !oB->dead_) {
+		  wallHit(*static_cast<Tank*>(oB));
+		  deadBodies_.push_back(contact->GetFixtureB()->GetBody());
+	  } else if(oB == NULL && oA != NULL && oA->type() == TANK && !oA->dead_) {
+		  wallHit(*static_cast<Tank*>(oA));
 		  deadBodies_.push_back(contact->GetFixtureA()->GetBody());
 	  } else if(oA != NULL && oB != NULL && !oA->dead_ && !oB->dead_) {
 		  if(oA->type() == PROJECTILE && oB->type() == PROJECTILE) {
-			  //projectile -> projectile
 			  collide(*static_cast<Projectile*>(oA), *static_cast<Projectile*>(oB));
 		  } else if(oA->type() == PROJECTILE && oB->type() == TANK) {
-			  //projectile -> tank
 			  collide(*static_cast<Projectile*>(oA), *static_cast<Tank*>(oB));
 		  } else if(oA->type() == TANK && oB->type() == PROJECTILE) {
-			  //projectile -> tank
 			  collide(*static_cast<Projectile*>(oB), *static_cast<Tank*>(oA));
 		  } else if(oA->type() == TANK && oB->type() == TANK) {
-			  //tank -> tank
 			  collide(*static_cast<Tank*>(oB), *static_cast<Tank*>(oA));
 		  }
 
@@ -171,9 +144,9 @@ b2Body* Physics::makeWorldBox(BattleFieldLayout& bfl) {
 b2Body* Physics::makeTankBody(Tank& t) {
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(toMeters(t.loc_.x), toMeters(t.loc_.y));
+    bodyDef.position.Set(toMeters(t.loc_.x_), toMeters(t.loc_.y_));
 
-    assert(t.rotation_ < M_PI);
+    assert(t.rotation_ <= M_PI);
     bodyDef.angle = t.rotation_;
     bodyDef.userData = static_cast<Object*>(&t);
     bodyDef.allowSleep = true;
@@ -209,8 +182,8 @@ b2Body* Physics::makeTankBody(Tank& t) {
 b2Body* Physics::makeProjectileBody(Projectile& p) {
 	b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(toMeters(p.loc_.x), toMeters(p.loc_.y));
-    assert(p.rotation_ < M_PI);
+    bodyDef.position.Set(toMeters(p.loc_.x_), toMeters(p.loc_.y_));
+    assert(p.rotation_ <= M_PI);
     bodyDef.angle = p.rotation_;
     bodyDef.linearDamping = 0.0f;
     bodyDef.allowSleep = true;
@@ -228,7 +201,7 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
     fixtureDef.shape = &dynamicCircle;
 
     // Set the box density to be non-zero, so it will be dynamic.
-    fixtureDef.density = 0.1;
+    fixtureDef.density = 0.01;
 
     // Override the default friction.
     fixtureDef.friction = 0.3f;
@@ -291,9 +264,9 @@ void Physics::step() {
 			Object* o = (Object*)body->GetUserData();
 			if(o->type() == TANK) {
 				Tank* t = static_cast<Tank*>(o);
-				Vector2D force = o->getDirection() * (o->speed_ * 20);
+				Vector2D force = o->getDirection() * (o->speed_ * 60);
 				if(t->layout_.canMove_ && !t->layout_.isDummy_)
-					body->ApplyForce(b2Vec2(force.x, force.y), body->GetWorldCenter());
+					body->ApplyForce(b2Vec2(force.x_, force.y_), body->GetWorldCenter());
 				else
 					body->SetLinearVelocity(b2Vec2(0,0));
 
@@ -302,16 +275,16 @@ void Physics::step() {
 				else
 					body->SetAngularVelocity(0);
 
-				assert(o->rotation_ < M_PI);
+				assert(o->rotation_ <= M_PI);
 			} else if(o->type() == PROJECTILE) {
 				Projectile* p = static_cast<Projectile*>(o);
-				if(hypot(p->loc_.x - p->startLoc_.x, p->loc_.y - p->startLoc_.y) > p->layout_.max_travel_) {
+				if(hypot(p->loc_.x_ - p->startLoc_.x_, p->loc_.y_ - p->startLoc_.y_) > p->layout_.max_travel_) {
 					p->dead_ = true;
 					deadBodies_.push_back(body);
 				} else {
-					Vector2D force = o->getDirection() * o->speed_ * 30;
+					Vector2D force = o->getDirection() * o->speed_ * 60;
 					body->SetAwake(true);
-					body->SetLinearVelocity(b2Vec2(force.x, force.y));
+					body->SetLinearVelocity(b2Vec2(force.x_, force.y_));
 				}
 			}
 		}
@@ -331,13 +304,14 @@ void Physics::step() {
 			Object* obj = (Object*)body->GetUserData();
 			b2Vec2 vel = body->GetLinearVelocity();
 			Coord angVel = body->GetAngularVelocity();
-			obj->vel_.x = vel.x;
-			obj->vel_.y = vel.y;
+			obj->vel_.x_ = vel.x;
+			obj->vel_.y_ = vel.y;
+			assert(!std::isnan(angVel));
 			obj->angVel_ = angVel;
-			obj->loc_.x = toCoord(pos.x);
-			obj->loc_.y = toCoord(pos.y);
+			obj->loc_.x_ = toCoord(pos.x);
+			obj->loc_.y_ = toCoord(pos.y);
 			obj->rotation_ = normRotation(body->GetAngle());
-			assert(obj->rotation_ < M_PI);
+			assert(obj->rotation_ <= M_PI);
 		}
 	}
 }

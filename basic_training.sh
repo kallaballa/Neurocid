@@ -12,10 +12,10 @@ function run() {
   echo $2.pop
 }
 
-rm AimOnOneNoMove.pop
-POP=`run 1000 AimOnOneNoMove`
-POP=`run 1000 SymmetricLinesNoMove $POP`
-POP=`run 1000 AimOnOne $POP`
+[ -n "$1" ] && POP="$1"
+
+POP=`run 1000 AimOnOneNoMove $POP`
+POP=`run 1000 SymmetricLinesShort $POP`
 POP=`run 1000 SymmetricLinesAttackerMoveFar $POP`
 POP=`run 1000 SymmetricLinesFar $POP`
 cp $POP basic_training.pop

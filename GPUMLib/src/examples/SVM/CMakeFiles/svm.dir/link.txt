@@ -1,0 +1,1 @@
+/usr/bin/g++-4.6   -m64    CMakeFiles/svm.dir/./svm_generated_svm_example.cu.o  -o svm -rdynamic /usr/local/cuda/lib64/libcudart.so -Wl,-rpath,/usr/local/cuda/lib64 

@@ -1,0 +1,1 @@
+/usr/bin/g++-4.6   -m64    CMakeFiles/reductionapp.dir/reductionapp.cpp.o  -o CMakeFiles/CMakeRelink.dir/reductionapp -rdynamic /usr/local/cuda/lib64/libcudart.so ../../libGPUMLibUtils.a /usr/local/cuda/lib64/libcudart.so 

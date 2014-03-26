@@ -47,15 +47,15 @@ void BrainNearest::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 				//		std::cerr << "diff:" << diff << std::endl;
 
-				assert(diff > -M_PI && diff < M_PI);
+				assert(diff >= -M_PI && diff <= M_PI);
 
 				Vector2D scaledDiff = dirFromRad(diff);
 				Coord scale = sub.length() / std::max(bfl.width_,bfl.height_);
-				scaledDiff.x *= scale;
-				scaledDiff.y *= scale;
+				scaledDiff.x_ *= scale;
+				scaledDiff.y_ *= scale;
 
-				inputs_[i * 2] = scaledDiff.x;
-				inputs_[i * 2 + 1] = scaledDiff.y;
+				inputs_[i * 2] = scaledDiff.x_;
+				inputs_[i * 2 + 1] = scaledDiff.y_;
 /*			} else if (so.type_ == ScanObjectType::FRIEND) {
 				Vector2D dir = scan.dir_;
 				Vector2D sub = so.loc_ - scan.loc_;
@@ -76,7 +76,7 @@ void BrainNearest::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 				//		std::cerr << "diff:" << diff << std::endl;
 
-				assert(diff > -M_PI && diff < M_PI);
+				assert(diff >= -M_PI && diff <= M_PI);
 				Vector2D scaledDiff = dirFromRad(diff);
 				Coord scale = sub.length() / std::max(bfl.width_,bfl.height_);
 				scaledDiff.x *= scale;

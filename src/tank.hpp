@@ -70,6 +70,7 @@ public:
 	Coord rthrust_;
 	size_t friendlyFire_;
 	size_t crash_;
+	size_t crashDamage_;
 	size_t hits_;
 	size_t damage_;
 	size_t cool_down;
@@ -92,8 +93,15 @@ public:
 	};
 
 	void setBrain(Brain* b);
+
 	void think(BattleFieldLayout& bfl);
 	void move(BattleFieldLayout& bfl);
+	void damage();
+	void death();
+	void kill();
+	void crash();
+	void impact(Tank& t);
+	void impact(Projectile& p);
 
 	void calculateFitness();
 	void resetGameState();

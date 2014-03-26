@@ -57,15 +57,15 @@ Canvas::Canvas(Coord width, Coord height) :
 }
 
 void Canvas::calculateScale() {
-	Coord scaleX = width_ / (viewPort_.lr_.x - viewPort_.ul_.x);
-	Coord scaleY = height_ / (viewPort_.lr_.y - viewPort_.ul_.y);
+	Coord scaleX = width_ / (viewPort_.lr_.x_ - viewPort_.ul_.x_);
+	Coord scaleY = height_ / (viewPort_.lr_.y_ - viewPort_.ul_.y_);
 	scale_ = std::min(scaleX, scaleY);
 }
 
 Coord Canvas::scaleX(const Coord& c) {
 	Coord preScale = 0.9;
-	Coord len = (viewPort_.lr_.x - viewPort_.ul_.x) * scale_ * preScale;
-	Coord pos = (c - viewPort_.ul_.x) * scale_ * preScale;
+	Coord len = (viewPort_.lr_.x_ - viewPort_.ul_.x_) * scale_ * preScale;
+	Coord pos = (c - viewPort_.ul_.x_) * scale_ * preScale;
 	Coord scaled = (((width_ - len) / 2) + pos);
 
 	return round(scaled);
@@ -73,15 +73,15 @@ Coord Canvas::scaleX(const Coord& c) {
 
 Coord Canvas::scaleY(const Coord& c) {
 	Coord preScale = 0.9;
-	Coord len = (viewPort_.lr_.y - viewPort_.ul_.y) * scale_ * preScale;
-	Coord pos = (c - viewPort_.ul_.y) * scale_ * preScale;
+	Coord len = (viewPort_.lr_.y_ - viewPort_.ul_.y_) * scale_ * preScale;
+	Coord pos = (c - viewPort_.ul_.y_) * scale_ * preScale;
 	Coord scaled = (((height_ - len) / 2) + pos);
 
 	return round(scaled);
 }
 
 void Canvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
-	ellipseRGBA(screen_, scaleX(loc.x), scaleY(loc.y), rangeX * scale_, rangeY * scale_ , c.r, c.g, c.b, 255);
+	ellipseRGBA(screen_, scaleX(loc.x_), scaleY(loc.y_), rangeX * scale_, rangeY * scale_ , c.r, c.g, c.b, 255);
 }
 
 void Canvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c) {
@@ -164,13 +164,13 @@ void Canvas::drawTank(Tank& tank, Color c) {
     tip += tank.getDirection() * (tank.range_) * 5;
 
 	drawEllipse(tank.loc_, tank.range_, tank.range_, c);
-	drawLine(tank.loc_.x, tank.loc_.y, tip.x, tip.y ,c);
+	drawLine(tank.loc_.x_, tank.loc_.y_, tip.x_, tip.y_ ,c);
 }
 
 void Canvas::drawProjectile(Projectile& pro, Color& c) {
 	Vector2D trail = pro.loc_;
 	trail += pro.getDirection() * -50;
-	drawLine(trail.x,trail.y, pro.loc_.x, pro.loc_.y, c);
+	drawLine(trail.x_,trail.y_, pro.loc_.x_, pro.loc_.y_, c);
 }
 
 void Canvas::drawExplosion(Object& o, Color& c) {
@@ -193,10 +193,10 @@ Rect Canvas::findBounds(BattleField& field) {
 
 	for(Population& team : field.teams_) {
 		for(Tank& t : team) {
-			min.x = std::min(t.loc_.x, min.x);
-			min.y = std::min(t.loc_.y, min.y);
-			max.x = std::max(t.loc_.x, max.x);
-			max.y = std::max(t.loc_.y, max.y);
+			min.x_ = std::min(t.loc_.x_, min.x_);
+			min.y_ = std::min(t.loc_.y_, min.y_);
+			max.x_ = std::max(t.loc_.x_, max.x_);
+			max.y_ = std::max(t.loc_.y_, max.y_);
 		}
 	}
 

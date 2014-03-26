@@ -33,9 +33,10 @@ void HybridScanner::teamScan(Population& active, Population& passive, vector<Vec
 		scan.loc_ = t.loc_;
 		scan.vel_ = t.vel_;
 		scan.angVel_ = t.angVel_;
+		assert(!std::isnan(scan.angVel_));
 		scan.objects_.clear();
 
-		findInRange(bspFriends, t, FRIEND, scan.objects_, 300);
+		findInRange(bspFriends, t, FRIEND, scan.objects_, 600);
 
 		if(scan.objects_.size() > numFriends) {
 			scan.objects_.resize(numFriends);
@@ -79,7 +80,7 @@ void HybridScanner::teamScan(Population& active, Population& passive, vector<Vec
 			});
 		}
 
-		findInRange(bspEnemies, t, ENEMY, scan.objects_, 300);
+		findInRange(bspEnemies, t, ENEMY, scan.objects_, 600);
 		if(scan.objects_.size() > (numFriends + numEnemies)) {
 			scan.objects_.resize(numFriends + numEnemies);
 		}

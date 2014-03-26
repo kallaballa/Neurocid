@@ -1,0 +1,1 @@
+/usr/bin/g++-4.6   -m64    CMakeFiles/MBP.dir/MBP.cpp.o CMakeFiles/MBP.dir/MBPutils.cpp.o  -o MBP -rdynamic /usr/local/cuda/lib64/libcudart.so ../../libGPUMLibMBP.a /usr/local/cuda/lib64/libcudart.so -Wl,-rpath,/usr/local/cuda/lib64 

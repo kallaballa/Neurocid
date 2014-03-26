@@ -107,8 +107,8 @@ template<typename T> void assertPrint(string file, size_t line, T t1, T t2, stri
 	}
 }
 
-#define assertVeq(T1,T2) assertPrint(__FILE__, __LINE__, T1, T2, "==", [=](){ return fabs(T1.x - T2.x) < 0.00001 && fabs(T1.y - T2.y) < 0.00001;});
-#define assertVne(T1,T2) assertPrint(__FILE__, __LINE__, T1, T2, "!=", [=](){ return fabs(T1.x - T2.x) >= 0.00001 && fabs(T1.y - T2.y) >= 0.00001;});
+#define assertVeq(T1,T2) assertPrint(__FILE__, __LINE__, T1, T2, "==", [=](){ return fabs(T1.x_ - T2.x_) < 0.00001 && fabs(T1.y_ - T2.y_) < 0.00001;});
+#define assertVne(T1,T2) assertPrint(__FILE__, __LINE__, T1, T2, "!=", [=](){ return fabs(T1.x_ - T2.x_) >= 0.00001 && fabs(T1.y_ - T2.y_) >= 0.00001;});
 #define assertEq(T1,T2) assertPrint(__FILE__, __LINE__, T1, T2, "==", [=](){ return fabs(T1 - T2) < 0.00001;});
 #define assertNe(T1,T2) assertPrint(__FILE__, __LINE__, T1, T2, "!=", [=](){ return fabs(T1 - T2) >= 0.00001;});
 #define assertLt(T1,T2) assertPrint(__FILE__, __LINE__, T1, T2, "<", [=](){ return T1 < T2;});
@@ -117,10 +117,10 @@ template<typename T> void assertPrint(string file, size_t line, T t1, T t2, stri
 #define assertGe(T1,T2) assertPrint(__FILE__, __LINE__, T1, T2, ">=", [=](){ return T1 >= T2;});
 
 void assertNormalized(Vector2D v) {
-	assertLe(v.x,1.0);
-	assertGe(v.x,-1.0);
-	assertLe(v.y,1.0);
-	assertGe(v.y,-1.0);
+	assertLe(v.x_,1.0);
+	assertGe(v.x_,-1.0);
+	assertLe(v.y_,1.0);
+	assertGe(v.y_,-1.0);
 }
 
 void testVectorToRadConversion(Coord rotation) {
@@ -137,35 +137,33 @@ Vector2D makeVector2D(Coord rotation) {
 
 void testVectorRotation() {
 	Coord r = 0;
+	Vector2D down = makeVector2D(r);
+	assertVeq(down,Vector2D(0,-1));
+
+	r = M_PI / 2;
 	Vector2D right = makeVector2D(r);
 	assertVeq(right,Vector2D(1,0));
 
-	r = M_PI / 2;
+	r = M_PI;
 	Vector2D up = makeVector2D(r);
 	assertVeq(up,Vector2D(0,1));
 
-	r = M_PI;
+	r = -M_PI / 2;
 	Vector2D left = makeVector2D(r);
 	assertVeq(left,Vector2D(-1,0));
-
-	r = -M_PI;
-	Vector2D down = makeVector2D(r);
-	assertVeq(down,Vector2D(-1,0));
 
 	assertEq(normRotation(0.0),0.0);
 	assertEq(normRotation(-M_PI/2),-M_PI/2);
 	assertEq(normRotation(M_PI / 2),M_PI / 2);
 	assertEq(normRotation(-2 * M_PI),0.0);
 
-
-
 	for(Coord i = -(2 * M_PI); i < 2 * M_PI; i+=(M_PI / 2)) {
 		Vector2D v = makeVector2D(normRotation(i));
-		if(fabs(v.x) < 0.00001)
-			v.x = 0;
+		if(fabs(v.x_) < 0.00001)
+			v.x_ = 0;
 
-		if(fabs(v.y) < 0.00001)
-			v.y = 0;
+		if(fabs(v.y_) < 0.00001)
+			v.y_ = 0;
 /*
 		if(v.x != -1 && v.x != 0 && v.x != 1)
 			std::cerr << i << " " << normRotation(i) << "    " << v.x << "\t" << v.y << std::endl;

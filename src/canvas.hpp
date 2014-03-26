@@ -32,8 +32,8 @@ private:
 	static Canvas* instance_;
 	Canvas(Coord width, Coord height);
 	std::vector<Color> teamColors_ = {
-			{ 0, 255, 0 },
-			{ 0, 0, 255 },
+			{ 0, 192, 0 },
+			{ 64, 64, 255 },
 			{ 0, 255,255 },
 			{ 255, 0, 255 },
 			{ 255, 255, 0 }

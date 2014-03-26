@@ -1,0 +1,6 @@
+/home/elchaschab/build/GPUMLib/ATS
+/home/elchaschab/build/GPUMLib/BP
+/home/elchaschab/build/GPUMLib/MBP
+/home/elchaschab/build/GPUMLib/DBN
+/home/elchaschab/build/GPUMLib/reductionapp
+/home/elchaschab/build/GPUMLib/svm
