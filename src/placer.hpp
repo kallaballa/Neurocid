@@ -310,6 +310,60 @@ public:
 	}
 };
 
+
+template <typename Trotator, typename Tfacer, typename Tlayouter> class FuzzyOppositePlacer : public Placer {
+	Trotator rotator_;
+	Tfacer facer_;
+	Tlayouter layouter_;
+public:
+	FuzzyOppositePlacer(Trotator rotator, Tfacer facer, Tlayouter layouter) :
+		rotator_(rotator),
+		facer_(facer),
+		layouter_(layouter) {
+	}
+
+	virtual void place(vector<Population>& teams) {
+		assert(teams.size() == 2);
+		Coord rotation = rotator_(tick());
+		GameLayout gl = layouter_(tick(), 0);
+		Vector2D axisDir = dirFromRad(rotation);
+
+		Vector2D sideDirA = axisDir;
+		Vector2D sideDirB = axisDir;
+
+		sideDirA.rotate(90);
+		sideDirB = sideDirA * -1;
+
+		Vector2D centerA = gl.center_;
+		Vector2D centerB = gl.center_;
+		centerA += (axisDir * (gl.distance_/2));
+		centerB -= (axisDir * (gl.distance_/2));
+
+		Coord lengthA = (((teams[0][0].range_ + gl.spacing_) * (teams[0].size() - 1)) / 2);
+		Coord lengthB = (((teams[1][0].range_ + gl.spacing_) * (teams[1].size() - 1)) / 2);
+
+		Vector2D startA = centerA;
+		startA += (sideDirA * lengthA);
+		Vector2D startB = centerB;
+		startB += (sideDirB * lengthB);
+
+		for(size_t i = 0; i < teams[0].size(); i++) {
+			teams[0][i].loc_ = startA;
+			teams[0][i].loc_ -= (sideDirA * ((teams[0][i].range_ + gl.spacing_) * i));
+			teams[0][i].loc_ += (axisDir * fRand(-50, 50));
+			teams[0][i].rotation_ = facer_(tick(), 0, rotation);
+		}
+
+		for(size_t i = 0; i < teams[1].size(); i++) {
+			teams[1][i].loc_ = startB;
+			teams[1][i].loc_ -= (sideDirB * ((teams[1][i].range_ + gl.spacing_) * i));
+			teams[1][i].loc_ += (axisDir * fRand(-50, 50));
+			teams[1][i].rotation_ = facer_(tick(), 1, rotation);
+		}
+		Placer::place(teams);
+	}
+};
+
 } /* namespace tankwar */
 
 #endif /* PLACER_HPP_ */

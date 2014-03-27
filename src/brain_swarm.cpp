@@ -94,9 +94,8 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 	size_t inputCnt = 0;
 	for (auto it : friendObj) {
-		Coord diff = it.first;
-		Vector2D vdiff = it.second.first;
-		Coord distance = it.second.second;
+		Vector2D& vdiff = it.second.first;
+		Coord& distance = it.second.second;
 		if (vdiff != NO_VECTOR2D) {
 			scaleByBattleFieldDistance(vdiff, distance, bfl);
 			applyInput(inputCnt * 2, vdiff.x_);
@@ -106,9 +105,8 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	}
 
 	for (auto it : enemyObj) {
-		Coord diff = it.first;
-		Vector2D vdiff = it.second.first;
-		Coord distance = it.second.second;
+		Vector2D& vdiff = it.second.first;
+		Coord& distance = it.second.second;
 
 		if (vdiff != NO_VECTOR2D) {
 			scaleByBattleFieldDistance(vdiff, distance, bfl);

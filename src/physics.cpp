@@ -185,7 +185,6 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
     bodyDef.position.Set(toMeters(p.loc_.x_), toMeters(p.loc_.y_));
     assert(p.rotation_ <= M_PI);
     bodyDef.angle = p.rotation_;
-    bodyDef.linearDamping = 0.0f;
     bodyDef.allowSleep = true;
     bodyDef.awake = true;
     bodyDef.userData = static_cast<Object*>(&p);
@@ -215,7 +214,7 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
 
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
-    body->SetLinearDamping(0);
+    body->SetLinearDamping(0.1);
     body->SetAngularDamping(0);
     return body;
 }
@@ -264,7 +263,7 @@ void Physics::step() {
 			Object* o = (Object*)body->GetUserData();
 			if(o->type() == TANK) {
 				Tank* t = static_cast<Tank*>(o);
-				Vector2D force = o->getDirection() * (o->speed_ * 60);
+				Vector2D force = o->getDirection() * (o->speed_ * 120);
 				if(t->layout_.canMove_ && !t->layout_.isDummy_)
 					body->ApplyForce(b2Vec2(force.x_, force.y_), body->GetWorldCenter());
 				else
@@ -282,9 +281,9 @@ void Physics::step() {
 					p->dead_ = true;
 					deadBodies_.push_back(body);
 				} else {
-					Vector2D force = o->getDirection() * o->speed_ * 60;
+					Vector2D force = o->getDirection() * o->speed_ * 120;
 					body->SetAwake(true);
-					body->SetLinearVelocity(b2Vec2(force.x_, force.y_));
+					body->ApplyLinearImpulse(b2Vec2(force.x_, force.y_), body->GetWorldCenter());
 				}
 			}
 		}

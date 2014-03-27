@@ -38,14 +38,15 @@ void Tank::calculateFitness() {
 	if (!layout_.disableProjectileFitness_) {
 		if(projectiles_.empty()) {
 			ratedProjectiles = 1;
-			totalDiff = M_PI * 2;
+			totalDiff = M_PI;
 		}
 
 		for (Projectile* p : projectiles_) {
-			if(p->scan_.objects_.empty())
-				continue;
-			else
+			if(p->scan_.objects_.empty()) {
 				++ratedProjectiles;
+				totalDiff += M_PI;
+				continue;
+			}
 
 			assert(p->scan_.objects_.size() == 2);
 			assert(p->scan_.objects_[0].type_ == ENEMY);
@@ -57,28 +58,32 @@ void Tank::calculateFitness() {
 					Vector2D perfect = (so.loc_ - p->startLoc_).normalize();
 					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
 					Vector2D vdiff = candidate;
+
 					ASSERT_DIR(perfect);
 					ASSERT_DIR(candidate);
 
 					vdiff.rotate(perfect);
 					diffPerfect = fabs(radFromDir(vdiff));
 
-//					std::cerr << perfect << "\t" << candidate << "\t" << vdiff << "\t" << diffPerfect << std::endl;
 					assert(diffPerfect >= 0);
 					assert(diffPerfect <= M_PI);
 					Coord distance = so.dis_;
-					Coord maxDistance = p->layout_.max_travel_ * 2;
+					Coord maxDistance = p->layout_.max_travel_ * 4;
 					if(distance > maxDistance)
 						distance = maxDistance;
 
 					//higher distance -> higher diff
-					//diffPerfect *= ((distance / maxDistance) + 1);
+					diffPerfect = ((M_PI * ((distance / maxDistance))) * 2) + diffPerfect;
+					diffPerfect /= 3;
+
+					//std::cerr << perfect << "\t" << candidate << "\t" << vdiff << "\t" << distance << "\t" << diffPerfect << std::endl;
 
 					assert(diffPerfect >= 0);
 					assert(diffPerfect <= M_PI);
 					totalDiff += diffPerfect;
+					++ratedProjectiles;
 				} else if(so.type_ == ScanObjectType::FRIEND) {
-/*					Coord diffWorst = 0;
+					Coord diffWorst = 0;
 					Vector2D worst = (so.loc_ - p->startLoc_).normalize();
 					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
 
@@ -87,37 +92,35 @@ void Tank::calculateFitness() {
 
 					candidate.rotate(worst);
 					diffWorst = fabs(radFromDir(candidate));
-
-					if(diffWorst > M_PI)
-						diffWorst = diffWorst - M_PI;
-
-					//a perpendicular friend is a good friend
-					diffWorst = fabs(M_PI_2 - diffWorst) * 2;
+					//diffWorst = fabs(M_PI_2 - diffWorst) * 2;
 
 					assert(diffWorst >= 0);
 					assert(diffWorst <= M_PI);
-
-					Coord distance = so.dis_;
-					Coord maxDistance = p->layout_.max_travel_ * 2;
-					if(distance > maxDistance)
-						distance = maxDistance;
 
 					//higher distance -> lower diff
 					//diffWorst /= ((distance / maxDistance) + 1);
+					diffWorst = M_PI - diffWorst;
+
 					assert(diffWorst >= 0);
 					assert(diffWorst <= M_PI);
-					totalDiff += diffWorst;*/
-					totalDiff += 0;
+
+					totalDiff += diffWorst;
+					++ratedProjectiles;
 				}
 			}
 		}
 	}
 
 	assert(projectiles_.size() <= layout_.max_ammo_);
-	assert((projectiles_.empty() && ratedProjectiles == 1) || (ratedProjectiles <= projectiles_.size()));
-	assert(projectiles_.empty() || (totalDiff) <= ((ratedProjectiles * 2 * M_PI) + 0.01));
+	// don't remove the assert!
+	assert(projectiles_.empty() || (totalDiff) <= ((ratedProjectiles * M_PI) + 0.01));
+	//get rid of noise spikes
+	if((totalDiff) > (ratedProjectiles * M_PI))
+		totalDiff = (ratedProjectiles * M_PI);
 
-	Coord aimRatio = (M_PI - (totalDiff / ((ratedProjectiles * 2) + 1))) / M_PI;
+	assert(ratedProjectiles > 0);
+	Coord aimRatio = (M_PI - (totalDiff / (ratedProjectiles))) / M_PI;
+	//std::cerr << "#### aimRatio: " <<  aimRatio << std::endl;
 	Coord hitRatio = (Coord(hits_) / layout_.max_ammo_);
 	Coord friendlyRatioInv = (1.0 / ((Coord(friendlyFire_) / layout_.max_ammo_) + 1));
 	Coord damageRatioInv = (1.0 / ((Coord(damage_) / layout_.max_damage_) + 1));
@@ -131,7 +134,6 @@ void Tank::calculateFitness() {
 	assert(friendlyRatioInv >= 0.5);
 	assert(friendlyRatioInv <= 1);
 
-	//std::cerr << "aim:" << aimRatio << "\thit:" << hitRatio << "/" << hits_ << "\tdmg:" << damageRatioInv << "/" << damage_ << "\tammo:" << tl_.max_ammo_- projectiles_.size() << std::endl;
 	fitness_ = (aimRatio + ((hitRatio * damageRatioInv)));
 
 	assert(fitness_ >= 0);

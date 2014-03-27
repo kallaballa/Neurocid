@@ -159,11 +159,65 @@ void Canvas::renderTackerInfo() {
 	}
 }
 
-void Canvas::drawTank(Tank& tank, Color c) {
-    Vector2D tip = tank.loc_;
-    tip += tank.getDirection() * (tank.range_) * 5;
+void fill_circle(SDL_Surface *surface, int cx, int cy, int radius, Uint32 pixel)
+{
+    // Note that there is more to altering the bitrate of this
+    // method than just changing this value.  See how pixels are
+    // altered at the following web page for tips:
+    //   http://www.libsdl.org/intro.en/usingvideo.html
+    static const int BPP = 4;
 
-	drawEllipse(tank.loc_, tank.range_, tank.range_, c);
+    double r = (double)radius;
+
+    for (double dy = 1; dy <= r; dy += 1.0)
+    {
+        // This loop is unrolled a bit, only iterating through half of the
+        // height of the circle.  The result is used to draw a scan line and
+        // its mirror image below it.
+
+        // The following formula has been simplified from our original.  We
+        // are using half of the width of the circle because we are provided
+        // with a center and we need left/right coordinates.
+
+        double dx = floor(sqrt((2.0 * r * dy) - (dy * dy)));
+        int x = cx - dx;
+
+        // Grab a pointer to the left-most pixel for each half of the circle
+        Uint8 *target_pixel_a = (Uint8 *)surface->pixels + ((int)(cy + r - dy)) * surface->pitch + x * BPP;
+        Uint8 *target_pixel_b = (Uint8 *)surface->pixels + ((int)(cy - r + dy)) * surface->pitch + x * BPP;
+
+        for (; x <= cx + dx; x++)
+        {
+            *(Uint32 *)target_pixel_a = pixel;
+            *(Uint32 *)target_pixel_b = pixel;
+            target_pixel_a += BPP;
+            target_pixel_b += BPP;
+        }
+    }
+}
+
+void Canvas::drawTank(Tank& tank, Color c) {
+	Vector2D dir = tank.getDirection();
+	Vector2D across = dir;
+	across.rotate(90);
+	Vector2D tip = tank.loc_;
+    tip += dir * (tank.range_) * 5;
+
+    Vector2D lECenter = tank.loc_;
+    lECenter += across * (tank.range_);
+    Vector2D rECenter = tank.loc_;
+    rECenter += across * -(tank.range_);
+
+    Vector2D lETip = lECenter;
+    lETip += (dir * (tank.lthrust_ * 30));
+    Vector2D rETip = rECenter;
+    rETip += (dir * (tank.rthrust_ * 30));
+
+    Color red = {255,0,0};
+    drawLine(lETip.x_, lETip.y_, lECenter.x_, lECenter.y_, red);
+    drawLine(rETip.x_, rETip.y_, rECenter.x_, rECenter.y_, red);
+    drawLine(tank.loc_.x_, tank.loc_.y_, tip.x_, tip.y_ ,c);
+    drawEllipse(tank.loc_, tank.range_, tank.range_, c);
 	drawLine(tank.loc_.x_, tank.loc_.y_, tip.x_, tip.y_ ,c);
 }
 
@@ -260,7 +314,7 @@ void Canvas::render(BattleField& field) {
 
 	updateOSD("Score", std::to_string(field.teams_[0].score_) + " : " + std::to_string(field.teams_[1].score_));
 	updateOSD("Best", std::to_string(field.teams_[0].stats_.bestFitness_) + " / " + std::to_string(field.teams_[1].stats_.bestFitness_));
-	updateOSD("Avg", std::to_string(field.teams_[0].stats_.averageFitness_) + " / " + std::to_string(field.teams_[0].stats_.averageFitness_));
+	updateOSD("Avg", std::to_string(field.teams_[0].stats_.averageFitness_) + " / " + std::to_string(field.teams_[1].stats_.averageFitness_));
 	updateOSD("Gen", std::to_string(field.teams_[0].stats_.generationCnt_) + " / " + std::to_string(field.teams_[1].stats_.generationCnt_));
 
 	renderOSD();
