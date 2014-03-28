@@ -21,13 +21,6 @@ BrainSwarm::BrainSwarm(BrainLayout layout, fann_type* weight) : BasicBrain(layou
 	}
 }
 
-void BrainSwarm::scaleByBattleFieldDistance(Vector2D& v, const Coord& distance, const BattleFieldLayout& bfl) const {
-	Coord scale = 1 / ((distance / hypot(bfl.width_,bfl.height_) + 1));
-	v.x_ *= scale;
-	v.y_ *= scale;
-	assert(v.x_ >= -1 && v.x_ <= 1 && v.y_ >= -1 && v.y_ <= 1);
-}
-
 void BrainSwarm::applyInput(const size_t& i, const fann_type& value) {
 	assert(i < layout_.numInputs_);
 	inputs_[i] = value;
@@ -44,49 +37,44 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	assert(layout_.numInputs_ == fann_get_num_input(nn_));
 	assert(layout_.numOutputs == fann_get_num_output(nn_));
 
-	map<Coord, pair<Vector2D,Coord>> friendObj;
-	map<Coord, pair<Vector2D,Coord>> enemyObj;
+	map<Coord, ScanObject> friendObj;
+	map<Coord, ScanObject> enemyObj;
 
 	//sort the friendly and enemy scan objects by their angular distance
 	for (const ScanObject& so : scan.objects_) {
+		assert(so.type_ != INVALID);
 		if(so.type_ == FRIEND) {
-			Vector2D toFriend = (so.loc_ - scan.loc_).normalize();
-			Vector2D vdiff = toFriend;
-			vdiff.rotate(scan.dir_);
-			Coord diff = radFromDir(vdiff);
-
-			auto it = friendObj.find(diff);
+			Coord angle = so.angle_;
+			auto it = friendObj.find(angle);
 			while(it != friendObj.end()) {
-				if(diff > 0)
-					diff -= fRand(0.00000001, 0.00009);
+				if(angle > 0)
+					angle -= fRand(0.00000001, 0.00009);
 				else
-					diff += fRand(0.00000001, 0.00009);
+					angle += fRand(0.00000001, 0.00009);
 
-				it = friendObj.find(diff);
+				it = friendObj.find(angle);
 			}
 
-			friendObj[diff] = {vdiff, so.dis_};
+			friendObj[angle] = so;
 		}
 	}
 
 	for (const ScanObject& so : scan.objects_) {
+		assert(so.type_ != INVALID);
 		if(so.type_ == ENEMY) {
-			Vector2D toEnemy = (so.loc_ - scan.loc_).normalize();
-			Vector2D vdiff = toEnemy;
-			vdiff.rotate(scan.dir_);
-			Coord diff = radFromDir(vdiff);
-
-			auto it = enemyObj.find(diff);
+			Coord angle = so.angle_;
+			assert(angle != NO_COORD);
+			auto it = enemyObj.find(angle);
 			while(it != enemyObj.end()) {
-				if(diff > 0)
-					diff -= fRand(0.00000001, 0.00009);
+				if(angle > 0)
+					angle -= fRand(0.00000001, 0.00009);
 				else
-					diff += fRand(0.00000001, 0.00009);
+					angle += fRand(0.00000001, 0.00009);
 
-				it = enemyObj.find(diff);
+				it = enemyObj.find(angle);
 			}
 
-			enemyObj[diff] = {vdiff, so.dis_};
+			enemyObj[angle] = so;
 		}
 	}
 
@@ -94,24 +82,19 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 	size_t inputCnt = 0;
 	for (auto it : friendObj) {
-		Vector2D& vdiff = it.second.first;
-		Coord& distance = it.second.second;
-		if (vdiff != NO_VECTOR2D) {
-			scaleByBattleFieldDistance(vdiff, distance, bfl);
-			applyInput(inputCnt * 2, vdiff.x_);
-			applyInput(inputCnt * 2 + 1, vdiff.y_);
+		ScanObject& so = it.second;
+		if (so.vector_ != NO_VECTOR2D) {
+			applyInput(inputCnt * 2, so.vector_.x_);
+			applyInput(inputCnt * 2 + 1, so.vector_.y_);
 		}
 		inputCnt+=1;
 	}
 
 	for (auto it : enemyObj) {
-		Vector2D& vdiff = it.second.first;
-		Coord& distance = it.second.second;
-
-		if (vdiff != NO_VECTOR2D) {
-			scaleByBattleFieldDistance(vdiff, distance, bfl);
-			applyInput(inputCnt * 2, vdiff.x_);
-			applyInput(inputCnt * 2 + 1, vdiff.y_);
+		ScanObject& so = it.second;
+		if (so.vector_ != NO_VECTOR2D) {
+			applyInput(inputCnt * 2, so.vector_.x_);
+			applyInput(inputCnt * 2 + 1, so.vector_.y_);
 		}
 		inputCnt+=1;
 	}

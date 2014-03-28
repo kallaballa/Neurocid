@@ -275,6 +275,19 @@ void Canvas::drawGrid(BattleField& field) {
 	drawLine(field.layout_.width_,field.layout_.height_, 0,field.layout_.height_, darkred);
 }
 
+void Canvas::drawCenters(Scanner& scanner) {
+	return;
+	for(Vector2D center : scanner.centersA_) {
+		drawEllipse(center, 3/ scale_, 3/ scale_, teamColors_[0]);
+		drawEllipse(center, 10/ scale_, 10/ scale_, teamColors_[0]);
+	}
+
+	for(Vector2D center : scanner.centersB_) {
+		drawEllipse(center, 3/ scale_, 3/ scale_, teamColors_[1]);
+		drawEllipse(center, 10/ scale_, 10/ scale_, teamColors_[1]);
+	}
+}
+
 void Canvas::render(BattleField& field) {
 	assert(field.teams_.size() == 2);
 	assert(teamColors_.size() >= field.teams_.size());
@@ -320,6 +333,8 @@ void Canvas::render(BattleField& field) {
 	renderOSD();
 	if(TimeTracker::getInstance()->isEnabled())
 		renderTackerInfo();
+
+	drawCenters(field.scanner_);
 	this->update();
 }
 }

@@ -50,7 +50,7 @@ void ClusterScanner::scanClusterCenters(Population& team, vector<Vector2D>& resu
 	    	}
 	    } else {
 	#ifndef TANKWAR_GPU
-			int	stages = 5;		// number of stages
+			int	stages = 20;		// number of stages
 
 			KMterm term(100, 0, 0, 0,		// run for 100 stages
 					0.10,			// min consec RDL
@@ -81,13 +81,11 @@ void ClusterScanner::scanClusterCenters(Population& team, vector<Vector2D>& resu
 			ctrs = kmSwap.execute();
 	*/
 
-			KMlocalEZ_Hybrid kmEZ_Hybrid(ctrs, term);	// EZ-Hybrid heuristic
+/*			KMlocalEZ_Hybrid kmEZ_Hybrid(ctrs, term);	// EZ-Hybrid heuristic
 			ctrs = kmEZ_Hybrid.execute();
-	/*
-			cout << "\nExecuting Clustering Algorithm: Hybrid\n";
+*/
 			KMlocalHybrid kmHybrid(ctrs, term);		// Hybrid heuristic
 			ctrs = kmHybrid.execute();
-	*/
 
 			for (size_t i = 0; i < numCenters; i++) {
 				result.push_back(Vector2D(ctrs[i][0], ctrs[i][1]));
@@ -130,7 +128,6 @@ void ClusterScanner::teamScan(Population& active, Population& passive, vector<Ve
 
 		Scan& scan = t.scan_;
 		scan.dir_ = t.getDirection();
-		scan.scale_ = {bfl.width_, bfl.height_};
 		scan.loc_ = t.loc_;
 		scan.objects_.clear();
 		for(Vector2D cf : ctrFriends) {

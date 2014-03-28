@@ -87,7 +87,8 @@ public:
 	Tank() : Object(TANK, {0,0}, 0, 0, false, false),
 			teamID_(0),
 			layout_(),
-			brain_(NULL) {};
+			brain_(NULL),
+			scan_(*this){};
 	Tank(size_t teamID, TankLayout tl, Brain* brain = NULL);
 	~Tank() {
 	};

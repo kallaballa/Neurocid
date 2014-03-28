@@ -12,6 +12,7 @@
 #include <vector>
 #include "2d.hpp"
 #include "bsp.hpp"
+#include "scan.hpp"
 #include "KMlocal.h"
 
 namespace tankwar {
@@ -21,28 +22,6 @@ using std::vector;
 class BattleField;
 class Population;
 class Tank;
-
-enum ScanObjectType {
-	FRIEND,
-	ENEMY,
-	PROJECTILE_
-};
-
-struct ScanObject {
-	ScanObjectType type_;
-	Vector2D loc_;
-	Coord dis_;
-};
-
-typedef vector<ScanObject> ScanObjectVector;
-struct Scan {
-	Vector2D scale_ = NO_VECTOR2D;
-	Vector2D dir_ = NO_VECTOR2D;
-	Vector2D vel_ = NO_VECTOR2D;
-	Coord angVel_ = NO_COORD;
-	Vector2D loc_ = NO_VECTOR2D;
-	ScanObjectVector objects_;
-};
 
 class ScannerImpl {
 public:

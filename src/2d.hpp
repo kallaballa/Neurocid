@@ -14,6 +14,7 @@
 #include <math.h>
 #include <iostream>
 #include <cassert>
+#include <limits>
 
 namespace tankwar {
 typedef double Coord;

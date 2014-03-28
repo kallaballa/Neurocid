@@ -66,7 +66,6 @@ void BspScanner::teamScan(Population& active, Population& passive, Bsp& bspFrien
 
 		Scan& scan = t.scan_;
 		scan.dir_ = t.getDirection();
-		scan.scale_ = {bfl.width_, bfl.height_};
 		scan.loc_ = t.loc_;
 		scan.objects_.clear();
 

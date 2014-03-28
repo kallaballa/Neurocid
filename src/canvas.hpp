@@ -66,6 +66,7 @@ public:
 	void drawTank(Tank& tank, Color c);
 	void drawProjectile(Projectile& pro, Color& c);
 	void drawExplosion(Object& o, Color& c);
+	void drawCenters(Scanner& scanner);
 	void update();
 	void clear();
 	void render(BattleField& fiseld);

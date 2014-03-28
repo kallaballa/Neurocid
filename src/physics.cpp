@@ -175,7 +175,7 @@ b2Body* Physics::makeTankBody(Tank& t) {
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
     body->SetLinearDamping(0.3);
-    body->SetAngularDamping(1);
+    body->SetAngularDamping(15);
     return body;
 }
 
@@ -200,7 +200,7 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
     fixtureDef.shape = &dynamicCircle;
 
     // Set the box density to be non-zero, so it will be dynamic.
-    fixtureDef.density = 0.01;
+    fixtureDef.density = 0.001;
 
     // Override the default friction.
     fixtureDef.friction = 0.3f;
@@ -263,15 +263,28 @@ void Physics::step() {
 			Object* o = (Object*)body->GetUserData();
 			if(o->type() == TANK) {
 				Tank* t = static_cast<Tank*>(o);
-				Vector2D force = o->getDirection() * (o->speed_ * 120);
-				if(t->layout_.canMove_ && !t->layout_.isDummy_)
-					body->ApplyForce(b2Vec2(force.x_, force.y_), body->GetWorldCenter());
-				else
-					body->SetLinearVelocity(b2Vec2(0,0));
+				Vector2D dir = o->getDirection();
+				Vector2D across = dir;
+				across.rotate(90);
 
-				if(t->layout_.canRotate_ && !t->layout_.isDummy_)
-					body->ApplyTorque(o->rotForce_ * 3);
-				else
+				Vector2D lforce = dir * (t->lthrust_);
+				Vector2D rforce = dir * (t->rthrust_);
+
+				b2Vec2 wc = body->GetWorldCenter();
+				Vector2D lengine(wc.x, wc.y);
+				Vector2D rengine(wc.x, wc.y);
+
+				lengine += (across * (t->range_));
+				rengine -= (across * (t->range_));
+
+				body->ApplyLinearImpulse(b2Vec2(lforce.x_, lforce.y_), b2Vec2(lengine.x_, lengine.y_));
+				body->ApplyLinearImpulse(b2Vec2(rforce.x_, rforce.y_), b2Vec2(rengine.x_, rengine.y_));
+
+				if (!t->layout_.canMove_ || t->layout_.isDummy_) {
+					body->SetLinearVelocity(b2Vec2(0,0));
+				}
+
+				if(!t->layout_.canRotate_ || t->layout_.isDummy_)
 					body->SetAngularVelocity(0);
 
 				assert(o->rotation_ <= M_PI);
@@ -281,7 +294,7 @@ void Physics::step() {
 					p->dead_ = true;
 					deadBodies_.push_back(body);
 				} else {
-					Vector2D force = o->getDirection() * o->speed_ * 120;
+					Vector2D force = o->getDirection() * o->speed_ * 10;
 					body->SetAwake(true);
 					body->ApplyLinearImpulse(b2Vec2(force.x_, force.y_), body->GetWorldCenter());
 				}

@@ -21,7 +21,8 @@ Tank::Tank(size_t teamID, TankLayout tl, Brain* brain) :
 		Object(TANK, {0,0}, 0, tl.range_, false, false),
 		teamID_(teamID),
 		layout_(tl),
-		brain_(brain) {
+		brain_(brain),
+		scan_(*this) {
 	resetGameState();
 }
 
@@ -36,15 +37,10 @@ void Tank::calculateFitness() {
 	size_t ratedProjectiles = 0;
 
 	if (!layout_.disableProjectileFitness_) {
-		if(projectiles_.empty()) {
-			ratedProjectiles = 1;
-			totalDiff = M_PI;
-		}
-
 		for (Projectile* p : projectiles_) {
 			if(p->scan_.objects_.empty()) {
 				++ratedProjectiles;
-				totalDiff += M_PI;
+				totalDiff += 1;
 				continue;
 			}
 
@@ -54,7 +50,7 @@ void Tank::calculateFitness() {
 
 			for(ScanObject& so : p->scan_.objects_) {
 				if(so.type_ == ScanObjectType::ENEMY) {
-					Coord diffPerfect = 0;
+					Coord angDistPerfect = 0;
 					Vector2D perfect = (so.loc_ - p->startLoc_).normalize();
 					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
 					Vector2D vdiff = candidate;
@@ -63,27 +59,25 @@ void Tank::calculateFitness() {
 					ASSERT_DIR(candidate);
 
 					vdiff.rotate(perfect);
-					diffPerfect = fabs(radFromDir(vdiff));
+					angDistPerfect = fabs(radFromDir(vdiff)) / M_PI;
 
-					assert(diffPerfect >= 0);
-					assert(diffPerfect <= M_PI);
+					assert(angDistPerfect >= 0);
+					assert(angDistPerfect <= 1);
 					Coord distance = so.dis_;
 					Coord maxDistance = p->layout_.max_travel_ * 4;
 					if(distance > maxDistance)
 						distance = maxDistance;
 
-					//higher distance -> higher diff
-					diffPerfect = ((M_PI * ((distance / maxDistance))) * 2) + diffPerfect;
-					diffPerfect /= 3;
+					//(higher distance -> higher diff) * (times angular distance)
+					Coord distPerfect = (distance / maxDistance);
+					angDistPerfect =  distPerfect / (angDistPerfect/1 + 1);
 
-					//std::cerr << perfect << "\t" << candidate << "\t" << vdiff << "\t" << distance << "\t" << diffPerfect << std::endl;
-
-					assert(diffPerfect >= 0);
-					assert(diffPerfect <= M_PI);
-					totalDiff += diffPerfect;
+					assert(angDistPerfect >= 0);
+					assert(angDistPerfect <= 1);
+					totalDiff += angDistPerfect;
 					++ratedProjectiles;
 				} else if(so.type_ == ScanObjectType::FRIEND) {
-					Coord diffWorst = 0;
+					Coord angDistWorst = 0;
 					Vector2D worst = (so.loc_ - p->startLoc_).normalize();
 					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
 
@@ -91,50 +85,47 @@ void Tank::calculateFitness() {
 					ASSERT_DIR(candidate);
 
 					candidate.rotate(worst);
-					diffWorst = fabs(radFromDir(candidate));
-					//diffWorst = fabs(M_PI_2 - diffWorst) * 2;
+					angDistWorst = 1 - (fabs(radFromDir(candidate)) / M_PI);
+					// a perpendicular friend is a good friend
+					//angDistWorst = fabs(M_PI_2 - angDistWorst) / M_PI_2;
 
-					assert(diffWorst >= 0);
-					assert(diffWorst <= M_PI);
+					assert(angDistWorst >= 0);
+					assert(angDistWorst <= 1);
 
-					//higher distance -> lower diff
-					//diffWorst /= ((distance / maxDistance) + 1);
-					diffWorst = M_PI - diffWorst;
-
-					assert(diffWorst >= 0);
-					assert(diffWorst <= M_PI);
-
-					totalDiff += diffWorst;
+					totalDiff += angDistWorst;
 					++ratedProjectiles;
 				}
 			}
 		}
 	}
 
-	assert(projectiles_.size() <= layout_.max_ammo_);
-	// don't remove the assert!
-	assert(projectiles_.empty() || (totalDiff) <= ((ratedProjectiles * M_PI) + 0.01));
-	//get rid of noise spikes
-	if((totalDiff) > (ratedProjectiles * M_PI))
-		totalDiff = (ratedProjectiles * M_PI);
+	if(projectiles_.empty()) {
+		fitness_ = 0;
+	} else {
+		assert(ratedProjectiles > 0);
+		assert(projectiles_.size() <= layout_.max_ammo_);
+		// don't remove the assert!
+		assert((totalDiff) <= (ratedProjectiles + 0.01));
+		//get rid of noise spikes
+		if((totalDiff) > ratedProjectiles)
+			totalDiff = ratedProjectiles;
 
-	assert(ratedProjectiles > 0);
-	Coord aimRatio = (M_PI - (totalDiff / (ratedProjectiles))) / M_PI;
-	//std::cerr << "#### aimRatio: " <<  aimRatio << std::endl;
-	Coord hitRatio = (Coord(hits_) / layout_.max_ammo_);
-	Coord friendlyRatioInv = (1.0 / ((Coord(friendlyFire_) / layout_.max_ammo_) + 1));
-	Coord damageRatioInv = (1.0 / ((Coord(damage_) / layout_.max_damage_) + 1));
+		Coord shots = projectiles_.size();
+		Coord aimRatio = (1.0 - (totalDiff / (ratedProjectiles)));
+		Coord hitRatio = (Coord(hits_) / shots);
+		Coord friendlyRatioInv = (1.0 / ((Coord(friendlyFire_) / shots) + 1));
+		Coord damageRatioInv = (1.0 / ((Coord(damage_) / layout_.max_damage_) + 1));
+		assert(aimRatio >= 0);
+		assert(aimRatio <= 1);
+		assert(hitRatio >= 0);
+		assert(hitRatio <= 1);
+		assert(damageRatioInv >= 0.5);
+		assert(damageRatioInv <= 1);
+		assert(friendlyRatioInv >= 0.5);
+		assert(friendlyRatioInv <= 1);
 
-	assert(aimRatio >= 0);
-	assert(aimRatio <= 1);
-	assert(hitRatio >= 0);
-	assert(hitRatio <= 1);
-	assert(damageRatioInv >= 0.5);
-	assert(damageRatioInv <= 1);
-	assert(friendlyRatioInv >= 0.5);
-	assert(friendlyRatioInv <= 1);
-
-	fitness_ = (aimRatio + ((hitRatio * damageRatioInv)));
+		fitness_ = (aimRatio + ((hitRatio * damageRatioInv))) * friendlyRatioInv;
+	}
 
 	assert(fitness_ >= 0);
 	assert(fitness_ <= 2);

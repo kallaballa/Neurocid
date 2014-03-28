@@ -45,7 +45,7 @@ public:
 		owner_(&owner),
 		layout_(layout),
 		startLoc_(loc),
-		scan_(){
+		scan_(*this){
 		speed_ = layout_.max_speed_;
 		rotForce_ = 0;
 	}

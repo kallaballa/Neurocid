@@ -7,7 +7,7 @@ NVCC     := /usr/local/cuda/bin/nvcc
 NVCC_HOST_CXX := g++-4.6
 NVCC_CXXFLAGS := -Xcompiler -fpic -I/usr/local/cuda-5.0/samples/common/inc/
 
-ifndef NO_OPENMP
+ifdef WITH_OPENMP
 CXXFLAGS += -fopenmp 
 LIBS     += -fopenmp
 endif
