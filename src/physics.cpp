@@ -23,6 +23,7 @@ void Physics::wallHit(Projectile& p) {
 }
 
 void Physics::collide(Projectile& p1, Projectile& p2) {
+	return;
 	p1.death();
 	p2.death();
 }
@@ -175,7 +176,7 @@ b2Body* Physics::makeTankBody(Tank& t) {
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
     body->SetLinearDamping(0.3);
-    body->SetAngularDamping(15);
+    body->SetAngularDamping(1);
     return body;
 }
 
@@ -267,8 +268,8 @@ void Physics::step() {
 				Vector2D across = dir;
 				across.rotate(90);
 
-				Vector2D lforce = dir * (t->lthrust_);
-				Vector2D rforce = dir * (t->rthrust_);
+				Vector2D lforce = dir * (t->lthrust_ * 2);
+				Vector2D rforce = dir * (t->rthrust_ * 2);
 
 				b2Vec2 wc = body->GetWorldCenter();
 				Vector2D lengine(wc.x, wc.y);
@@ -286,6 +287,11 @@ void Physics::step() {
 
 				if(!t->layout_.canRotate_ || t->layout_.isDummy_)
 					body->SetAngularVelocity(0);
+				else {
+					float32 angVel = body->GetAngularVelocity();
+					if(angVel > 10)
+						body->SetAngularVelocity(10);
+				}
 
 				assert(o->rotation_ <= M_PI);
 			} else if(o->type() == PROJECTILE) {

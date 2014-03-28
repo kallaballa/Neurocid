@@ -70,14 +70,14 @@ void Tank::calculateFitness() {
 
 					//(higher distance -> higher diff) * (times angular distance)
 					Coord distPerfect = (distance / maxDistance);
-					angDistPerfect =  distPerfect / (angDistPerfect/1 + 1);
+					angDistPerfect = (distPerfect * (angDistPerfect + 1)) / 2;
 
 					assert(angDistPerfect >= 0);
 					assert(angDistPerfect <= 1);
 					totalDiff += angDistPerfect;
 					++ratedProjectiles;
 				} else if(so.type_ == ScanObjectType::FRIEND) {
-					Coord angDistWorst = 0;
+					/*Coord angDistWorst = 0;
 					Vector2D worst = (so.loc_ - p->startLoc_).normalize();
 					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
 
@@ -91,9 +91,20 @@ void Tank::calculateFitness() {
 
 					assert(angDistWorst >= 0);
 					assert(angDistWorst <= 1);
+					Coord distance = so.dis_;
+					Coord maxDistance = p->layout_.max_travel_ * 4;
+					if(distance > maxDistance)
+						distance = maxDistance;
+
+					//(low distance -> higher diff) * (times angular distance)
+					Coord distPerfect = 1 / ((distance / maxDistance) + 1);
+					angDistWorst =  angDistWorst * distPerfect;
+
+					assert(angDistWorst >= 0);
+					assert(angDistWorst <= 1);
 
 					totalDiff += angDistWorst;
-					++ratedProjectiles;
+					++ratedProjectiles;*/
 				}
 			}
 		}
@@ -112,23 +123,23 @@ void Tank::calculateFitness() {
 
 		Coord shots = projectiles_.size();
 		Coord aimRatio = (1.0 - (totalDiff / (ratedProjectiles)));
-		Coord hitRatio = (Coord(hits_) / shots);
+		Coord hitRatio = 1 + ((Coord(hits_) / shots) * 10);
 		Coord friendlyRatioInv = (1.0 / ((Coord(friendlyFire_) / shots) + 1));
 		Coord damageRatioInv = (1.0 / ((Coord(damage_) / layout_.max_damage_) + 1));
 		assert(aimRatio >= 0);
 		assert(aimRatio <= 1);
-		assert(hitRatio >= 0);
-		assert(hitRatio <= 1);
+		assert(hitRatio >= 1);
+		assert(hitRatio <= 11);
 		assert(damageRatioInv >= 0.5);
 		assert(damageRatioInv <= 1);
 		assert(friendlyRatioInv >= 0.5);
 		assert(friendlyRatioInv <= 1);
 
-		fitness_ = (aimRatio + ((hitRatio * damageRatioInv))) * friendlyRatioInv;
+		fitness_ = (aimRatio + (hits_ * damageRatioInv * friendlyRatioInv));
 	}
 
 	assert(fitness_ >= 0);
-	assert(fitness_ <= 2);
+	assert(fitness_ <= 12);
 	assert(!std::isnan(fitness_));
 	assert(!std::isinf(fitness_));	//
 	//std::cerr << "fitness:" << fitness_ << std::endl;

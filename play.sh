@@ -11,6 +11,7 @@ function run() {
   echo $2.pop
 }
 
-POP="basic_training.pop"
-POP=`run 100 SymmetricLinesHuge $POP 5`
-
+[ -n "$1" ] && POP="$1"
+POP=`run 10000 SymmetricLinesHuge $POP 5`
+POP=`run 10000 CrossHuge $POP 5`
+cp $POP play.pop

@@ -45,13 +45,13 @@ private:
 	Coord width_;
 	Coord height_;
 	size_t timeout_;
-	Rect viewPort_;
 	Coord scale_;
+	Rect viewPort_;
 	map<string,string> osdMap_;
 
 	void calculateScale();
-	Coord scaleX(const Coord& c);
-	Coord scaleY(const Coord& c);
+	Sint16 scaleX(const Coord& c);
+	Sint16 scaleY(const Coord& c);
 
 	Rect findBounds(BattleField& field);
 	void drawGrid(BattleField& field);

@@ -62,22 +62,22 @@ void Canvas::calculateScale() {
 	scale_ = std::min(scaleX, scaleY);
 }
 
-Coord Canvas::scaleX(const Coord& c) {
+Sint16 Canvas::scaleX(const Coord& c) {
 	Coord preScale = 0.9;
 	Coord len = (viewPort_.lr_.x_ - viewPort_.ul_.x_) * scale_ * preScale;
 	Coord pos = (c - viewPort_.ul_.x_) * scale_ * preScale;
 	Coord scaled = (((width_ - len) / 2) + pos);
 
-	return round(scaled);
+	return (Sint16)round(scaled);
 }
 
-Coord Canvas::scaleY(const Coord& c) {
+Sint16 Canvas::scaleY(const Coord& c) {
 	Coord preScale = 0.9;
 	Coord len = (viewPort_.lr_.y_ - viewPort_.ul_.y_) * scale_ * preScale;
 	Coord pos = (c - viewPort_.ul_.y_) * scale_ * preScale;
 	Coord scaled = (((height_ - len) / 2) + pos);
 
-	return round(scaled);
+	return (Sint16)round(scaled);
 }
 
 void Canvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
@@ -111,7 +111,7 @@ void Canvas::renderOSD() {
 		SDL_Color text_color = { 255, 255, 255 };
 		text = TTF_RenderText_Solid(font_, (it.first + ": " + it.second).c_str(), text_color);
 		assert(text != NULL);
-		SDL_Rect drest = {20,y,0,0};
+		SDL_Rect drest = {20,(Sint16)round(y),0,0};
 		y += (text->h + 5);
 
 		if (SDL_BlitSurface(text, NULL, screen_, &drest) != 0) {
@@ -129,9 +129,9 @@ Coord Canvas::renderText(const string& s, Coord y, Color c, bool left) {
 
 	SDL_Rect drest;
 	if(!left)
-		drest = {width_ - text->w, y,0,0};
+		drest = {(Sint16)round(width_ - text->w), (Sint16)round(y),0,0};
 	else
-		drest = {20, y,0,0};
+		drest = {20, (Sint16)round(y),0,0};
 
 	if (SDL_BlitSurface(text, NULL, screen_, &drest) != 0) {
 		cerr << "SDL_BlitSurface() Failed: " << SDL_GetError() << endl;
@@ -296,7 +296,6 @@ void Canvas::render(BattleField& field) {
 	this->clear();
 	drawGrid(field);
 
-	Color white = {255,255,255};
 	Color red = {255,0,0};
 	Color neonYellow = {243,243,21};
 	Color neonOrange = {255, 100, 100};

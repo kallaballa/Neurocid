@@ -151,25 +151,24 @@ public:
 		attackerTL.isDummy_ = false;
 		attackerTL.max_ammo_ = 30;
 		attackerTL.max_cooldown = 5;
-		attackerTL.max_damage_ = 6;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
 		defenderTL.isDummy_ = false;
 		defenderTL.max_ammo_ = 30;
 		defenderTL.max_cooldown = 5;
-		defenderTL.max_damage_ = 6;
 		teams[1].update(defenderTL);
 	}
 
 	virtual Placer* createPlacer() {
-		return new OppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
+		return new FuzzyOppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
 	}
 };
 
 class SymmetricLinesNoMove : public SymmetricLines {
 public:
 	SymmetricLinesNoMove() : SymmetricLines() {
+		gl_.distance_ = 2000;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -203,6 +202,7 @@ public:
 class SymmetricLinesAttackerMove : public SymmetricLines {
 public:
 	SymmetricLinesAttackerMove() : SymmetricLines() {
+		gl_.distance_ = 3100;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -248,7 +248,6 @@ public:
 		attackerTL.canMove_ = false;
 		attackerTL.max_ammo_ = 30;
 		attackerTL.max_cooldown = 5;
-		attackerTL.max_damage_ = 6;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
@@ -258,7 +257,7 @@ public:
 	}
 
 	virtual Placer* createPlacer() {
-		return new OppositePlacer<IterRot, OppositeFacer, Layouter>({0, M_PI}, {M_PI}, {Scenario::gl_});
+		return new FuzzyOppositePlacer<IterRot, OppositeFacer, Layouter>({0, M_PI}, {M_PI}, {Scenario::gl_});
 	}
 
 	virtual void restorePools(vector<GeneticPool>& pools) {
@@ -304,7 +303,8 @@ class SymmetricLinesNoMoveShort : public SymmetricLines {
 public:
 	SymmetricLinesNoMoveShort() : SymmetricLines() {
 		bfl_.iterations_ = 300;
-		gl_.spacing_ = 40;
+		gl_.spacing_ = 100;
+		gl_.distance_ = 2000;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -313,7 +313,6 @@ public:
 		TankLayout attackerTL = teams[0].layout_.tl_;
 		attackerTL.canMove_ = false;
 		attackerTL.max_cooldown = 5;
-		attackerTL.max_damage_ = 6;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
@@ -386,7 +385,6 @@ public:
 		attackerTL.canMove_ = true;
 		attackerTL.max_ammo_ = 3;
 		attackerTL.max_cooldown = 5;
-		attackerTL.max_damage_ = 6;
 		teams[0].update(attackerTL);
 	}
 };
@@ -406,13 +404,11 @@ public:
 		TankLayout attackerTL = teams[0].layout_.tl_;
 		attackerTL.max_ammo_ = 20;
 		attackerTL.max_cooldown = 5;
-		attackerTL.max_damage_ = 6;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
 		defenderTL.max_ammo_ = 20;
 		defenderTL.max_cooldown = 5;
-		defenderTL.max_damage_ = 6;
 
 		teams[1].update(defenderTL);
 	}
@@ -464,13 +460,11 @@ public:
 		TankLayout attackerTL = teams[0].layout_.tl_;
 		attackerTL.max_ammo_ = 40;
 		attackerTL.max_cooldown = 5;
-		attackerTL.max_damage_ = 6;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
 		defenderTL.max_ammo_ = 40;
 		defenderTL.max_cooldown = 5;
-		defenderTL.max_damage_ = 6;
 		teams[1].update(defenderTL);
 	}
 };
@@ -501,7 +495,6 @@ public:
 		attackerTL.canMove_ = true;
 		attackerTL.max_ammo_ = 3;
 		attackerTL.max_cooldown = 5;
-		attackerTL.max_damage_ = 6;
 
 		teams[0].update(attackerTL);
 
@@ -545,8 +538,8 @@ class AimOnOneNoMove : public AimOnOne {
 public:
 	AimOnOneNoMove() : AimOnOne() {
 		bfl_.iterations_ = 300;
-		gl_.distance_ = 1000;
-		gl_.spacing_ = 40;
+		gl_.distance_ = 2500;
+		gl_.spacing_ = 100;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -554,7 +547,6 @@ public:
 		TankLayout attackerTL = teams[0].layout_.tl_;
 		attackerTL.canMove_ = false;
 		attackerTL.max_cooldown = 10;
-		attackerTL.max_damage_ = 6;
 
 		teams[0].update(attackerTL);
 	}
@@ -577,13 +569,11 @@ public:
 		TankLayout attackerTL = teams[0].layout_.tl_;
 		attackerTL.max_ammo_ = 20;
 		attackerTL.max_cooldown = 5;
-		attackerTL.max_damage_ = 6;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
 		defenderTL.max_ammo_ = 20;
 		defenderTL.max_cooldown = 5;
-		defenderTL.max_damage_ = 6;
 		teams[1].update(defenderTL);
 	}
 
@@ -696,7 +686,7 @@ int main(int argc, char** argv) {
 
 			5,// max_cooldown
 			20,// max_ammo_
-			6,  // max_damage_
+			12,  // max_damage_
 			1  // crashes_per_damage
 		},
 		//BrainLayout
