@@ -41,7 +41,7 @@ void Game::place() {
 	placer_.place(teams_);
 }
 
-void Game::fight() {
+void Game::fight(bool render) {
 	//std::cerr << "####### game start #######" << std::endl;
 
 	BattleField field(bfl_, phl_, teams_);
@@ -50,21 +50,24 @@ void Game::fight() {
 
 	tt.execute("battlefield", [&](){
 	for(size_t i = 0; (i < bfl_.iterations_) && gs.isRunning(); ++i) {
-			field.step();
-		while(gs.tryPause()) {};
+		field.step();
 
-		if(gs.isSlow()) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(4));
-		}
-		else if(gs.isSlower()) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(20));
-		}
+		if(render) {
+			while(gs.tryPause()) {};
 
-		Renderer::getInstance()->update(&field);
+			if(gs.isSlow()) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(4));
+			}
+			else if(gs.isSlower()) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(20));
+			}
+			Renderer::getInstance()->update(&field);
+		}
 	}
 	});
 
-	Renderer::getInstance()->update(NULL);
+	if(render)
+		Renderer::getInstance()->update(NULL);
 }
 
 void Game::score() {
@@ -114,8 +117,6 @@ void Game::mate() {
 void Game::cleanup() {
 	for(Population& p : teams_) {
 		for(Tank& t : p) {
-			assert(!t.brain_->isDestroyed());
-			t.brain_->destroy();
 			t.resetGameState();
 		}
 	}
@@ -129,7 +130,7 @@ void Game::print() {
 	std::cout << std::endl;
 }
 
-vector<Population> Game::play() {
+vector<Population> Game::play(bool render) {
 	TimeTracker& tt = *TimeTracker::getInstance();
 
 	size_t dur = tt.measure([&]() {
@@ -142,7 +143,7 @@ vector<Population> Game::play() {
 				});
 
 		tt.execute("game", "fight", [&]() {
-					fight();
+					fight(render);
 				});
 
 		tt.execute("game", "mate", [&]() {

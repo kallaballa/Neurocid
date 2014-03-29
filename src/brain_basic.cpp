@@ -69,6 +69,7 @@ void BasicBrain::destroy() {
 }
 
 void BasicBrain::reset() {
+	assert(inputs_ != NULL);
     std::fill_n(inputs_, layout_.numInputs_, 0);
 }
 

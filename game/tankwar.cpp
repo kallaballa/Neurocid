@@ -67,7 +67,7 @@ void runEventHandler() {
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_KEYDOWN:
-/*				if (event.key.keysym.sym == SDLKey::SDLK_SPACE) {
+				if (event.key.keysym.sym == SDLKey::SDLK_SPACE) {
 					if (renderer.isEnabled()) {
 						if(gameState.isSlow()) {
 							gameState.setSlower(true);
@@ -100,7 +100,7 @@ void runEventHandler() {
 				} else if (event.key.keysym.sym == SDLKey::SDLK_ESCAPE) {
 					std::cerr << "Quitting" << std::endl;
 					gameState.stop();
-				}*/
+				}
 
 				break;
 
@@ -598,7 +598,7 @@ void playGame(size_t gameIter, Scenario* scenario, vector<Population>& teams, ve
 		tt.execute("game", [&](){
 			Game game(teams, pools, placer, scenario->bfl_, scenario->phl_);
 			gs.setCurrentGame(&game);
-			teams = game.play();
+			teams = game.play(true);
 			gs.setCurrentGame(NULL);
 		});
 	}

@@ -24,7 +24,7 @@ using std::vector;
 class Game {
 private:
 	void place();
-	void fight();
+	void fight(bool render);
 	void score();
 	void mate();
 	void cleanup();
@@ -39,7 +39,7 @@ public:
 	vector<GeneticPool>& pools_;
 
 	Game(vector<Population>& teams, vector<GeneticPool>& pools, Placer& placer, BattleFieldLayout& bl, PhysicsLayout& phl);
-	vector<Population> play();
+	vector<Population> play(bool render);
 };
 
 } /* namespace tankwar */
