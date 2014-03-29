@@ -16,12 +16,17 @@
 #include <SDL/SDL_events.h>
 #include <X11/Xlib.h>
 #include <limits>
-#include <boost/program_options.hpp>
 #include <fstream>
 #include <ctime>
 
+#ifndef _NO_PROGRAM_OPTIONS
+#include <boost/program_options.hpp>
+#endif
+
 using namespace tankwar;
+#ifndef _NO_PROGRAM_OPTIONS
 namespace po = boost::program_options;
+#endif
 using std::cerr;
 using std::endl;
 using std::vector;
@@ -62,7 +67,7 @@ void runEventHandler() {
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_KEYDOWN:
-				if (event.key.keysym.sym == SDLKey::SDLK_SPACE) {
+/*				if (event.key.keysym.sym == SDLKey::SDLK_SPACE) {
 					if (renderer.isEnabled()) {
 						if(gameState.isSlow()) {
 							gameState.setSlower(true);
@@ -95,7 +100,7 @@ void runEventHandler() {
 				} else if (event.key.keysym.sym == SDLKey::SDLK_ESCAPE) {
 					std::cerr << "Quitting" << std::endl;
 					gameState.stop();
-				}
+				}*/
 
 				break;
 
@@ -448,7 +453,7 @@ public:
 	SymmetricLinesHuge() : SymmetricLines() {
 		bfl_.width_ = 300000;
 		bfl_.height_ = 300000;
-		bfl_.iterations_ = 10000;
+		bfl_.iterations_ = 13000;
 		gl_.center_ = {150000,150000};
 		gl_.distance_ = 40000;
 		gl_.spacing_ = 800;
@@ -557,7 +562,7 @@ public:
 	CrossHuge() : SymmetricLines() {
 		bfl_.width_ = 300000;
 		bfl_.height_ = 300000;
-		bfl_.iterations_ = 5000;
+		bfl_.iterations_ = 7000;
 		gl_.center_ = {150000,150000};
 		gl_.distance_ = 30000;
 		gl_.spacing_ = 400;
@@ -686,7 +691,7 @@ int main(int argc, char** argv) {
 
 			5,// max_cooldown
 			20,// max_ammo_
-			12,  // max_damage_
+			6,  // max_damage_
 			1  // crashes_per_damage
 		},
 		//BrainLayout
@@ -710,6 +715,7 @@ int main(int argc, char** argv) {
 	string loadFile;
 	string saveFile;
 	string scenarioName;
+	bool save = false;
 	Scenario* scenario = NULL;
 	size_t gameIterations = 1000;
 	size_t multiply = 0;
@@ -718,6 +724,7 @@ int main(int argc, char** argv) {
 	pools[0] = GeneticPool(gp);
 	pools[1] = GeneticPool(gp);
 
+#ifndef _NO_PROGRAM_OPTIONS
 	po::options_description genericDesc("Options");
 	genericDesc.add_options()
 		("iterations,i", po::value< size_t >(&gameIterations), "Run n iterations of the game")
@@ -760,15 +767,17 @@ int main(int argc, char** argv) {
     	multiplyTeams(teams, multiply);
     }
 
+    save = vm.count("save");
     assert(vm.count("scenario"));
     scenario = getScenario(scenarioName);
     assert(scenario != NULL);
+#endif
 
     std::thread gameThread([&]() {
     	teams[0].score_ = 0;
     	teams[1].score_ = 0;
     	runScenario(scenario, teams, pools,gameIterations);
-        if(vm.count("save")) {
+        if(save) {
       	  if(teams[0].size() > 20)
       		  teams[0].resize(20);
 

@@ -7,6 +7,11 @@ NVCC     := /usr/local/cuda/bin/nvcc
 NVCC_HOST_CXX := g++-4.6
 NVCC_CXXFLAGS := -Xcompiler -fpic -I/usr/local/cuda-5.0/samples/common/inc/
 
+ifdef JAVASCRIPT
+CXX			 := em++
+CXXFLAGS += -I/usr/local/include -D_NO_SERIALIZE -D_NO_PROGRAM_OPTIONS
+endif
+
 ifdef WITH_OPENMP
 CXXFLAGS += -fopenmp 
 LIBS     += -fopenmp
@@ -46,8 +51,8 @@ export CXXFLAGS
 export LIBS
 
 dirs:
-	${MAKE} -C src/ ${MAKEFLAGS} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" ${MAKECMDGOALS}
-	${MAKE} -C game/ ${MAKEFLAGS} ${MAKECMDGOALS}
-	${MAKE} -C tests/ ${MAKEFLAGS} ${MAKECMDGOALS}
-	${MAKE} -C render/ ${MAKEFLAGS} ${MAKECMDGOALS}
+	${MAKE} -C src/ ${MAKEFLAGS} CXX=${CXX} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" ${MAKECMDGOALS}
+	${MAKE} -C game/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
+#	${MAKE} -C tests/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
+	${MAKE} -C render/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 	./run.sh tests/tests
