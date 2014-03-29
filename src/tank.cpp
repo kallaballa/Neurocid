@@ -238,7 +238,7 @@ void Tank::impact(Projectile& p) {
 	}
 }
 
-Tank Tank::makeChild() {
+Tank Tank::makeChild() const {
 	assert(brain_ != NULL);
 	Tank child(teamID_, layout_);
 	Brain* fresh  = new Brain(brain_->layout_);
@@ -246,7 +246,7 @@ Tank Tank::makeChild() {
 	return child;
 }
 
-Tank Tank::clone() {
+Tank Tank::clone() const {
 	assert(brain_ != NULL);
 	Tank child(teamID_, layout_);
 	Brain* fresh  = new Brain(brain_->layout_);
