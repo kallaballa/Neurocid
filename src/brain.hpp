@@ -6,23 +6,29 @@
 #include <memory>
 #include <assert.h>
 #include <vector>
+#include "scanner.hpp"
+
+#ifndef _NO_SERIALIZE
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#endif
+
 #ifdef _CHECK_BRAIN_ALLOC
 #include <map>
 #endif
-#include "scanner.hpp"
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
 
 namespace tankwar {
 
 struct BrainLayout  {
+#ifndef _NO_SERIALIZE
 	friend class boost::serialization::access;
-
+#endif
 	size_t numInputs_;
 	size_t numOutputs;
 	size_t numLayers_;
 	size_t neuronsPerHidden;
 
+#ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
 	  ar & numInputs_;
@@ -30,17 +36,20 @@ struct BrainLayout  {
 	  ar & numLayers_;
 	  ar & neuronsPerHidden;
 	}
+#endif
 };
 
 class Tank;
 class Population;
 
 class BasicBrain {
-	#ifdef _CHECK_BRAIN_ALLOC
+#ifdef _CHECK_BRAIN_ALLOC
 	static std::map<fann*, size_t> nnAllocs_;
 	static size_t nnAllocCnt_;
 #endif
+#ifndef _NO_SERIALIZE
 	friend class boost::serialization::access;
+#endif
 public:
 	bool destroyed_ = false;
 	BrainLayout  layout_;
@@ -67,6 +76,7 @@ public:
 
 	virtual void update(const BattleFieldLayout& bfl, const Scan& scan) = 0;
 
+#ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
 	  ar & layout_;
@@ -77,6 +87,7 @@ public:
 	  ar & s;
 	  ar & boost::serialization::make_array(weights(), s);
 	}
+#endif
 };
 
 class BrainNearest : public BasicBrain {

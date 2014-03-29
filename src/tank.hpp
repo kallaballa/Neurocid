@@ -9,14 +9,17 @@
 #include <iostream>
 #include "brain.hpp"
 #include "scanner.hpp"
+#ifndef _NO_SERIALIZE
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+#endif
 
 namespace tankwar {
 
 struct TankLayout {
+#ifndef _NO_SERIALIZE
 	friend class boost::serialization::access;
-
+#endif
 	ProjectileLayout pl_;
 	bool isDummy_;
 	bool canShoot_;
@@ -33,6 +36,7 @@ struct TankLayout {
 	size_t max_damage_;
 	size_t crashes_per_damage_;
 
+#ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
 	  ar & pl_;
@@ -52,11 +56,15 @@ struct TankLayout {
 	  ar & max_damage_;
 	  ar & crashes_per_damage_;
 	}
+#endif
 };
 
 using std::numeric_limits;
 class Tank : public Object {
+#ifndef _NO_SERIALIZE
 	friend class boost::serialization::access;
+#endif
+
 	bool willShoot_ = false;
 public:
 	std::vector<Projectile*> projectiles_;
@@ -77,13 +85,14 @@ public:
 	Coord fitness_ = 0;
 	Scan scan_;
 
+#ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
 	  ar & teamID_;
 	  ar & layout_;
 	  ar & brain_;
 	}
-
+#endif
 	Tank() : Object(TANK, {0,0}, 0, 0, false, false),
 			teamID_(0),
 			layout_(),

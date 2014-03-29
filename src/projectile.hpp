@@ -11,26 +11,33 @@
 #include "object.hpp"
 #include "scanner.hpp"
 #include <limits>
+
+#ifndef _NO_SERIALIZE
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+#endif
 
 namespace tankwar {
 
 class Tank;
 
 struct ProjectileLayout {
+#ifndef _NO_SERIALIZE
 	friend class boost::serialization::access;
+#endif
 
 	Coord max_speed_;
 	Coord max_travel_;
 	size_t range_;
 
+#ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
 	  ar & max_speed_;
 	  ar & max_travel_;
 	  ar & range_;
 	}
+#endif
 };
 
 class Projectile : public Object {

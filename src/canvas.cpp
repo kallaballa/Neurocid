@@ -247,6 +247,8 @@ Rect Canvas::findBounds(BattleField& field) {
 
 	for(Population& team : field.teams_) {
 		for(Tank& t : team) {
+			if(t.dead_)
+				continue;
 			min.x_ = std::min(t.loc_.x_, min.x_);
 			min.y_ = std::min(t.loc_.y_, min.y_);
 			max.x_ = std::max(t.loc_.x_, max.x_);

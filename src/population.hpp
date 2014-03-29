@@ -8,12 +8,15 @@
 #ifndef POPULATION_HPP_
 #define POPULATION_HPP_
 
-#include <boost/serialization/vector.hpp>
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
 #include <vector>
 #include <iostream>
 #include "tank.hpp"
+
+#ifndef _NO_SERIALIZE
+#include <boost/serialization/vector.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#endif
 
 namespace tankwar {
 using std::vector;
@@ -21,19 +24,27 @@ using std::istream;
 using std::ostream;
 
 struct PopulationLayout {
+#ifndef _NO_SERIALIZE
 	friend class boost::serialization::access;
+#endif
+
 	TankLayout tl_;
 	BrainLayout bl_;
 
+#ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
 	  ar & tl_;
 	  ar & bl_;
 	}
+#endif
 };
 
 class Population: public vector<Tank> {
+#ifndef _NO_SERIALIZE
 	  friend class boost::serialization::access;
+#endif
+
 public:
 	struct Statistics {
 		Statistics() {
@@ -122,6 +133,7 @@ public:
 		return *this;
 	}
 
+#ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
 	  ar & layout_;
@@ -129,17 +141,26 @@ public:
 	  ar & winner_;
 	  ar & *((vector<Tank>*)this);
 	}
+#endif
 };
 
 
 inline void read_teams(vector<Population>& teams, istream& is) {
+#ifndef _NO_SERIALIZE
   boost::archive::text_iarchive ia(is);
   ia >> teams;
+#else
+  assert(false);
+#endif
 }
 
 inline void write_teams(vector<Population>& teams, ostream& os) {
+#ifndef _NO_SERIALIZE
   boost::archive::text_oarchive oa(os);
   oa << teams;
+#else
+  assert(false);
+#endif
 }
 }
 

@@ -132,14 +132,13 @@ void Tank::calculateFitness() {
 		assert(hitRatio <= 11);
 		assert(damageRatioInv >= 0.5);
 		assert(damageRatioInv <= 1);
-		assert(friendlyRatioInv >= 0.5);
+		assert(friendlyRatioInv >= 0);
 		assert(friendlyRatioInv <= 1);
 
 		fitness_ = (aimRatio + (hits_ * damageRatioInv * friendlyRatioInv));
 	}
 
 	assert(fitness_ >= 0);
-	assert(fitness_ <= 12);
 	assert(!std::isnan(fitness_));
 	assert(!std::isinf(fitness_));	//
 	//std::cerr << "fitness:" << fitness_ << std::endl;
