@@ -278,8 +278,8 @@ void Physics::step() {
 				lengine += (across * (t->range_));
 				rengine -= (across * (t->range_));
 
-				body->ApplyLinearImpulse(b2Vec2(lforce.x_, lforce.y_), b2Vec2(lengine.x_, lengine.y_));
-				body->ApplyLinearImpulse(b2Vec2(rforce.x_, rforce.y_), b2Vec2(rengine.x_, rengine.y_));
+				body->ApplyLinearImpulse(b2Vec2(lforce.x_, lforce.y_), b2Vec2(lengine.x_, lengine.y_),false);
+				body->ApplyLinearImpulse(b2Vec2(rforce.x_, rforce.y_), b2Vec2(rengine.x_, rengine.y_),false);
 
 				if (!t->layout_.canMove_ || t->layout_.isDummy_) {
 					body->SetLinearVelocity(b2Vec2(0,0));
@@ -302,7 +302,7 @@ void Physics::step() {
 				} else {
 					Vector2D force = o->getDirection() * o->speed_ * 10;
 					body->SetAwake(true);
-					body->ApplyLinearImpulse(b2Vec2(force.x_, force.y_), body->GetWorldCenter());
+					body->ApplyLinearImpulse(b2Vec2(force.x_, force.y_), body->GetWorldCenter(),false);
 				}
 			}
 		}
