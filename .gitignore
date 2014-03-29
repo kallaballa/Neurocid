@@ -10,3 +10,8 @@ game/tankwar
 render/makeAndRender
 src/libtankwar.so
 *.pop
+*.csv
+*.so.*
+*.so
+*.pc
+*.cmake
