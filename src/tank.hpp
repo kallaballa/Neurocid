@@ -117,8 +117,8 @@ public:
 	void resetGameState();
 	void resetScore();
 	void update(TankLayout tl);
-	Tank makeChild();
-	Tank clone();
+	Tank makeChild() const;
+	Tank clone() const;
 	bool operator<(const Tank& other) const;
 	bool operator==(const Tank& other) const;
 	bool operator!=(const Tank& other) const;
