@@ -1,7 +1,7 @@
 CXX      := g++-4.8
-CXXFLAGS := -std=c++0x -pedantic -Wall -I../kmlocal-1.7.2/src/ `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf` 
-LDFLAGS  := -L/opt/local/lib -L../kmlocal-1.7.2/src/
-LIBS     := -lboost_system -lboost_serialization -lboost_program_options -lklocal -lm `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf` -lfann -lBox2D -lX11
+CXXFLAGS := -std=c++0x -pedantic -Wall -I../kmlocal-1.7.2/src/ -I../fann/src/include -I../box2d/  `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf` 
+LDFLAGS  := -L/opt/local/lib -L../kmlocal-1.7.2/src/ -L../fann/src/ -L../box2d/
+LIBS     := -lboost_system -lboost_serialization -lboost_program_options -lklocal -lm `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf` -lfann -lBox2D_shared -lX11
 .PHONY: all release info debug clean distclean 
 NVCC     := /usr/local/cuda/bin/nvcc
 NVCC_HOST_CXX := g++-4.6
@@ -53,6 +53,6 @@ export LIBS
 dirs:
 	${MAKE} -C src/ ${MAKEFLAGS} CXX=${CXX} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" ${MAKECMDGOALS}
 	${MAKE} -C game/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
-#	${MAKE} -C tests/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
+	${MAKE} -C tests/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 	${MAKE} -C render/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 	./run.sh tests/tests
