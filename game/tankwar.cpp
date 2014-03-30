@@ -136,10 +136,10 @@ public:
 	SymmetricLines() : Scenario() {
 		bfl_.width_ = 300000;
 		bfl_.height_ = 300000;
-		bfl_.iterations_ = 1000;
+		bfl_.iterations_ = 1500;
 
 		gl_.center_ = {150000,150000};
-		gl_.distance_ = 6000;
+		gl_.distance_ = 10000;
 		gl_.spacing_ = 100;
 
 		phl_.gravity_ = {0,0};
@@ -207,7 +207,7 @@ public:
 class SymmetricLinesAttackerMove : public SymmetricLines {
 public:
 	SymmetricLinesAttackerMove() : SymmetricLines() {
-		gl_.distance_ = 3100;
+		gl_.distance_ = 10500;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -237,6 +237,16 @@ public:
 			c.teamID_ = 1;
 			teams[1].push_back(c);
 		}
+	}
+};
+
+class SymmetricLinesAttackerMoveFacingInward: public SymmetricLinesAttackerMove {
+public:
+	SymmetricLinesAttackerMoveFacingInward() : SymmetricLinesAttackerMove() {
+	}
+
+	virtual Placer* createPlacer() {
+		return new FuzzyOppositePlacer<RandomRot, OppositeFacer, Layouter>({}, {M_PI}, {Scenario::gl_});
 	}
 };
 
@@ -293,14 +303,14 @@ public:
 class SymmetricLinesFacingOutwardFar : public SymmetricLinesFacingOutward {
 public:
 	SymmetricLinesFacingOutwardFar() : SymmetricLinesFacingOutward() {
-		gl_.distance_ = 6000;
+		gl_.distance_ = 20000;
 	}
 };
 
 class SymmetricLinesFacingInwardFar : public SymmetricLinesFacingInward {
 public:
 	SymmetricLinesFacingInwardFar() : SymmetricLinesFacingInward() {
-		gl_.distance_ = 6000;
+		gl_.distance_ = 20000;
 	}
 };
 
@@ -398,8 +408,8 @@ public:
 class SymmetricLinesFar : public SymmetricLines {
 public:
 	SymmetricLinesFar() : SymmetricLines() {
-		bfl_.iterations_ = 2000;
-		gl_.distance_ = 12000;
+		bfl_.iterations_ = 4000;
+		gl_.distance_ = 30000;
 		gl_.spacing_ = 200;
 	}
 
@@ -447,6 +457,15 @@ public:
 	}
 };
 
+class SymmetricLinesAttackerMoveFarFacingInward : public SymmetricLinesAttackerMoveFar {
+public:
+	SymmetricLinesAttackerMoveFarFacingInward() : SymmetricLinesAttackerMoveFar() {
+	}
+
+	virtual Placer* createPlacer() {
+		return new FuzzyOppositePlacer<RandomRot, OppositeFacer, Layouter>({}, {M_PI}, {Scenario::gl_});
+	}
+};
 
 class SymmetricLinesHuge : public SymmetricLines {
 public:
@@ -628,6 +647,8 @@ void loadScenarios() {
 	registerScenario("SymmetricLinesFacingInwardFar", new SymmetricLinesFacingInwardFar());
 	registerScenario("SymmetricLinesFacingOutward", new SymmetricLinesFacingOutward());
 	registerScenario("SymmetricLinesFacingOutwardFar", new SymmetricLinesFacingOutwardFar());
+	registerScenario("SymmetricLinesAttackerMoveFarFacingInward", new SymmetricLinesAttackerMoveFarFacingInward());
+	registerScenario("SymmetricLinesAttackerMoveFacingInward", new SymmetricLinesAttackerMoveFacingInward());
 	registerScenario("CrossHuge", new CrossHuge());
 }
 
@@ -676,7 +697,7 @@ int main(int argc, char** argv) {
 		    //Projectile Layout
 			{
 				1,    // max_speed
-				3000, // max_travel
+				10000, // max_travel
 				5     // range
 			},
 			false, // isDummy
@@ -689,16 +710,16 @@ int main(int argc, char** argv) {
 			1,// max_speed_
 			1,// max_rotation
 
-			5,// max_cooldown
+			5, // max_cooldown
 			20,// max_ammo_
-			6,  // max_damage_
+			6, // max_damage_
 			1  // crashes_per_damage
 		},
 		//BrainLayout
 		{
-		    43, // inputs
+		    83, // inputs
 			3,  // outputs
-			7,  // layers
+			8,  // layers
 			11  // neurons per hidden layer
 		}
 	};
@@ -708,8 +729,8 @@ int main(int argc, char** argv) {
 			0.7, // crossoverRate
 			1,   // crossoverIterations
 			0.3, // maxPertubation
-			0,   // numElite
-			0    //  numEliteCopies
+			4,   // numElite
+			1    //  numEliteCopies
 	};
 
 	string loadFile;

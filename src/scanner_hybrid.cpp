@@ -19,8 +19,8 @@
 namespace tankwar {
 
 void HybridScanner::teamScan(Population& active, Population& passive, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl) {
-	Coord numFriends = 10;
-	Coord numEnemies = 10;
+	Coord numFriends = 20;
+	Coord numEnemies = 20;
 
 	#pragma omp parallel for
 	for(size_t i = 0; i < active.size(); ++i) {
@@ -31,7 +31,7 @@ void HybridScanner::teamScan(Population& active, Population& passive, vector<Vec
 		t.scan_ = Scan(t);
 		assert(!std::isnan(t.scan_.angVel_));
 
-		findInRange(bspFriends, t, FRIEND, t.scan_.objects_, 600);
+		findInRange(bspFriends, t, FRIEND, t.scan_.objects_, 3000);
 
 		if(t.scan_.objects_.size() > numFriends) {
 			t.scan_.objects_.resize(numFriends);
@@ -63,7 +63,7 @@ void HybridScanner::teamScan(Population& active, Population& passive, vector<Vec
 			t.scan_.makeScanObject(ENEMY, ce, t.distance(ce));
 		}
 
-		findInRange(bspEnemies, t, ENEMY, t.scan_.objects_, 600);
+		findInRange(bspEnemies, t, ENEMY, t.scan_.objects_, 3000);
 		if(t.scan_.objects_.size() > (numFriends + numEnemies)) {
 			t.scan_.objects_.resize(numFriends + numEnemies);
 		}

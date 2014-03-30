@@ -17,8 +17,8 @@ function run() {
 
 POP=`run 1000 AimOnOneNoMove $POP`
 POP=`run 1000 SymmetricLinesNoMoveShort $POP`
-POP=`run 1000 SymmetricLinesAttackerMove $POP`
-POP=`run 5000 SymmetricLinesAttackerMoveFar $POP`
+POP=`run 1000 SymmetricLinesAttackerMoveFacingInward $POP`
+POP=`run 5000 SymmetricLinesAttackerMoveFarFacingInward $POP`
 POP=`run 1000 SymmetricLinesFar $POP`
 cp $POP basic_training.pop
 
