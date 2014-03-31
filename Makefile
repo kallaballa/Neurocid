@@ -1,7 +1,7 @@
 CXX      := g++-4.8
 CXXFLAGS := -std=c++0x -pedantic -Wall -I../kmlocal-1.7.2/src/ -I../fann/src/include -I../box2d/  `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf` 
-LDFLAGS  := -L/opt/local/lib -L../kmlocal-1.7.2/src/ -L../fann/src/ -L../box2d/
-LIBS     := -lboost_system -lboost_serialization -lboost_program_options -lklocal -lm `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf` -lfann -lBox2D_shared -lX11
+LDFLAGS  := -L/opt/local/lib -L../kmlocal-1.7.2/src/ -L../fann/src/ -L../box2d/Box2D
+LIBS     := -lboost_system -lboost_serialization -lboost_program_options -lklocal -lm `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf` -lfann -lBox2D -lX11
 .PHONY: all release info debug clean distclean 
 NVCC     := /usr/local/cuda/bin/nvcc
 NVCC_HOST_CXX := g++-4.6
@@ -22,7 +22,9 @@ CXXFLAGS += -DNDEBUG
 LIBS     += -DNDEBUG
 endif
 
-ifeq ($(UNAME), Darwin)
+UNAME_S := $(shell uname -s)
+
+ifeq ($(UNAME_S), Darwin)
  CXXFLAGS +=  -stdlib=libc++
 else
  CXXFLAGS += -march=native
@@ -34,12 +36,12 @@ release: LDFLAGS += -s
 release: CXXFLAGS += -g0 -O3
 release: dirs
 
-info: CXXFLAGS += -g3 -O3 -rdynamic
-info: LDFLAGS += -Wl,--export-dynamic
+info: CXXFLAGS += -g3 -O3
+info: LDFLAGS += -Wl,--export-dynamic -rdynamic
 info: dirs
 
-debug: CXXFLAGS += -g3 -O0 -rdynamic -D_CHECK_BRAIN_ALLOC -Werror
-debug: LDFLAGS += -Wl,--export-dynamic
+debug: CXXFLAGS += -g3 -O0 -D_CHECK_BRAIN_ALLOC -Werror
+debug: LDFLAGS += -Wl,--export-dynamic -rdynamic
 debug: dirs
 
 clean: dirs
