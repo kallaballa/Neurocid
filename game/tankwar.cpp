@@ -162,16 +162,16 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
 
-		TankLayout attackerTL = teams[0].layout_.tl_;
+		TankLayout attackerTL = teams[0][0].layout_;
 		attackerTL.isDummy_ = false;
-		attackerTL.max_ammo_ = 30;
-		attackerTL.max_cooldown = 5;
+		attackerTL.max_ammo_ = 5;
+		attackerTL.max_cooldown = 20;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1].layout_.tl_;
+		TankLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = false;
-		defenderTL.max_ammo_ = 30;
-		defenderTL.max_cooldown = 5;
+		defenderTL.max_ammo_ = 5;
+		defenderTL.max_cooldown = 20;
 		teams[1].update(defenderTL);
 	}
 
@@ -189,11 +189,11 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
 
-		TankLayout attackerTL = teams[0].layout_.tl_;
+		TankLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = false;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1].layout_.tl_;
+		TankLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
@@ -224,11 +224,11 @@ public:
 		assert(teams.size() == 2);
 		SymmetricLines::configureTeams(teams);
 
-		TankLayout attackerTL = teams[0].layout_.tl_;
+		TankLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = true;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1].layout_.tl_;
+		TankLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
@@ -267,15 +267,13 @@ public:
 
 	virtual void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
-
-		TankLayout attackerTL = teams[0].layout_.tl_;
+		SymmetricLines::configureTeams(teams);
+		TankLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canRotate_ = false;
 		attackerTL.canMove_ = false;
-		attackerTL.max_ammo_ = 30;
-		attackerTL.max_cooldown = 5;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1].layout_.tl_;
+		TankLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
@@ -335,12 +333,12 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLines::configureTeams(teams);
 
-		TankLayout attackerTL = teams[0].layout_.tl_;
+		TankLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = false;
 		attackerTL.max_cooldown = 5;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1].layout_.tl_;
+		TankLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
@@ -387,11 +385,11 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLines::configureTeams(teams);
 
-		TankLayout attackerTL = teams[0].layout_.tl_;
+		TankLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = false;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1].layout_.tl_;
+		TankLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
@@ -406,10 +404,8 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLinesNoMoveTwoRows::configureTeams(teams);
 
-		TankLayout attackerTL = teams[0].layout_.tl_;
+		TankLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = true;
-		attackerTL.max_ammo_ = 3;
-		attackerTL.max_cooldown = 5;
 		teams[0].update(attackerTL);
 	}
 };
@@ -426,15 +422,10 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLines::configureTeams(teams);
 
-		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.max_ammo_ = 20;
-		attackerTL.max_cooldown = 5;
+		TankLayout attackerTL = teams[0][0].layout_;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1].layout_.tl_;
-		defenderTL.max_ammo_ = 20;
-		defenderTL.max_cooldown = 5;
-
+		TankLayout defenderTL = teams[1][0].layout_;
 		teams[1].update(defenderTL);
 	}
 };
@@ -446,7 +437,7 @@ public:
 
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLinesFar::configureTeams(teams);
-		TankLayout defenderTL = teams[1].layout_.tl_;
+		TankLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
@@ -476,7 +467,7 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLinesAttackerMoveFar::configureTeams(teams);
 
-		TankLayout attackerTL = teams[0].layout_.tl_;
+		TankLayout attackerTL = teams[0][0].layout_;
 		attackerTL.disableProjectileFitness_ = true;
 		teams[0].update(attackerTL);
 	}
@@ -501,16 +492,14 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLines::configureTeams(teams);
 
-		TankLayout attackerTL = teams[0].layout_.tl_;
+		TankLayout attackerTL = teams[0][0].layout_;
 		attackerTL.disableProjectileFitness_ = true;
 		attackerTL.max_ammo_ = 40;
-		attackerTL.max_cooldown = 5;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1].layout_.tl_;
+		TankLayout defenderTL = teams[1][0].layout_;
 		defenderTL.disableProjectileFitness_ = true;
 		defenderTL.max_ammo_ = 40;
-		defenderTL.max_cooldown = 5;
 		teams[1].update(defenderTL);
 	}
 };
@@ -536,10 +525,10 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
 
-		TankLayout attackerTL = teams[0].layout_.tl_;
+		TankLayout attackerTL = teams[0][0].layout_;
 		attackerTL.isDummy_ = false;
 		attackerTL.canMove_ = true;
-		attackerTL.max_ammo_ = 3;
+		attackerTL.max_ammo_ = 5;
 		attackerTL.max_cooldown = 5;
 
 		teams[0].update(attackerTL);
@@ -549,7 +538,7 @@ public:
 		c.teamID_ = 1;
 		teams[1].push_back(c);
 
-		TankLayout dummyTL = teams[1].layout_.tl_;
+		TankLayout dummyTL = teams[1][0].layout_;
 		dummyTL.isDummy_ = true;
 		dummyTL.max_damage_ = 100;
 		teams[1].update(dummyTL);
@@ -590,7 +579,7 @@ public:
 
 	virtual void configureTeams(vector<Population>& teams) {
 		AimOnOne::configureTeams(teams);
-		TankLayout attackerTL = teams[0].layout_.tl_;
+		TankLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = false;
 		attackerTL.max_cooldown = 10;
 
@@ -613,13 +602,13 @@ public:
 	void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
 
-		TankLayout attackerTL = teams[0].layout_.tl_;
+		TankLayout attackerTL = teams[0][0].layout_;
 		attackerTL.disableProjectileFitness_ = true;
 		attackerTL.max_ammo_ = 40;
 		attackerTL.max_cooldown = 5;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1].layout_.tl_;
+		TankLayout defenderTL = teams[1][0].layout_;
 		defenderTL.disableProjectileFitness_ = true;
 		defenderTL.max_ammo_ = 40;
 		defenderTL.max_cooldown = 5;
@@ -728,7 +717,7 @@ int main(int argc, char** argv) {
 			1,// max_rotation
 
 			5, // max_cooldown
-			20,// max_ammo_
+			5, // max_ammo_
 			6, // max_damage_
 			1  // crashes_per_damage
 		},
