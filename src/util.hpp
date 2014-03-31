@@ -11,10 +11,10 @@ namespace tankwar {
 using std::vector;
 class Population;
 class GeneticPool;
-class GeneticParams;
-class BrainLayout;
-class TankLayout;
-class PopulationLayout;
+struct GeneticParams;
+struct BrainLayout;
+struct TankLayout;
+struct PopulationLayout;
 
 Population makePopulation(size_t teamID, size_t size, PopulationLayout& pl);
 vector<Population> makeTeams(size_t numTeams, size_t teamSize, PopulationLayout& pl);

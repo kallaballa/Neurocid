@@ -15,9 +15,10 @@
 
 namespace tankwar {
 
-class BattleFieldLayout;
+struct BattleFieldLayout;
 
-struct Object {
+class Object {
+public:
 	ObjectType type_;
 	Vector2D loc_;
 	Vector2D vel_;

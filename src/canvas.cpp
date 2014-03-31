@@ -20,13 +20,11 @@ Canvas* Canvas::instance_ = NULL;
 
 Canvas::Canvas(Coord width, Coord height) :
 		screen_(NULL),
-		enabled_(true),
 		drawEngines_(false),
 		drawCenters_(false),
 		drawGrid_(false),
 		width_(width),
 		height_(height),
-		timeout_(20),
 		scale_(1),
 		viewPort_() {
 	if (width > 0 && height > 0) {

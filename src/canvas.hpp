@@ -39,15 +39,13 @@ private:
 			{ 255, 255, 0 }
 	};
 
-	class SDL_Surface *screen_;
+	struct SDL_Surface *screen_;
 	TTF_Font *font_;
-	bool enabled_;
 	bool drawEngines_;
 	bool drawCenters_;
 	bool drawGrid_;
 	Coord width_;
 	Coord height_;
-	size_t timeout_;
 	Coord scale_;
 	Rect viewPort_;
 	map<string,string> osdMap_;

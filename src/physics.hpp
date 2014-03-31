@@ -19,7 +19,7 @@ namespace tankwar {
 using std::vector;
 class Tank;
 class BattleField;
-class BattleFieldLayout;
+struct BattleFieldLayout;
 
 struct PhysicsLayout {
 	b2Vec2 gravity_ ;
