@@ -16,7 +16,8 @@ int main(int argc, char** argv) {
 			t.dead_;*/
 			//render here
 			for (Projectile* p : t.projectiles_) {
-				/*p->loc_;
+	      std::cout << p->loc_ << std::endl;
+  			/*p->loc_;
 				p->rotation_;
 				p->range_;
 				p->explode_;
