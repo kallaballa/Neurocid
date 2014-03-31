@@ -1,0 +1,9 @@
+hotkeys:
+escape: quit lesson
+space: change simulation speed
+c: draw cluster centers
+e: draw engines
+p: pause game
+t: print time tracking info
+g: draw grid
+d: dump teams into a timestamped file
