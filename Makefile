@@ -25,7 +25,7 @@ endif
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Darwin)
- CXXFLAGS +=  -stdlib=libc++
+ LDFLAGS += -L/opt/X11/lib/ 
 else
  CXXFLAGS += -march=native
 endif
