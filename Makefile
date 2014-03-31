@@ -38,7 +38,7 @@ info: CXXFLAGS += -g3 -O3 -rdynamic
 info: LDFLAGS += -Wl,--export-dynamic
 info: dirs
 
-debug: CXXFLAGS += -g3 -O0 -rdynamic -D_CHECK_BRAIN_ALLOC
+debug: CXXFLAGS += -g3 -O0 -rdynamic -D_CHECK_BRAIN_ALLOC -Werror
 debug: LDFLAGS += -Wl,--export-dynamic
 debug: dirs
 

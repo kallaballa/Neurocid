@@ -42,6 +42,9 @@ private:
 	class SDL_Surface *screen_;
 	TTF_Font *font_;
 	bool enabled_;
+	bool drawEngines_;
+	bool drawCenters_;
+	bool drawGrid_;
 	Coord width_;
 	Coord height_;
 	size_t timeout_;
@@ -77,6 +80,30 @@ public:
 					Options::getInstance()->WINDOW_HEIGHT);
 
 		return instance_;
+	}
+
+	void enableDrawCenters(bool e) {
+		drawCenters_ = e;
+	}
+
+	void enableDrawEngines(bool e) {
+		drawEngines_ = e;
+	}
+
+	void enableDrawGrid(bool e) {
+		drawGrid_ = e;
+	}
+
+	bool isDrawCentersEnabled() {
+		return drawCenters_;
+	}
+
+	bool isDrawEnginesEnabled() {
+		return drawEngines_;
+	}
+
+	bool isDrawGridEnabled() {
+		return drawGrid_;
 	}
 };
 }

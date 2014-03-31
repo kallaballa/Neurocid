@@ -12,6 +12,7 @@
 #include "placer.hpp"
 #include "genetic.hpp"
 #include "physics.hpp"
+#include "scenario.hpp"
 #include <ctime>
 #include <vector>
 #include <stddef.h>
@@ -30,15 +31,15 @@ private:
 	void cleanup();
 	void print();
 	void prepare();
-	Placer& placer_;
-	BattleFieldLayout bfl_;
-	PhysicsLayout phl_;
+	Scenario* scenario_;
+	Placer* placer_;
 public:
 	vector<Population>& teams_;
 	vector<Population> newTeams_;
 	vector<GeneticPool>& pools_;
 
-	Game(vector<Population>& teams, vector<GeneticPool>& pools, Placer& placer, BattleFieldLayout& bl, PhysicsLayout& phl);
+	Game(Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools);
+	~Game();
 	vector<Population> play(bool render);
 };
 

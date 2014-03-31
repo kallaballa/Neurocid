@@ -12,6 +12,8 @@
 #include "util.hpp"
 #include "2d.hpp"
 #include "population.hpp"
+#include "tank.hpp"
+
 #include <functional>
 #include <iostream>
 
@@ -59,19 +61,19 @@ public:
 	}
 };
 
-struct GameLayout {
+struct SpacerLayout {
 	Vector2D center_;
 	Coord distance_;
 	Coord spacing_;
 };
 
-class Layouter {
-	GameLayout layout_;
+class Spacer {
+	SpacerLayout layout_;
 public:
-	Layouter(const GameLayout& layout) :
+	Spacer(const SpacerLayout& layout) :
 	 layout_(layout){
 	}
-	GameLayout operator()(size_t tick, size_t side) {
+	SpacerLayout operator()(size_t tick, size_t side) {
 		return {layout_.center_, layout_.distance_, layout_.spacing_};
 	}
 };
@@ -79,6 +81,8 @@ public:
 class Placer {
 	size_t tick_ = 0;
 public:
+	virtual ~Placer() {
+	}
 	size_t tick() {
 		return tick_;
 	}
@@ -88,21 +92,21 @@ public:
 	}
 };
 
-template <typename Trotator, typename Tfacer, typename Tlayouter> class OppositePlacer : public Placer {
+template <typename Trotator, typename Tfacer, typename Tspacer> class OppositePlacer : public Placer {
 	Trotator rotator_;
 	Tfacer facer_;
-	Tlayouter layouter_;
+	Tspacer spacer_;
 public:
-	OppositePlacer(Trotator rotator, Tfacer facer, Tlayouter layouter) :
+	OppositePlacer(Trotator rotator, Tfacer facer, Tspacer layouter) :
 		rotator_(rotator),
 		facer_(facer),
-		layouter_(layouter) {
+		spacer_(layouter) {
 	}
 
 	virtual void place(vector<Population>& teams) {
 		assert(teams.size() == 2);
 		Coord rotation = rotator_(tick());
-		GameLayout gl = layouter_(tick(), 0);
+		SpacerLayout gl = spacer_(tick(), 0);
 		Vector2D axisDir = dirFromRad(rotation);
 
 		Vector2D sideDirA = axisDir;
@@ -141,21 +145,21 @@ public:
 
 
 
-template <typename Trotator, typename Tfacer, typename Tlayouter> class OppositePlacerTwoRows : public Placer {
+template <typename Trotator, typename Tfacer, typename Tspacer> class OppositePlacerTwoRows : public Placer {
 	Trotator rotator_;
 	Tfacer facer_;
-	Tlayouter layouter_;
+	Tspacer spacer_;
 public:
-	OppositePlacerTwoRows(Trotator rotator, Tfacer facer, Tlayouter layouter) :
+	OppositePlacerTwoRows(Trotator rotator, Tfacer facer, Tspacer layouter) :
 		rotator_(rotator),
 		facer_(facer),
-		layouter_(layouter) {
+		spacer_(layouter) {
 	}
 
 	virtual void place(vector<Population>& teams) {
 		assert(teams.size() == 2);
 		Coord rotation = rotator_(tick());
-		GameLayout gl = layouter_(tick(), 0);
+		SpacerLayout gl = spacer_(tick(), 0);
 		Vector2D axisDir = dirFromRad(rotation);
 
 		Vector2D sideDirA = axisDir;
@@ -180,7 +184,6 @@ public:
 		size_t s = teams[0].size();
 		size_t firstRow = s/2;
 		size_t secondRow = firstRow + s%2;
-		size_t drift = iRand(-1,1);
 
 		assert(s == (firstRow + secondRow));
 		for(size_t i = 0; i < firstRow; i++) {
@@ -200,7 +203,6 @@ public:
 		firstRow = s/2;
 		secondRow = firstRow + s%2;
 		assert(s == (firstRow + secondRow));
-		drift = iRand(-1,1);
 		for(size_t i = 0; i < firstRow; i++) {
 			teams[1][i].loc_ = startB;
 			teams[1][i].loc_ -= (sideDirB * ((teams[1][i].range_ + gl.spacing_) * i));
@@ -218,15 +220,15 @@ public:
 	}
 };
 
-template <typename Trotator, typename Tfacer, typename Tlayouter> class CrossPlacerTwoRows : public Placer {
+template <typename Trotator, typename Tfacer, typename Tspacer> class CrossPlacerTwoRows : public Placer {
 	Trotator rotator_;
 	Tfacer facer_;
-	Tlayouter layouter_;
+	Tspacer spacer_;
 public:
-	CrossPlacerTwoRows(Trotator rotator, Tfacer facer, Tlayouter layouter) :
+	CrossPlacerTwoRows(Trotator rotator, Tfacer facer, Tspacer layouter) :
 		rotator_(rotator),
 		facer_(facer),
-		layouter_(layouter) {
+		spacer_(layouter) {
 	}
 
 	virtual void place(vector<Population>& teams) {
@@ -234,7 +236,7 @@ public:
 		assert(teams[0].size() == teams[1].size());
 
 		Coord rotation = rotator_(tick());
-		GameLayout gl = layouter_(tick(), 0);
+		SpacerLayout gl = spacer_(tick(), 0);
 		Vector2D axisDir = dirFromRad(rotation);
 
 		Vector2D sideDirA = axisDir;
@@ -311,21 +313,21 @@ public:
 };
 
 
-template <typename Trotator, typename Tfacer, typename Tlayouter> class FuzzyOppositePlacer : public Placer {
+template <typename Trotator, typename Tfacer, typename Tspacer> class FuzzyOppositePlacer : public Placer {
 	Trotator rotator_;
 	Tfacer facer_;
-	Tlayouter layouter_;
+	Tspacer spacer_;
 public:
-	FuzzyOppositePlacer(Trotator rotator, Tfacer facer, Tlayouter layouter) :
+	FuzzyOppositePlacer(Trotator rotator, Tfacer facer, Tspacer layouter) :
 		rotator_(rotator),
 		facer_(facer),
-		layouter_(layouter) {
+		spacer_(layouter) {
 	}
 
 	virtual void place(vector<Population>& teams) {
 		assert(teams.size() == 2);
 		Coord rotation = rotator_(tick());
-		GameLayout gl = layouter_(tick(), 0);
+		SpacerLayout gl = spacer_(tick(), 0);
 		Vector2D axisDir = dirFromRad(rotation);
 
 		Vector2D sideDirA = axisDir;

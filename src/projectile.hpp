@@ -53,13 +53,9 @@ public:
 		layout_(layout),
 		startLoc_(loc),
 		scan_(*this){
-		speed_ = layout_.max_speed_;
-		rotForce_ = 0;
 	}
 
 	void move(BattleFieldLayout& bfl) {
-		speed_ = layout_.max_speed_;
-		rotForce_ = 0;
 	}
 
 	void death() {

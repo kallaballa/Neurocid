@@ -3,6 +3,8 @@
 
 #include "physics.hpp"
 #include "scanner.hpp"
+#include "battlefieldlayout.hpp"
+#include "scenario.hpp"
 #include <vector>
 
 namespace tankwar {
@@ -11,21 +13,15 @@ using std::vector;
 
 class Population;
 
-struct BattleFieldLayout {
-	size_t iterations_;
-	Coord width_;
-	Coord height_;
-};
-
 class BattleField {
 public:
 	BattleFieldLayout layout_;
-	vector<Population>&  teams_;
 	Physics physics_;
 	Scanner scanner_;
+	vector<Population>&  teams_;
 	vector<Projectile*> spawned_;
 
-	BattleField(BattleFieldLayout& bfl, PhysicsLayout& pl, vector<Population>& teams);
+	BattleField(Scenario* scenario, vector<Population>& teams);
 	void step();
 private:
 	void scan();

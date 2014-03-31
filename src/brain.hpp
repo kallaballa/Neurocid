@@ -6,7 +6,7 @@
 #include <memory>
 #include <assert.h>
 #include <vector>
-#include "scanner.hpp"
+#include "scan.hpp"
 
 #ifndef _NO_SERIALIZE
 #include <boost/archive/text_iarchive.hpp>
@@ -56,6 +56,8 @@ public:
 	fann *nn_;
 	fann_type lthrust_ = 0;
 	fann_type rthrust_ = 0;
+	fann_type fthrust_ = 0;
+	fann_type bthrust_ = 0;
 	fann_type shoot_ = 0;
 	fann_type* inputs_;
 

@@ -16,14 +16,19 @@
 
 namespace tankwar {
 
-Game::Game(vector<Population>& teams,
-		vector<GeneticPool>& pools, Placer& placer, BattleFieldLayout& bfl, PhysicsLayout& phl) :
-		placer_(placer),
-		bfl_(bfl),
-		phl_(phl),
+Game::Game(Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools) :
+		scenario_(scenario),
+		placer_(scenario->createPlacer()),
 		teams_(teams),
 		newTeams_(teams.size()),
 		pools_(pools) {
+	scenario->configureTeams(teams);
+	scenario->configurePools(pools);
+}
+
+Game::~Game() {
+	scenario_->restoreTeams(teams_);
+	delete placer_;
 }
 
 void Game::prepare() {
@@ -38,18 +43,18 @@ void Game::prepare() {
 }
 
 void Game::place() {
-	placer_.place(teams_);
+	placer_->place(teams_);
 }
 
 void Game::fight(bool render) {
 	//std::cerr << "####### game start #######" << std::endl;
 
-	BattleField field(bfl_, phl_, teams_);
+	BattleField field(scenario_, teams_);
 	GameState& gs = *GameState::getInstance();
 	TimeTracker& tt = *TimeTracker::getInstance();
 
 	tt.execute("battlefield", [&](){
-	for(size_t i = 0; (i < bfl_.iterations_) && gs.isRunning(); ++i) {
+	for(size_t i = 0; (i < scenario_->bfl_.iterations_) && gs.isRunning(); ++i) {
 		field.step();
 
 		if(render) {
@@ -118,6 +123,7 @@ void Game::cleanup() {
 	for(Population& p : teams_) {
 		for(Tank& t : p) {
 			t.resetGameState();
+			t.brain_->destroy();
 		}
 	}
 }
@@ -154,13 +160,11 @@ vector<Population> Game::play(bool render) {
 					score();
 				});
 
-		tt.execute("game", "cleanup", [&]() {
-					cleanup();
-				});
-
 		tt.execute("game", "print", [&]() {
 					print();
 				});
+
+		cleanup();
 	});
 
 	std::cerr << "game/s: " << 1000000.0f/dur << std::endl;

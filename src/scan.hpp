@@ -71,6 +71,9 @@ public:
 	}
 
 	void calculate() {
+		vel_.normalize();
+		vel_.rotate(dir_);
+
 		for(ScanObject& so : objects_) {
 			so.calculate(*this);
 		}

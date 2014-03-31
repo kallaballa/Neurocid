@@ -21,6 +21,9 @@ Canvas* Canvas::instance_ = NULL;
 Canvas::Canvas(Coord width, Coord height) :
 		screen_(NULL),
 		enabled_(true),
+		drawEngines_(false),
+		drawCenters_(false),
+		drawGrid_(false),
 		width_(width),
 		height_(height),
 		timeout_(20),
@@ -198,27 +201,42 @@ void fill_circle(SDL_Surface *surface, int cx, int cy, int radius, Uint32 pixel)
 
 void Canvas::drawTank(Tank& tank, Color c) {
 	Vector2D dir = tank.getDirection();
-	Vector2D across = dir;
-	across.rotate(90);
 	Vector2D tip = tank.loc_;
     tip += dir * (tank.range_) * 5;
 
-    Vector2D lECenter = tank.loc_;
-    lECenter += across * (tank.range_);
-    Vector2D rECenter = tank.loc_;
-    rECenter += across * -(tank.range_);
-
-    Vector2D lETip = lECenter;
-    lETip += (dir * (tank.lthrust_ * 30));
-    Vector2D rETip = rECenter;
-    rETip += (dir * (tank.rthrust_ * 30));
-
-    Color red = {255,0,0};
-    drawLine(lETip.x_, lETip.y_, lECenter.x_, lECenter.y_, red);
-    drawLine(rETip.x_, rETip.y_, rECenter.x_, rECenter.y_, red);
     drawLine(tank.loc_.x_, tank.loc_.y_, tip.x_, tip.y_ ,c);
     drawEllipse(tank.loc_, tank.range_, tank.range_, c);
 	drawLine(tank.loc_.x_, tank.loc_.y_, tip.x_, tip.y_ ,c);
+	if(drawEngines_) {
+		Vector2D across1 = dir;
+		Vector2D across2 = dir;
+		across2.rotate(90);
+
+		Vector2D wc = tank.loc_;
+		Vector2D flengine = wc;
+		Vector2D frengine = wc;
+		Vector2D blengine = wc;
+		Vector2D brengine = wc;
+
+		flengine += (across1 * (tank.range_));
+		frengine += (across2 * (tank.range_));
+		blengine += (across2 * -(tank.range_));
+		brengine += (across1 * -(tank.range_));
+
+		Vector2D flforce = flengine;
+		flforce += across1 * -(tank.flthrust_ * 600);
+		Vector2D frforce = frengine;
+		frforce += across2 * (tank.frthrust_ * 600);
+		Vector2D blforce = blengine;
+		blforce += across1 * (tank.blthrust_ * 600);
+		Vector2D brforce = brengine;
+		brforce += across2 * -(tank.brthrust_ * 600);
+		Color red = {255,0,0};
+		drawLine(flengine.x_, flengine.y_, flforce.x_, flforce.y_, red);
+		drawLine(frengine.x_, frengine.y_, frforce.x_, frforce.y_, red);
+		drawLine(blengine.x_, blengine.y_, blforce.x_, blforce.y_, red);
+		drawLine(brengine.x_, brengine.y_, brforce.x_, brforce.y_, red);
+	}
 }
 
 void Canvas::drawProjectile(Projectile& pro, Color& c) {
@@ -278,7 +296,6 @@ void Canvas::drawGrid(BattleField& field) {
 }
 
 void Canvas::drawCenters(Scanner& scanner) {
-	return;
 	for(Vector2D center : scanner.centersA_) {
 		drawEllipse(center, 3/ scale_, 3/ scale_, teamColors_[0]);
 		drawEllipse(center, 10/ scale_, 10/ scale_, teamColors_[0]);
@@ -296,7 +313,9 @@ void Canvas::render(BattleField& field) {
 	viewPort_ = findBounds(field);
 	calculateScale();
 	this->clear();
-	drawGrid(field);
+
+	if(drawGrid_)
+		drawGrid(field);
 
 	Color red = {255,0,0};
 	Color neonYellow = {243,243,21};
@@ -335,7 +354,8 @@ void Canvas::render(BattleField& field) {
 	if(TimeTracker::getInstance()->isEnabled())
 		renderTackerInfo();
 
-	drawCenters(field.scanner_);
+	if(drawCenters_)
+		drawCenters(field.scanner_);
 	this->update();
 }
 }

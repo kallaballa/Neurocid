@@ -113,21 +113,27 @@ void Tank::calculateFitness() {
 	if(projectiles_.empty()) {
 		fitness_ = 0;
 	} else {
-		assert(ratedProjectiles > 0);
+		// calulate projectile/aim fitness
 		assert(projectiles_.size() <= layout_.max_ammo_);
+		assert(ratedProjectiles > 0 || layout_.disableProjectileFitness_);
+		Coord aimRatio = 0;
+		if(!layout_.disableProjectileFitness_) {
+			aimRatio = (1.0 - (totalDiff / (ratedProjectiles)));
+			assert(aimRatio >= 0);
+			assert(aimRatio <= 1);
+		}
+
 		// don't remove the assert!
 		assert((totalDiff) <= (ratedProjectiles + 0.01));
 		//get rid of noise spikes
 		if((totalDiff) > ratedProjectiles)
 			totalDiff = ratedProjectiles;
 
+		// calulate actual hit/damage/friendly_fire score
 		Coord shots = projectiles_.size();
-		Coord aimRatio = (1.0 - (totalDiff / (ratedProjectiles)));
 		Coord hitRatio = 1 + ((Coord(hits_) / shots) * 10);
 		Coord friendlyRatioInv = (1.0 / ((Coord(friendlyFire_) / shots) + 1));
 		Coord damageRatioInv = (1.0 / ((Coord(damage_) / layout_.max_damage_) + 1));
-		assert(aimRatio >= 0);
-		assert(aimRatio <= 1);
 		assert(hitRatio >= 1);
 		assert(hitRatio <= 11);
 		assert(damageRatioInv >= 0.5);
@@ -158,36 +164,19 @@ void Tank::move(BattleFieldLayout& bfl) {
 
 	assert(brain_ != NULL);
 	//assign the outputs
-	lthrust_ = brain_->lthrust_;
-	rthrust_ = brain_->rthrust_;
-
-	assert(!std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(brain_->shoot_));
+	flthrust_ = brain_->lthrust_;
+	frthrust_ = brain_->rthrust_;
+	blthrust_ = brain_->fthrust_;
+	brthrust_ = brain_->bthrust_;
 
 	bool canShoot = layout_.canShoot_ && (cool_down == 0 && ammonition_ > 0);
 	bool wantsShoot = (brain_->shoot_ > 0.0);
-
 	if(canShoot && wantsShoot) {
 		willShoot_ = true;
 	} else if(cool_down > 0){
 		willShoot_ = false;
 		--cool_down;
 	}
-
-	//update location
-	if(layout_.canMove_)
-		speed_ = ((lthrust_ + rthrust_) / 2) * layout_.max_speed_;
-	else
-		speed_ = 0;
-
-
-	//update rotation force
-	if(layout_.canRotate_) {
-		//calculate steering forces
-		Coord rotForce = lthrust_ - rthrust_;
-		clamp(rotForce, -layout_.max_rotation_, layout_.max_rotation_);
-		rotForce_ = rotForce;
-	} else
-		rotForce_ = 0;
 
 	//std::cerr << "canMove: " << tl_.canMove_ << "\tcanRotate: " << tl_.canRotate_ << "\tspeed: " << speed_ << "\trotForce:" << rotForce_  << std::endl;
 }
@@ -265,14 +254,14 @@ void Tank::resetGameState() {
 		delete p;
 	}
 	projectiles_.clear();
-	lthrust_ = 0;
-	rthrust_ = 0;
+	flthrust_ = 0;
+	frthrust_ = 0;
+	blthrust_ = 0;
+	brthrust_ = 0;
 	dead_ = false;
 	explode_ = false;
 	cool_down = 0;
 	willShoot_ = false;
-	speed_ = 0;
-	rotForce_ = 0;
 }
 
 void Tank::resetScore() {

@@ -87,7 +87,7 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 			applyInput(inputCnt * 2, so.vector_.x_);
 			applyInput(inputCnt * 2 + 1, so.vector_.y_);
 		}
-		inputCnt+=1;
+		++inputCnt;
 	}
 
 	for (auto it : enemyObj) {
@@ -96,13 +96,14 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 			applyInput(inputCnt * 2, so.vector_.x_);
 			applyInput(inputCnt * 2 + 1, so.vector_.y_);
 		}
-		inputCnt+=1;
+		++inputCnt;
 	}
 
 	Vector2D vel = scan.vel_;
 	vel.normalize();
-	applyInput(inputCnt, vel.x_);
-	applyInput(inputCnt+1, vel.y_);
+	applyInput((inputCnt * 2), vel.x_);
+	applyInput((inputCnt * 2) + 1, vel.y_);
+	++inputCnt;
 
 	Coord angVel = scan.angVel_;
 	if(angVel > 20)
@@ -110,19 +111,24 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	else if(angVel < -20)
 		angVel = -20;
 
-	applyInput(inputCnt+2, angVel / 20);
+	applyInput((inputCnt * 2), angVel / 20);
+	++inputCnt;
 
 	for(size_t i = 0; i < numInputs; ++i) {
 		assert(!std::isinf(inputs_[i]));
 		assert(!std::isnan(inputs_[i]));
+		assert(inputs_[i] != std::numeric_limits<fann_type>().max());
 	}
 
 	fann_type* outputs = fann_run(nn_, inputs_);
 	lthrust_ = outputs[0];
 	rthrust_ = outputs[1];
-	shoot_ = outputs[2];
-	assert(!std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(shoot_));
-	assert(!std::isinf(lthrust_) && !std::isinf(rthrust_) && !std::isinf(shoot_));
+	fthrust_ = outputs[2];
+	bthrust_ = outputs[3];
+	shoot_ = outputs[4];
+
+	assert(!std::isnan(bthrust_) && !std::isnan(fthrust_) && !std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(shoot_));
+	assert(!std::isinf(bthrust_) && !std::isinf(fthrust_) && !std::isinf(lthrust_) && !std::isinf(rthrust_) && !std::isinf(shoot_));
 
 	//	std::cerr << "output:\t" << lthrust_ << "\t" << rthrust_ << "\t" << shoot_ << std::endl;
 }

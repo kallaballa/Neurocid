@@ -114,11 +114,15 @@ void SwarmScanner::teamScan(Population& active, Population& passive, Bsp& bspFri
 
 void SwarmScanner::scan(BattleField& field) {
 	assert(field.teams_.size() == 2);
-	buildBsps(field);
+	prepare(field);
 	Population& teamA = field.teams_[0];
 	Population& teamB = field.teams_[1];
 	teamScan(teamA, teamB, bspA_, bspB_, field.layout_);
 	teamScan(teamB, teamA, bspB_, bspA_, field.layout_);
+}
+
+void SwarmScanner::prepare(BattleField& field) {
+	BspScanner::prepare(field);
 }
 
 } /* namespace tankwar */

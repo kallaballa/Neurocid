@@ -176,7 +176,7 @@ b2Body* Physics::makeTankBody(Tank& t) {
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
     body->SetLinearDamping(0.3);
-    body->SetAngularDamping(1);
+    body->SetAngularDamping(20);
     return body;
 }
 
@@ -206,16 +206,14 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
     // Override the default friction.
     fixtureDef.friction = 0.3f;
 
-//Deativate projectile collisions
-//    fixtureDef.filter.maskBits = 2;
-//    fixtureDef.filter.categoryBits = 1;
-    fixtureDef.filter.maskBits = 1;
-    fixtureDef.filter.categoryBits = 3;
+    //Deativate projectile collisions
+    fixtureDef.filter.maskBits = 2;
+    fixtureDef.filter.categoryBits = 1;
+//    fixtureDef.filter.maskBits = 1;
+//    fixtureDef.filter.categoryBits = 3;
     body->SetFixedRotation(true);
-
-    // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
-    body->SetLinearDamping(0.1);
+    body->SetLinearDamping(0);
     body->SetAngularDamping(0);
     return body;
 }
@@ -265,21 +263,30 @@ void Physics::step() {
 			if(o->type() == TANK) {
 				Tank* t = static_cast<Tank*>(o);
 				Vector2D dir = o->getDirection();
-				Vector2D across = dir;
-				across.rotate(90);
+				Vector2D across1 = dir;
+				Vector2D across2 = dir;
+				across2.rotate(90);
 
-				Vector2D lforce = dir * (t->lthrust_ * 2);
-				Vector2D rforce = dir * (t->rthrust_ * 2);
+				Vector2D flforce = across1 * (t->flthrust_ * t->layout_.max_speed_ * 4);
+				Vector2D frforce = across2 * -(t->frthrust_ * t->layout_.max_speed_ * 4);
+				Vector2D blforce = across1 * -(t->blthrust_ * t->layout_.max_speed_ * 4);
+				Vector2D brforce = across2 * (t->brthrust_ * t->layout_.max_speed_ * 4);
 
 				b2Vec2 wc = body->GetWorldCenter();
-				Vector2D lengine(wc.x, wc.y);
-				Vector2D rengine(wc.x, wc.y);
+				Vector2D flengine(wc.x, wc.y);
+				Vector2D frengine(wc.x, wc.y);
+				Vector2D blengine(wc.x, wc.y);
+				Vector2D brengine(wc.x, wc.y);
 
-				lengine += (across * (t->range_));
-				rengine -= (across * (t->range_));
+				flengine += (across1 * (t->range_));
+				frengine += (across2 * (t->range_));
+				blengine += (across2 * -(t->range_));
+				brengine += (across1 * -(t->range_));
 
-				body->ApplyLinearImpulse(b2Vec2(lforce.x_, lforce.y_), b2Vec2(lengine.x_, lengine.y_),false);
-				body->ApplyLinearImpulse(b2Vec2(rforce.x_, rforce.y_), b2Vec2(rengine.x_, rengine.y_),false);
+				body->ApplyLinearImpulse(b2Vec2(flforce.x_, flforce.y_), b2Vec2(flengine.x_, flengine.y_),false);
+				body->ApplyLinearImpulse(b2Vec2(frforce.x_, frforce.y_), b2Vec2(frengine.x_, frengine.y_),false);
+				body->ApplyLinearImpulse(b2Vec2(blforce.x_, blforce.y_), b2Vec2(blengine.x_, blengine.y_),false);
+				body->ApplyLinearImpulse(b2Vec2(brforce.x_, brforce.y_), b2Vec2(brengine.x_, brengine.y_),false);
 
 				if (!t->layout_.canMove_ || t->layout_.isDummy_) {
 					body->SetLinearVelocity(b2Vec2(0,0));
@@ -300,7 +307,7 @@ void Physics::step() {
 					p->dead_ = true;
 					deadBodies_.push_back(body);
 				} else {
-					Vector2D force = o->getDirection() * o->speed_ * 10;
+					Vector2D force = p->getDirection() * p->layout_.max_speed_ * 20;
 					body->SetAwake(true);
 					body->ApplyLinearImpulse(b2Vec2(force.x_, force.y_), body->GetWorldCenter(),false);
 				}

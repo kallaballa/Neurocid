@@ -3,12 +3,12 @@
 
 #include "object.hpp"
 #include "projectile.hpp"
-#include "battlefield.hpp"
+#include "battlefieldlayout.hpp"
 #include "2d.hpp"
 #include <cstring>
 #include <iostream>
 #include "brain.hpp"
-#include "scanner.hpp"
+#include "scan.hpp"
 #ifndef _NO_SERIALIZE
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
@@ -74,8 +74,11 @@ public:
 	Brain* brain_;
 
 	size_t ammonition_;
-	Coord lthrust_;
-	Coord rthrust_;
+	Coord flthrust_;
+	Coord frthrust_;
+	Coord blthrust_;
+	Coord brthrust_;
+
 	size_t friendlyFire_;
 	size_t crash_;
 	size_t crashDamage_;

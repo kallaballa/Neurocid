@@ -99,9 +99,12 @@ void BrainNearest::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	fann_type* outputs = fann_run(nn_, inputs_);
 	lthrust_ = outputs[0];
 	rthrust_ = outputs[1];
-	shoot_ = outputs[2];
-	assert(!std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(shoot_));
-	assert(!std::isinf(lthrust_) && !std::isinf(rthrust_) && !std::isinf(shoot_));
+	bthrust_ = outputs[2];
+	fthrust_ = outputs[3];
+
+	shoot_ = outputs[4];
+	assert(!std::isnan(bthrust_) && !std::isnan(fthrust_) && !std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(shoot_));
+	assert(!std::isinf(bthrust_) && !std::isinf(fthrust_) && !std::isinf(lthrust_) && !std::isinf(rthrust_) && !std::isinf(shoot_));
 
 	//	std::cerr << "output:\t" << lthrust_ << "\t" << rthrust_ << "\t" << shoot_ << std::endl;
 }

@@ -20,6 +20,9 @@ namespace tankwar {
 typedef double Coord;
 
 #define NO_COORD std::numeric_limits<Coord>().max()
+#define NO_VECTOR2D Vector2D(NO_COORD, NO_COORD)
+#define ASSERT_LOC(V) assert(V.x_ != NO_COORD && V.y_ != NO_COORD);
+#define ASSERT_DIR(V) assert(V.x_ >= -1 && V.x_ <= 1 && V.y_ >= -1 && V.y_ <= 1);
 
 struct Vector2D {
 	Coord x_, y_;
@@ -114,6 +117,8 @@ struct Vector2D {
 	}
 
 	void rotate(Vector2D by) {
+		ASSERT_DIR((*this));
+		ASSERT_DIR(by);
 		Coord x1 = (by.y_ * -x_ + -by.x_ * -y_);
 		Coord y1 = (by.y_ * -y_ + by.x_ * -x_);
 
@@ -121,10 +126,6 @@ struct Vector2D {
 		y_ = y1;
 	}
 };
-
-#define NO_VECTOR2D Vector2D(NO_COORD, NO_COORD)
-#define ASSERT_LOC(V) assert(V.x_ != NO_COORD && V.y_ != NO_COORD);
-#define ASSERT_DIR(V) assert(V.x_ >= -1 && V.x_ <= 1 && V.y_ >= -1 && V.y_ <= 1 && (V != Vector2D(0,0)));
 
 struct Rect {
 	Vector2D ul_;

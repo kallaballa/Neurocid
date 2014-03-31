@@ -19,10 +19,9 @@
 namespace tankwar {
 
 void HybridScanner::teamScan(Population& active, Population& passive, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl) {
-	Coord numFriends = 20;
-	Coord numEnemies = 20;
+	Coord numFriends = ClusterScanner::layout_.numFriends_;
+	Coord numEnemies = ClusterScanner::layout_.numEnemies_;
 
-	#pragma omp parallel for
 	for(size_t i = 0; i < active.size(); ++i) {
 		Tank& t = active[i];
 		if(t.dead_ || t.layout_.isDummy_)
@@ -58,12 +57,11 @@ void HybridScanner::teamScan(Population& active, Population& passive, vector<Vec
 		Tank* tenemy = static_cast<Tank*>(result.first);
 
 		t.scan_.makeScanObject(ENEMY,tenemy->loc_,result.second);
-
+		findInRange(bspEnemies, t, ENEMY, t.scan_.objects_, 3000);
 		for(Vector2D ce : ctrEnemies) {
 			t.scan_.makeScanObject(ENEMY, ce, t.distance(ce));
 		}
 
-		findInRange(bspEnemies, t, ENEMY, t.scan_.objects_, 3000);
 		if(t.scan_.objects_.size() > (numFriends + numEnemies)) {
 			t.scan_.objects_.resize(numFriends + numEnemies);
 		}
@@ -79,11 +77,9 @@ void HybridScanner::teamScan(Population& active, Population& passive, vector<Vec
 		}
 
 		assert(t.scan_.objects_.size() == (numFriends + numEnemies));
-		if(t.layout_.disableProjectileFitness_)
-			continue;
 
 		for(Projectile* p : t.projectiles_) {
-			if(p->dead_)
+			if(p->dead_ || t.layout_.disableProjectileFitness_)
 				continue;
 
 			p->scan_ = Scan(*p);
@@ -126,20 +122,18 @@ void HybridScanner::teamScan(Population& active, Population& passive, vector<Vec
 
 void HybridScanner::scan(BattleField& field) {
 	assert(field.teams_.size() == 2);
+	prepare(field);
 	Population& teamA = field.teams_[0];
 	Population& teamB = field.teams_[1];
-
-	buildBsps(field);
-	centersA_.clear();
-	centersB_.clear();
-	scanClusterCenters(teamA, centersA_, 3);
-	scanClusterCenters(teamB, centersB_, 3);
-
-	assert(centersA_.size() == 3);
-	assert(centersB_.size() == 3);
-
 	teamScan(teamA, teamB, centersA_, centersB_, bspA_, bspB_, field.layout_);
 	teamScan(teamB, teamA, centersB_, centersA_, bspB_, bspA_, field.layout_);
+}
+
+void HybridScanner::prepare(BattleField& field) {
+	BspScanner::prepare(field);
+	ClusterScanner::prepare(field);
+	teamScan(field.teams_[0], field.teams_[1], centersA_, centersB_, bspA_, bspB_, field.layout_);
+	teamScan(field.teams_[1], field.teams_[0], centersB_, centersA_, bspB_, bspA_, field.layout_);
 }
 
 } /* namespace tankwar */

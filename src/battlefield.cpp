@@ -22,11 +22,11 @@ using std::list;
 using std::cerr;
 using std::endl;
 
-BattleField::BattleField(BattleFieldLayout& bfl, PhysicsLayout& pl, vector<Population>& teams) :
-		layout_(bfl),
-		teams_(teams),
-		physics_(pl),
-		scanner_() {
+BattleField::BattleField(Scenario* scenario, vector<Population>& teams) :
+	layout_(scenario->bfl_),
+	physics_(scenario->phl_),
+	scanner_(scenario->scl_),
+	teams_(teams){
 	physics_.create(*this);
 }
 

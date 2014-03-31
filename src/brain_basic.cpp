@@ -31,13 +31,14 @@ BasicBrain::~BasicBrain() {
 void BasicBrain::makeNN() {
 	assert(layout_.numLayers_ >= 3);
 	assert(layout_.numLayers_ < 20);
-	unsigned int layerArray[layout_.numLayers_];
+	unsigned int* layerArray = new unsigned int[layout_.numLayers_];
 	layerArray[0] = layout_.numInputs_;
-	layerArray[layout_.numLayers_ - 1] = layout_.numOutputs;
 
 	for(size_t i = 1; i < (layout_.numLayers_ - 1); i++) {
 		layerArray[i] = layout_.neuronsPerHidden;
 	}
+
+	layerArray[layout_.numLayers_ - 1] = layout_.numOutputs;
 
 	nn_ = fann_create_standard_array(layout_.numLayers_, layerArray);
     fann_set_activation_function_hidden(nn_, FANN_SIGMOID_SYMMETRIC);
@@ -45,7 +46,9 @@ void BasicBrain::makeNN() {
 
     inputs_ = new fann_type[layout_.numInputs_];
     reset();
-    #ifdef _CHECK_BRAIN_ALLOC
+    delete[] layerArray;
+
+#ifdef _CHECK_BRAIN_ALLOC
     size_t id = ++nnAllocCnt_;
     nnAllocs_[nn_] = id;
     std::cerr << "alloc: " << id << std::endl;
@@ -53,7 +56,8 @@ void BasicBrain::makeNN() {
 }
 
 void BasicBrain::destroy() {
-    assert(nn_ != NULL);
+	assert(!destroyed_);
+	assert(nn_ != NULL);
 #ifdef _CHECK_BRAIN_ALLOC
 	auto it = nnAllocs_.find(nn_);
 	assert(it != nnAllocs_.end());
@@ -70,7 +74,7 @@ void BasicBrain::destroy() {
 
 void BasicBrain::reset() {
 	assert(inputs_ != NULL);
-    std::fill_n(inputs_, layout_.numInputs_, 0);
+    std::fill_n(inputs_, layout_.numInputs_, std::numeric_limits<fann_type>().max());
 }
 
 void BasicBrain::randomize() {

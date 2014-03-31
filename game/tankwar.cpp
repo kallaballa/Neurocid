@@ -10,6 +10,8 @@
 #include "game.hpp"
 #include "gamestate.hpp"
 #include "time_tracker.hpp"
+#include "scenario.hpp"
+#include "canvas.hpp"
 #include <ctime>
 #include <thread>
 #include <SDL/SDL.h>
@@ -59,6 +61,7 @@ void runEventHandler() {
 	Renderer& renderer = *Renderer::getInstance();
 	GameState& gameState = *GameState::getInstance();
 	TimeTracker& timeTracker = *TimeTracker::getInstance();
+	Canvas& canvas = *Canvas::getInstance();
 	SDL_Event event;
 
 	while (gameState.isRunning()) {
@@ -95,6 +98,21 @@ void runEventHandler() {
 					else
 						timeTracker.setEnabled(true);
 
+				} else if (event.key.keysym.sym == SDLKey::SDLK_c) {
+					if (canvas.isDrawCentersEnabled())
+						canvas.enableDrawCenters(false);
+					else
+						canvas.enableDrawCenters(true);
+				} else if (event.key.keysym.sym == SDLKey::SDLK_e) {
+					if (canvas.isDrawEnginesEnabled())
+						canvas.enableDrawEngines(false);
+					else
+						canvas.enableDrawEngines(true);
+				} else if (event.key.keysym.sym == SDLKey::SDLK_g) {
+					if (canvas.isDrawGridEnabled())
+						canvas.enableDrawGrid(false);
+					else
+						canvas.enableDrawGrid(true);
 				} else if (event.key.keysym.sym == SDLKey::SDLK_d) {
 					dumpTeams();
 				} else if (event.key.keysym.sym == SDLKey::SDLK_ESCAPE) {
@@ -113,19 +131,6 @@ void runEventHandler() {
 		}
 	}
 }
-
-class Scenario {
-public:
-	BattleFieldLayout bfl_;
-	GameLayout gl_;
-	PhysicsLayout phl_;
-
-	virtual void configureTeams(vector<Population>& teams) {};
-	virtual void configurePools(vector<GeneticPool>& pools) {};
-	virtual void restoreTeams(vector<Population>& teams) {};
-	virtual void restorePools(vector<GeneticPool>& pools) {};
-	virtual Placer* createPlacer() = 0;
-};
 
 /* *************************
  * SYMMETRIC LINES SCENARIOS
@@ -147,6 +152,11 @@ public:
 		phl_.positionIterations_ = 2;
 		phl_.velocityIterations_ = 6;
 		phl_.coordToMetersFactor_ = 0.05f;
+
+		scl_.disableClusterCenters = false;
+		scl_.numClusters_ = 3;
+		scl_.numFriends_ = 20;
+		scl_.numEnemies_ = 20;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -166,7 +176,7 @@ public:
 	}
 
 	virtual Placer* createPlacer() {
-		return new FuzzyOppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
+		return new FuzzyOppositePlacer<RandomRot, RandomFacer, Spacer>({}, {}, {Scenario::gl_});
 	}
 };
 
@@ -246,7 +256,7 @@ public:
 	}
 
 	virtual Placer* createPlacer() {
-		return new FuzzyOppositePlacer<RandomRot, OppositeFacer, Layouter>({}, {M_PI}, {Scenario::gl_});
+		return new FuzzyOppositePlacer<RandomRot, OppositeFacer, Spacer>({}, {M_PI}, {Scenario::gl_});
 	}
 };
 
@@ -272,7 +282,7 @@ public:
 	}
 
 	virtual Placer* createPlacer() {
-		return new FuzzyOppositePlacer<IterRot, OppositeFacer, Layouter>({0, M_PI}, {M_PI}, {Scenario::gl_});
+		return new FuzzyOppositePlacer<IterRot, OppositeFacer, Spacer>({0, M_PI}, {M_PI}, {Scenario::gl_});
 	}
 
 	virtual void restorePools(vector<GeneticPool>& pools) {
@@ -296,7 +306,7 @@ public:
 	}
 
 	virtual Placer* createPlacer() {
-		return new OppositePlacer<IterRot, OppositeFacer, Layouter>({0, M_PI}, {0}, {Scenario::gl_});
+		return new OppositePlacer<IterRot, OppositeFacer, Spacer>({0, M_PI}, {0}, {Scenario::gl_});
 	}
 };
 
@@ -357,7 +367,7 @@ public:
 	}
 
 	virtual Placer* createPlacer() {
-		return new OppositePlacerTwoRows<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
+		return new OppositePlacerTwoRows<RandomRot, RandomFacer, Spacer>({}, {}, {Scenario::gl_});
 	}
 
 	virtual void restorePools(vector<GeneticPool>& pools) {
@@ -460,10 +470,19 @@ public:
 class SymmetricLinesAttackerMoveFarFacingInward : public SymmetricLinesAttackerMoveFar {
 public:
 	SymmetricLinesAttackerMoveFarFacingInward() : SymmetricLinesAttackerMoveFar() {
+		scl_.disableClusterCenters = true;
+	}
+
+	virtual void configureTeams(vector<Population>& teams) {
+		SymmetricLinesAttackerMoveFar::configureTeams(teams);
+
+		TankLayout attackerTL = teams[0].layout_.tl_;
+		attackerTL.disableProjectileFitness_ = true;
+		teams[0].update(attackerTL);
 	}
 
 	virtual Placer* createPlacer() {
-		return new FuzzyOppositePlacer<RandomRot, OppositeFacer, Layouter>({}, {M_PI}, {Scenario::gl_});
+		return new FuzzyOppositePlacer<RandomRot, OppositeFacer, Spacer>({}, {M_PI}, {Scenario::gl_});
 	}
 };
 
@@ -472,21 +491,24 @@ public:
 	SymmetricLinesHuge() : SymmetricLines() {
 		bfl_.width_ = 300000;
 		bfl_.height_ = 300000;
-		bfl_.iterations_ = 13000;
+		bfl_.iterations_ = 6000;
 		gl_.center_ = {150000,150000};
-		gl_.distance_ = 40000;
-		gl_.spacing_ = 800;
+		gl_.distance_ = 100000;
+		gl_.spacing_ = 1000;
+		scl_.disableClusterCenters = true;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLines::configureTeams(teams);
 
 		TankLayout attackerTL = teams[0].layout_.tl_;
+		attackerTL.disableProjectileFitness_ = true;
 		attackerTL.max_ammo_ = 40;
 		attackerTL.max_cooldown = 5;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
+		defenderTL.disableProjectileFitness_ = true;
 		defenderTL.max_ammo_ = 40;
 		defenderTL.max_cooldown = 5;
 		teams[1].update(defenderTL);
@@ -544,7 +566,7 @@ public:
 
 
 	virtual Placer* createPlacer() {
-		return new FuzzyOppositePlacer<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
+		return new FuzzyOppositePlacer<RandomRot, RandomFacer, Spacer>({}, {}, {Scenario::gl_});
 	}
 
 	virtual void restoreTeams(vector<Population>& teams) {
@@ -583,20 +605,23 @@ public:
 		bfl_.height_ = 300000;
 		bfl_.iterations_ = 7000;
 		gl_.center_ = {150000,150000};
-		gl_.distance_ = 30000;
+		gl_.distance_ = 100000;
 		gl_.spacing_ = 400;
+		scl_.disableClusterCenters = true;
 	}
 
 	void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
 
 		TankLayout attackerTL = teams[0].layout_.tl_;
-		attackerTL.max_ammo_ = 20;
+		attackerTL.disableProjectileFitness_ = true;
+		attackerTL.max_ammo_ = 40;
 		attackerTL.max_cooldown = 5;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1].layout_.tl_;
-		defenderTL.max_ammo_ = 20;
+		defenderTL.disableProjectileFitness_ = true;
+		defenderTL.max_ammo_ = 40;
 		defenderTL.max_cooldown = 5;
 		teams[1].update(defenderTL);
 	}
@@ -606,16 +631,16 @@ public:
 	}
 
 	Placer* createPlacer() {
-		return new CrossPlacerTwoRows<RandomRot, RandomFacer, Layouter>({}, {}, {Scenario::gl_});
+		return new CrossPlacerTwoRows<RandomRot, RandomFacer, Spacer>({}, {}, {Scenario::gl_});
 	}
 };
 
-void playGame(size_t gameIter, Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools, Placer& placer) {
+void playGame(size_t gameIter, Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools) {
 	GameState& gs = *GameState::getInstance();
 	TimeTracker& tt = *TimeTracker::getInstance();
 	while(gs.isRunning() && --gameIter > 0) {
 		tt.execute("game", [&](){
-			Game game(teams, pools, placer, scenario->bfl_, scenario->phl_);
+			Game game(scenario, teams, pools);
 			gs.setCurrentGame(&game);
 			teams = game.play(true);
 			gs.setCurrentGame(NULL);
@@ -658,14 +683,6 @@ Scenario* getScenario(const string& name) {
 		return NULL;
 	else
 		return (*it).second;
-}
-
-void runScenario(Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools, size_t iterations) {
-	scenario->configureTeams(teams);
-	scenario->configurePools(pools);
-	Placer* placer = scenario->createPlacer();
-	playGame(iterations, scenario, teams, pools, *placer);
-	scenario->restoreTeams(teams);
 }
 
 void multiplyTeams(vector<Population>& teams, size_t n) {
@@ -718,7 +735,7 @@ int main(int argc, char** argv) {
 		//BrainLayout
 		{
 		    83, // inputs
-			3,  // outputs
+			5,  // outputs
 			8,  // layers
 			11  // neurons per hidden layer
 		}
@@ -797,7 +814,7 @@ int main(int argc, char** argv) {
     std::thread gameThread([&]() {
     	teams[0].score_ = 0;
     	teams[1].score_ = 0;
-    	runScenario(scenario, teams, pools,gameIterations);
+    	playGame(gameIterations, scenario, teams, pools);
         if(save) {
       	  if(teams[0].size() > 20)
       		  teams[0].resize(20);
