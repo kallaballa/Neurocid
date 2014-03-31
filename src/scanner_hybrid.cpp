@@ -132,8 +132,6 @@ void HybridScanner::scan(BattleField& field) {
 void HybridScanner::prepare(BattleField& field) {
 	BspScanner::prepare(field);
 	ClusterScanner::prepare(field);
-	teamScan(field.teams_[0], field.teams_[1], centersA_, centersB_, bspA_, bspB_, field.layout_);
-	teamScan(field.teams_[1], field.teams_[0], centersB_, centersA_, bspB_, bspA_, field.layout_);
 }
 
 } /* namespace tankwar */
