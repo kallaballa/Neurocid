@@ -44,37 +44,37 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	for (const ScanObject& so : scan.objects_) {
 		assert(so.type_ != INVALID);
 		if(so.type_ == FRIEND) {
-			Coord angle = so.angle_;
-			auto it = friendObj.find(angle);
+			Coord angDist = so.angDist_;
+			auto it = friendObj.find(angDist);
 			while(it != friendObj.end()) {
-				if(angle > 0)
-					angle -= fRand(0.00000001, 0.00009);
+				if(angDist > 0)
+					angDist -= fRand(0.00000001, 0.00009);
 				else
-					angle += fRand(0.00000001, 0.00009);
+					angDist += fRand(0.00000001, 0.00009);
 
-				it = friendObj.find(angle);
+				it = friendObj.find(angDist);
 			}
 
-			friendObj[angle] = so;
+			friendObj[angDist] = so;
 		}
 	}
 
 	for (const ScanObject& so : scan.objects_) {
 		assert(so.type_ != INVALID);
 		if(so.type_ == ENEMY) {
-			Coord angle = so.angle_;
-			assert(angle != NO_COORD);
-			auto it = enemyObj.find(angle);
+			Coord angDist = so.angDist_;
+			assert(angDist != NO_COORD);
+			auto it = enemyObj.find(angDist);
 			while(it != enemyObj.end()) {
-				if(angle > 0)
-					angle -= fRand(0.00000001, 0.00009);
+				if(angDist > 0)
+					angDist -= fRand(0.00000001, 0.00009);
 				else
-					angle += fRand(0.00000001, 0.00009);
+					angDist += fRand(0.00000001, 0.00009);
 
-				it = enemyObj.find(angle);
+				it = enemyObj.find(angDist);
 			}
 
-			enemyObj[angle] = so;
+			enemyObj[angDist] = so;
 		}
 	}
 
@@ -106,12 +106,12 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	++inputCnt;
 
 	Coord angVel = scan.angVel_;
-	if(angVel > 20)
-		angVel = 20;
-	else if(angVel < -20)
-		angVel = -20;
+	if(angVel > 10)
+		angVel = 10;
+	else if(angVel < -10)
+		angVel = -10;
 
-	applyInput((inputCnt * 2), angVel / 20);
+	applyInput((inputCnt * 2), angVel / 10);
 	++inputCnt;
 
 	for(size_t i = 0; i < numInputs; ++i) {
