@@ -17,7 +17,7 @@
 namespace tankwar {
 
 struct TankLayout {
-#ifndef _NO_SERIALIZE
+#ifndef _NO_SERIALIZEz
 	friend class boost::serialization::access;
 #endif
 	ProjectileLayout pl_;

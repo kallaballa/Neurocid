@@ -15,6 +15,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <limits>
+
 namespace tankwar {
 
 Tank::Tank(size_t teamID, TankLayout tl, Brain* brain) :
@@ -53,6 +54,7 @@ void Tank::calculateFitness() {
 					Coord angDistPerfect = 0;
 					Vector2D perfect = (so.loc_ - p->startLoc_).normalize();
 					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
+					bool inRange = p->startLoc_.distance(so.loc_) < p->layout_.max_travel_;
 					Vector2D vdiff = candidate;
 
 					ASSERT_DIR(perfect);
@@ -74,6 +76,9 @@ void Tank::calculateFitness() {
 
 					assert(angDistPerfect >= 0);
 					assert(angDistPerfect <= 1);
+					if(inRange)
+						angDistPerfect /= 2;
+
 					totalDiff += angDistPerfect;
 					++ratedProjectiles;
 				} else if(so.type_ == ScanObjectType::FRIEND) {
