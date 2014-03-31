@@ -15,6 +15,10 @@
 #include <iostream>
 #include <cassert>
 #include <limits>
+#ifndef _NO_SERIALIZE
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#endif
 
 namespace tankwar {
 typedef double Coord;
@@ -25,6 +29,10 @@ typedef double Coord;
 #define ASSERT_DIR(V) assert(V.x_ >= -1 && V.x_ <= 1 && V.y_ >= -1 && V.y_ <= 1);
 
 struct Vector2D {
+#ifndef _NO_SERIALIZE
+	friend class boost::serialization::access;
+#endif
+
 	Coord x_, y_;
 
 	Vector2D(Coord a = 0.0f, Coord b = 0.0f) :
@@ -125,6 +133,14 @@ struct Vector2D {
 		x_ = x1;
 		y_ = y1;
 	}
+
+#ifndef _NO_SERIALIZE
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version) {
+	  ar & x_;
+	  ar & y_;
+	}
+#endif
 };
 
 struct Rect {

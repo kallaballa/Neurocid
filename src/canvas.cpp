@@ -203,6 +203,8 @@ void Canvas::drawTank(Tank& tank, Color c) {
     tip += dir * (tank.range_) * 5;
 
     drawLine(tank.loc_.x_, tank.loc_.y_, tip.x_, tip.y_ ,c);
+    std::cerr << tank.range_ << std::endl;
+    assert(tank.range_ == 10);
     drawEllipse(tank.loc_, tank.range_, tank.range_, c);
 	drawLine(tank.loc_.x_, tank.loc_.y_, tip.x_, tip.y_ ,c);
 	if(drawEngines_) {

@@ -91,6 +91,7 @@ public:
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
+	  ar & boost::serialization::base_object<Object>(*this);
 	  ar & teamID_;
 	  ar & layout_;
 	  ar & brain_;

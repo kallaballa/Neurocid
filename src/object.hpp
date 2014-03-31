@@ -12,12 +12,19 @@
 #include "object_types.hpp"
 #include <math.h>
 #include <stdlib.h>
+#ifndef _NO_SERIALIZE
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#endif
 
 namespace tankwar {
 
 struct BattleFieldLayout;
 
 class Object {
+#ifndef _NO_SERIALIZE
+	friend class boost::serialization::access;
+#endif
 public:
 	ObjectType type_;
 	Vector2D loc_;
@@ -62,6 +69,20 @@ public:
 	Vector2D getDirection() const {
 		return 	dirFromRad(rotation_);
 	}
+
+#ifndef _NO_SERIALIZE
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version) {
+		ar & type_;
+		ar & loc_;
+		ar & vel_;
+		ar & angVel_;
+		ar & rotation_;
+		ar & range_;
+		ar & explode_;
+		ar & dead_;
+	}
+#endif
 };
 }
 
