@@ -27,7 +27,6 @@ Game::Game(Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& p
 }
 
 Game::~Game() {
-	scenario_->restoreTeams(teams_);
 	delete placer_;
 }
 
@@ -164,13 +163,17 @@ vector<Population> Game::play(bool render) {
 					print();
 				});
 
-		cleanup();
+		tt.execute("game", "cleanup", [&]() {
+			cleanup();
+		});
 	});
 
 	std::cerr << "game/s: " << 1000000.0f/dur << std::endl;
 
-	if(!GameState::getInstance()->isRunning())
+	if(!GameState::getInstance()->isRunning()) {
+		scenario_->restoreTeams(teams_);
 		return teams_;
+	}
 	else
 		return newTeams_;
 }
