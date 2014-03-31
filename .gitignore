@@ -15,3 +15,10 @@ src/libtankwar.so
 *.so
 *.pc
 *.cmake
+box2d/Box2D/CMakeFiles/
+box2d/Box2D/Makefile
+box2d/CMakeCache.txt
+box2d/CMakeFiles/
+box2d/Makefile
+kmlocal-1.7.2/bin/
+
