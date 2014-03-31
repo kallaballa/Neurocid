@@ -16,7 +16,11 @@ namespace tankwar {
 		Vector2D toObject = (loc_ - scan.loc_).normalize();
 		vector_ = toObject;
 		vector_.rotate(scan.dir_);
-		angle_ = radFromDir(vector_);
+		if(vector_.x_ > 0)
+			angDist_ = vector_.y_;
+		else
+			angDist_ = -vector_.y_;
+
 		scale(vector_, dis_, 30000);
 	}
 } /* namespace tankwar */

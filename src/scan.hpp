@@ -11,6 +11,7 @@
 #include "object.hpp"
 #include "2d.hpp"
 #include <vector>
+#include <boost/pool/pool_alloc.hpp>
 
 namespace tankwar {
 
@@ -32,7 +33,7 @@ public:
 	Coord dis_;
 
 	Vector2D vector_ = NO_VECTOR2D;
-	Coord	 angle_ = NO_COORD;
+	Coord	 angDist_ = NO_COORD;
 
 	ScanObject(ScanObjectType type, Vector2D loc, Coord dis) :
 		type_(type),
@@ -49,7 +50,7 @@ public:
 	void calculate(Scan& scan);
 };
 
-typedef vector<ScanObject> ScanObjectVector;
+typedef vector<ScanObject, boost::pool_allocator<ScanObject>> ScanObjectVector;
 class Scan {
 public:
 	Vector2D dir_;
