@@ -141,10 +141,11 @@ if(BOX2D_BUILD_SHARED)
 		${BOX2D_Rope_SRCS}
 		${BOX2D_Rope_HDRS}
 	)
-#	set_target_properties(Box2D PROPERTIES
-#		CLEAN_DIRECT_OUTPUT 1
-#		VERSION ${BOX2D_VERSION}
-#	)
+	set_target_properties(Box2D_shared PROPERTIES
+		OUTPUT_NAME "Box2D"
+		CLEAN_DIRECT_OUTPUT 1
+		VERSION ${BOX2D_VERSION}
+	)
 endif()
 
 if(BOX2D_BUILD_STATIC)
