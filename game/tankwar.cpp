@@ -11,7 +11,7 @@
 #include "gamestate.hpp"
 #include "time_tracker.hpp"
 #include "scenario.hpp"
-#include "canvas.hpp"
+#include "canvas_ogre.hpp"
 #include <ctime>
 #include <thread>
 #include <SDL/SDL.h>
@@ -65,8 +65,6 @@ void runEventHandler() {
 	SDL_Event event;
 
 	while (gameState.isRunning()) {
-		renderer.render();
-
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_KEYDOWN:
@@ -151,7 +149,7 @@ public:
 		phl_.timeStep_ = 1.0f/60.0f;
 		phl_.positionIterations_ = 2;
 		phl_.velocityIterations_ = 6;
-		phl_.coordToMetersFactor_ = 0.05f;
+		phl_.coordToMetersFactor_ = 0.06f;
 
 		scl_.disableClusterCenters = false;
 		scl_.numClusters_ = 3;
@@ -164,14 +162,14 @@ public:
 
 		TankLayout attackerTL = teams[0][0].layout_;
 		attackerTL.isDummy_ = false;
-		attackerTL.max_ammo_ = 5;
-		attackerTL.max_cooldown = 20;
+		attackerTL.max_ammo_ = 20;
+		attackerTL.max_cooldown = 5;
 		teams[0].update(attackerTL);
 
 		TankLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = false;
-		defenderTL.max_ammo_ = 5;
-		defenderTL.max_cooldown = 20;
+		defenderTL.max_ammo_ = 20;
+		defenderTL.max_cooldown = 5;
 		teams[1].update(defenderTL);
 	}
 
@@ -217,7 +215,7 @@ public:
 class SymmetricLinesAttackerMove : public SymmetricLines {
 public:
 	SymmetricLinesAttackerMove() : SymmetricLines() {
-		gl_.distance_ = 10500;
+		gl_.distance_ = 10100;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -461,7 +459,6 @@ public:
 class SymmetricLinesAttackerMoveFarFacingInward : public SymmetricLinesAttackerMoveFar {
 public:
 	SymmetricLinesAttackerMoveFarFacingInward() : SymmetricLinesAttackerMoveFar() {
-		scl_.disableClusterCenters = true;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -486,7 +483,6 @@ public:
 		gl_.center_ = {150000,150000};
 		gl_.distance_ = 100000;
 		gl_.spacing_ = 1000;
-		scl_.disableClusterCenters = true;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -519,7 +515,7 @@ public:
 		phl_.timeStep_ = 1.0f/60.0f;
 		phl_.positionIterations_ = 2;
 		phl_.velocityIterations_ = 6;
-		phl_.coordToMetersFactor_ = 0.05f;
+		phl_.coordToMetersFactor_ = 0.06f;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -596,7 +592,6 @@ public:
 		gl_.center_ = {150000,150000};
 		gl_.distance_ = 100000;
 		gl_.spacing_ = 400;
-		scl_.disableClusterCenters = true;
 	}
 
 	void configureTeams(vector<Population>& teams) {
@@ -695,6 +690,7 @@ void multiplyTeams(vector<Population>& teams, size_t n) {
 
 int main(int argc, char** argv) {
 	loadScenarios();
+	Canvas::init(new SDLCanvas(Options::getInstance()->WINDOW_WIDTH, Options::getInstance()->WINDOW_HEIGHT));
 	GameState::getInstance()->setSlow(false);
 	GameState::getInstance()->setSlower(false);
 	PopulationLayout pl = {
@@ -821,7 +817,7 @@ int main(int argc, char** argv) {
         exit(0);
 	});
 
-	runEventHandler();
+
+	//runEventHandler();
 	gameThread.join();
-	SDL_Quit();
 }

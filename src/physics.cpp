@@ -175,7 +175,7 @@ b2Body* Physics::makeTankBody(Tank& t) {
 
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
-    body->SetLinearDamping(0.3);
+    body->SetLinearDamping(0.8);
     body->SetAngularDamping(20);
     return body;
 }
@@ -265,11 +265,12 @@ void Physics::step() {
 				Vector2D dir = o->getDirection();
 				Vector2D across1 = dir;
 				Vector2D across2 = dir;
-				across2.rotate(90);
+				across1.rotate(45);
+				across2.rotate(-45);
 
-				Vector2D flforce = across1 * (t->flthrust_ * t->layout_.max_speed_ * 4);
-				Vector2D frforce = across2 * -(t->frthrust_ * t->layout_.max_speed_ * 4);
-				Vector2D blforce = across1 * -(t->blthrust_ * t->layout_.max_speed_ * 4);
+				Vector2D flforce = across2 * (t->flthrust_ * t->layout_.max_speed_ * 4);
+				Vector2D frforce = across1 * (t->frthrust_ * t->layout_.max_speed_ * 4);
+				Vector2D blforce = across1 * (t->blthrust_ * t->layout_.max_speed_ * 4);
 				Vector2D brforce = across2 * (t->brthrust_ * t->layout_.max_speed_ * 4);
 
 				b2Vec2 wc = body->GetWorldCenter();
@@ -298,6 +299,8 @@ void Physics::step() {
 					float32 angVel = body->GetAngularVelocity();
 					if(angVel > 10)
 						body->SetAngularVelocity(10);
+					else if(angVel < -10)
+						body->SetAngularVelocity(-10);
 				}
 
 				assert(o->rotation_ <= M_PI);

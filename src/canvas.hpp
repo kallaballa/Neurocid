@@ -30,7 +30,6 @@ class Object;
 class Canvas {
 private:
 	static Canvas* instance_;
-	Canvas(Coord width, Coord height);
 	std::vector<Color> teamColors_ = {
 			{ 0, 192, 0 },
 			{ 64, 64, 255 },
@@ -39,44 +38,20 @@ private:
 			{ 255, 255, 0 }
 	};
 
-	struct SDL_Surface *screen_;
-	TTF_Font *font_;
+public:
 	bool drawEngines_;
 	bool drawCenters_;
 	bool drawGrid_;
-	Coord width_;
-	Coord height_;
-	Coord scale_;
-	Rect viewPort_;
-	map<string,string> osdMap_;
 
-	void calculateScale();
-	Sint16 scaleX(const Coord& c);
-	Sint16 scaleY(const Coord& c);
+	virtual void render(BattleField* field) = 0;
 
-	Rect findBounds(BattleField& field);
-	void drawGrid(BattleField& field);
-public:
-	void drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c);
-	void drawText(const string& s, Coord x0, Coord y0, Color c);
-	void updateOSD(const string& key, const string& value);
-	void renderOSD();
-	Coord renderText(const string& s, Coord x, Color c, bool left);
-	void renderTackerInfo();
-	void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
-	void drawTank(Tank& tank, Color c);
-	void drawProjectile(Projectile& pro, Color& c);
-	void drawExplosion(Object& o, Color& c);
-	void drawCenters(Scanner& scanner);
-	void update();
-	void clear();
-	void render(BattleField& fiseld);
+	static void init(Canvas* instance) {
+		assert(instance_ == NULL);
+		instance_ = instance;
+	}
 
 	static Canvas* getInstance() {
-		if (instance_ == NULL)
-			instance_ = new Canvas(Options::getInstance()->WINDOW_WIDTH,
-					Options::getInstance()->WINDOW_HEIGHT);
-
+		assert(instance_ != NULL);
 		return instance_;
 	}
 
@@ -103,6 +78,48 @@ public:
 	bool isDrawGridEnabled() {
 		return drawGrid_;
 	}
+};
+
+class SDLCanvas : public Canvas {
+private:
+	std::vector<Color> teamColors_ = {
+			{ 0, 192, 0 },
+			{ 64, 64, 255 },
+			{ 0, 255,255 },
+			{ 255, 0, 255 },
+			{ 255, 255, 0 }
+	};
+
+	struct SDL_Surface *screen_;
+	TTF_Font *font_;
+	Coord width_;
+	Coord height_;
+	Coord scale_;
+	Rect viewPort_;
+	map<string,string> osdMap_;
+
+	void calculateScale();
+	Sint16 scaleX(const Coord& c);
+	Sint16 scaleY(const Coord& c);
+
+	Rect findBounds(BattleField& field);
+	void drawGrid(BattleField& field);
+	void drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c);
+	void drawText(const string& s, Coord x0, Coord y0, Color c);
+	void updateOSD(const string& key, const string& value);
+	void renderOSD();
+	Coord renderText(const string& s, Coord x, Color c, bool left);
+	void renderTackerInfo();
+	void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
+	void drawTank(Tank& tank, Color c);
+	void drawProjectile(Projectile& pro, Color& c);
+	void drawExplosion(Object& o, Color& c);
+	void drawCenters(Scanner& scanner);
+	void update();
+	void clear();
+public:
+	SDLCanvas(Coord width, Coord height);
+	virtual void render(BattleField* field);
 };
 }
 

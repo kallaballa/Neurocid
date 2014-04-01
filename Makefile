@@ -59,3 +59,4 @@ dirs:
 	${MAKE} -C tests/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 	${MAKE} -C render/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 	./run.sh tests/tests
+

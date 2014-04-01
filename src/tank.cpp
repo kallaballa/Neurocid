@@ -54,7 +54,7 @@ void Tank::calculateFitness() {
 					Coord angDistPerfect = 0;
 					Vector2D perfect = (so.loc_ - p->startLoc_).normalize();
 					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
-					bool inRange = p->startLoc_.distance(so.loc_) < p->layout_.max_travel_;
+					bool inRange = so.dis_ < p->layout_.max_travel_;
 					Vector2D vdiff = candidate;
 
 					ASSERT_DIR(perfect);

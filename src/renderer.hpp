@@ -18,13 +18,10 @@ namespace tankwar {
 class Renderer {
 	double frameRate_;
 	bool enabled_;
-	BattleField* field_;
-	std::mutex updateMutex;
 	static Renderer* instance_;
 public:
 	Renderer(size_t frameRate);
 	void update(BattleField* field);
-	void render();
 	bool isEnabled() {
 	  return enabled_;
 	}
