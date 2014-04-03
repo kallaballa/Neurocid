@@ -65,7 +65,7 @@ void Game::fight(bool render) {
 				std::this_thread::sleep_for(std::chrono::microseconds(1600 - dur));
 			}
 			else if(gs.isSlower() && dur < 16000) {
-				std::this_thread::sleep_for(std::chrono::microseconds(16000 - dur));
+				std::this_thread::sleep_for(std::chrono::microseconds(6400 - dur));
 			}
 			Renderer::getInstance()->update(&field);
 		}
