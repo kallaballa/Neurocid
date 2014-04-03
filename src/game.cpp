@@ -174,7 +174,9 @@ vector<Population> Game::play(bool render) {
 		scenario_->restoreTeams(teams_);
 		return teams_;
 	}
-	else
+	else {
+		scenario_->restoreTeams(newTeams_);
 		return newTeams_;
+	}
 }
 } /* namespace tankwar */

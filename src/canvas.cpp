@@ -20,6 +20,7 @@ Canvas* Canvas::instance_ = NULL;
 
 Canvas::Canvas(Coord width, Coord height) :
 		screen_(NULL),
+		frameBuffer_(NULL),
 		drawEngines_(false),
 		drawCenters_(false),
 		drawGrid_(false),
@@ -33,6 +34,7 @@ Canvas::Canvas(Coord width, Coord height) :
 			exit(1);
 		}
 		atexit(SDL_Quit);
+		SDL_WM_SetCaption("NN SpaceShip Simulation", NULL);
 		screen_ = SDL_SetVideoMode(width, height, 16, SDL_SWSURFACE);
 		if (screen_ == NULL) {
 			cerr << "Can't set video mode: " << SDL_GetError() << endl;
@@ -254,6 +256,7 @@ void Canvas::clear() {
 void Canvas::update() {
 	if(screen_ != NULL) {
 		SDL_Flip(screen_);
+		frameBuffer_ = screen_->pixels;
 	}
 }
 

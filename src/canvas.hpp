@@ -40,6 +40,7 @@ private:
 	};
 
 	struct SDL_Surface *screen_;
+	void *frameBuffer_;
 	TTF_Font *font_;
 	bool drawEngines_;
 	bool drawCenters_;
@@ -71,6 +72,10 @@ public:
 	void update();
 	void clear();
 	void render(BattleField& fiseld);
+
+	SDL_Surface* getSurface() const {
+		return screen_;
+	}
 
 	static Canvas* getInstance() {
 		if (instance_ == NULL)

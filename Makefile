@@ -1,7 +1,7 @@
 CXX      := g++-4.8
-CXXFLAGS := -std=c++0x -pedantic -Wall -I../kmlocal-1.7.2/src/ -I../fann/src/include -I../box2d/  `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf` 
+CXXFLAGS := -std=c++0x -pedantic -Wall -I../kmlocal-1.7.2/src/ -I../fann/src/include -I../box2d/  `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf libavdevice libavformat libavfilter libavcodec libswresample libswscale libavutil` 
 LDFLAGS  := -L/opt/local/lib -L../kmlocal-1.7.2/src/ -L../fann/src/ -L../box2d/Box2D
-LIBS     := -lboost_system -lboost_serialization -lboost_program_options -lklocal -lm `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf` -lfann -lBox2D -lX11
+LIBS     := -lboost_system -lboost_program_options -lklocal -lm -lfann -lBox2D -lX11 `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf`
 .PHONY: all release info debug clean distclean 
 NVCC     := /usr/local/cuda/bin/nvcc
 NVCC_HOST_CXX := g++-4.6
@@ -15,6 +15,19 @@ endif
 ifdef WITH_OPENMP
 CXXFLAGS += -fopenmp 
 LIBS     += -fopenmp
+endif
+
+ifdef WITHOUT_SERIALIZE
+CXXFLAGS += -D_NO_SERIALIZE
+else
+LIBS     += -lboost_serialization
+endif
+
+ifdef WITHOUT_VIDEOENC
+CXXFLAGS += -D_NO_VIDEOENC
+else
+CXXFLAGS += `pkg-config --cflags libavdevice libavformat libavfilter libavcodec libswresample libswscale libavutil`
+LIBS     += `pkg-config --libs libavdevice libavformat libavfilter libavcodec libswresample libswscale libavutil`
 endif
 
 ifdef NO_ASSERT

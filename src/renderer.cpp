@@ -5,9 +5,13 @@
  *      Author: elchaschab
  */
 
+#ifndef _NO_VIDEOENC
+#include "video_encoder.hpp"
+#endif
 #include "renderer.hpp"
 #include "gamestate.hpp"
 #include "canvas.hpp"
+#include "time_tracker.hpp"
 #include <thread>
 #include <chrono>
 #include <stddef.h>
@@ -31,12 +35,22 @@ void Renderer::update(BattleField* field) {
 }
 
 void Renderer::render() {
-		if(isEnabled()) {
-			updateMutex.lock();
-			if(field_ != NULL)
-				Canvas::getInstance()->render(*field_);
-			updateMutex.unlock();
-		}
-		std::this_thread::sleep_for(std::chrono::milliseconds((size_t)round(1000 / frameRate_)));
+	size_t sleep = (size_t) round(1000 / frameRate_);
+	TimeTracker& tt = *TimeTracker::getInstance();
+	size_t dur = tt.measure([&]() {
+				if(isEnabled()) {
+					updateMutex.lock();
+					if(field_ != NULL) {
+						Canvas::getInstance()->render(*field_);
+#ifndef _NO_VIDEOENC
+						VideoEncoder::getInstance()->encode(Canvas::getInstance()->getSurface());
+#endif
+					}
+					updateMutex.unlock();
+				}
+	});
+	dur/=1000;
+	if(dur < sleep)
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleep - dur));
 }
 } /* namespace tankwar */

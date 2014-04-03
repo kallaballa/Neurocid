@@ -7,7 +7,8 @@ OBJS    := ${SRCS:.cpp=.o}
 DEPS    := ${SRCS:.cpp=.dep} 
 
 CXXFLAGS += -I../ -I../src/ 
-LDFLAGS += -L../src/ -ltankwar
+LDFLAGS += -L../src/
+LIBS    += -ltankwar
 
 .PHONY: all release debug clean distclean 
 

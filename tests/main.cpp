@@ -1,4 +1,4 @@
-#include "2d.hpp"
+#include "../src/2d.hpp"
 #include <iostream>
 #include <string>
 #include <functional>

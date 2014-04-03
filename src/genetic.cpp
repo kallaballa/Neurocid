@@ -175,7 +175,7 @@ void GeneticPool::calculateStatistics(Population& pop) {
  * Use the genetic algorithm to construct a new population from the old
  */
 Population GeneticPool::epoch(Population& old_pop) {
-	if(!initialized_) {
+	if(!initialized_ || old_pop.size() == 1) {
 		Population new_pop = old_pop;
 		new_pop.clear();
 		old_pop.stats_.reset();
@@ -215,11 +215,11 @@ Population GeneticPool::epoch(Population& old_pop) {
 	//Now to add a little elitism we shall add in some copies of the
 	//fittest genomes. Make sure we add an EVEN number or the roulette
 	//wheel sampling will crash
-	assert(params_.numElite_ <= old_pop.size());
-	if (!(params_.numEliteCopies_ * (params_.numElite_ % 2))) {
-		copyNBest(params_.numElite_, params_.numEliteCopies_, old_pop, new_pop);
+	if(params_.numElite_ <= old_pop.size()){
+		if (!(params_.numEliteCopies_ * (params_.numElite_ % 2))) {
+			copyNBest(params_.numElite_, params_.numEliteCopies_, old_pop, new_pop);
+		}
 	}
-
 	//now we enter the GA loop
 	//repeat until a new population is generated
 	while (new_pop.size() < old_pop.size()) {

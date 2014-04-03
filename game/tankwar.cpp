@@ -12,6 +12,9 @@
 #include "time_tracker.hpp"
 #include "scenario.hpp"
 #include "canvas.hpp"
+#ifndef _NO_VIDEOENC
+#include "video_encoder.hpp"
+#endif
 #include <ctime>
 #include <thread>
 #include <SDL/SDL.h>
@@ -461,14 +464,12 @@ public:
 class SymmetricLinesAttackerMoveFarFacingInward : public SymmetricLinesAttackerMoveFar {
 public:
 	SymmetricLinesAttackerMoveFarFacingInward() : SymmetricLinesAttackerMoveFar() {
-		scl_.disableClusterCenters = true;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLinesAttackerMoveFar::configureTeams(teams);
 
 		TankLayout attackerTL = teams[0][0].layout_;
-		attackerTL.disableProjectileFitness_ = true;
 		teams[0].update(attackerTL);
 	}
 
@@ -624,17 +625,38 @@ public:
 	}
 };
 
-void playGame(size_t gameIter, Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools) {
+void playGame(size_t gameIter, Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools, const string& videoFile) {
 	GameState& gs = *GameState::getInstance();
 	TimeTracker& tt = *TimeTracker::getInstance();
+#ifndef _NO_VIDEOENC
+	VideoEncoder& ve = *VideoEncoder::getInstance();
+	if(!videoFile.empty())
+		ve.init(videoFile.c_str(), AV_CODEC_ID_H264);
+#endif
 	while(gs.isRunning() && --gameIter > 0) {
 		tt.execute("game", [&](){
+/*
+			if(gameIter % 50 == 0) {
+				GameState::getInstance()->setSlow(true);
+				Canvas::getInstance()->enableDrawGrid(true);
+				Canvas::getInstance()->enableDrawEngines(false);
+			}
+*/
 			Game game(scenario, teams, pools);
 			gs.setCurrentGame(&game);
 			teams = game.play(true);
 			gs.setCurrentGame(NULL);
+/*
+			GameState::getInstance()->setSlow(false);
+			Canvas::getInstance()->enableDrawGrid(true);
+			Canvas::getInstance()->enableDrawEngines(true);
+*/
 		});
 	}
+#ifndef _NO_VIDEOENC
+	if(!videoFile.empty())
+		ve.close();
+#endif
 }
 
 map<string, Scenario*> registeredScenarios;
@@ -697,6 +719,9 @@ int main(int argc, char** argv) {
 	loadScenarios();
 	GameState::getInstance()->setSlow(false);
 	GameState::getInstance()->setSlower(false);
+	Canvas::getInstance()->enableDrawGrid(true);
+	Canvas::getInstance()->enableDrawEngines(true);
+
 	PopulationLayout pl = {
 		//Tank Layout
 		{
@@ -741,11 +766,15 @@ int main(int argc, char** argv) {
 
 	string loadFile;
 	string saveFile;
+	string captureFile;
 	string scenarioName;
 	bool save = false;
 	Scenario* scenario = NULL;
 	size_t gameIterations = 1000;
 	size_t multiply = 0;
+	size_t width = 800;
+	size_t height = 800;
+	size_t frameRate = 25;
 	vector<Population> teams;
 	vector<GeneticPool> pools(2);
 	pools[0] = GeneticPool(gp);
@@ -758,6 +787,10 @@ int main(int argc, char** argv) {
 		("multiply,m", po::value< size_t >(&multiply), "Multiply the number of tanks in the populations")
 		("load,l", po::value< string >(&loadFile), "Load the population from a file before running the scenario")
 		("save,s", po::value< string >(&saveFile), "Save the population to a file after running the scenario")
+		("capture,c", po::value< string >(&captureFile), "Capture the game to a video file")
+		("width,w", po::value< size_t >(&width), "The window width")
+		("height,h", po::value< size_t >(&height), "The window height")
+		("framerate,f", po::value< size_t >(&frameRate), "The frame rate of the renderer and video encoder")
 		("help,h", "Produce help message");
 
     po::options_description hidden("Hidden options");
@@ -783,6 +816,10 @@ int main(int argc, char** argv) {
         return 0;
     }
 
+    Options::getInstance()->WINDOW_WIDTH = width;
+    Options::getInstance()->WINDOW_HEIGHT = height;
+    Options::getInstance()->FRAMERATE = frameRate;
+
     if(vm.count("load")) {
     	ifstream is(loadFile);
     	read_teams(teams,is);
@@ -803,7 +840,7 @@ int main(int argc, char** argv) {
     std::thread gameThread([&]() {
     	teams[0].score_ = 0;
     	teams[1].score_ = 0;
-    	playGame(gameIterations, scenario, teams, pools);
+    	playGame(gameIterations, scenario, teams, pools, captureFile);
         if(save) {
       	  if(teams[0].size() > 20)
       		  teams[0].resize(20);
