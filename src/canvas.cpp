@@ -9,7 +9,7 @@
 #include <thread>
 #include <chrono>
 #include <iostream>
-
+#include <algorithm>
 
 namespace tankwar {
 using std::stringstream;
@@ -24,9 +24,11 @@ Canvas::Canvas(Coord width, Coord height) :
 		drawEngines_(false),
 		drawCenters_(false),
 		drawGrid_(false),
+		drawProjectiles_(true),
 		width_(width),
 		height_(height),
 		scale_(1),
+		zoom_(1),
 		viewPort_() {
 	if (width > 0 && height > 0) {
 		if (SDL_Init(SDL_INIT_VIDEO) == -1) {
@@ -67,8 +69,8 @@ void Canvas::calculateScale() {
 
 Sint16 Canvas::scaleX(const Coord& c) {
 	Coord preScale = 0.9;
-	Coord len = (viewPort_.lr_.x_ - viewPort_.ul_.x_) * scale_ * preScale;
-	Coord pos = (c - viewPort_.ul_.x_) * scale_ * preScale;
+	Coord len = (viewPort_.lr_.x_ - viewPort_.ul_.x_) * scale_ * preScale / zoom_;
+	Coord pos = (c - viewPort_.ul_.x_) * scale_ * preScale / zoom_;
 	Coord scaled = (((width_ - len) / 2) + pos);
 
 	return (Sint16)round(scaled);
@@ -76,11 +78,41 @@ Sint16 Canvas::scaleX(const Coord& c) {
 
 Sint16 Canvas::scaleY(const Coord& c) {
 	Coord preScale = 0.9;
-	Coord len = (viewPort_.lr_.y_ - viewPort_.ul_.y_) * scale_ * preScale;
-	Coord pos = (c - viewPort_.ul_.y_) * scale_ * preScale;
+	Coord len = (viewPort_.lr_.y_ - viewPort_.ul_.y_) * scale_ * preScale / zoom_;
+	Coord pos = (c - viewPort_.ul_.y_) * scale_ * preScale / zoom_;
 	Coord scaled = (((height_ - len) / 2) + pos);
 
 	return (Sint16)round(scaled);
+}
+
+void Canvas::zoomIn() {
+	zoom_ -= 0.1;
+	zoom_ = std::max(zoom_, 0.01);
+}
+
+void Canvas::zoomOut() {
+	zoom_ += 0.1;
+	zoom_ = std::min(zoom_, 1.0);
+}
+
+void Canvas::left() {
+	viewPort_.ul_.x_ -= (500 / zoom_);
+	viewPort_.lr_.x_ -= (500 / zoom_);
+}
+
+void Canvas::right() {
+	viewPort_.ul_.x_ += (500 / zoom_);
+	viewPort_.lr_.x_ += (500 / zoom_);
+}
+
+void Canvas::up() {
+	viewPort_.ul_.y_ -= (500 / zoom_);
+	viewPort_.lr_.y_ -= (500 / zoom_);
+}
+
+void Canvas::down() {
+	viewPort_.ul_.y_ += (500 / zoom_);
+	viewPort_.lr_.y_ += (500 / zoom_);
 }
 
 void Canvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
@@ -240,6 +272,9 @@ void Canvas::drawTank(Tank& tank, Color c) {
 }
 
 void Canvas::drawProjectile(Projectile& pro, Color& c) {
+	if(!drawProjectiles_)
+		return;
+
 	Vector2D trail = pro.loc_;
 	trail += pro.getDirection() * -50;
 	drawLine(trail.x_,trail.y_, pro.loc_.x_, pro.loc_.y_, c);
@@ -311,7 +346,8 @@ void Canvas::drawCenters(Scanner& scanner) {
 void Canvas::render(BattleField& field) {
 	assert(field.teams_.size() == 2);
 	assert(teamColors_.size() >= field.teams_.size());
-	viewPort_ = findBounds(field);
+	if(zoom_ == 1)
+		viewPort_ = findBounds(field);
 	calculateScale();
 	this->clear();
 

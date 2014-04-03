@@ -45,19 +45,26 @@ private:
 	bool drawEngines_;
 	bool drawCenters_;
 	bool drawGrid_;
+	bool drawProjectiles_;
 	Coord width_;
 	Coord height_;
 	Coord scale_;
+	Coord zoom_;
 	Rect viewPort_;
 	map<string,string> osdMap_;
 
 	void calculateScale();
 	Sint16 scaleX(const Coord& c);
 	Sint16 scaleY(const Coord& c);
-
 	Rect findBounds(BattleField& field);
 	void drawGrid(BattleField& field);
 public:
+	void zoomIn();
+	void zoomOut();
+	void left();
+	void right();
+	void up();
+	void down();
 	void drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c);
 	void drawText(const string& s, Coord x0, Coord y0, Color c);
 	void updateOSD(const string& key, const string& value);
@@ -97,6 +104,10 @@ public:
 		drawGrid_ = e;
 	}
 
+	void enableDrawProjectiles(bool e) {
+		drawProjectiles_ = e;
+	}
+
 	bool isDrawCentersEnabled() {
 		return drawCenters_;
 	}
@@ -107,6 +118,10 @@ public:
 
 	bool isDrawGridEnabled() {
 		return drawGrid_;
+	}
+
+	bool isDrawProjectilesEnabled() {
+		return drawProjectiles_;
 	}
 };
 }

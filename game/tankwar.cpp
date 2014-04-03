@@ -67,6 +67,13 @@ void runEventHandler() {
 	Canvas& canvas = *Canvas::getInstance();
 	SDL_Event event;
 
+	if ( ( SDL_EnableKeyRepeat( 100, SDL_DEFAULT_REPEAT_INTERVAL ) ) )
+	{
+	        fprintf( stderr, "Setting keyboard repeat failed: %s\n",
+	             SDL_GetError( ) );
+	        SDL_Quit();
+	}
+
 	while (gameState.isRunning()) {
 		renderer.render();
 
@@ -116,11 +123,28 @@ void runEventHandler() {
 						canvas.enableDrawGrid(false);
 					else
 						canvas.enableDrawGrid(true);
+				} else if (event.key.keysym.sym == SDLKey::SDLK_a) {
+					if (canvas.isDrawProjectilesEnabled())
+						canvas.enableDrawProjectiles(false);
+					else
+						canvas.enableDrawProjectiles(true);
 				} else if (event.key.keysym.sym == SDLKey::SDLK_d) {
 					dumpTeams();
 				} else if (event.key.keysym.sym == SDLKey::SDLK_ESCAPE) {
 					std::cerr << "Quitting" << std::endl;
 					gameState.stop();
+				} else if (event.key.keysym.sym == SDLKey::SDLK_PLUS) {
+					canvas.zoomIn();
+				} else if (event.key.keysym.sym == SDLKey::SDLK_MINUS) {
+					canvas.zoomOut();
+				} else if (event.key.keysym.sym == SDLKey::SDLK_LEFT) {
+					canvas.left();
+				} else if (event.key.keysym.sym == SDLKey::SDLK_RIGHT) {
+					canvas.right();
+				} else if (event.key.keysym.sym == SDLKey::SDLK_UP) {
+					canvas.up();
+				} else if (event.key.keysym.sym == SDLKey::SDLK_DOWN) {
+					canvas.down();
 				}
 
 				break;
@@ -503,6 +527,11 @@ public:
 		defenderTL.max_ammo_ = 40;
 		teams[1].update(defenderTL);
 	}
+
+	virtual void configurePools(vector<GeneticPool>& pools) {
+		pools[0].params_.usePerfDesc_ = true;
+		pools[1].params_.usePerfDesc_ = true;
+	};
 };
 
 class AimOnOne : public Scenario {
@@ -616,9 +645,10 @@ public:
 		teams[1].update(defenderTL);
 	}
 
-	void configurePools(vector<GeneticPool>& pools) {
-		assert(pools.size() == 2);
-	}
+	virtual void configurePools(vector<GeneticPool>& pools) {
+		pools[0].params_.usePerfDesc_ = true;
+		pools[1].params_.usePerfDesc_ = true;
+	};
 
 	Placer* createPlacer() {
 		return new CrossPlacerTwoRows<RandomRot, RandomFacer, Spacer>({}, {}, {Scenario::gl_});
@@ -717,11 +747,6 @@ void multiplyTeams(vector<Population>& teams, size_t n) {
 
 int main(int argc, char** argv) {
 	loadScenarios();
-	GameState::getInstance()->setSlow(false);
-	GameState::getInstance()->setSlower(false);
-	Canvas::getInstance()->enableDrawGrid(true);
-	Canvas::getInstance()->enableDrawEngines(true);
-
 	PopulationLayout pl = {
 		//Tank Layout
 		{
@@ -744,7 +769,8 @@ int main(int argc, char** argv) {
 			5, // max_cooldown
 			5, // max_ammo_
 			6, // max_damage_
-			1  // crashes_per_damage
+			1, // crashes_per_damage
+			4  // num_perf_desc_
 		},
 		//BrainLayout
 		{
@@ -761,7 +787,8 @@ int main(int argc, char** argv) {
 			1,   // crossoverIterations
 			0.3, // maxPertubation
 			4,   // numElite
-			1    //  numEliteCopies
+			1,   // numEliteCopies
+			false// usePerfDesc_
 	};
 
 	string loadFile;
@@ -788,8 +815,8 @@ int main(int argc, char** argv) {
 		("load,l", po::value< string >(&loadFile), "Load the population from a file before running the scenario")
 		("save,s", po::value< string >(&saveFile), "Save the population to a file after running the scenario")
 		("capture,c", po::value< string >(&captureFile), "Capture the game to a video file")
-		("width,w", po::value< size_t >(&width), "The window width")
-		("height,h", po::value< size_t >(&height), "The window height")
+		("width,x", po::value< size_t >(&width), "The window width")
+		("height,y", po::value< size_t >(&height), "The window height")
 		("framerate,f", po::value< size_t >(&frameRate), "The frame rate of the renderer and video encoder")
 		("help,h", "Produce help message");
 
@@ -819,6 +846,10 @@ int main(int argc, char** argv) {
     Options::getInstance()->WINDOW_WIDTH = width;
     Options::getInstance()->WINDOW_HEIGHT = height;
     Options::getInstance()->FRAMERATE = frameRate;
+	GameState::getInstance()->setSlow(false);
+	GameState::getInstance()->setSlower(false);
+	Canvas::getInstance()->enableDrawGrid(true);
+	Canvas::getInstance()->enableDrawEngines(true);
 
     if(vm.count("load")) {
     	ifstream is(loadFile);

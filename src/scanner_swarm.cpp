@@ -28,7 +28,7 @@ void SwarmScanner::pickRandomN(ScanObjectType type, Tank& t, Population& team, S
 	}
 }
 
-void SwarmScanner::teamScan(Population& active, Population& passive, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl) {
+void SwarmScanner::teamScan(Population& active, Population& passive, ObjectBsp& bspFriends, ObjectBsp& bspEnemies, BattleFieldLayout& bfl) {
 	size_t numFriends = 3;
 	size_t numEnemies = 3;
 

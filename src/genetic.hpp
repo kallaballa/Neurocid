@@ -3,6 +3,7 @@
 
 #include "util.hpp"
 #include "tank.hpp"
+#include "bsp.hpp"
 #include "population.hpp"
 
 using namespace std;
@@ -16,6 +17,7 @@ struct GeneticParams {
 	double maxPertubation;
 	size_t numElite_;
 	size_t numEliteCopies_;
+	bool usePerfDesc_;
 };
 
 
@@ -25,15 +27,14 @@ struct GeneticParams {
 //-----------------------------------------------------------------------
 class GeneticPool {
 private:
-	GeneticParams params_;
 	bool initialized_ = false;
-
 	void mutate(Brain& brain);
 	Tank& pickSpecimen(Population& pop);
 	std::pair<Tank, Tank> crossover(Tank &mum, Tank &dad, size_t iterations);
 	void copyNBest(size_t n, const size_t numCopies, Population& in, Population& out);
 	void calculateStatistics(Population& pop);
 public:
+	GeneticParams params_;
 	GeneticPool(GeneticParams params);
 	GeneticPool();
 

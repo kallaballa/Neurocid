@@ -42,7 +42,7 @@ void BspScanner::buildBsps(BattleField& field) {
 		}
 	}
 }
-void BspScanner::findInRange(Bsp& bsp, Object& from, ScanObjectType type, ScanObjectVector& result, size_t range) {
+void BspScanner::findInRange(ObjectBsp& bsp, Object& from, ScanObjectType type, ScanObjectVector& result, size_t range) {
 	vector<Object*> objects;
 	bsp.find_within_range(&from, range, std::back_inserter(objects));
 
@@ -51,7 +51,7 @@ void BspScanner::findInRange(Bsp& bsp, Object& from, ScanObjectType type, ScanOb
 	}
 }
 
-std::pair<Object*,Coord> BspScanner::findNearest(Bsp& bsp, Object& from) {
+std::pair<Object*,Coord> BspScanner::findNearest(ObjectBsp& bsp, Object& from) {
 	assert(!from.dead_);
 	vector<Object*> found;
 	auto result = bsp.find_nearest(&from, std::numeric_limits<Coord>().max());

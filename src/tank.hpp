@@ -35,6 +35,7 @@ struct TankLayout {
 	size_t max_ammo_;
 	size_t max_damage_;
 	size_t crashes_per_damage_;
+	size_t num_perf_desc;
 
 #ifndef _NO_SERIALIZE
 	template<class Archive>
@@ -55,6 +56,7 @@ struct TankLayout {
 	  ar & max_ammo_;
 	  ar & max_damage_;
 	  ar & crashes_per_damage_;
+	  ar & num_perf_desc;
 	}
 #endif
 };
@@ -67,7 +69,9 @@ class Tank : public Object {
 
 	bool willShoot_ = false;
 public:
+	typedef std::vector<Coord> PerfDesc;
 	std::vector<Projectile*> projectiles_;
+	PerfDesc perfDesc_;
 
 	size_t teamID_;
 	TankLayout layout_;

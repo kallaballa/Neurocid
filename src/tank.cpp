@@ -115,8 +115,11 @@ void Tank::calculateFitness() {
 		}
 	}
 
+	assert(layout_.num_perf_desc == 4);
 	if(projectiles_.empty()) {
 		fitness_ = 0;
+		perfDesc_.reserve(layout_.num_perf_desc);
+		std::fill(perfDesc_.begin(), perfDesc_.end(), 0);
 	} else {
 		// calulate projectile/aim fitness
 		assert(projectiles_.size() <= layout_.max_ammo_);
@@ -136,15 +139,21 @@ void Tank::calculateFitness() {
 
 		// calulate actual hit/damage/friendly_fire score
 		Coord shots = projectiles_.size();
-		Coord hitRatio = 1 + ((Coord(hits_) / shots) * 10);
+		Coord hitRatio = (Coord(hits_) / shots);
 		Coord friendlyRatioInv = (1.0 / ((Coord(friendlyFire_) / shots) + 1));
 		Coord damageRatioInv = (1.0 / ((Coord(damage_) / layout_.max_damage_) + 1));
-		assert(hitRatio >= 1);
-		assert(hitRatio <= 11);
+		assert(hitRatio >= 0);
+		assert(hitRatio <= 1);
 		assert(damageRatioInv >= 0.5);
 		assert(damageRatioInv <= 1);
 		assert(friendlyRatioInv >= 0);
 		assert(friendlyRatioInv <= 1);
+
+		perfDesc_.reserve(layout_.num_perf_desc);
+		perfDesc_[0] = aimRatio;
+		perfDesc_[1] = hitRatio;
+		perfDesc_[2] = friendlyRatioInv;
+		perfDesc_[3] = damageRatioInv;
 
 		fitness_ = (aimRatio + (hits_ * damageRatioInv * friendlyRatioInv));
 	}

@@ -18,7 +18,7 @@
 
 namespace tankwar {
 
-void HybridScanner::teamScan(Population& active, Population& passive, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl) {
+void HybridScanner::teamScan(Population& active, Population& passive, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, ObjectBsp& bspFriends, ObjectBsp& bspEnemies, BattleFieldLayout& bfl) {
 	Coord numFriends = ClusterScanner::layout_.numFriends_;
 	Coord numEnemies = ClusterScanner::layout_.numEnemies_;
 

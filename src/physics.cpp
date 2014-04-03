@@ -176,7 +176,7 @@ b2Body* Physics::makeTankBody(Tank& t) {
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
     body->SetLinearDamping(0.3);
-    body->SetAngularDamping(20);
+    body->SetAngularDamping(0);
     return body;
 }
 

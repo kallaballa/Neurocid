@@ -40,14 +40,14 @@ public:
 
 class BspScanner : public ScannerImpl {
 public:
-	Bsp bspA_;
-	Bsp bspB_;
-	Bsp bspPA_;
-	Bsp bspPB_;
+	ObjectBsp bspA_;
+	ObjectBsp bspB_;
+	ObjectBsp bspPA_;
+	ObjectBsp bspPB_;
 
 	BspScanner(ScannerLayout& layout) : ScannerImpl(layout) {};
-	void findInRange(Bsp& bsp, Object& from, ScanObjectType type, ScanObjectVector& result, size_t range);
-	std::pair<Object*,Coord> findNearest(Bsp& bsp, Object& from);
+	void findInRange(ObjectBsp& bsp, Object& from, ScanObjectType type, ScanObjectVector& result, size_t range);
+	std::pair<Object*,Coord> findNearest(ObjectBsp& bsp, Object& from);
 	void buildBsps(BattleField& field);
 
 	virtual void scan(BattleField& field) = 0;
@@ -57,7 +57,7 @@ public:
 class SwarmScanner : public BspScanner {
 private:
 	void pickRandomN(ScanObjectType type, Tank& t, Population& team, ScanObjectVector& result, size_t n);
-	void teamScan(Population& active, Population& passive, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl);
+	void teamScan(Population& active, Population& passive, ObjectBsp& bspFriends, ObjectBsp& bspEnemies, BattleFieldLayout& bfl);
 public:
 	SwarmScanner(ScannerLayout& layout) : BspScanner(layout) {};
 
@@ -80,7 +80,7 @@ public:
 
 class HybridScanner : public ClusterScanner, public BspScanner {
 private:
-	void teamScan(Population& active, Population& passive, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, Bsp& bspFriends, Bsp& bspEnemies, BattleFieldLayout& bfl);
+	void teamScan(Population& active, Population& passive, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, ObjectBsp& bspFriends, ObjectBsp& bspEnemies, BattleFieldLayout& bfl);
 public:
 	HybridScanner(ScannerLayout& layout) : ClusterScanner(layout), BspScanner(layout) {};
 

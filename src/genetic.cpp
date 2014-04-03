@@ -220,16 +220,28 @@ Population GeneticPool::epoch(Population& old_pop) {
 			copyNBest(params_.numElite_, params_.numEliteCopies_, old_pop, new_pop);
 		}
 	}
+
+	assert(old_pop.layout_.tl_.num_perf_desc == 4);
+	PerfDescBsp<4,Tank> pdb;
+	if(params_.usePerfDesc_) {
+		for(Tank& t : old_pop) {
+			pdb.insert(&t);
+		}
+	}
 	//now we enter the GA loop
 	//repeat until a new population is generated
 	while (new_pop.size() < old_pop.size()) {
 		//grab two chromosones
 
 		Tank& mum = pickSpecimen(old_pop);
-		Tank& dad = pickSpecimen(old_pop);
+		Tank* dad;
+		if(params_.usePerfDesc_) {
+			dad = (*pdb.find_nearest(&mum).first);
+		} else
+			dad = &pickSpecimen(old_pop);
 
 		//create some offspring via crossover
-		std::pair<Tank, Tank> babies = crossover(mum, dad, params_.crossoverIterations);
+		std::pair<Tank, Tank> babies = crossover(mum, *dad, params_.crossoverIterations);
 
 		//now we mutate
 		mutate(*babies.first.brain_);

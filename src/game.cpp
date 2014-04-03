@@ -54,16 +54,18 @@ void Game::fight(bool render) {
 
 	tt.execute("battlefield", [&](){
 	for(size_t i = 0; (i < scenario_->bfl_.iterations_) && gs.isRunning(); ++i) {
-		field.step();
+		auto dur = tt.measure([&]() {
+			field.step();
+		});
 
 		if(render) {
 			while(gs.tryPause()) {};
 
-			if(gs.isSlow()) {
-				std::this_thread::sleep_for(std::chrono::milliseconds(4));
+			if(gs.isSlow() && dur < 1600) {
+				std::this_thread::sleep_for(std::chrono::microseconds(1600 - dur));
 			}
-			else if(gs.isSlower()) {
-				std::this_thread::sleep_for(std::chrono::milliseconds(20));
+			else if(gs.isSlower() && dur < 16000) {
+				std::this_thread::sleep_for(std::chrono::microseconds(16000 - dur));
 			}
 			Renderer::getInstance()->update(&field);
 		}
