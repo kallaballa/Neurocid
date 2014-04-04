@@ -17,7 +17,7 @@
 
 namespace neurocid {
 using std::vector;
-class Tank;
+class Ship;
 class BattleField;
 struct BattleFieldLayout;
 
@@ -39,13 +39,13 @@ private:
 	Coord toCoord(float32 m);
 
 	b2Body* makeWorldBox(BattleFieldLayout& bfl);
-	b2Body* makeTankBody(Tank& t);
+	b2Body* makeShipBody(Ship& t);
 	b2Body* makeProjectileBody(Projectile& p);
-	void wallHit(Tank& t);
+	void wallHit(Ship& t);
 	void wallHit(Projectile& p);
 	void collide(Projectile& p1, Projectile& p2);
-	void collide(Projectile& p, Tank& t);
-	void collide(Tank& t1, Tank& t2);
+	void collide(Projectile& p, Ship& t);
+	void collide(Ship& t1, Ship& t2);
 	void BeginContact(b2Contact* contact);
 	void EndContact(b2Contact* contact);
 public:
@@ -54,7 +54,7 @@ public:
 
 	void create(BattleField& field);
 	void update(vector<Projectile*> spawned);
-	void update(vector<Tank*> spawned);
+	void update(vector<Ship*> spawned);
 	void step();
 };
 

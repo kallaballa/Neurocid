@@ -13,12 +13,12 @@
 
 namespace neurocid {
 
-void SwarmScanner::pickRandomN(ScanObjectType type, Tank& t, Population& team, ScanObjectVector& result, size_t n) {
+void SwarmScanner::pickRandomN(ScanObjectType type, Ship& t, Population& team, ScanObjectVector& result, size_t n) {
 	size_t s = team.size();
 
 	if(s > 0) {
 		for(size_t i = 0; i < n; ++i) {
-			Tank& p = team[iRand(0, s -1)];
+			Ship& p = team[iRand(0, s -1)];
 			result.push_back(ScanObject{type, p.loc_, t.distance(p)});
 		}
 	} else {
@@ -33,7 +33,7 @@ void SwarmScanner::teamScan(Population& active, Population& passive, ObjectBsp& 
 	size_t numEnemies = 3;
 
 	for(size_t i = 0; i < active.size(); ++i) {
-		Tank& t = active[i];
+		Ship& t = active[i];
 		if(t.dead_)
 			continue;
 
@@ -65,7 +65,7 @@ void SwarmScanner::teamScan(Population& active, Population& passive, ObjectBsp& 
 
 			p->scan_.loc_ = p->loc_;
 			auto result = findNearest(bspEnemies, *p);
-			Tank* penemy = static_cast<Tank*>(result.first);
+			Ship* penemy = static_cast<Ship*>(result.first);
 			assert(p->scan_.objects_.empty() || p->scan_.objects_.size() == 2);
 
 			if(result.second != NO_COORD) {
@@ -88,7 +88,7 @@ void SwarmScanner::teamScan(Population& active, Population& passive, ObjectBsp& 
 			}
 
 			result = findNearest(bspFriends, *p);
-			Tank* pfriend = static_cast<Tank*>(result.first);
+			Ship* pfriend = static_cast<Ship*>(result.first);
 
 			if(result.second != NO_COORD) {
 				if(p->scan_.objects_.size() == 1) {

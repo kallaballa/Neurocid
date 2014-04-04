@@ -13,7 +13,7 @@ class Population;
 class GeneticPool;
 struct GeneticParams;
 struct BrainLayout;
-struct TankLayout;
+struct ShipLayout;
 struct PopulationLayout;
 
 Population makePopulation(size_t teamID, size_t size, PopulationLayout& pl);

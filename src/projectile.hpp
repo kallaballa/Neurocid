@@ -19,7 +19,7 @@
 
 namespace neurocid {
 
-class Tank;
+class Ship;
 
 struct ProjectileLayout {
 #ifndef _NO_SERIALIZE
@@ -42,12 +42,12 @@ struct ProjectileLayout {
 
 class Projectile : public Object {
 public:
-	Tank* owner_;
+	Ship* owner_;
 	ProjectileLayout layout_;
 	Vector2D startLoc_;
 	Scan scan_;
 
-	Projectile(Tank& owner, ProjectileLayout& layout, Vector2D& loc, Coord& rotation) :
+	Projectile(Ship& owner, ProjectileLayout& layout, Vector2D& loc, Coord& rotation) :
 		Object(PROJECTILE, loc, rotation, layout.range_, false, false),
 		owner_(&owner),
 		layout_(layout),

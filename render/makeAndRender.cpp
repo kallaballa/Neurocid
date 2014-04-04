@@ -8,7 +8,7 @@ int main(int argc, char** argv) {
 	vector<Population> teams = makeTeams(2, 20, pl_);
   
 	for (Population& team : teams) {
-		for (Tank& t : team) {
+		for (Ship& t : team) {
 			/*t.loc_;
 			t.rotation_;
 			t.range_;

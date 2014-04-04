@@ -6,7 +6,7 @@
  */
 
 #include "util.hpp"
-#include "tank.hpp"
+#include "ship.hpp"
 #include "population.hpp"
 #include "genetic.hpp"
 #include <cstdlib>
@@ -17,7 +17,7 @@ Population makePopulation(size_t teamID, size_t size, PopulationLayout& pl) {
 	Population p;
 	p.layout_ = pl;
 	for(size_t i = 0; i < size; i++) {
-		Tank t(teamID, pl.tl_);
+		Ship t(teamID, pl.tl_);
 		Brain* b = new Brain(pl.bl_);
 		b->randomize();
 		t.setBrain(b);

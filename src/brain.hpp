@@ -39,7 +39,7 @@ struct BrainLayout  {
 #endif
 };
 
-class Tank;
+class Ship;
 class Population;
 
 class BasicBrain {

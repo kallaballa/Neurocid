@@ -10,7 +10,7 @@
 
 #include <vector>
 #include <iostream>
-#include "tank.hpp"
+#include "ship.hpp"
 
 #ifndef _NO_SERIALIZE
 #include <boost/serialization/vector.hpp>
@@ -28,7 +28,7 @@ struct PopulationLayout {
 	friend class boost::serialization::access;
 #endif
 
-	TankLayout tl_;
+	ShipLayout tl_;
 	BrainLayout bl_;
 
 #ifndef _NO_SERIALIZE
@@ -40,7 +40,7 @@ struct PopulationLayout {
 #endif
 };
 
-class Population: public vector<Tank> {
+class Population: public vector<Ship> {
 #ifndef _NO_SERIALIZE
 	  friend class boost::serialization::access;
 #endif
@@ -109,15 +109,15 @@ public:
 	bool winner_ = false;
 	Statistics stats_;
 
-	void update(TankLayout tl) {
-		for (Tank& t : *this) {
+	void update(ShipLayout tl) {
+		for (Ship& t : *this) {
 			t.update(tl);
 		}
 	}
 
 	size_t countDead() {
 		size_t cnt = 0;
-		for (Tank& t : *this) {
+		for (Ship& t : *this) {
 			if (t.dead_)
 				cnt++;
 		}
@@ -129,7 +129,7 @@ public:
 		score_ = other.score_;
 		winner_ = other.winner_;
 		stats_ = other.stats_;
-		vector<Tank>::operator=(other);
+		vector<Ship>::operator=(other);
 		return *this;
 	}
 
@@ -139,7 +139,7 @@ public:
 	  ar & layout_;
 	  ar & score_;
 	  ar & winner_;
-	  ar & *((vector<Tank>*)this);
+	  ar & *((vector<Ship>*)this);
 	}
 #endif
 };

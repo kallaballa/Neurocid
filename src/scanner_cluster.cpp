@@ -66,7 +66,7 @@ void ClusterScanner::scanClusterCenters(Population& team, vector<Vector2D>& resu
 			KMdataArray pts = dataPts.getPts();
 
 			for(size_t i = 0;  i < team.size(); ++i) {
-				Tank& t = team[i];
+				Ship& t = team[i];
 				pts[i][0] = t.loc_.x_;
 				pts[i][1] = t.loc_.y_;
 			}

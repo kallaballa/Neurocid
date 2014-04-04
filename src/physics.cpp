@@ -7,14 +7,14 @@
 
 #include "physics.hpp"
 #include "battlefield.hpp"
-#include "tank.hpp"
+#include "ship.hpp"
 #include "projectile.hpp"
 #include "population.hpp"
 
 namespace neurocid {
 using std::vector;
 
-void Physics::wallHit(Tank& t) {
+void Physics::wallHit(Ship& t) {
 	t.kill();
 }
 
@@ -28,13 +28,13 @@ void Physics::collide(Projectile& p1, Projectile& p2) {
 	p2.death();
 }
 
-void Physics::collide(Projectile& p, Tank& t) {
+void Physics::collide(Projectile& p, Ship& t) {
 	if (t != (*p.owner_)) {
 		t.impact(p);
 	}
 }
 
-void Physics::collide(Tank& t1, Tank& t2) {
+void Physics::collide(Ship& t1, Ship& t2) {
 	t1.impact(t2);
 }
 
@@ -49,21 +49,21 @@ void Physics::BeginContact(b2Contact* contact) {
 	  } else if(oB == NULL && oA != NULL && oA->type() == PROJECTILE && !oA->dead_) {
 		  wallHit(*static_cast<Projectile*>(oA));
 		  deadBodies_.push_back(contact->GetFixtureA()->GetBody());
-	  } else if(oA == NULL && oB != NULL && oB->type() == TANK && !oB->dead_) {
-		  wallHit(*static_cast<Tank*>(oB));
+	  } else if(oA == NULL && oB != NULL && oB->type() == SHIP && !oB->dead_) {
+		  wallHit(*static_cast<Ship*>(oB));
 		  deadBodies_.push_back(contact->GetFixtureB()->GetBody());
-	  } else if(oB == NULL && oA != NULL && oA->type() == TANK && !oA->dead_) {
-		  wallHit(*static_cast<Tank*>(oA));
+	  } else if(oB == NULL && oA != NULL && oA->type() == SHIP && !oA->dead_) {
+		  wallHit(*static_cast<Ship*>(oA));
 		  deadBodies_.push_back(contact->GetFixtureA()->GetBody());
 	  } else if(oA != NULL && oB != NULL && !oA->dead_ && !oB->dead_) {
 		  if(oA->type() == PROJECTILE && oB->type() == PROJECTILE) {
 			  collide(*static_cast<Projectile*>(oA), *static_cast<Projectile*>(oB));
-		  } else if(oA->type() == PROJECTILE && oB->type() == TANK) {
-			  collide(*static_cast<Projectile*>(oA), *static_cast<Tank*>(oB));
-		  } else if(oA->type() == TANK && oB->type() == PROJECTILE) {
-			  collide(*static_cast<Projectile*>(oB), *static_cast<Tank*>(oA));
-		  } else if(oA->type() == TANK && oB->type() == TANK) {
-			  collide(*static_cast<Tank*>(oB), *static_cast<Tank*>(oA));
+		  } else if(oA->type() == PROJECTILE && oB->type() == SHIP) {
+			  collide(*static_cast<Projectile*>(oA), *static_cast<Ship*>(oB));
+		  } else if(oA->type() == SHIP && oB->type() == PROJECTILE) {
+			  collide(*static_cast<Projectile*>(oB), *static_cast<Ship*>(oA));
+		  } else if(oA->type() == SHIP && oB->type() == SHIP) {
+			  collide(*static_cast<Ship*>(oB), *static_cast<Ship*>(oA));
 		  }
 
 		  if(oA->dead_)
@@ -142,7 +142,7 @@ b2Body* Physics::makeWorldBox(BattleFieldLayout& bfl) {
 	return body;
 }
 
-b2Body* Physics::makeTankBody(Tank& t) {
+b2Body* Physics::makeShipBody(Ship& t) {
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(toMeters(t.loc_.x_), toMeters(t.loc_.y_));
@@ -233,8 +233,8 @@ Physics::~Physics() {
 void Physics::create(BattleField& field) {
 	makeWorldBox(field.layout_);
 	for(Population& team : field.teams_) {
-		for(Tank& t: team) {
-			makeTankBody(t);
+		for(Ship& t: team) {
+			makeShipBody(t);
 			for(Projectile* p : t.projectiles_) {
 				makeProjectileBody(*p);
 			}
@@ -250,9 +250,9 @@ void Physics::update(vector<Projectile*> spawned) {
 	}
 }
 
-void Physics::update(vector<Tank*> spawned) {
-	for(Tank* t : spawned) {
-		makeTankBody(*t);
+void Physics::update(vector<Ship*> spawned) {
+	for(Ship* t : spawned) {
+		makeShipBody(*t);
 	}
 }
 
@@ -260,8 +260,8 @@ void Physics::step() {
 	for (b2Body* body = world_.GetBodyList(); body; body = body->GetNext()) {
 		if(body->GetUserData() != NULL) {
 			Object* o = (Object*)body->GetUserData();
-			if(o->type() == TANK) {
-				Tank* t = static_cast<Tank*>(o);
+			if(o->type() == SHIP) {
+				Ship* t = static_cast<Ship*>(o);
 				Vector2D dir = o->getDirection();
 				Vector2D across1 = dir;
 				Vector2D across2 = dir;

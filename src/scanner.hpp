@@ -21,7 +21,7 @@ using std::vector;
 
 class BattleField;
 class Population;
-class Tank;
+class Ship;
 
 struct ScannerLayout {
 	bool disableClusterCenters;
@@ -56,7 +56,7 @@ public:
 
 class SwarmScanner : public BspScanner {
 private:
-	void pickRandomN(ScanObjectType type, Tank& t, Population& team, ScanObjectVector& result, size_t n);
+	void pickRandomN(ScanObjectType type, Ship& t, Population& team, ScanObjectVector& result, size_t n);
 	void teamScan(Population& active, Population& passive, ObjectBsp& bspFriends, ObjectBsp& bspEnemies, BattleFieldLayout& bfl);
 public:
 	SwarmScanner(ScannerLayout& layout) : BspScanner(layout) {};

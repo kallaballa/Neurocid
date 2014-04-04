@@ -2,7 +2,7 @@
 #define CGENALG_H
 
 #include "util.hpp"
-#include "tank.hpp"
+#include "ship.hpp"
 #include "bsp.hpp"
 #include "population.hpp"
 
@@ -29,8 +29,8 @@ class GeneticPool {
 private:
 	bool initialized_ = false;
 	void mutate(Brain& brain);
-	Tank& pickSpecimen(Population& pop);
-	std::pair<Tank, Tank> crossover(Tank &mum, Tank &dad, size_t iterations);
+	Ship& pickSpecimen(Population& pop);
+	std::pair<Ship, Ship> crossover(Ship &mum, Ship &dad, size_t iterations);
 	void copyNBest(size_t n, const size_t numCopies, Population& in, Population& out);
 	void calculateStatistics(Population& pop);
 public:

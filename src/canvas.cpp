@@ -1,6 +1,6 @@
 
 #include "canvas.hpp"
-#include "tank.hpp"
+#include "ship.hpp"
 #include "projectile.hpp"
 #include "battlefield.hpp"
 #include "population.hpp"
@@ -239,7 +239,7 @@ void fill_circle(SDL_Surface *surface, int cx, int cy, int radius, Uint32 pixel)
     }
 }
 
-void Canvas::drawTank(Tank& tank, Color c) {
+void Canvas::drawShip(Ship& tank, Color c) {
 	Vector2D dir = tank.getDirection();
 	Vector2D tip = tank.loc_;
     tip += dir * (tank.range_) * 5;
@@ -308,7 +308,7 @@ Rect Canvas::findBounds(BattleField& field) {
 	Vector2D max(0,0);
 
 	for(Population& team : field.teams_) {
-		for(Tank& t : team) {
+		for(Ship& t : team) {
 			if(t.dead_)
 				continue;
 			min.x_ = std::min(t.loc_.x_, min.x_);
@@ -368,11 +368,11 @@ void Canvas::render(BattleField& field) {
 
 	size_t teamCnt = 0;
 	for(Population& team : field.teams_) {
-		for(Tank& t : team) {
+		for(Ship& t : team) {
 			if(t.explode_)
 				this->drawExplosion(t, red);
 			else if(!t.dead_)
-				this->drawTank(t, teamColors_[teamCnt]);
+				this->drawShip(t, teamColors_[teamCnt]);
 			t.explode_ = false;
 
 			for(Projectile* p : t.projectiles_) {

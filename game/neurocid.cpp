@@ -1,6 +1,6 @@
 #include "battlefield.hpp"
 #include "population.hpp"
-#include "tank.hpp"
+#include "ship.hpp"
 #include "2d.hpp"
 #include <iostream>
 #include "brain.hpp"
@@ -191,13 +191,13 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
 
-		TankLayout attackerTL = teams[0][0].layout_;
+		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.isDummy_ = false;
 		attackerTL.max_ammo_ = 5;
 		attackerTL.max_cooldown = 20;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1][0].layout_;
+		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = false;
 		defenderTL.max_ammo_ = 5;
 		defenderTL.max_cooldown = 20;
@@ -218,11 +218,11 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
 
-		TankLayout attackerTL = teams[0][0].layout_;
+		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = false;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1][0].layout_;
+		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
@@ -235,8 +235,8 @@ public:
 	virtual void restoreTeams(vector<Population>& teams) {
 		teams[1].clear();
 		//clone teamB from teamA
-		for(Tank& t : teams[0]) {
-			Tank c = t.clone();
+		for(Ship& t : teams[0]) {
+			Ship c = t.clone();
 			c.teamID_ = 1;
 			teams[1].push_back(c);
 		}
@@ -253,11 +253,11 @@ public:
 		assert(teams.size() == 2);
 		SymmetricLines::configureTeams(teams);
 
-		TankLayout attackerTL = teams[0][0].layout_;
+		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = true;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1][0].layout_;
+		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
@@ -271,8 +271,8 @@ public:
 	virtual void restoreTeams(vector<Population>& teams) {
 		teams[1].clear();
 		//clone teamB from teamA
-		for(Tank& t : teams[0]) {
-			Tank c = t.clone();
+		for(Ship& t : teams[0]) {
+			Ship c = t.clone();
 			c.teamID_ = 1;
 			teams[1].push_back(c);
 		}
@@ -297,12 +297,12 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
 		SymmetricLines::configureTeams(teams);
-		TankLayout attackerTL = teams[0][0].layout_;
+		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canRotate_ = false;
 		attackerTL.canMove_ = false;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1][0].layout_;
+		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
@@ -319,8 +319,8 @@ public:
 	virtual void restoreTeams(vector<Population>& teams) {
 		teams[1].clear();
 		//clone teamB from teamA
-		for(Tank& t : teams[0]) {
-			Tank c = t.clone();
+		for(Ship& t : teams[0]) {
+			Ship c = t.clone();
 			c.teamID_ = 1;
 			teams[1].push_back(c);
 		}
@@ -362,12 +362,12 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLines::configureTeams(teams);
 
-		TankLayout attackerTL = teams[0][0].layout_;
+		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = false;
 		attackerTL.max_cooldown = 5;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1][0].layout_;
+		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
@@ -380,8 +380,8 @@ public:
 	virtual void restoreTeams(vector<Population>& teams) {
 		teams[1].clear();
 		//clone teamB from teamA
-		for(Tank& t : teams[0]) {
-			Tank c = t.clone();
+		for(Ship& t : teams[0]) {
+			Ship c = t.clone();
 			c.teamID_ = 1;
 			teams[1].push_back(c);
 		}
@@ -404,8 +404,8 @@ public:
 	virtual void restoreTeams(vector<Population>& teams) {
 		teams[1].clear();
 		//clone teamB from teamA
-		for(Tank& t : teams[0]) {
-			Tank c = t.clone();
+		for(Ship& t : teams[0]) {
+			Ship c = t.clone();
 			c.teamID_ = 1;
 			teams[1].push_back(c);
 		}
@@ -414,11 +414,11 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLines::configureTeams(teams);
 
-		TankLayout attackerTL = teams[0][0].layout_;
+		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = false;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1][0].layout_;
+		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
@@ -433,7 +433,7 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLinesNoMoveTwoRows::configureTeams(teams);
 
-		TankLayout attackerTL = teams[0][0].layout_;
+		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = true;
 		teams[0].update(attackerTL);
 	}
@@ -451,10 +451,10 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLines::configureTeams(teams);
 
-		TankLayout attackerTL = teams[0][0].layout_;
+		ShipLayout attackerTL = teams[0][0].layout_;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1][0].layout_;
+		ShipLayout defenderTL = teams[1][0].layout_;
 		teams[1].update(defenderTL);
 	}
 };
@@ -466,7 +466,7 @@ public:
 
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLinesFar::configureTeams(teams);
-		TankLayout defenderTL = teams[1][0].layout_;
+		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
@@ -479,8 +479,8 @@ public:
 	virtual void restoreTeams(vector<Population>& teams) {
 		teams[1].clear();
 		//clone teamB from teamA
-		for(Tank& t : teams[0]) {
-			Tank c = t.clone();
+		for(Ship& t : teams[0]) {
+			Ship c = t.clone();
 			c.teamID_ = 1;
 			teams[1].push_back(c);
 		}
@@ -495,7 +495,7 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLinesAttackerMoveFar::configureTeams(teams);
 
-		TankLayout attackerTL = teams[0][0].layout_;
+		ShipLayout attackerTL = teams[0][0].layout_;
 		teams[0].update(attackerTL);
 	}
 
@@ -519,12 +519,12 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLines::configureTeams(teams);
 
-		TankLayout attackerTL = teams[0][0].layout_;
+		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.disableProjectileFitness_ = true;
 		attackerTL.max_ammo_ = 40;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1][0].layout_;
+		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.disableProjectileFitness_ = true;
 		defenderTL.max_ammo_ = 40;
 		teams[1].update(defenderTL);
@@ -557,7 +557,7 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
 
-		TankLayout attackerTL = teams[0][0].layout_;
+		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.isDummy_ = false;
 		attackerTL.canMove_ = true;
 		attackerTL.max_ammo_ = 5;
@@ -566,11 +566,11 @@ public:
 		teams[0].update(attackerTL);
 
 		teams[1].clear();
-		Tank c = teams[0][0].clone();
+		Ship c = teams[0][0].clone();
 		c.teamID_ = 1;
 		teams[1].push_back(c);
 
-		TankLayout dummyTL = teams[1][0].layout_;
+		ShipLayout dummyTL = teams[1][0].layout_;
 		dummyTL.isDummy_ = true;
 		dummyTL.max_damage_ = 100;
 		teams[1].update(dummyTL);
@@ -593,8 +593,8 @@ public:
 	virtual void restoreTeams(vector<Population>& teams) {
 		teams[1].clear();
 		//clone teamB from teamA
-		for(Tank& t : teams[0]) {
-			Tank c = t.clone();
+		for(Ship& t : teams[0]) {
+			Ship c = t.clone();
 			c.teamID_ = 1;
 			teams[1].push_back(c);
 		}
@@ -611,7 +611,7 @@ public:
 
 	virtual void configureTeams(vector<Population>& teams) {
 		AimOnOne::configureTeams(teams);
-		TankLayout attackerTL = teams[0][0].layout_;
+		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = false;
 		attackerTL.max_cooldown = 10;
 
@@ -633,13 +633,13 @@ public:
 	void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
 
-		TankLayout attackerTL = teams[0][0].layout_;
+		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.disableProjectileFitness_ = true;
 		attackerTL.max_ammo_ = 40;
 		attackerTL.max_cooldown = 5;
 		teams[0].update(attackerTL);
 
-		TankLayout defenderTL = teams[1][0].layout_;
+		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.disableProjectileFitness_ = true;
 		defenderTL.max_ammo_ = 40;
 		defenderTL.max_cooldown = 5;
@@ -729,14 +729,14 @@ Scenario* getScenario(const string& name) {
 
 void multiplyTeams(vector<Population>& teams, size_t n) {
 	Population newA = teams[0];
-	for (Tank& t : teams[0]) {
+	for (Ship& t : teams[0]) {
 		for (size_t j = 0; j < n - 1; ++j) {
 			newA.push_back(t.clone());
 		}
 	}
 
 	Population newB = teams[1];
-	for (Tank& t : teams[1]) {
+	for (Ship& t : teams[1]) {
 		for (size_t j = 0; j < n - 1; ++j) {
 			newB.push_back(t.clone());
 		}
@@ -749,7 +749,7 @@ void multiplyTeams(vector<Population>& teams, size_t n) {
 int main(int argc, char** argv) {
 	loadScenarios();
 	PopulationLayout pl = {
-		//Tank Layout
+		//Ship Layout
 		{
 		    //Projectile Layout
 			{

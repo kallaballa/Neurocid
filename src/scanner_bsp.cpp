@@ -23,7 +23,7 @@ void BspScanner::buildBsps(BattleField& field) {
 	Population& teamB = field.teams_[1];
 
 	for (size_t i = 0; i < teamA.size(); ++i) {
-		Tank& t = teamA[i];
+		Ship& t = teamA[i];
 		if(!t.dead_)
 			bspA_.insert(&t);
 		for (Projectile* p : t.projectiles_) {
@@ -33,7 +33,7 @@ void BspScanner::buildBsps(BattleField& field) {
 	}
 
 	for (size_t i = 0; i < teamB.size(); ++i) {
-		Tank& t = teamB[i];
+		Ship& t = teamB[i];
 		if(!t.dead_)
 			bspB_.insert(&t);
 		for (Projectile* p : t.projectiles_) {

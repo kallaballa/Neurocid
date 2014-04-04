@@ -1,11 +1,4 @@
-/*
- * Tank.cpp
- *
- *  Created on: Mar 1, 2014
- *      Author: elchaschab
- */
-
-#include "tank.hpp"
+#include "ship.hpp"
 #include "battlefield.hpp"
 #include "population.hpp"
 #include <cstdlib>
@@ -18,8 +11,8 @@
 
 namespace neurocid {
 
-Tank::Tank(size_t teamID, TankLayout tl, Brain* brain) :
-		Object(TANK, {0,0}, 0, tl.range_, false, false),
+Ship::Ship(size_t teamID, ShipLayout tl, Brain* brain) :
+		Object(SHIP, {0,0}, 0, tl.range_, false, false),
 		teamID_(teamID),
 		layout_(tl),
 		brain_(brain),
@@ -28,12 +21,12 @@ Tank::Tank(size_t teamID, TankLayout tl, Brain* brain) :
 }
 
 
-void Tank::setBrain(Brain* b) {
+void Ship::setBrain(Brain* b) {
 	assert(brain_ == NULL);
 	brain_ = b;
 }
 
-void Tank::calculateFitness() {
+void Ship::calculateFitness() {
 	Coord totalDiff = 0;
 	size_t ratedProjectiles = 0;
 
@@ -164,7 +157,7 @@ void Tank::calculateFitness() {
 	//std::cerr << "fitness:" << fitness_ << std::endl;
 }
 
-void Tank::think(BattleFieldLayout& bfl) {
+void Ship::think(BattleFieldLayout& bfl) {
 	if(layout_.isDummy_)
 		return;
 
@@ -172,7 +165,7 @@ void Tank::think(BattleFieldLayout& bfl) {
 	brain_->update(bfl, this->scan_);
 }
 
-void Tank::move(BattleFieldLayout& bfl) {
+void Ship::move(BattleFieldLayout& bfl) {
 	if(layout_.isDummy_)
 		return;
 
@@ -195,27 +188,27 @@ void Tank::move(BattleFieldLayout& bfl) {
 	//std::cerr << "canMove: " << tl_.canMove_ << "\tcanRotate: " << tl_.canRotate_ << "\tspeed: " << speed_ << "\trotForce:" << rotForce_  << std::endl;
 }
 
-void Tank::damage() {
+void Ship::damage() {
 	damage_++;
 	if (damage_ >= layout_.max_damage_) {
 		death();
 	}
 }
 
-void Tank::death() {
+void Ship::death() {
 	damage_ = layout_.max_damage_;
 	dead_ = true;
 	explode_ = true;
 }
 
 // demote and execute this unit
-void Tank::kill() {
+void Ship::kill() {
 	friendlyFire_ = layout_.max_ammo_;
 	hits_ = 0;
 	death();
 }
 
-void Tank::crash() {
+void Ship::crash() {
 	crash_++;
 	crashDamage_++;
 
@@ -225,12 +218,12 @@ void Tank::crash() {
 	}
 }
 
-void Tank::impact(Tank& other) {
+void Ship::impact(Ship& other) {
 	crash();
 	other.crash();
 }
 
-void Tank::impact(Projectile& p) {
+void Ship::impact(Projectile& p) {
 	p.death();
 	damage();
 
@@ -241,17 +234,17 @@ void Tank::impact(Projectile& p) {
 	}
 }
 
-Tank Tank::makeChild() const {
+Ship Ship::makeChild() const {
 	assert(brain_ != NULL);
-	Tank child(teamID_, layout_);
+	Ship child(teamID_, layout_);
 	Brain* fresh  = new Brain(brain_->layout_);
 	child.setBrain(fresh);
 	return child;
 }
 
-Tank Tank::clone() const {
+Ship Ship::clone() const {
 	assert(brain_ != NULL);
-	Tank child(teamID_, layout_);
+	Ship child(teamID_, layout_);
 	Brain* fresh  = new Brain(brain_->layout_);
 	child.setBrain(fresh);
 
@@ -262,7 +255,7 @@ Tank Tank::clone() const {
 	return child;
 }
 
-void Tank::resetGameState() {
+void Ship::resetGameState() {
 	ammonition_ = layout_.max_ammo_;
 	for(Projectile* p : projectiles_) {
 		delete p;
@@ -278,7 +271,7 @@ void Tank::resetGameState() {
 	willShoot_ = false;
 }
 
-void Tank::resetScore() {
+void Ship::resetScore() {
 	friendlyFire_ = 0;
 	crash_ = 0;
 	crashDamage_ = 0;
@@ -287,28 +280,28 @@ void Tank::resetScore() {
 	fitness_ = 0;
 }
 
-void Tank::update(TankLayout tl) {
+void Ship::update(ShipLayout tl) {
 	this->layout_ = tl;
 	resetGameState();
 }
 
-bool Tank::operator==(const Tank& other) const {
+bool Ship::operator==(const Ship& other) const {
 	return this->loc_ == other.loc_ && this->teamID_ == other.teamID_;
 }
 
-bool Tank::operator!=(const Tank& other) const {
+bool Ship::operator!=(const Ship& other) const {
 	return !this->operator ==(other);
 }
 
-bool Tank::operator<(const Tank& other) const {
+bool Ship::operator<(const Ship& other) const {
 	return (this->fitness_ < other.fitness_);
 }
 
-bool Tank::willShoot() {
+bool Ship::willShoot() {
 	return willShoot_;
 }
 
-Projectile* Tank::shoot() {
+Projectile* Ship::shoot() {
 	assert(cool_down == 0);
 	assert(ammonition_ > 0);
 	--ammonition_;

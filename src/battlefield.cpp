@@ -52,7 +52,7 @@ void BattleField::move() {
 	for(size_t i = 0; i < teams_.size(); ++i)  {
 		Population& team  = teams_[i];
 		for(size_t j = 0; j < team.size(); ++j)  {
-			Tank& t = team[j];
+			Ship& t = team[j];
 			if(t.dead_)
 				continue;
 

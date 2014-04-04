@@ -12,7 +12,7 @@
 #include "util.hpp"
 #include "2d.hpp"
 #include "population.hpp"
-#include "tank.hpp"
+#include "ship.hpp"
 
 #include <functional>
 #include <iostream>

@@ -24,7 +24,7 @@ struct Color {
 };
 
 class BattleField;
-class Tank;
+class Ship;
 class Object;
 
 class Canvas {
@@ -72,7 +72,7 @@ public:
 	Coord renderText(const string& s, Coord x, Color c, bool left);
 	void renderTackerInfo();
 	void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
-	void drawTank(Tank& tank, Color c);
+	void drawShip(Ship& tank, Color c);
 	void drawProjectile(Projectile& pro, Color& c);
 	void drawExplosion(Object& o, Color& c);
 	void drawCenters(Scanner& scanner);

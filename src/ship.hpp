@@ -16,7 +16,7 @@
 
 namespace neurocid {
 
-struct TankLayout {
+struct ShipLayout {
 #ifndef _NO_SERIALIZEz
 	friend class boost::serialization::access;
 #endif
@@ -62,7 +62,7 @@ struct TankLayout {
 };
 
 using std::numeric_limits;
-class Tank : public Object {
+class Ship : public Object {
 #ifndef _NO_SERIALIZE
 	friend class boost::serialization::access;
 #endif
@@ -74,7 +74,7 @@ public:
 	PerfDesc perfDesc_;
 
 	size_t teamID_;
-	TankLayout layout_;
+	ShipLayout layout_;
 	Brain* brain_;
 
 	size_t ammonition_;
@@ -101,13 +101,13 @@ public:
 	  ar & brain_;
 	}
 #endif
-	Tank() : Object(TANK, {0,0}, 0, 0, false, false),
+	Ship() : Object(SHIP, {0,0}, 0, 0, false, false),
 			teamID_(0),
 			layout_(),
 			brain_(NULL),
 			scan_(*this){};
-	Tank(size_t teamID, TankLayout tl, Brain* brain = NULL);
-	~Tank() {
+	Ship(size_t teamID, ShipLayout tl, Brain* brain = NULL);
+	~Ship() {
 	};
 
 	void setBrain(Brain* b);
@@ -118,18 +118,18 @@ public:
 	void death();
 	void kill();
 	void crash();
-	void impact(Tank& t);
+	void impact(Ship& t);
 	void impact(Projectile& p);
 
 	void calculateFitness();
 	void resetGameState();
 	void resetScore();
-	void update(TankLayout tl);
-	Tank makeChild() const;
-	Tank clone() const;
-	bool operator<(const Tank& other) const;
-	bool operator==(const Tank& other) const;
-	bool operator!=(const Tank& other) const;
+	void update(ShipLayout tl);
+	Ship makeChild() const;
+	Ship clone() const;
+	bool operator<(const Ship& other) const;
+	bool operator==(const Ship& other) const;
+	bool operator!=(const Ship& other) const;
 
 	Projectile* shoot();
 	bool willShoot();

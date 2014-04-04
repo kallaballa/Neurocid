@@ -34,7 +34,7 @@ void Game::prepare() {
 	//shuffle positions
 	for(Population& team : teams_) {
 		random_shuffle(team.begin(), team.end());
-		for(Tank& t : team) {
+		for(Ship& t : team) {
 			t.resetScore();
 			t.brain_->reset();
 		}
@@ -92,7 +92,7 @@ void Game::score() {
 
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		Population& team = teams_[i];
-		for(Tank& t : team) {
+		for(Ship& t : team) {
 			if(!t.dead_)
 				++alive[i];
 		}
@@ -122,7 +122,7 @@ void Game::mate() {
 
 void Game::cleanup() {
 	for(Population& p : teams_) {
-		for(Tank& t : p) {
+		for(Ship& t : p) {
 			t.resetGameState();
 			t.brain_->destroy();
 		}

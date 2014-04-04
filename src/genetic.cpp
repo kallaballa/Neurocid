@@ -36,7 +36,7 @@ void GeneticPool::mutate(Brain& brain) {
 /*
  * Returns a tank base on roulette wheel sampling
  */
-Tank& GeneticPool::pickSpecimen(Population& pop) {
+Ship& GeneticPool::pickSpecimen(Population& pop) {
 	//generate a random number between 0 & total fitness count
 	double slice = (double) (fRand(0, 1) * pop.stats_.totalFitness_);
 
@@ -59,9 +59,9 @@ Tank& GeneticPool::pickSpecimen(Population& pop) {
 /*
  * With a chance defined by params_.crossoverRate_ perform a crossover of brain_.weights()
  */
-std::pair<Tank, Tank> GeneticPool::crossover(Tank &mum, Tank &dad, size_t iterations) {
-	Tank baby1 = mum.makeChild();
-	Tank baby2 = mum.makeChild();
+std::pair<Ship, Ship> GeneticPool::crossover(Ship &mum, Ship &dad, size_t iterations) {
+	Ship baby1 = mum.makeChild();
+	Ship baby2 = mum.makeChild();
 
 	fann_type* wMum = mum.brain_->weights();
 	fann_type* wDad = dad.brain_->weights();
@@ -120,7 +120,7 @@ void GeneticPool::copyNBest(size_t n, const size_t numCopies,
 	//add the required amount of copies of the n most fittest to the supplied population
 	while (n--) {
 		for (size_t i = 0; i < numCopies; ++i) {
-			Tank &t = in[(in.size() - 1) - n];
+			Ship &t = in[(in.size() - 1) - n];
 			out.push_back(t.clone());
 		}
 	}
@@ -180,7 +180,7 @@ Population GeneticPool::epoch(Population& old_pop) {
 		new_pop.clear();
 		old_pop.stats_.reset();
 
-		for(Tank& t : old_pop) {
+		for(Ship& t : old_pop) {
 			t.calculateFitness();
 		}
 
@@ -190,7 +190,7 @@ Population GeneticPool::epoch(Population& old_pop) {
 		//calculate best, worst, average and total fitness
 		calculateStatistics(old_pop);
 
-		for(Tank& t : old_pop) {
+		for(Ship& t : old_pop) {
 			new_pop.push_back(t.makeChild());
 		}
 		new_pop.stats_ = old_pop.stats_;
@@ -202,7 +202,7 @@ Population GeneticPool::epoch(Population& old_pop) {
 	new_pop.clear();
 	old_pop.stats_.reset();
 
-	for(Tank& t : old_pop) {
+	for(Ship& t : old_pop) {
 		t.calculateFitness();
 	}
 
@@ -222,9 +222,9 @@ Population GeneticPool::epoch(Population& old_pop) {
 	}
 
 	assert(old_pop.layout_.tl_.num_perf_desc == 4);
-	PerfDescBsp<4,Tank> pdb;
+	PerfDescBsp<4,Ship> pdb;
 	if(params_.usePerfDesc_) {
-		for(Tank& t : old_pop) {
+		for(Ship& t : old_pop) {
 			pdb.insert(&t);
 		}
 	}
@@ -233,15 +233,15 @@ Population GeneticPool::epoch(Population& old_pop) {
 	while (new_pop.size() < old_pop.size()) {
 		//grab two chromosones
 
-		Tank& mum = pickSpecimen(old_pop);
-		Tank* dad;
+		Ship& mum = pickSpecimen(old_pop);
+		Ship* dad;
 		if(params_.usePerfDesc_) {
 			dad = &pdb.findClosestMate(mum);
 		} else
 			dad = &pickSpecimen(old_pop);
 
 		//create some offspring via crossover
-		std::pair<Tank, Tank> babies = crossover(mum, *dad, params_.crossoverIterations);
+		std::pair<Ship, Ship> babies = crossover(mum, *dad, params_.crossoverIterations);
 
 		//now we mutate
 		mutate(*babies.first.brain_);

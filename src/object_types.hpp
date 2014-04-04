@@ -3,7 +3,7 @@
 
 namespace neurocid {
 enum ObjectType {
-	TANK,
+	SHIP,
 	PROJECTILE
 };
 }

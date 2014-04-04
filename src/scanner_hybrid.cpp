@@ -23,7 +23,7 @@ void HybridScanner::teamScan(Population& active, Population& passive, vector<Vec
 	Coord numEnemies = ClusterScanner::layout_.numEnemies_;
 
 	for(size_t i = 0; i < active.size(); ++i) {
-		Tank& t = active[i];
+		Ship& t = active[i];
 		if(t.dead_ || t.layout_.isDummy_)
 			continue;
 
@@ -54,7 +54,7 @@ void HybridScanner::teamScan(Population& active, Population& passive, vector<Vec
 		assert(t.scan_.objects_.size() == numFriends);
 
 		auto result = findNearest(bspEnemies, t);
-		Tank* tenemy = static_cast<Tank*>(result.first);
+		Ship* tenemy = static_cast<Ship*>(result.first);
 
 		t.scan_.makeScanObject(ENEMY,tenemy->loc_,result.second);
 		findInRange(bspEnemies, t, ENEMY, t.scan_.objects_, 3000);
