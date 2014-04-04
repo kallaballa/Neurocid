@@ -169,7 +169,7 @@ b2Body* Physics::makeShipBody(Ship& t) {
     fixtureDef.restitution = 0.3f;
 
     // Override the default friction.
-    fixtureDef.friction = 0.3f;
+    fixtureDef.friction = 0.0f;
     fixtureDef.filter.maskBits = 1;
     fixtureDef.filter.categoryBits = 3;
 

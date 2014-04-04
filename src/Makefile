@@ -27,8 +27,8 @@ release: ${TARGET}
 debug: ${TARGET}
 info: ${TARGET}
 
-ifdef TANKWAR_GPU
-${CUO}: ${CU} 
+ifdef WITH_GPU_KMEANS
+${CUO}: ${CU}
 	${NVCC} ${NVCC_CXXFLAGS} --compiler-bindir ${NVCC_HOST_CXX} -c $< 
 endif
 
