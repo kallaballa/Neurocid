@@ -1,12 +1,11 @@
 *.dep
 *.o
 *.gch
-src/tankwar
 tests/tests
 teamA.png
 teamB.png
 timeseries.csv
-game/tankwar
+game/neurocid
 render/makeAndRender
 src/libtankwar.so
 *.pop
