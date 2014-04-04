@@ -172,7 +172,7 @@ public:
 
 		gl_.center_ = {150000,150000};
 		gl_.distance_ = 10000;
-		gl_.spacing_ = 100;
+		gl_.spacing_ = 400;
 
 		phl_.gravity_ = {0,0};
 		phl_.timeStep_ = 1.0f/60.0f;
@@ -353,7 +353,7 @@ class SymmetricLinesNoMoveShort : public SymmetricLines {
 public:
 	SymmetricLinesNoMoveShort() : SymmetricLines() {
 		bfl_.iterations_ = 300;
-		gl_.spacing_ = 100;
+		gl_.spacing_ = 400;
 		gl_.distance_ = 2000;
 	}
 
@@ -443,7 +443,7 @@ public:
 	SymmetricLinesFar() : SymmetricLines() {
 		bfl_.iterations_ = 4000;
 		gl_.distance_ = 30000;
-		gl_.spacing_ = 200;
+		gl_.spacing_ = 400;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -511,7 +511,7 @@ public:
 		gl_.center_ = {150000,150000};
 		gl_.distance_ = 100000;
 		gl_.spacing_ = 1000;
-		scl_.disableClusterCenters = true;
+		phl_.timeStep_ = 1.0 / 30.0;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -543,7 +543,7 @@ public:
 
 		gl_.center_ = {150000,150000};
 		gl_.distance_ = 2500;
-		gl_.spacing_ = 300;
+		gl_.spacing_ = 400;
 
 		phl_.gravity_ = {0,0};
 		phl_.timeStep_ = 1.0f/60.0f;
@@ -604,7 +604,7 @@ public:
 	AimOnOneNoMove() : AimOnOne() {
 		bfl_.iterations_ = 300;
 		gl_.distance_ = 2500;
-		gl_.spacing_ = 100;
+		gl_.spacing_ = 400;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -625,8 +625,7 @@ public:
 		bfl_.iterations_ = 7000;
 		gl_.center_ = {150000,150000};
 		gl_.distance_ = 100000;
-		gl_.spacing_ = 400;
-		scl_.disableClusterCenters = true;
+		gl_.spacing_ = 1000;
 	}
 
 	void configureTeams(vector<Population>& teams) {
@@ -762,7 +761,7 @@ int main(int argc, char** argv) {
 			true,// canMove
 			false,// disableProjectileFitness
 
-			10.0,// range_
+			50.0,// range_
 			1,// max_speed_
 			1,// max_rotation
 
@@ -848,7 +847,7 @@ int main(int argc, char** argv) {
     Options::getInstance()->FRAMERATE = frameRate;
 	GameState::getInstance()->setSlow(false);
 	GameState::getInstance()->setSlower(false);
-	Canvas::getInstance()->enableDrawGrid(true);
+	Canvas::getInstance()->enableDrawGrid(false);
 	Canvas::getInstance()->enableDrawEngines(true);
 
     if(vm.count("load")) {

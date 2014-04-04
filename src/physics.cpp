@@ -164,7 +164,7 @@ b2Body* Physics::makeTankBody(Tank& t) {
     fixtureDef.shape = &dynamicCircle;
 
     // Set the box density to be non-zero, so it will be dynamic.
-    fixtureDef.density = 10.0f;
+    fixtureDef.density = 1.0f;
 
     fixtureDef.restitution = 0.3f;
 
@@ -267,10 +267,10 @@ void Physics::step() {
 				Vector2D across2 = dir;
 				across2.rotate(90);
 
-				Vector2D flforce = across1 * (t->flthrust_ * t->layout_.max_speed_ * 4);
-				Vector2D frforce = across2 * -(t->frthrust_ * t->layout_.max_speed_ * 4);
-				Vector2D blforce = across1 * -(t->blthrust_ * t->layout_.max_speed_ * 4);
-				Vector2D brforce = across2 * (t->brthrust_ * t->layout_.max_speed_ * 4);
+				Vector2D flforce = across1 * (t->flthrust_ * t->layout_.max_speed_ * 8);
+				Vector2D frforce = across2 * -(t->frthrust_ * t->layout_.max_speed_ * 8);
+				Vector2D blforce = across1 * -(t->blthrust_ * t->layout_.max_speed_ * 8);
+				Vector2D brforce = across2 * (t->brthrust_ * t->layout_.max_speed_ * 8);
 
 				b2Vec2 wc = body->GetWorldCenter();
 				Vector2D flengine(wc.x, wc.y);

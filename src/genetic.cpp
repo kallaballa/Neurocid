@@ -236,7 +236,7 @@ Population GeneticPool::epoch(Population& old_pop) {
 		Tank& mum = pickSpecimen(old_pop);
 		Tank* dad;
 		if(params_.usePerfDesc_) {
-			dad = (*pdb.find_nearest(&mum).first);
+			dad = &pdb.findClosestMate(mum);
 		} else
 			dad = &pickSpecimen(old_pop);
 

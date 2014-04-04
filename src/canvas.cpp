@@ -86,37 +86,45 @@ Sint16 Canvas::scaleY(const Coord& c) {
 }
 
 void Canvas::zoomIn() {
-	zoom_ -= 0.1;
+	if(zoom_ > 0.1)
+		zoom_ -= 0.1;
+	 else
+		zoom_ -= 0.01;
+
 	zoom_ = std::max(zoom_, 0.01);
 }
 
 void Canvas::zoomOut() {
-	zoom_ += 0.1;
+	if(zoom_ < 0.1)
+		zoom_ += 0.01;
+	 else
+		zoom_ += 0.1;
+
 	zoom_ = std::min(zoom_, 1.0);
 }
 
 void Canvas::left() {
-	viewPort_.ul_.x_ -= (500 / zoom_);
-	viewPort_.lr_.x_ -= (500 / zoom_);
+	viewPort_.ul_.x_ -= (2000 * zoom_);
+	viewPort_.lr_.x_ -= (2000 * zoom_);
 }
 
 void Canvas::right() {
-	viewPort_.ul_.x_ += (500 / zoom_);
-	viewPort_.lr_.x_ += (500 / zoom_);
+	viewPort_.ul_.x_ += (2000 * zoom_);
+	viewPort_.lr_.x_ += (2000 * zoom_);
 }
 
 void Canvas::up() {
-	viewPort_.ul_.y_ -= (500 / zoom_);
-	viewPort_.lr_.y_ -= (500 / zoom_);
+	viewPort_.ul_.y_ -= (2000 * zoom_);
+	viewPort_.lr_.y_ -= (2000 * zoom_);
 }
 
 void Canvas::down() {
-	viewPort_.ul_.y_ += (500 / zoom_);
-	viewPort_.lr_.y_ += (500 / zoom_);
+	viewPort_.ul_.y_ += (500 * zoom_);
+	viewPort_.lr_.y_ += (500 * zoom_);
 }
 
 void Canvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
-	ellipseRGBA(screen_, scaleX(loc.x_), scaleY(loc.y_), rangeX * scale_, rangeY * scale_ , c.r, c.g, c.b, 255);
+	ellipseRGBA(screen_, scaleX(loc.x_), scaleY(loc.y_), std::max(rangeX * scale_, 1.0), std::max(rangeY * scale_, 1.0), c.r, c.g, c.b, 255);
 }
 
 void Canvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c) {
