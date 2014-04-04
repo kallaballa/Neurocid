@@ -10,7 +10,7 @@
 
 #include "2d.hpp"
 
-namespace tankwar {
+namespace neurocid {
 
 struct BattleFieldLayout {
 	size_t iterations_;

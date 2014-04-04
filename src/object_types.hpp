@@ -1,7 +1,7 @@
 #ifndef OBJECT_TYPES_HPP_
 #define OBJECT_TYPES_HPP_
 
-namespace tankwar {
+namespace neurocid {
 enum ObjectType {
 	TANK,
 	PROJECTILE

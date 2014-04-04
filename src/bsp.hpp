@@ -4,7 +4,7 @@
 #include "object.hpp"
 #include <kdtree++/kdtree.hpp>
 
-namespace tankwar {
+namespace neurocid {
 
 inline Coord centerComponent(const Object* node, const int& k) {
 	if(k == 0)

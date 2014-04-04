@@ -8,7 +8,7 @@
 
 
 
-namespace tankwar {
+namespace neurocid {
 
 class Game;
 

@@ -13,7 +13,7 @@
 #include <vector>
 #include <boost/pool/pool_alloc.hpp>
 
-namespace tankwar {
+namespace neurocid {
 
 using std::vector;
 
@@ -80,6 +80,6 @@ public:
 		}
 	}
 };
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif /* SCAN_HPP_ */

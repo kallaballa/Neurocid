@@ -2,7 +2,7 @@
 #include "placer.hpp"
 #include "util.hpp"
 
-using namespace tankwar;
+using namespace neurocid;
 int main(int argc, char** argv) {
 	PopulationLayout pl_;
 	vector<Population> teams = makeTeams(2, 20, pl_);

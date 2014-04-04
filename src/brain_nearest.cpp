@@ -6,7 +6,7 @@
 #include <limits>
 #include <cmath>
 
-namespace tankwar {
+namespace neurocid {
 
 BrainNearest::BrainNearest() : BasicBrain() {
 }
@@ -108,4 +108,4 @@ void BrainNearest::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 	//	std::cerr << "output:\t" << lthrust_ << "\t" << rthrust_ << "\t" << shoot_ << std::endl;
 }
-} /* namespace tankwar */
+} /* namespace neurocid */

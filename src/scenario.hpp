@@ -9,7 +9,7 @@
 #include <vector>
 #include "placer.hpp"
 
-namespace tankwar {
+namespace neurocid {
 using std::vector;
 
 class Scenario {
@@ -47,6 +47,6 @@ public:
 	virtual Placer* createPlacer() = 0;
 };
 
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif /* SCENARIO_HPP_ */

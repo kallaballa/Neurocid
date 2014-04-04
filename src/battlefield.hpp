@@ -7,7 +7,7 @@
 #include "scenario.hpp"
 #include <vector>
 
-namespace tankwar {
+namespace neurocid {
 
 using std::vector;
 
@@ -30,6 +30,6 @@ private:
 	void cleanup();
 };
 
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif /* BATTLEFIELD_HPP_ */

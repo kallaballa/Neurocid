@@ -3,7 +3,7 @@
 #include <string>
 #include <functional>
 
-using namespace tankwar;
+using namespace neurocid;
 using std::cerr;
 using std::endl;
 using std::string;

@@ -14,7 +14,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #endif
 
-namespace tankwar {
+namespace neurocid {
 
 struct TankLayout {
 #ifndef _NO_SERIALIZEz
@@ -136,6 +136,6 @@ public:
 private:
 };
 
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif /* TANK_HPP_ */

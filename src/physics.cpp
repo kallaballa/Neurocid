@@ -11,7 +11,7 @@
 #include "projectile.hpp"
 #include "population.hpp"
 
-namespace tankwar {
+namespace neurocid {
 using std::vector;
 
 void Physics::wallHit(Tank& t) {
@@ -341,4 +341,4 @@ void Physics::step() {
 	}
 }
 
-} /* namespace tankwar */
+} /* namespace neurocid */

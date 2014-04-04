@@ -17,7 +17,7 @@
 #include <functional>
 #include <iostream>
 
-namespace tankwar {
+namespace neurocid {
 using std::vector;
 using std::function;
 
@@ -366,6 +366,6 @@ public:
 	}
 };
 
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif /* PLACER_HPP_ */

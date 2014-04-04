@@ -18,7 +18,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #endif
 
-namespace tankwar {
+namespace neurocid {
 using std::vector;
 using std::istream;
 using std::ostream;

@@ -11,7 +11,7 @@
 #include "bsp.hpp"
 #include "util.hpp"
 
-namespace tankwar {
+namespace neurocid {
 
 void SwarmScanner::pickRandomN(ScanObjectType type, Tank& t, Population& team, ScanObjectVector& result, size_t n) {
 	size_t s = team.size();
@@ -125,4 +125,4 @@ void SwarmScanner::prepare(BattleField& field) {
 	BspScanner::prepare(field);
 }
 
-} /* namespace tankwar */
+} /* namespace neurocid */

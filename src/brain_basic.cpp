@@ -6,7 +6,7 @@
 #include <limits>
 #include <cmath>
 
-namespace tankwar {
+namespace neurocid {
 
 #ifdef _CHECK_BRAIN_ALLOC
 std::map<fann*, size_t> BasicBrain::nnAllocs_;
@@ -106,4 +106,4 @@ bool BasicBrain::operator!=(BasicBrain& other) {
 	return !operator==(other);
 }
 
-} /* namespace tankwar */
+} /* namespace neurocid */

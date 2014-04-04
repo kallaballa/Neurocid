@@ -10,7 +10,7 @@
 
 #include <stddef.h>
 
-namespace tankwar {
+namespace neurocid {
 
 class Options {
 	static Options* instance_;
@@ -26,6 +26,6 @@ public:
 	}
 };
 
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif /* OPTIONS_HPP_ */

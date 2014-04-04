@@ -17,7 +17,7 @@
 #include <map>
 #endif
 
-namespace tankwar {
+namespace neurocid {
 
 struct BrainLayout  {
 #ifndef _NO_SERIALIZE
@@ -109,6 +109,6 @@ public:
 };
 
 typedef BrainSwarm Brain;
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif /* BRAIN_HPP_ */

@@ -4,25 +4,19 @@
 #define VIDEOENCODER_HPP_
 
 #include <stdio.h>
-#include <SDL/SDL.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
-#include <libavutil/opt.h>
-#include <libavcodec/avcodec.h>
-#include <libavutil/channel_layout.h>
-#include <libavutil/common.h>
-#include <libavutil/imgutils.h>
-#include <libavutil/mathematics.h>
-#include <libavutil/samplefmt.h>
-#include <libswscale/swscale.h>
 }
-namespace tankwar {
+
+struct SDL_Surface;
+
+namespace neurocid {
 
 class VideoEncoder {
 private:
 	AVCodec* codec_;
     AVCodecContext* context_;
-    AVPacket pkt_;
+    AVPacket* pkt_;
     int frameIndex_;
     int gotOutput_;
     FILE *file_;
@@ -45,7 +39,7 @@ public:
 	}
 };
 
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif /* VIDEOENCODER_HPP_ */
 

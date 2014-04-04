@@ -16,7 +16,7 @@
 #include <cstdlib>
 #include <iostream>
 
-namespace tankwar {
+namespace neurocid {
 using std::vector;
 using std::list;
 using std::cerr;
@@ -86,4 +86,4 @@ void BattleField::step() {
 	});
 }
 
-} /* namespace tankwar */
+} /* namespace neurocid */

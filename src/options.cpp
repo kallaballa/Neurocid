@@ -1,5 +1,5 @@
 #include "options.hpp"
-namespace tankwar {
+namespace neurocid {
 	Options* Options::instance_ = NULL;
 }
 

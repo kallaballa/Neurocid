@@ -17,7 +17,7 @@
 #include <stddef.h>
 #include <cmath>
 
-namespace tankwar {
+namespace neurocid {
 
 Renderer * Renderer::instance_ = NULL;
 
@@ -53,4 +53,4 @@ void Renderer::render() {
 	if(dur < sleep)
 		std::this_thread::sleep_for(std::chrono::milliseconds(sleep - dur));
 }
-} /* namespace tankwar */
+} /* namespace neurocid */

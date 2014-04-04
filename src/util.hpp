@@ -6,7 +6,7 @@
 #include <chrono>
 #include "2d.hpp"
 
-namespace tankwar {
+namespace neurocid {
 
 using std::vector;
 class Population;
@@ -35,6 +35,6 @@ void clamp(T &arg, T min, T max)
     arg = max;
   }
 }
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif /* UTIL_HPP_ */

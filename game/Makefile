@@ -1,5 +1,5 @@
-TARGET  := tankwar
-SRCS    := tankwar.cpp 
+TARGET  := neurocid
+SRCS    := neurocid.cpp 
 #precompiled headers
 HEADERS := 
 GCH    := ${HEADERS:.h=.gch}
@@ -8,7 +8,7 @@ DEPS    := ${SRCS:.cpp=.dep}
 
 CXXFLAGS += -I../ -I../src/ 
 LDFLAGS += -L../src/
-LIBS    += -ltankwar
+LIBS    += -lneurocid
 
 .PHONY: all release debug clean distclean 
 

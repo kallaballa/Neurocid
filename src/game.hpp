@@ -18,7 +18,7 @@
 #include <stddef.h>
 #include <cassert>
 
-namespace tankwar {
+namespace neurocid {
 
 using std::vector;
 
@@ -43,6 +43,6 @@ public:
 	vector<Population> play(bool render);
 };
 
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif /* GAME_HPP_ */

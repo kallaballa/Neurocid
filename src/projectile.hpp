@@ -17,7 +17,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #endif
 
-namespace tankwar {
+namespace neurocid {
 
 class Tank;
 

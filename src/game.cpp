@@ -14,7 +14,7 @@
 #include <chrono>
 #include <thread>
 
-namespace tankwar {
+namespace neurocid {
 
 Game::Game(Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools) :
 		scenario_(scenario),
@@ -181,4 +181,4 @@ vector<Population> Game::play(bool render) {
 		return newTeams_;
 	}
 }
-} /* namespace tankwar */
+} /* namespace neurocid */

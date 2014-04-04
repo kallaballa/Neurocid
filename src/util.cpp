@@ -11,7 +11,7 @@
 #include "genetic.hpp"
 #include <cstdlib>
 
-namespace tankwar {
+namespace neurocid {
 
 Population makePopulation(size_t teamID, size_t size, PopulationLayout& pl) {
 	Population p;
@@ -49,4 +49,4 @@ Coord fRand(Coord fMin, Coord fMax)
     return fMin + f * (fMax - fMin);
 }
 
-} /* namespace tankwar */
+} /* namespace neurocid */

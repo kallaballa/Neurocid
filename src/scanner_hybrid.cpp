@@ -11,12 +11,12 @@
 #include "bsp.hpp"
 #include "util.hpp"
 
-#ifdef TANKWAR_GPU
+#ifdef _GPU_KMEANS
 #include "../src/KMeans.hpp"
 #include <ctime>
 #endif
 
-namespace tankwar {
+namespace neurocid {
 
 void HybridScanner::teamScan(Population& active, Population& passive, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, ObjectBsp& bspFriends, ObjectBsp& bspEnemies, BattleFieldLayout& bfl) {
 	Coord numFriends = ClusterScanner::layout_.numFriends_;
@@ -134,4 +134,4 @@ void HybridScanner::prepare(BattleField& field) {
 	ClusterScanner::prepare(field);
 }
 
-} /* namespace tankwar */
+} /* namespace neurocid */

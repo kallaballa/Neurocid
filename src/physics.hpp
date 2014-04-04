@@ -15,7 +15,7 @@
 
 
 
-namespace tankwar {
+namespace neurocid {
 using std::vector;
 class Tank;
 class BattleField;
@@ -58,6 +58,6 @@ public:
 	void step();
 };
 
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif /* PHYSICS_HPP_ */

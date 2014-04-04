@@ -1,7 +1,7 @@
 #include "gamestate.hpp"
 #include "game.hpp"
 
-namespace tankwar {
+namespace neurocid {
 	GameState* GameState::instance_ = NULL;
 	void GameState::setCurrentGame(Game* g) {
 		currentGame_ = g;

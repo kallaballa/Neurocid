@@ -20,7 +20,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #endif
 
-namespace tankwar {
+namespace neurocid {
 typedef double Coord;
 
 #define NO_COORD std::numeric_limits<Coord>().max()

@@ -13,7 +13,7 @@
 #include "options.hpp"
 #include "projectile.hpp"
 
-namespace tankwar {
+namespace neurocid {
 using std::string;
 using std::map;
 

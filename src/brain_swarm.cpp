@@ -9,7 +9,7 @@
 #include <map>
 
 
-namespace tankwar {
+namespace neurocid {
 using std::map;
 
 BrainSwarm::BrainSwarm() : BasicBrain() {
@@ -132,4 +132,4 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 	//	std::cerr << "output:\t" << lthrust_ << "\t" << rthrust_ << "\t" << shoot_ << std::endl;
 }
-} /* namespace tankwar */
+} /* namespace neurocid */

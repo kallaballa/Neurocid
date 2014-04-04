@@ -11,7 +11,7 @@
 #include <iostream>
 #include <algorithm>
 
-namespace tankwar {
+namespace neurocid {
 using std::stringstream;
 using std::cerr;
 using std::endl;

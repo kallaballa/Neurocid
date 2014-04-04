@@ -10,7 +10,7 @@
 #include "battlefield.hpp"
 #include "bsp.hpp"
 
-namespace tankwar {
+namespace neurocid {
 
 void BspScanner::buildBsps(BattleField& field) {
 	assert(field.teams_.size() == 2);
@@ -62,4 +62,4 @@ void BspScanner::prepare(BattleField& field) {
 	buildBsps(field);
 }
 
-} /* namespace tankwar */
+} /* namespace neurocid */

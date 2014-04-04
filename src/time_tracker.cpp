@@ -7,7 +7,7 @@
 
 #include "time_tracker.hpp"
 
-namespace tankwar {
+namespace neurocid {
 
 TimeTracker* TimeTracker::instance_;
 
@@ -17,4 +17,4 @@ TimeTracker::TimeTracker() : enabled_(false) {
 TimeTracker::~TimeTracker() {
 }
 
-} /* namespace tankwar */
+} /* namespace neurocid */

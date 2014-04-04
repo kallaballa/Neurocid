@@ -1,4 +1,4 @@
-TARGET  := libtankwar.so
+TARGET  := libneurocid.so
 SRCS    := brain_basic.cpp brain_swarm.cpp brain_nearest.cpp battlefield.cpp canvas.cpp tank.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner_bsp.cpp scanner_swarm.cpp scanner_cluster.cpp time_tracker.cpp scanner_hybrid.cpp scan.cpp video_encoder.cpp
 ifdef TANKWAR_GPU
 SRCS += KMeans.cpp
@@ -16,8 +16,8 @@ CXXFLAGS += -fpic -I../
 LDFLAGS += -shared 
 .PHONY: all release debug clean distclean 
 
-ifdef TANKWAR_GPU
-CXXFLAGS += -I/usr/local/cula/include/ -I/usr/local/cuda/include/ -DTANKWAR_GPU
+ifdef WITH_GPU_KMEANS
+CXXFLAGS += -I/usr/local/cula/include/ -I/usr/local/cuda/include/ -D_GPU_KMEANS
 LIBS += -lcuda -lcublas -lcudart
 LDFLAGS += -L/usr/local/cuda/lib64/
 endif

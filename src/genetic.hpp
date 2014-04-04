@@ -8,7 +8,7 @@
 
 using namespace std;
 
-namespace tankwar {
+namespace neurocid {
 
 struct GeneticParams {
 	double mutationRate;

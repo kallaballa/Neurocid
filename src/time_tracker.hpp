@@ -15,7 +15,7 @@
 #include <sstream>
 #include <ostream>
 
-namespace tankwar {
+namespace neurocid {
 
 using std::ostream;
 using std::stringstream;
@@ -131,6 +131,6 @@ public:
 };
 
 
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif /* TIME_TRACKER_HPP_ */

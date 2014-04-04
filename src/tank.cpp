@@ -16,7 +16,7 @@
 #include <cmath>
 #include <limits>
 
-namespace tankwar {
+namespace neurocid {
 
 Tank::Tank(size_t teamID, TankLayout tl, Brain* brain) :
 		Object(TANK, {0,0}, 0, tl.range_, false, false),
@@ -320,4 +320,4 @@ Projectile* Tank::shoot() {
 	return p;
 }
 
-} /* namespace tankwar */
+} /* namespace neurocid */

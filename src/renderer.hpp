@@ -13,7 +13,7 @@
 #include "battlefield.hpp"
 #include "options.hpp"
 
-namespace tankwar {
+namespace neurocid {
 
 class Renderer {
 	double frameRate_;
@@ -43,6 +43,6 @@ public:
 		return instance_;
 	}
 };
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif /* RENDERER_HPP_ */

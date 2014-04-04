@@ -11,12 +11,12 @@
 #include "bsp.hpp"
 #include "util.hpp"
 
-#ifdef TANKWAR_GPU
+#ifdef _GPU_KMEANS
 #include "../src/KMeans.hpp"
 #include <ctime>
 #endif
 
-namespace tankwar {
+namespace neurocid {
 
 pair<Vector2D, Coord> ClusterScanner::findNearestCenter(const vector<Vector2D>& centers, const Vector2D& loc) {
 	Coord distance = NO_COORD;
@@ -49,7 +49,7 @@ void ClusterScanner::scanClusterCenters(Population& team, vector<Vector2D>& resu
 				}
 	    	}
 	    } else {
-	#ifndef TANKWAR_GPU
+	#ifndef _GPU_KMEANS
 			int	stages = 20;		// number of stages
 
 			KMterm term(100, 0, 0, 0,		// run for 100 stages
@@ -136,4 +136,4 @@ void ClusterScanner::prepare(BattleField& field) {
 	}
 }
 
-} /* namespace tankwar */
+} /* namespace neurocid */

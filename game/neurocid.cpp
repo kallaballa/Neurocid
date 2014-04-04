@@ -12,9 +12,7 @@
 #include "time_tracker.hpp"
 #include "scenario.hpp"
 #include "canvas.hpp"
-#ifndef _NO_VIDEOENC
-#include "video_encoder.hpp"
-#endif
+
 #include <ctime>
 #include <thread>
 #include <SDL/SDL.h>
@@ -24,11 +22,15 @@
 #include <fstream>
 #include <ctime>
 
+#ifndef _NO_VIDEOENC
+#include "video_encoder.hpp"
+#endif
+
 #ifndef _NO_PROGRAM_OPTIONS
 #include <boost/program_options.hpp>
 #endif
 
-using namespace tankwar;
+using namespace neurocid;
 #ifndef _NO_PROGRAM_OPTIONS
 namespace po = boost::program_options;
 #endif
@@ -837,7 +839,7 @@ int main(int argc, char** argv) {
     po::notify(vm);
 
     if (vm.count("help")) {
-        std::cerr << "Usage: tankwar [options]\n";
+        std::cerr << "Usage: neurocid [options]\n";
         std::cerr << visible;
         return 0;
     }

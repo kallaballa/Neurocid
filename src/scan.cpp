@@ -1,6 +1,6 @@
 #include "scan.hpp"
 
-namespace tankwar {
+namespace neurocid {
 	void ScanObject::scale(Vector2D& v, const Coord& distance, const Coord& maxDistance) const {
 		Coord dist = distance;
 		if(dist > maxDistance)
@@ -23,4 +23,4 @@ namespace tankwar {
 
 		scale(vector_, dis_, 30000);
 	}
-} /* namespace tankwar */
+} /* namespace neurocid */

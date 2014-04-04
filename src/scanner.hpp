@@ -15,7 +15,7 @@
 #include "scan.hpp"
 #include "KMlocal.h"
 
-namespace tankwar {
+namespace neurocid {
 using std::numeric_limits;
 using std::vector;
 
@@ -90,6 +90,6 @@ public:
 
 typedef HybridScanner Scanner;
 
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif /* SCANNER1_HPP_ */

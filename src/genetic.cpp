@@ -5,7 +5,7 @@
 #include <iostream>
 #include <assert.h>
 
-namespace tankwar {
+namespace neurocid {
 
 GeneticPool::GeneticPool(GeneticParams params) :
 		params_(params) {

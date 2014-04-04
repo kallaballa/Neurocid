@@ -6,17 +6,30 @@
 #include <cmath>
 #include <iostream>
 
+#include <SDL/SDL.h>
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavutil/opt.h>
+#include <libavcodec/avcodec.h>
+#include <libavutil/channel_layout.h>
+#include <libavutil/common.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/mathematics.h>
+#include <libavutil/samplefmt.h>
+#include <libswscale/swscale.h>
+}
+
 #define INBUF_SIZE 4096
 #define AUDIO_INBUF_SIZE 20480
 #define AUDIO_REFILL_THRESH 4096
 
-namespace tankwar {
+namespace neurocid {
 
 VideoEncoder* VideoEncoder::instance_ = NULL;
 VideoEncoder::VideoEncoder() :
 codec_(NULL),
 context_(NULL),
-pkt_(),
+pkt_(new AVPacket()),
 frameIndex_(0),
 gotOutput_(0),
 file_(NULL),
@@ -28,6 +41,7 @@ initialzed_(false) {
 }
 
 VideoEncoder::~VideoEncoder() {
+	delete pkt_;
 }
 
 void VideoEncoder::init(const char* filename, enum AVCodecID codec_id) {
@@ -120,9 +134,9 @@ void VideoEncoder::init(const char* filename, enum AVCodecID codec_id) {
         exit(1);
     }
 
-    av_init_packet(&pkt_);
-    pkt_.data = NULL;    // packet data will be allocated by the encoder
-    pkt_.size = 0;
+    av_init_packet(pkt_);
+    pkt_->data = NULL;    // packet data will be allocated by the encoder
+    pkt_->size = 0;
 	fflush(stdout);
 	initialzed_ = true;
 }
@@ -194,16 +208,16 @@ void VideoEncoder::encode(SDL_Surface *surface) {
 	yuvFrame_->pts = frameIndex_;
 
 	/* encode the image */
-	ret = avcodec_encode_video2(context_, &pkt_, yuvFrame_, &gotOutput_);
+	ret = avcodec_encode_video2(context_, pkt_, yuvFrame_, &gotOutput_);
 	if (ret < 0) {
 		fprintf(stderr, "Error encoding frame\n");
 		exit(1);
 	}
 
 	if (gotOutput_) {
-		printf("Write frame %3d (size=%5d)\n", frameIndex_, pkt_.size);
-		fwrite(pkt_.data, 1, pkt_.size, file_);
-		av_free_packet(&pkt_);
+		printf("Write frame %3d (size=%5d)\n", frameIndex_, pkt_->size);
+		fwrite(pkt_->data, 1, pkt_->size, file_);
+		av_free_packet(pkt_);
 	}
 	++frameIndex_;
 }
@@ -222,16 +236,16 @@ void VideoEncoder::close() {
     for (gotOutput_ = 1; gotOutput_; frameIndex_++) {
         fflush(stdout);
 
-        ret = avcodec_encode_video2(context_, &pkt_, NULL, &gotOutput_);
+        ret = avcodec_encode_video2(context_, pkt_, NULL, &gotOutput_);
         if (ret < 0) {
             fprintf(stderr, "Error encoding frame\n");
             exit(1);
         }
 
         if (gotOutput_) {
-            printf("Write frame %3d (size=%5d)\n", frameIndex_, pkt_.size);
-            fwrite(pkt_.data, 1, pkt_.size, file_);
-            av_free_packet(&pkt_);
+            printf("Write frame %3d (size=%5d)\n", frameIndex_, pkt_->size);
+            fwrite(pkt_->data, 1, pkt_->size, file_);
+            av_free_packet(pkt_);
         }
     }
 
@@ -252,6 +266,6 @@ void VideoEncoder::close() {
     yuvFrame_=NULL;
     initialzed_ = false;
 }
-} /* namespace tankwar */
+} /* namespace neurocid */
 
 #endif
