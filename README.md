@@ -11,8 +11,9 @@ All dependencies except ffmpeg are included in the repo. if you have problems wi
     
 ### Run
 There are two shell scripts that are examples of how to run neurocid to train and watch space ship populations.
-basic_training.sh - attempts to produce a well fighting population in a short time.
-play.sh - loads a population and multiplies it 5 times to run it it in a big scenario.
-You might have to tweak hardcoded parameters in the scripts (e.g. resolution).
+* basic_training.sh - attempts to produce a well fighting population in a short time.
+* play.sh - loads a population and multiplies it 5 times to run it it in a big scenario.
+
+**NOTE:** You might have to tweak hardcoded parameters in the scripts (e.g. resolution).
 
     
