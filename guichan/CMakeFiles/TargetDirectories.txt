@@ -1,2 +1,0 @@
-/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/guichan.dir
-/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/lib.dir
