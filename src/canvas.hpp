@@ -1,17 +1,20 @@
 #ifndef CANVAS_H_
 #define CANVAS_H_
 
+#include "options.hpp"
+#include "projectile.hpp"
+
 #include <algorithm>
 #include <SDL/SDL.h>
 #include <SDL/SDL_gfxPrimitives.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
+#include <guichan.hpp>
+#include <guichan/sdl.hpp>
 #include "2d.hpp"
 #include <string>
 #include <cassert>
 #include <map>
-#include "options.hpp"
-#include "projectile.hpp"
 
 namespace neurocid {
 using std::string;
@@ -31,6 +34,8 @@ class Canvas {
 private:
 	static Canvas* instance_;
 	Canvas(Coord width, Coord height);
+	~Canvas();
+
 	std::vector<Color> teamColors_ = {
 			{ 0, 192, 0 },
 			{ 64, 64, 255 },
@@ -40,12 +45,11 @@ private:
 	};
 
 	struct SDL_Surface *screen_;
-	void *frameBuffer_;
-	TTF_Font *font_;
 	bool drawEngines_;
 	bool drawCenters_;
 	bool drawGrid_;
 	bool drawProjectiles_;
+
 	Coord width_;
 	Coord height_;
 	Coord scale_;
@@ -58,6 +62,12 @@ private:
 	Sint16 scaleY(const Coord& c);
 	Rect findBounds(BattleField& field);
 	void drawGrid(BattleField& field);
+	void drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c);
+	void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
+	void drawShip(Ship& tank, Color c);
+	void drawProjectile(Projectile& pro, Color& c);
+	void drawExplosion(Object& o, Color& c);
+	void drawCenters(Scanner& scanner);
 public:
 	void zoomIn();
 	void zoomOut();
@@ -65,23 +75,20 @@ public:
 	void right();
 	void up();
 	void down();
-	void drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c);
-	void drawText(const string& s, Coord x0, Coord y0, Color c);
-	void updateOSD(const string& key, const string& value);
-	void renderOSD();
-	Coord renderText(const string& s, Coord x, Color c, bool left);
-	void renderTackerInfo();
-	void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
-	void drawShip(Ship& tank, Color c);
-	void drawProjectile(Projectile& pro, Color& c);
-	void drawExplosion(Object& o, Color& c);
-	void drawCenters(Scanner& scanner);
 	void update();
 	void clear();
 	void render(BattleField& fiseld);
 
 	SDL_Surface* getSurface() const {
 		return screen_;
+	}
+
+	Coord width() const {
+		return width_;
+	}
+
+	Coord height() const {
+		return height_;
 	}
 
 	static Canvas* getInstance() {

@@ -1,5 +1,7 @@
 
 #include "canvas.hpp"
+#include "gui/gui.hpp"
+#include "gui/osd.hpp"
 #include "ship.hpp"
 #include "projectile.hpp"
 #include "battlefield.hpp"
@@ -20,7 +22,6 @@ Canvas* Canvas::instance_ = NULL;
 
 Canvas::Canvas(Coord width, Coord height) :
 		screen_(NULL),
-		frameBuffer_(NULL),
 		drawEngines_(false),
 		drawCenters_(false),
 		drawGrid_(false),
@@ -30,6 +31,7 @@ Canvas::Canvas(Coord width, Coord height) :
 		scale_(1),
 		zoom_(1),
 		viewPort_() {
+
 	if (width > 0 && height > 0) {
 		if (SDL_Init(SDL_INIT_VIDEO) == -1) {
 			cerr << "Can't init SDL: " << SDL_GetError() << endl;
@@ -44,42 +46,29 @@ Canvas::Canvas(Coord width, Coord height) :
 		}
 	}
 
-	// Initialize SDL_ttf library
-	if (TTF_Init() != 0) {
-		cerr << "TTF_Init() Failed: " << TTF_GetError() << endl;
-		SDL_Quit();
-		exit(1);
-	}
+}
 
-	// Load a font
-	font_ = TTF_OpenFont("/usr/share/fonts/truetype/DejaVuSansMono.ttf", 12);
-	if (font_ == NULL) {
-		cerr << "TTF_OpenFont() Failed: " << TTF_GetError() << endl;
-		TTF_Quit();
-		SDL_Quit();
-		exit(1);
-	}
+Canvas::~Canvas() {
 }
 
 void Canvas::calculateScale() {
+	Coord preScale = 0.9;
 	Coord scaleX = width_ / (viewPort_.lr_.x_ - viewPort_.ul_.x_);
 	Coord scaleY = height_ / (viewPort_.lr_.y_ - viewPort_.ul_.y_);
-	scale_ = std::min(scaleX, scaleY);
+	scale_ = std::min(scaleX, scaleY) * preScale / zoom_;
 }
 
 Sint16 Canvas::scaleX(const Coord& c) {
-	Coord preScale = 0.9;
-	Coord len = (viewPort_.lr_.x_ - viewPort_.ul_.x_) * scale_ * preScale / zoom_;
-	Coord pos = (c - viewPort_.ul_.x_) * scale_ * preScale / zoom_;
+	Coord len = (viewPort_.lr_.x_ - viewPort_.ul_.x_) * scale_;
+	Coord pos = (c - viewPort_.ul_.x_) * scale_;
 	Coord scaled = (((width_ - len) / 2) + pos);
 
 	return (Sint16)round(scaled);
 }
 
 Sint16 Canvas::scaleY(const Coord& c) {
-	Coord preScale = 0.9;
-	Coord len = (viewPort_.lr_.y_ - viewPort_.ul_.y_) * scale_ * preScale / zoom_;
-	Coord pos = (c - viewPort_.ul_.y_) * scale_ * preScale / zoom_;
+	Coord len = (viewPort_.lr_.y_ - viewPort_.ul_.y_) * scale_;
+	Coord pos = (c - viewPort_.ul_.y_) * scale_;
 	Coord scaled = (((height_ - len) / 2) + pos);
 
 	return (Sint16)round(scaled);
@@ -124,82 +113,11 @@ void Canvas::down() {
 }
 
 void Canvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
-	ellipseRGBA(screen_, scaleX(loc.x_), scaleY(loc.y_), std::max(rangeX * scale_, 1.0), std::max(rangeY * scale_, 1.0), c.r, c.g, c.b, 255);
+	ellipseRGBA(screen_, scaleX(loc.x_), scaleY(loc.y_), round(rangeX * scale_), round(rangeY * scale_), c.r, c.g, c.b, 255);
 }
 
 void Canvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c) {
     lineRGBA(screen_, scaleX(x0), scaleY(y0), scaleX(x1), scaleY(y1), c.r, c.g, c.b, 255);
-}
-
-void Canvas::drawText(const string& s, Coord x0, Coord y0, Color c) {
-	SDL_Surface *text;
-	SDL_Color text_color = { c.r, c.g, c.b };
-	text = TTF_RenderText_Solid(font_, s.c_str(), text_color);
-	assert(text != NULL);
-	SDL_Rect drest = {scaleX(x0),scaleY(y0),0,0};
-	if (SDL_BlitSurface(text, NULL, screen_, &drest) != 0) {
-		cerr << "SDL_BlitSurface() Failed: " << SDL_GetError() << endl;
-	}
-	SDL_FreeSurface(text);
-}
-
-void Canvas::updateOSD(const string& key, const string& value) {
-	osdMap_[key] = value;
-}
-
-void Canvas::renderOSD() {
-	Coord y = 20;
-	for(auto it : osdMap_) {
-		SDL_Surface *text;
-		SDL_Color text_color = { 255, 255, 255 };
-		text = TTF_RenderText_Solid(font_, (it.first + ": " + it.second).c_str(), text_color);
-		assert(text != NULL);
-		SDL_Rect drest = {20,(Sint16)round(y),0,0};
-		y += (text->h + 5);
-
-		if (SDL_BlitSurface(text, NULL, screen_, &drest) != 0) {
-			cerr << "SDL_BlitSurface() Failed: " << SDL_GetError() << endl;
-		}
-		SDL_FreeSurface(text);
-	}
-}
-
-Coord Canvas::renderText(const string& s, Coord y, Color c, bool left) {
-	SDL_Surface *text;
-	SDL_Color text_color = { c.r, c.g, c.b };
-	text = TTF_RenderText_Solid(font_, s.c_str(), text_color);
-	assert(text != NULL);
-
-	SDL_Rect drest;
-	if(!left)
-		drest = {(Sint16)round(width_ - text->w), (Sint16)round(y),0,0};
-	else
-		drest = {20, (Sint16)round(y),0,0};
-
-	if (SDL_BlitSurface(text, NULL, screen_, &drest) != 0) {
-		cerr << "SDL_BlitSurface() Failed: " << SDL_GetError() << endl;
-	}
-	Coord h = text->h;
-	SDL_FreeSurface(text);
-	return h;
-}
-
-void Canvas::renderTackerInfo() {
-	Coord y = 20;
-	const map<string, TimeInfo>& tiMap = TimeTracker::getInstance()->getMap();
-	Color c = {200,200,200};
-	stringstream ss;
-	for(auto it : tiMap) {
-		ss << std::left << std::setw(45) << std::setfill(' ') << (it.first + ": " + it.second.str());
-		y += renderText(ss.str(), y, c, false) + 5;
-		ss.str("");
-
-		for(auto itc : it.second.children_) {
-			ss << std::left << std::setw(45) << std::setfill(' ') << ("  "  + itc.first + ": " + itc.second.str());
-			y += renderText(ss.str(), y, c, false) + 5;
-			ss.str("");
-		}
-	}
 }
 
 void fill_circle(SDL_Surface *surface, int cx, int cy, int radius, Uint32 pixel)
@@ -264,13 +182,14 @@ void Canvas::drawShip(Ship& tank, Color c) {
 		brengine += (across1 * -(tank.range_));
 
 		Vector2D flforce = flengine;
-		flforce += across1 * -(tank.flthrust_ * 600);
+		flforce += across2 * -(tank.flthrust_ * 600);
 		Vector2D frforce = frengine;
-		frforce += across2 * (tank.frthrust_ * 600);
+		frforce += across1 * (tank.frthrust_ * 600);
 		Vector2D blforce = blengine;
 		blforce += across1 * (tank.blthrust_ * 600);
 		Vector2D brforce = brengine;
 		brforce += across2 * -(tank.brthrust_ * 600);
+
 		Color red = {255,0,0};
 		drawLine(flengine.x_, flengine.y_, flforce.x_, flforce.y_, red);
 		drawLine(frengine.x_, frengine.y_, frforce.x_, frforce.y_, red);
@@ -299,7 +218,6 @@ void Canvas::clear() {
 void Canvas::update() {
 	if(screen_ != NULL) {
 		SDL_Flip(screen_);
-		frameBuffer_ = screen_->pixels;
 	}
 }
 
@@ -357,7 +275,6 @@ void Canvas::render(BattleField& field) {
 	if(zoom_ == 1)
 		viewPort_ = findBounds(field);
 	calculateScale();
-	this->clear();
 
 	if(drawGrid_)
 		drawGrid(field);
@@ -390,17 +307,7 @@ void Canvas::render(BattleField& field) {
 		++teamCnt;
 	}
 
-	updateOSD("Score", std::to_string(field.teams_[0].score_) + " : " + std::to_string(field.teams_[1].score_));
-	updateOSD("Best", std::to_string(field.teams_[0].stats_.bestFitness_) + " / " + std::to_string(field.teams_[1].stats_.bestFitness_));
-	updateOSD("Avg", std::to_string(field.teams_[0].stats_.averageFitness_) + " / " + std::to_string(field.teams_[1].stats_.averageFitness_));
-	updateOSD("Gen", std::to_string(field.teams_[0].stats_.generationCnt_) + " / " + std::to_string(field.teams_[1].stats_.generationCnt_));
-
-	renderOSD();
-	if(TimeTracker::getInstance()->isEnabled())
-		renderTackerInfo();
-
 	if(drawCenters_)
 		drawCenters(field.scanner_);
-	this->update();
 }
 }
