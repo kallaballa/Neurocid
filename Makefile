@@ -1,4 +1,4 @@
-CXX      := g++-4.8
+CXX      := g++
 CXXFLAGS := -std=c++0x -pedantic -Wall -I../kmlocal-1.7.2/src/ -I../fann/src/include -I../box2d/ -I../guichan/include/ `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf libavdevice libavformat libavfilter libavcodec libswresample libswscale libavutil` 
 LDFLAGS  := -L/opt/local/lib -L../kmlocal-1.7.2/src/ -L../fann/src/ -L../box2d/Box2D -L../guichan/
 LIBS     := -lboost_system -lboost_program_options -lklocal -lm -lfann -lguichan -lguichan_sdl -lBox2D -lX11 `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf`
