@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+/home/elchaschab/devel/Neurocid/guichan/src/sdl/sdl.cpp
+guichan/sdl.hpp
+/home/elchaschab/devel/Neurocid/guichan/src/sdl/guichan/sdl.hpp
+
 /home/elchaschab/devel/Neurocid/guichan/src/sdl/sdlgraphics.cpp
 guichan/sdl/sdlgraphics.hpp
 /home/elchaschab/devel/Neurocid/guichan/src/sdl/guichan/sdl/sdlgraphics.hpp
@@ -19,6 +23,30 @@ guichan/sdl/sdlimage.hpp
 /home/elchaschab/devel/Neurocid/guichan/src/sdl/guichan/sdl/sdlimage.hpp
 guichan/sdl/sdlpixel.hpp
 /home/elchaschab/devel/Neurocid/guichan/src/sdl/guichan/sdl/sdlpixel.hpp
+
+/home/elchaschab/devel/Neurocid/guichan/src/sdl/sdlimage.cpp
+guichan/sdl/sdlimage.hpp
+/home/elchaschab/devel/Neurocid/guichan/src/sdl/guichan/sdl/sdlimage.hpp
+guichan/exception.hpp
+/home/elchaschab/devel/Neurocid/guichan/src/sdl/guichan/exception.hpp
+guichan/sdl/sdlpixel.hpp
+/home/elchaschab/devel/Neurocid/guichan/src/sdl/guichan/sdl/sdlpixel.hpp
+
+/home/elchaschab/devel/Neurocid/guichan/src/sdl/sdlimageloader.cpp
+guichan/sdl/sdlimage.hpp
+/home/elchaschab/devel/Neurocid/guichan/src/sdl/guichan/sdl/sdlimage.hpp
+SDL_image.h
+/home/elchaschab/devel/Neurocid/guichan/src/sdl/SDL_image.h
+guichan/exception.hpp
+/home/elchaschab/devel/Neurocid/guichan/src/sdl/guichan/exception.hpp
+guichan/sdl/sdlimageloader.hpp
+/home/elchaschab/devel/Neurocid/guichan/src/sdl/guichan/sdl/sdlimageloader.hpp
+
+/home/elchaschab/devel/Neurocid/guichan/src/sdl/sdlinput.cpp
+guichan/sdl/sdlinput.hpp
+/home/elchaschab/devel/Neurocid/guichan/src/sdl/guichan/sdl/sdlinput.hpp
+guichan/exception.hpp
+/home/elchaschab/devel/Neurocid/guichan/src/sdl/guichan/exception.hpp
 
 /usr/include/SDL/SDL.h
 SDL_main.h
@@ -143,6 +171,16 @@ SDL_joystick.h
 /usr/include/SDL/SDL_joystick.h
 SDL_quit.h
 /usr/include/SDL/SDL_quit.h
+begin_code.h
+/usr/include/SDL/begin_code.h
+close_code.h
+/usr/include/SDL/close_code.h
+
+/usr/include/SDL/SDL_image.h
+SDL.h
+/usr/include/SDL/SDL.h
+SDL_version.h
+/usr/include/SDL/SDL_version.h
 begin_code.h
 /usr/include/SDL/begin_code.h
 close_code.h
@@ -372,6 +410,30 @@ string
 guichan/platform.hpp
 include/guichan/guichan/platform.hpp
 
+include/guichan/imageloader.hpp
+string
+-
+guichan/platform.hpp
+include/guichan/guichan/platform.hpp
+
+include/guichan/input.hpp
+guichan/platform.hpp
+include/guichan/guichan/platform.hpp
+
+include/guichan/key.hpp
+guichan/platform.hpp
+include/guichan/guichan/platform.hpp
+
+include/guichan/keyinput.hpp
+guichan/key.hpp
+include/guichan/guichan/key.hpp
+guichan/platform.hpp
+include/guichan/guichan/platform.hpp
+
+include/guichan/mouseinput.hpp
+guichan/platform.hpp
+include/guichan/guichan/platform.hpp
+
 include/guichan/platform.hpp
 
 include/guichan/rectangle.hpp
@@ -379,6 +441,18 @@ guichan/platform.hpp
 include/guichan/guichan/platform.hpp
 iostream
 -
+
+include/guichan/sdl.hpp
+guichan/sdl/sdlgraphics.hpp
+-
+guichan/sdl/sdlimage.hpp
+-
+guichan/sdl/sdlimageloader.hpp
+-
+guichan/sdl/sdlinput.hpp
+-
+platform.hpp
+include/guichan/platform.hpp
 
 include/guichan/sdl/sdlgraphics.hpp
 SDL.h
@@ -401,6 +475,28 @@ guichan/platform.hpp
 include/guichan/sdl/guichan/platform.hpp
 guichan/image.hpp
 include/guichan/sdl/guichan/image.hpp
+
+include/guichan/sdl/sdlimageloader.hpp
+guichan/imageloader.hpp
+include/guichan/sdl/guichan/imageloader.hpp
+guichan/platform.hpp
+include/guichan/sdl/guichan/platform.hpp
+SDL.h
+include/guichan/sdl/SDL.h
+
+include/guichan/sdl/sdlinput.hpp
+queue
+-
+SDL.h
+include/guichan/sdl/SDL.h
+guichan/input.hpp
+include/guichan/sdl/guichan/input.hpp
+guichan/keyinput.hpp
+include/guichan/sdl/guichan/keyinput.hpp
+guichan/mouseinput.hpp
+include/guichan/sdl/guichan/mouseinput.hpp
+guichan/platform.hpp
+include/guichan/sdl/guichan/platform.hpp
 
 include/guichan/sdl/sdlpixel.hpp
 SDL.h

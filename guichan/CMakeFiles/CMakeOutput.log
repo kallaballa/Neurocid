@@ -485,3 +485,139 @@ Linking C executable cmTryCompileExec1457804067
 gmake[1]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
 
 
+Determining if the function XOpenDisplay exists in the /usr/lib64/libX11.so;/usr/lib64/libXext.so passed with the following output:
+Change Dir: /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec1030591179/fast"
+gmake[1]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec1030591179.dir/build.make CMakeFiles/cmTryCompileExec1030591179.dir/build
+gmake[2]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec1030591179.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=XOpenDisplay   -o CMakeFiles/cmTryCompileExec1030591179.dir/CheckFunctionExists.c.o   -c /usr/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec1030591179
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1030591179.dir/link.txt --verbose=1
+/usr/bin/cc     -DCHECK_FUNCTION_EXISTS=XOpenDisplay    CMakeFiles/cmTryCompileExec1030591179.dir/CheckFunctionExists.c.o  -o cmTryCompileExec1030591179 -rdynamic -lX11 -lXext 
+gmake[2]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+
+
+Determining if the function gethostbyname exists passed with the following output:
+Change Dir: /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec343685466/fast"
+gmake[1]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec343685466.dir/build.make CMakeFiles/cmTryCompileExec343685466.dir/build
+gmake[2]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec343685466.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=gethostbyname   -o CMakeFiles/cmTryCompileExec343685466.dir/CheckFunctionExists.c.o   -c /usr/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec343685466
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec343685466.dir/link.txt --verbose=1
+/usr/bin/cc     -DCHECK_FUNCTION_EXISTS=gethostbyname    CMakeFiles/cmTryCompileExec343685466.dir/CheckFunctionExists.c.o  -o cmTryCompileExec343685466 -rdynamic 
+gmake[2]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+
+
+Determining if the function connect exists passed with the following output:
+Change Dir: /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec2473547477/fast"
+gmake[1]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec2473547477.dir/build.make CMakeFiles/cmTryCompileExec2473547477.dir/build
+gmake[2]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec2473547477.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=connect   -o CMakeFiles/cmTryCompileExec2473547477.dir/CheckFunctionExists.c.o   -c /usr/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec2473547477
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2473547477.dir/link.txt --verbose=1
+/usr/bin/cc     -DCHECK_FUNCTION_EXISTS=connect    CMakeFiles/cmTryCompileExec2473547477.dir/CheckFunctionExists.c.o  -o cmTryCompileExec2473547477 -rdynamic 
+gmake[2]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+
+
+Determining if the function remove exists passed with the following output:
+Change Dir: /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3405886374/fast"
+gmake[1]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3405886374.dir/build.make CMakeFiles/cmTryCompileExec3405886374.dir/build
+gmake[2]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3405886374.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=remove   -o CMakeFiles/cmTryCompileExec3405886374.dir/CheckFunctionExists.c.o   -c /usr/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec3405886374
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3405886374.dir/link.txt --verbose=1
+/usr/bin/cc     -DCHECK_FUNCTION_EXISTS=remove    CMakeFiles/cmTryCompileExec3405886374.dir/CheckFunctionExists.c.o  -o cmTryCompileExec3405886374 -rdynamic 
+gmake[2]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+
+
+Determining if the function shmat exists passed with the following output:
+Change Dir: /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec2156384580/fast"
+gmake[1]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec2156384580.dir/build.make CMakeFiles/cmTryCompileExec2156384580.dir/build
+gmake[2]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec2156384580.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=shmat   -o CMakeFiles/cmTryCompileExec2156384580.dir/CheckFunctionExists.c.o   -c /usr/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec2156384580
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2156384580.dir/link.txt --verbose=1
+/usr/bin/cc     -DCHECK_FUNCTION_EXISTS=shmat    CMakeFiles/cmTryCompileExec2156384580.dir/CheckFunctionExists.c.o  -o cmTryCompileExec2156384580 -rdynamic 
+gmake[2]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+
+
+Determining if the function IceConnectionNumber exists in the ICE passed with the following output:
+Change Dir: /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec139874089/fast"
+gmake[1]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec139874089.dir/build.make CMakeFiles/cmTryCompileExec139874089.dir/build
+gmake[2]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec139874089.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=IceConnectionNumber   -o CMakeFiles/cmTryCompileExec139874089.dir/CheckFunctionExists.c.o   -c /usr/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec139874089
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec139874089.dir/link.txt --verbose=1
+/usr/bin/cc     -DCHECK_FUNCTION_EXISTS=IceConnectionNumber    CMakeFiles/cmTryCompileExec139874089.dir/CheckFunctionExists.c.o  -o cmTryCompileExec139874089 -rdynamic -lICE 
+gmake[2]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+
+
+Determining if files pthread.h exist passed with the following output:
+Change Dir: /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec90115524/fast"
+gmake[1]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec90115524.dir/build.make CMakeFiles/cmTryCompileExec90115524.dir/build
+gmake[2]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec90115524.dir/CheckIncludeFiles.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec90115524.dir/CheckIncludeFiles.c.o   -c /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp/CheckIncludeFiles.c
+Linking C executable cmTryCompileExec90115524
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec90115524.dir/link.txt --verbose=1
+/usr/bin/cc         CMakeFiles/cmTryCompileExec90115524.dir/CheckIncludeFiles.c.o  -o cmTryCompileExec90115524 -rdynamic 
+gmake[2]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+
+
+Determining if the function pthread_create exists in the pthread passed with the following output:
+Change Dir: /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec2039295705/fast"
+gmake[1]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec2039295705.dir/build.make CMakeFiles/cmTryCompileExec2039295705.dir/build
+gmake[2]: Entering directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec2039295705.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec2039295705.dir/CheckFunctionExists.c.o   -c /usr/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec2039295705
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2039295705.dir/link.txt --verbose=1
+/usr/bin/cc     -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec2039295705.dir/CheckFunctionExists.c.o  -o cmTryCompileExec2039295705 -rdynamic -lpthread 
+gmake[2]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory `/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/CMakeTmp'
+
+
