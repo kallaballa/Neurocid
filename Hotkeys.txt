@@ -1,4 +1,5 @@
-hotkeys:
+All hotkeys work together with the ALT key pressed.
+
 escape: quit lesson
 space: change simulation speed
 c: draw cluster centers
@@ -7,3 +8,10 @@ p: pause game
 t: print time tracking info
 g: draw grid
 d: dump teams into a timestamped file
++: zoom in
+-: zoom out
+left: pan left
+right: pan right
+up: pan up
+down: pan down
+
