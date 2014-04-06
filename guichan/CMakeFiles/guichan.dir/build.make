@@ -56,15 +56,15 @@ CMakeFiles/guichan.dir/src/mouseevent.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/mouseevent.o: src/mouseevent.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/mouseevent.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/mouseevent.o -c /home/elchaschab/devel/Neurocid/guichan/src/mouseevent.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/mouseevent.o -c /home/elchaschab/devel/Neurocid/guichan/src/mouseevent.cpp
 
 CMakeFiles/guichan.dir/src/mouseevent.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/mouseevent.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/mouseevent.cpp > CMakeFiles/guichan.dir/src/mouseevent.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/mouseevent.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/mouseevent.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/mouseevent.cpp -o CMakeFiles/guichan.dir/src/mouseevent.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/mouseevent.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/mouseevent.o.requires
@@ -79,15 +79,15 @@ CMakeFiles/guichan.dir/src/keyinput.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/keyinput.o: src/keyinput.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_2)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/keyinput.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/keyinput.o -c /home/elchaschab/devel/Neurocid/guichan/src/keyinput.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/keyinput.o -c /home/elchaschab/devel/Neurocid/guichan/src/keyinput.cpp
 
 CMakeFiles/guichan.dir/src/keyinput.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/keyinput.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/keyinput.cpp > CMakeFiles/guichan.dir/src/keyinput.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/keyinput.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/keyinput.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/keyinput.cpp -o CMakeFiles/guichan.dir/src/keyinput.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/keyinput.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/keyinput.o.requires
@@ -102,15 +102,15 @@ CMakeFiles/guichan.dir/src/text.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/text.o: src/text.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_3)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/text.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/text.o -c /home/elchaschab/devel/Neurocid/guichan/src/text.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/text.o -c /home/elchaschab/devel/Neurocid/guichan/src/text.cpp
 
 CMakeFiles/guichan.dir/src/text.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/text.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/text.cpp > CMakeFiles/guichan.dir/src/text.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/text.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/text.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/text.cpp -o CMakeFiles/guichan.dir/src/text.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/text.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/text.o.requires
@@ -125,15 +125,15 @@ CMakeFiles/guichan.dir/src/graphics.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/graphics.o: src/graphics.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_4)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/graphics.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/graphics.o -c /home/elchaschab/devel/Neurocid/guichan/src/graphics.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/graphics.o -c /home/elchaschab/devel/Neurocid/guichan/src/graphics.cpp
 
 CMakeFiles/guichan.dir/src/graphics.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/graphics.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/graphics.cpp > CMakeFiles/guichan.dir/src/graphics.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/graphics.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/graphics.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/graphics.cpp -o CMakeFiles/guichan.dir/src/graphics.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/graphics.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/graphics.o.requires
@@ -148,15 +148,15 @@ CMakeFiles/guichan.dir/src/focushandler.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/focushandler.o: src/focushandler.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_5)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/focushandler.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/focushandler.o -c /home/elchaschab/devel/Neurocid/guichan/src/focushandler.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/focushandler.o -c /home/elchaschab/devel/Neurocid/guichan/src/focushandler.cpp
 
 CMakeFiles/guichan.dir/src/focushandler.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/focushandler.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/focushandler.cpp > CMakeFiles/guichan.dir/src/focushandler.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/focushandler.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/focushandler.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/focushandler.cpp -o CMakeFiles/guichan.dir/src/focushandler.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/focushandler.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/focushandler.o.requires
@@ -171,15 +171,15 @@ CMakeFiles/guichan.dir/src/event.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/event.o: src/event.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_6)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/event.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/event.o -c /home/elchaschab/devel/Neurocid/guichan/src/event.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/event.o -c /home/elchaschab/devel/Neurocid/guichan/src/event.cpp
 
 CMakeFiles/guichan.dir/src/event.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/event.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/event.cpp > CMakeFiles/guichan.dir/src/event.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/event.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/event.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/event.cpp -o CMakeFiles/guichan.dir/src/event.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/event.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/event.o.requires
@@ -194,15 +194,15 @@ CMakeFiles/guichan.dir/src/widget.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/widget.o: src/widget.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_7)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widget.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widget.o -c /home/elchaschab/devel/Neurocid/guichan/src/widget.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widget.o -c /home/elchaschab/devel/Neurocid/guichan/src/widget.cpp
 
 CMakeFiles/guichan.dir/src/widget.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widget.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widget.cpp > CMakeFiles/guichan.dir/src/widget.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widget.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widget.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widget.cpp -o CMakeFiles/guichan.dir/src/widget.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widget.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widget.o.requires
@@ -217,15 +217,15 @@ CMakeFiles/guichan.dir/src/guichan.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/guichan.o: src/guichan.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_8)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/guichan.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/guichan.o -c /home/elchaschab/devel/Neurocid/guichan/src/guichan.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/guichan.o -c /home/elchaschab/devel/Neurocid/guichan/src/guichan.cpp
 
 CMakeFiles/guichan.dir/src/guichan.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/guichan.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/guichan.cpp > CMakeFiles/guichan.dir/src/guichan.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/guichan.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/guichan.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/guichan.cpp -o CMakeFiles/guichan.dir/src/guichan.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/guichan.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/guichan.o.requires
@@ -240,15 +240,15 @@ CMakeFiles/guichan.dir/src/exception.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/exception.o: src/exception.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_9)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/exception.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/exception.o -c /home/elchaschab/devel/Neurocid/guichan/src/exception.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/exception.o -c /home/elchaschab/devel/Neurocid/guichan/src/exception.cpp
 
 CMakeFiles/guichan.dir/src/exception.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/exception.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/exception.cpp > CMakeFiles/guichan.dir/src/exception.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/exception.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/exception.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/exception.cpp -o CMakeFiles/guichan.dir/src/exception.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/exception.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/exception.o.requires
@@ -263,15 +263,15 @@ CMakeFiles/guichan.dir/src/rectangle.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/rectangle.o: src/rectangle.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_10)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/rectangle.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/rectangle.o -c /home/elchaschab/devel/Neurocid/guichan/src/rectangle.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/rectangle.o -c /home/elchaschab/devel/Neurocid/guichan/src/rectangle.cpp
 
 CMakeFiles/guichan.dir/src/rectangle.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/rectangle.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/rectangle.cpp > CMakeFiles/guichan.dir/src/rectangle.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/rectangle.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/rectangle.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/rectangle.cpp -o CMakeFiles/guichan.dir/src/rectangle.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/rectangle.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/rectangle.o.requires
@@ -286,15 +286,15 @@ CMakeFiles/guichan.dir/src/inputevent.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/inputevent.o: src/inputevent.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_11)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/inputevent.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/inputevent.o -c /home/elchaschab/devel/Neurocid/guichan/src/inputevent.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/inputevent.o -c /home/elchaschab/devel/Neurocid/guichan/src/inputevent.cpp
 
 CMakeFiles/guichan.dir/src/inputevent.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/inputevent.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/inputevent.cpp > CMakeFiles/guichan.dir/src/inputevent.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/inputevent.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/inputevent.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/inputevent.cpp -o CMakeFiles/guichan.dir/src/inputevent.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/inputevent.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/inputevent.o.requires
@@ -309,15 +309,15 @@ CMakeFiles/guichan.dir/src/actionevent.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/actionevent.o: src/actionevent.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_12)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/actionevent.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/actionevent.o -c /home/elchaschab/devel/Neurocid/guichan/src/actionevent.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/actionevent.o -c /home/elchaschab/devel/Neurocid/guichan/src/actionevent.cpp
 
 CMakeFiles/guichan.dir/src/actionevent.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/actionevent.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/actionevent.cpp > CMakeFiles/guichan.dir/src/actionevent.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/actionevent.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/actionevent.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/actionevent.cpp -o CMakeFiles/guichan.dir/src/actionevent.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/actionevent.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/actionevent.o.requires
@@ -332,15 +332,15 @@ CMakeFiles/guichan.dir/src/key.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/key.o: src/key.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_13)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/key.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/key.o -c /home/elchaschab/devel/Neurocid/guichan/src/key.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/key.o -c /home/elchaschab/devel/Neurocid/guichan/src/key.cpp
 
 CMakeFiles/guichan.dir/src/key.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/key.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/key.cpp > CMakeFiles/guichan.dir/src/key.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/key.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/key.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/key.cpp -o CMakeFiles/guichan.dir/src/key.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/key.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/key.o.requires
@@ -355,15 +355,15 @@ CMakeFiles/guichan.dir/src/font.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/font.o: src/font.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_14)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/font.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/font.o -c /home/elchaschab/devel/Neurocid/guichan/src/font.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/font.o -c /home/elchaschab/devel/Neurocid/guichan/src/font.cpp
 
 CMakeFiles/guichan.dir/src/font.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/font.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/font.cpp > CMakeFiles/guichan.dir/src/font.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/font.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/font.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/font.cpp -o CMakeFiles/guichan.dir/src/font.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/font.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/font.o.requires
@@ -378,15 +378,15 @@ CMakeFiles/guichan.dir/src/selectionevent.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/selectionevent.o: src/selectionevent.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_15)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/selectionevent.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/selectionevent.o -c /home/elchaschab/devel/Neurocid/guichan/src/selectionevent.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/selectionevent.o -c /home/elchaschab/devel/Neurocid/guichan/src/selectionevent.cpp
 
 CMakeFiles/guichan.dir/src/selectionevent.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/selectionevent.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/selectionevent.cpp > CMakeFiles/guichan.dir/src/selectionevent.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/selectionevent.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/selectionevent.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/selectionevent.cpp -o CMakeFiles/guichan.dir/src/selectionevent.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/selectionevent.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/selectionevent.o.requires
@@ -401,15 +401,15 @@ CMakeFiles/guichan.dir/src/genericinput.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/genericinput.o: src/genericinput.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_16)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/genericinput.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/genericinput.o -c /home/elchaschab/devel/Neurocid/guichan/src/genericinput.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/genericinput.o -c /home/elchaschab/devel/Neurocid/guichan/src/genericinput.cpp
 
 CMakeFiles/guichan.dir/src/genericinput.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/genericinput.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/genericinput.cpp > CMakeFiles/guichan.dir/src/genericinput.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/genericinput.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/genericinput.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/genericinput.cpp -o CMakeFiles/guichan.dir/src/genericinput.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/genericinput.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/genericinput.o.requires
@@ -424,15 +424,15 @@ CMakeFiles/guichan.dir/src/mouseinput.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/mouseinput.o: src/mouseinput.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_17)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/mouseinput.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/mouseinput.o -c /home/elchaschab/devel/Neurocid/guichan/src/mouseinput.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/mouseinput.o -c /home/elchaschab/devel/Neurocid/guichan/src/mouseinput.cpp
 
 CMakeFiles/guichan.dir/src/mouseinput.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/mouseinput.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/mouseinput.cpp > CMakeFiles/guichan.dir/src/mouseinput.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/mouseinput.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/mouseinput.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/mouseinput.cpp -o CMakeFiles/guichan.dir/src/mouseinput.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/mouseinput.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/mouseinput.o.requires
@@ -447,15 +447,15 @@ CMakeFiles/guichan.dir/src/cliprectangle.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/cliprectangle.o: src/cliprectangle.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_18)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/cliprectangle.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/cliprectangle.o -c /home/elchaschab/devel/Neurocid/guichan/src/cliprectangle.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/cliprectangle.o -c /home/elchaschab/devel/Neurocid/guichan/src/cliprectangle.cpp
 
 CMakeFiles/guichan.dir/src/cliprectangle.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/cliprectangle.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/cliprectangle.cpp > CMakeFiles/guichan.dir/src/cliprectangle.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/cliprectangle.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/cliprectangle.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/cliprectangle.cpp -o CMakeFiles/guichan.dir/src/cliprectangle.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/cliprectangle.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/cliprectangle.o.requires
@@ -470,15 +470,15 @@ CMakeFiles/guichan.dir/src/containerevent.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/containerevent.o: src/containerevent.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_19)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/containerevent.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/containerevent.o -c /home/elchaschab/devel/Neurocid/guichan/src/containerevent.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/containerevent.o -c /home/elchaschab/devel/Neurocid/guichan/src/containerevent.cpp
 
 CMakeFiles/guichan.dir/src/containerevent.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/containerevent.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/containerevent.cpp > CMakeFiles/guichan.dir/src/containerevent.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/containerevent.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/containerevent.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/containerevent.cpp -o CMakeFiles/guichan.dir/src/containerevent.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/containerevent.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/containerevent.o.requires
@@ -493,15 +493,15 @@ CMakeFiles/guichan.dir/src/image.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/image.o: src/image.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_20)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/image.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/image.o -c /home/elchaschab/devel/Neurocid/guichan/src/image.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/image.o -c /home/elchaschab/devel/Neurocid/guichan/src/image.cpp
 
 CMakeFiles/guichan.dir/src/image.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/image.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/image.cpp > CMakeFiles/guichan.dir/src/image.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/image.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/image.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/image.cpp -o CMakeFiles/guichan.dir/src/image.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/image.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/image.o.requires
@@ -516,15 +516,15 @@ CMakeFiles/guichan.dir/src/gui.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/gui.o: src/gui.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_21)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/gui.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/gui.o -c /home/elchaschab/devel/Neurocid/guichan/src/gui.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/gui.o -c /home/elchaschab/devel/Neurocid/guichan/src/gui.cpp
 
 CMakeFiles/guichan.dir/src/gui.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/gui.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/gui.cpp > CMakeFiles/guichan.dir/src/gui.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/gui.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/gui.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/gui.cpp -o CMakeFiles/guichan.dir/src/gui.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/gui.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/gui.o.requires
@@ -539,15 +539,15 @@ CMakeFiles/guichan.dir/src/color.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/color.o: src/color.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_22)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/color.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/color.o -c /home/elchaschab/devel/Neurocid/guichan/src/color.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/color.o -c /home/elchaschab/devel/Neurocid/guichan/src/color.cpp
 
 CMakeFiles/guichan.dir/src/color.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/color.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/color.cpp > CMakeFiles/guichan.dir/src/color.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/color.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/color.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/color.cpp -o CMakeFiles/guichan.dir/src/color.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/color.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/color.o.requires
@@ -562,15 +562,15 @@ CMakeFiles/guichan.dir/src/imagefont.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/imagefont.o: src/imagefont.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_23)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/imagefont.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/imagefont.o -c /home/elchaschab/devel/Neurocid/guichan/src/imagefont.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/imagefont.o -c /home/elchaschab/devel/Neurocid/guichan/src/imagefont.cpp
 
 CMakeFiles/guichan.dir/src/imagefont.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/imagefont.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/imagefont.cpp > CMakeFiles/guichan.dir/src/imagefont.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/imagefont.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/imagefont.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/imagefont.cpp -o CMakeFiles/guichan.dir/src/imagefont.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/imagefont.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/imagefont.o.requires
@@ -585,15 +585,15 @@ CMakeFiles/guichan.dir/src/defaultfont.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/defaultfont.o: src/defaultfont.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_24)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/defaultfont.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/defaultfont.o -c /home/elchaschab/devel/Neurocid/guichan/src/defaultfont.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/defaultfont.o -c /home/elchaschab/devel/Neurocid/guichan/src/defaultfont.cpp
 
 CMakeFiles/guichan.dir/src/defaultfont.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/defaultfont.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/defaultfont.cpp > CMakeFiles/guichan.dir/src/defaultfont.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/defaultfont.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/defaultfont.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/defaultfont.cpp -o CMakeFiles/guichan.dir/src/defaultfont.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/defaultfont.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/defaultfont.o.requires
@@ -608,15 +608,15 @@ CMakeFiles/guichan.dir/src/keyevent.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/keyevent.o: src/keyevent.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_25)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/keyevent.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/keyevent.o -c /home/elchaschab/devel/Neurocid/guichan/src/keyevent.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/keyevent.o -c /home/elchaschab/devel/Neurocid/guichan/src/keyevent.cpp
 
 CMakeFiles/guichan.dir/src/keyevent.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/keyevent.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/keyevent.cpp > CMakeFiles/guichan.dir/src/keyevent.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/keyevent.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/keyevent.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/keyevent.cpp -o CMakeFiles/guichan.dir/src/keyevent.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/keyevent.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/keyevent.o.requires
@@ -631,15 +631,15 @@ CMakeFiles/guichan.dir/src/widgets/tabbedarea.o: CMakeFiles/guichan.dir/flags.ma
 CMakeFiles/guichan.dir/src/widgets/tabbedarea.o: src/widgets/tabbedarea.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_26)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/tabbedarea.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/tabbedarea.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/tabbedarea.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/tabbedarea.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/tabbedarea.cpp
 
 CMakeFiles/guichan.dir/src/widgets/tabbedarea.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/tabbedarea.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/tabbedarea.cpp > CMakeFiles/guichan.dir/src/widgets/tabbedarea.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/tabbedarea.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/tabbedarea.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/tabbedarea.cpp -o CMakeFiles/guichan.dir/src/widgets/tabbedarea.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/tabbedarea.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/tabbedarea.o.requires
@@ -654,15 +654,15 @@ CMakeFiles/guichan.dir/src/widgets/dropdown.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/widgets/dropdown.o: src/widgets/dropdown.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_27)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/dropdown.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/dropdown.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/dropdown.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/dropdown.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/dropdown.cpp
 
 CMakeFiles/guichan.dir/src/widgets/dropdown.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/dropdown.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/dropdown.cpp > CMakeFiles/guichan.dir/src/widgets/dropdown.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/dropdown.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/dropdown.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/dropdown.cpp -o CMakeFiles/guichan.dir/src/widgets/dropdown.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/dropdown.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/dropdown.o.requires
@@ -677,15 +677,15 @@ CMakeFiles/guichan.dir/src/widgets/slider.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/widgets/slider.o: src/widgets/slider.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_28)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/slider.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/slider.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/slider.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/slider.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/slider.cpp
 
 CMakeFiles/guichan.dir/src/widgets/slider.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/slider.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/slider.cpp > CMakeFiles/guichan.dir/src/widgets/slider.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/slider.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/slider.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/slider.cpp -o CMakeFiles/guichan.dir/src/widgets/slider.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/slider.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/slider.o.requires
@@ -700,15 +700,15 @@ CMakeFiles/guichan.dir/src/widgets/textfield.o: CMakeFiles/guichan.dir/flags.mak
 CMakeFiles/guichan.dir/src/widgets/textfield.o: src/widgets/textfield.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_29)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/textfield.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/textfield.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/textfield.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/textfield.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/textfield.cpp
 
 CMakeFiles/guichan.dir/src/widgets/textfield.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/textfield.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/textfield.cpp > CMakeFiles/guichan.dir/src/widgets/textfield.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/textfield.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/textfield.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/textfield.cpp -o CMakeFiles/guichan.dir/src/widgets/textfield.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/textfield.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/textfield.o.requires
@@ -723,15 +723,15 @@ CMakeFiles/guichan.dir/src/widgets/label.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/widgets/label.o: src/widgets/label.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_30)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/label.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/label.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/label.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/label.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/label.cpp
 
 CMakeFiles/guichan.dir/src/widgets/label.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/label.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/label.cpp > CMakeFiles/guichan.dir/src/widgets/label.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/label.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/label.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/label.cpp -o CMakeFiles/guichan.dir/src/widgets/label.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/label.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/label.o.requires
@@ -746,15 +746,15 @@ CMakeFiles/guichan.dir/src/widgets/icon.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/widgets/icon.o: src/widgets/icon.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_31)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/icon.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/icon.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/icon.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/icon.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/icon.cpp
 
 CMakeFiles/guichan.dir/src/widgets/icon.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/icon.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/icon.cpp > CMakeFiles/guichan.dir/src/widgets/icon.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/icon.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/icon.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/icon.cpp -o CMakeFiles/guichan.dir/src/widgets/icon.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/icon.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/icon.o.requires
@@ -769,15 +769,15 @@ CMakeFiles/guichan.dir/src/widgets/radiobutton.o: CMakeFiles/guichan.dir/flags.m
 CMakeFiles/guichan.dir/src/widgets/radiobutton.o: src/widgets/radiobutton.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_32)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/radiobutton.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/radiobutton.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/radiobutton.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/radiobutton.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/radiobutton.cpp
 
 CMakeFiles/guichan.dir/src/widgets/radiobutton.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/radiobutton.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/radiobutton.cpp > CMakeFiles/guichan.dir/src/widgets/radiobutton.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/radiobutton.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/radiobutton.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/radiobutton.cpp -o CMakeFiles/guichan.dir/src/widgets/radiobutton.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/radiobutton.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/radiobutton.o.requires
@@ -792,15 +792,15 @@ CMakeFiles/guichan.dir/src/widgets/window.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/widgets/window.o: src/widgets/window.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_33)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/window.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/window.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/window.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/window.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/window.cpp
 
 CMakeFiles/guichan.dir/src/widgets/window.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/window.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/window.cpp > CMakeFiles/guichan.dir/src/widgets/window.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/window.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/window.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/window.cpp -o CMakeFiles/guichan.dir/src/widgets/window.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/window.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/window.o.requires
@@ -815,15 +815,15 @@ CMakeFiles/guichan.dir/src/widgets/textbox.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/widgets/textbox.o: src/widgets/textbox.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_34)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/textbox.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/textbox.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/textbox.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/textbox.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/textbox.cpp
 
 CMakeFiles/guichan.dir/src/widgets/textbox.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/textbox.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/textbox.cpp > CMakeFiles/guichan.dir/src/widgets/textbox.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/textbox.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/textbox.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/textbox.cpp -o CMakeFiles/guichan.dir/src/widgets/textbox.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/textbox.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/textbox.o.requires
@@ -838,15 +838,15 @@ CMakeFiles/guichan.dir/src/widgets/imagebutton.o: CMakeFiles/guichan.dir/flags.m
 CMakeFiles/guichan.dir/src/widgets/imagebutton.o: src/widgets/imagebutton.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_35)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/imagebutton.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/imagebutton.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/imagebutton.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/imagebutton.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/imagebutton.cpp
 
 CMakeFiles/guichan.dir/src/widgets/imagebutton.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/imagebutton.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/imagebutton.cpp > CMakeFiles/guichan.dir/src/widgets/imagebutton.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/imagebutton.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/imagebutton.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/imagebutton.cpp -o CMakeFiles/guichan.dir/src/widgets/imagebutton.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/imagebutton.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/imagebutton.o.requires
@@ -861,15 +861,15 @@ CMakeFiles/guichan.dir/src/widgets/container.o: CMakeFiles/guichan.dir/flags.mak
 CMakeFiles/guichan.dir/src/widgets/container.o: src/widgets/container.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_36)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/container.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/container.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/container.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/container.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/container.cpp
 
 CMakeFiles/guichan.dir/src/widgets/container.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/container.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/container.cpp > CMakeFiles/guichan.dir/src/widgets/container.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/container.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/container.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/container.cpp -o CMakeFiles/guichan.dir/src/widgets/container.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/container.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/container.o.requires
@@ -884,15 +884,15 @@ CMakeFiles/guichan.dir/src/widgets/checkbox.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/widgets/checkbox.o: src/widgets/checkbox.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_37)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/checkbox.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/checkbox.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/checkbox.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/checkbox.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/checkbox.cpp
 
 CMakeFiles/guichan.dir/src/widgets/checkbox.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/checkbox.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/checkbox.cpp > CMakeFiles/guichan.dir/src/widgets/checkbox.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/checkbox.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/checkbox.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/checkbox.cpp -o CMakeFiles/guichan.dir/src/widgets/checkbox.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/checkbox.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/checkbox.o.requires
@@ -907,15 +907,15 @@ CMakeFiles/guichan.dir/src/widgets/scrollarea.o: CMakeFiles/guichan.dir/flags.ma
 CMakeFiles/guichan.dir/src/widgets/scrollarea.o: src/widgets/scrollarea.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_38)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/scrollarea.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/scrollarea.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/scrollarea.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/scrollarea.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/scrollarea.cpp
 
 CMakeFiles/guichan.dir/src/widgets/scrollarea.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/scrollarea.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/scrollarea.cpp > CMakeFiles/guichan.dir/src/widgets/scrollarea.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/scrollarea.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/scrollarea.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/scrollarea.cpp -o CMakeFiles/guichan.dir/src/widgets/scrollarea.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/scrollarea.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/scrollarea.o.requires
@@ -930,15 +930,15 @@ CMakeFiles/guichan.dir/src/widgets/listbox.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/widgets/listbox.o: src/widgets/listbox.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_39)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/listbox.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/listbox.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/listbox.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/listbox.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/listbox.cpp
 
 CMakeFiles/guichan.dir/src/widgets/listbox.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/listbox.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/listbox.cpp > CMakeFiles/guichan.dir/src/widgets/listbox.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/listbox.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/listbox.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/listbox.cpp -o CMakeFiles/guichan.dir/src/widgets/listbox.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/listbox.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/listbox.o.requires
@@ -953,15 +953,15 @@ CMakeFiles/guichan.dir/src/widgets/tab.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/widgets/tab.o: src/widgets/tab.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_40)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/tab.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/tab.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/tab.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/tab.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/tab.cpp
 
 CMakeFiles/guichan.dir/src/widgets/tab.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/tab.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/tab.cpp > CMakeFiles/guichan.dir/src/widgets/tab.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/tab.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/tab.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/tab.cpp -o CMakeFiles/guichan.dir/src/widgets/tab.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/tab.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/tab.o.requires
@@ -976,15 +976,15 @@ CMakeFiles/guichan.dir/src/widgets/button.o: CMakeFiles/guichan.dir/flags.make
 CMakeFiles/guichan.dir/src/widgets/button.o: src/widgets/button.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/elchaschab/devel/Neurocid/guichan/CMakeFiles $(CMAKE_PROGRESS_41)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/guichan.dir/src/widgets/button.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/button.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/button.cpp
+	/home/elchaschab/devel/emscripten/em++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/guichan.dir/src/widgets/button.o -c /home/elchaschab/devel/Neurocid/guichan/src/widgets/button.cpp
 
 CMakeFiles/guichan.dir/src/widgets/button.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/guichan.dir/src/widgets/button.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/elchaschab/devel/Neurocid/guichan/src/widgets/button.cpp > CMakeFiles/guichan.dir/src/widgets/button.i
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_PREPROCESSED_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/button.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/guichan.dir/src/widgets/button.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/elchaschab/devel/Neurocid/guichan/src/widgets/button.cpp -o CMakeFiles/guichan.dir/src/widgets/button.s
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CXX_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/guichan.dir/src/widgets/button.o.requires:
 .PHONY : CMakeFiles/guichan.dir/src/widgets/button.o.requires

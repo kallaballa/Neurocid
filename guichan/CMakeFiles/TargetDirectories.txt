@@ -1,4 +1,2 @@
 /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/guichan.dir
-/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/guichan_opengl.dir
-/home/elchaschab/devel/Neurocid/guichan/CMakeFiles/guichan_sdl.dir
 /home/elchaschab/devel/Neurocid/guichan/CMakeFiles/lib.dir
