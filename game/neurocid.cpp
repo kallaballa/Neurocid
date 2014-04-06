@@ -773,9 +773,8 @@ int main(int argc, char** argv) {
 			5, // max_cooldown
 			5, // max_ammo_
 			6, // max_damage_
-			30, // hardness_
 
-			500, // crashes_impulse_divider_
+			1, // crashes_per_damage_
 			4  // num_perf_desc_
 		},
 		//BrainLayout
