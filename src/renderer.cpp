@@ -12,6 +12,8 @@
 #include "gamestate.hpp"
 #include "canvas.hpp"
 #include "time_tracker.hpp"
+#include "gui/gui.hpp"
+#include "gui/osd.hpp"
 #include <thread>
 #include <chrono>
 #include <stddef.h>
@@ -37,17 +39,26 @@ void Renderer::update(BattleField* field) {
 void Renderer::render() {
 	size_t sleep = (size_t) round(1000 / frameRate_);
 	TimeTracker& tt = *TimeTracker::getInstance();
+	Canvas& canvas = *Canvas::getInstance();
 	size_t dur = tt.measure([&]() {
-				if(isEnabled()) {
 					updateMutex.lock();
 					if(field_ != NULL) {
-						Canvas::getInstance()->render(*field_);
+						canvas.clear();
+						if(isEnabled()) {
+						canvas.render(*field_);
 #ifndef _NO_VIDEOENC
 						VideoEncoder::getInstance()->encode(Canvas::getInstance()->getSurface());
 #endif
+						}
+
+						Gui& gui = *Gui::getInstance();
+						OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
+						osd.update(*field_);
+						gui.logic();
+						gui.draw();
+						canvas.update();
 					}
 					updateMutex.unlock();
-				}
 	});
 	dur/=1000;
 	if(dur < sleep)
