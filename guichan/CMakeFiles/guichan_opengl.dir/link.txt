@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC    -shared -Wl,-soname,libguichan_opengl.so.0.9.0 -o libguichan_opengl.so.0.9.0 CMakeFiles/guichan_opengl.dir/src/opengl/openglimage.o CMakeFiles/guichan_opengl.dir/src/opengl/opengl.o CMakeFiles/guichan_opengl.dir/src/opengl/openglgraphics.o 
