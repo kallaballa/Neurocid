@@ -267,8 +267,8 @@ void Physics::step() {
 				Vector2D across2 = dir;
 				across2.rotate(90);
 
-				Vector2D flforce = across1 * (t->flthrust_ * t->layout_.max_speed_ * 8);
-				Vector2D frforce = across2 * -(t->frthrust_ * t->layout_.max_speed_ * 8);
+				Vector2D flforce = across2 * (t->flthrust_ * t->layout_.max_speed_ * 8);
+				Vector2D frforce = across1 * -(t->frthrust_ * t->layout_.max_speed_ * 8);
 				Vector2D blforce = across1 * -(t->blthrust_ * t->layout_.max_speed_ * 8);
 				Vector2D brforce = across2 * (t->brthrust_ * t->layout_.max_speed_ * 8);
 
