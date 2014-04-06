@@ -50,11 +50,11 @@ TESTOBJECTS = $(TESTSOURCES:.cpp=.o)
 #-----------------------------------------------------------------------------
 # Compiler and compilation options:
 #
-#	C++		your C++ compiler
+#	CXX		your C++ compiler
 #	CFLAGS (for g++)
 #		-O[1-3]        	Optimization
 #		-Wall		Be noisy about warnings
-#		-traditional	Flag nontraditional C++ usage
+#		-traditional	Flag nontraditional CXX usage
 #		-g          	Debugging
 #                               (may slow execution slightly)
 #		-DASSERT	Enable assertion checking
@@ -64,7 +64,10 @@ TESTOBJECTS = $(TESTSOURCES:.cpp=.o)
 #				temporary command terminal in which to run
 #				the program.)
 #-----------------------------------------------------------------------------
-C++ = g++
+ifndef CXX
+CXX = g++
+endif
+
 #CFLAGS = -O3 
 #CFLAGS = -g -Wall -DASSERT -traditional
 CFLAGS = -fpic -shared -O3 -Wall -DASSERT
@@ -84,14 +87,14 @@ sample: $(KMLSAMPLE)
 minimal: $(KMLMINIMAL) 
 
 $(KMLTEST): $(TESTOBJECTS) kmltest.o
-	$(C++) $(TESTOBJECTS) -fpic -o libklocal.so -shared $(LDFLAGS) $(OTHERLIBS)
+	$(CXX) $(TESTOBJECTS) -fpic -o libklocal.so -shared $(LDFLAGS) $(OTHERLIBS)
 
 $(KMLSAMPLE): $(TESTOBJECTS) kmlsample.o
-	$(C++) $(TESTOBJECTS) -fpic kmlsample.o -o kmlsample $(LDFLAGS) $(OTHERLIBS)
+	$(CXX) $(TESTOBJECTS) -fpic kmlsample.o -o kmlsample $(LDFLAGS) $(OTHERLIBS)
 	mv -f kmlsample $(KMLSAMPLE)
 
 $(KMLMINIMAL): $(TESTOBJECTS) kmlminimal.o
-	$(C++) $(TESTOBJECTS) -fpic kmlminimal.o -o kmlminimal $(LDFLAGS) $(OTHERLIBS)
+	$(CXX) $(TESTOBJECTS) -fpic kmlminimal.o -o kmlminimal $(LDFLAGS) $(OTHERLIBS)
 	mv -f kmlminimal $(KMLMINIMAL)
 
 #-----------------------------------------------------------------------------
@@ -99,36 +102,36 @@ $(KMLMINIMAL): $(TESTOBJECTS) kmlminimal.o
 #-----------------------------------------------------------------------------
 
 KM_ANN.o: KM_ANN.h KM_ANN.cpp
-	$(C++) -c $(CFLAGS) KM_ANN.cpp
+	$(CXX) -c $(CFLAGS) KM_ANN.cpp
 
 KMeans.o: KM_ANN.h KMeans.h KMeans.cpp
-	$(C++) -c $(CFLAGS) KMeans.cpp
+	$(CXX) -c $(CFLAGS) KMeans.cpp
 
 KMterm.o: KMterm.h KMterm.cpp
-	$(C++) -c $(CFLAGS) KMterm.cpp
+	$(CXX) -c $(CFLAGS) KMterm.cpp
 
 KMrand.o: KMeans.h KMrand.h KMrand.cpp
-	$(C++) -c $(CFLAGS) KMrand.cpp
+	$(CXX) -c $(CFLAGS) KMrand.cpp
 
 KCutil.o: KMeans.h KCutil.h KCutil.cpp
-	$(C++) -c $(CFLAGS) KCutil.cpp
+	$(CXX) -c $(CFLAGS) KCutil.cpp
 
 KCtree.o: KM_ANN.h KMeans.h KCutil.h KCtree.h KCtree.cpp
-	$(C++) -c $(CFLAGS) KCtree.cpp
+	$(CXX) -c $(CFLAGS) KCtree.cpp
 
 KMdata.o: KMeans.h KMdata.h KMdata.cpp
-	$(C++) -c $(CFLAGS) KMdata.cpp
+	$(CXX) -c $(CFLAGS) KMdata.cpp
 
 KMcenters.o: KMeans.h KMdata.h KMcenters.h KMcenters.cpp
-	$(C++) -c $(CFLAGS) KMcenters.cpp
+	$(CXX) -c $(CFLAGS) KMcenters.cpp
 
 KMfilterCenters.o: KMeans.h KMdata.h KMcenters.h KMfilterCenters.h \
 	KMfilterCenters.cpp
-	$(C++) -c $(CFLAGS) KMfilterCenters.cpp
+	$(CXX) -c $(CFLAGS) KMfilterCenters.cpp
 
 KMlocal.o: KMeans.h KMdata.h KMcenters.h KMfilterCenters.h \
 	KMlocal.h KMlocal.cpp
-	$(C++) -c $(CFLAGS) KMlocal.cpp
+	$(CXX) -c $(CFLAGS) KMlocal.cpp
 
 #-----------------------------------------------------------------------------
 # Test and Sample Program
@@ -136,15 +139,15 @@ KMlocal.o: KMeans.h KMdata.h KMcenters.h KMfilterCenters.h \
 
 kmltest.o: KMeans.h KMdata.h KMcenters.h KMfilterCenters.h \
 	KMlocal.h KMterm.h kmltest.cpp
-	$(C++) -c $(CFLAGS) kmltest.cpp
+	$(CXX) -c $(CFLAGS) kmltest.cpp
 
 kmlsample.o: KMeans.h KMdata.h KMcenters.h KMfilterCenters.h \
 	KMlocal.h KMterm.h kmlsample.cpp
-	$(C++) -c $(CFLAGS) kmlsample.cpp
+	$(CXX) -c $(CFLAGS) kmlsample.cpp
 
 kmlminimal.o: KMeans.h KMdata.h KMcenters.h KMfilterCenters.h \
 	KMlocal.h KMterm.h kmlminimal.cpp
-	$(C++) -c $(CFLAGS) kmlminimal.cpp
+	$(CXX) -c $(CFLAGS) kmlminimal.cpp
 
 #-----------------------------------------------------------------------------
 # Miscellaneous
