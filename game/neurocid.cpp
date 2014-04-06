@@ -12,6 +12,8 @@
 #include "time_tracker.hpp"
 #include "scenario.hpp"
 #include "canvas.hpp"
+#include "gui/gui.hpp"
+#include "gui/osd.hpp"
 
 #include <ctime>
 #include <thread>
@@ -63,18 +65,14 @@ void dumpTeams() {
 }
 
 void runEventHandler() {
-	Renderer& renderer = *Renderer::getInstance();
 	GameState& gameState = *GameState::getInstance();
-	TimeTracker& timeTracker = *TimeTracker::getInstance();
 	Canvas& canvas = *Canvas::getInstance();
-	SDL_Event event;
+	Renderer& renderer = *Renderer::getInstance();
+	Gui& gui = *Gui::getInstance();
+	OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
 
-	if ( ( SDL_EnableKeyRepeat( 100, SDL_DEFAULT_REPEAT_INTERVAL ) ) )
-	{
-	        fprintf( stderr, "Setting keyboard repeat failed: %s\n",
-	             SDL_GetError( ) );
-	        SDL_Quit();
-	}
+
+	SDL_Event event;
 
 	while (gameState.isRunning()) {
 		renderer.render();
@@ -82,76 +80,86 @@ void runEventHandler() {
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_KEYDOWN:
-				if (event.key.keysym.sym == SDLKey::SDLK_SPACE) {
-					if (renderer.isEnabled()) {
-						if(gameState.isSlow()) {
-							gameState.setSlower(true);
-							renderer.setFramerate(25);
-						} else if(gameState.isSlower()) {
-							renderer.setEnabled(false);
-							gameState.setSlower(false);
-							renderer.setFramerate(12);
-						} else {
-							gameState.setSlow(true);
-							renderer.setFramerate(25);
-						}
-					} else {
-						renderer.setEnabled(true);
-						renderer.setFramerate(12);
-					}
-				} else if (event.key.keysym.sym == SDLKey::SDLK_p) {
-					if (gameState.isPaused())
-						gameState.resume();
-					else
-						gameState.pause();
-				} else if (event.key.keysym.sym == SDLKey::SDLK_t) {
-					if (timeTracker.isEnabled())
-						timeTracker.setEnabled(false);
-					else
-						timeTracker.setEnabled(true);
-
-				} else if (event.key.keysym.sym == SDLKey::SDLK_c) {
-					if (canvas.isDrawCentersEnabled())
-						canvas.enableDrawCenters(false);
-					else
-						canvas.enableDrawCenters(true);
-				} else if (event.key.keysym.sym == SDLKey::SDLK_e) {
-					if (canvas.isDrawEnginesEnabled())
-						canvas.enableDrawEngines(false);
-					else
-						canvas.enableDrawEngines(true);
-				} else if (event.key.keysym.sym == SDLKey::SDLK_g) {
-					if (canvas.isDrawGridEnabled())
-						canvas.enableDrawGrid(false);
-					else
-						canvas.enableDrawGrid(true);
-				} else if (event.key.keysym.sym == SDLKey::SDLK_a) {
-					if (canvas.isDrawProjectilesEnabled())
-						canvas.enableDrawProjectiles(false);
-					else
-						canvas.enableDrawProjectiles(true);
-				} else if (event.key.keysym.sym == SDLKey::SDLK_d) {
-					dumpTeams();
-				} else if (event.key.keysym.sym == SDLKey::SDLK_ESCAPE) {
+				if (event.key.keysym.sym == SDLKey::SDLK_ESCAPE) {
 					std::cerr << "Quitting" << std::endl;
 					gameState.stop();
-				} else if (event.key.keysym.sym == SDLKey::SDLK_PLUS) {
-					canvas.zoomIn();
-				} else if (event.key.keysym.sym == SDLKey::SDLK_MINUS) {
-					canvas.zoomOut();
-				} else if (event.key.keysym.sym == SDLKey::SDLK_LEFT) {
-					canvas.left();
-				} else if (event.key.keysym.sym == SDLKey::SDLK_RIGHT) {
-					canvas.right();
-				} else if (event.key.keysym.sym == SDLKey::SDLK_UP) {
-					canvas.up();
-				} else if (event.key.keysym.sym == SDLKey::SDLK_DOWN) {
-					canvas.down();
-				}
-
+				} else if(event.key.keysym.mod == KMOD_LALT || event.key.keysym.mod == KMOD_RALT) {
+					if (event.key.keysym.sym == SDLKey::SDLK_SPACE) {
+						if (renderer.isEnabled()) {
+							if(gameState.isSlow()) {
+								gameState.setSlower(true);
+								renderer.setFramerate(25);
+							} else if(gameState.isSlower()) {
+								renderer.setEnabled(false);
+								gameState.setSlower(false);
+								renderer.setFramerate(12);
+							} else {
+								gameState.setSlow(true);
+								renderer.setFramerate(25);
+							}
+						} else {
+							renderer.setEnabled(true);
+							renderer.setFramerate(12);
+						}
+					} else if (event.key.keysym.sym == SDLKey::SDLK_p) {
+						if (gameState.isPaused())
+							gameState.resume();
+						else
+							gameState.pause();
+					} else if (event.key.keysym.sym == SDLKey::SDLK_t) {
+						if (osd.isOsdTrackerVisible()) {
+							osd.showOsdTracker(false);
+						} else {
+							osd.showOsdTracker(true);
+						}
+					} else if (event.key.keysym.sym == SDLKey::SDLK_s) {
+						if (osd.isOsdStatisticsVisible()) {
+							osd.showOsdStatistics(false);
+						} else {
+							osd.showOsdStatistics(true);
+						}
+					} else if (event.key.keysym.sym == SDLKey::SDLK_c) {
+						if (canvas.isDrawCentersEnabled())
+							canvas.enableDrawCenters(false);
+						else
+							canvas.enableDrawCenters(true);
+					} else if (event.key.keysym.sym == SDLKey::SDLK_e) {
+						if (canvas.isDrawEnginesEnabled())
+							canvas.enableDrawEngines(false);
+						else
+							canvas.enableDrawEngines(true);
+					} else if (event.key.keysym.sym == SDLKey::SDLK_g) {
+						if (canvas.isDrawGridEnabled())
+							canvas.enableDrawGrid(false);
+						else
+							canvas.enableDrawGrid(true);
+					} else if (event.key.keysym.sym == SDLKey::SDLK_a) {
+						if (canvas.isDrawProjectilesEnabled())
+							canvas.enableDrawProjectiles(false);
+						else
+							canvas.enableDrawProjectiles(true);
+					} else if (event.key.keysym.sym == SDLKey::SDLK_d) {
+						dumpTeams();
+					} else if (event.key.keysym.sym == SDLKey::SDLK_PLUS) {
+						canvas.zoomIn();
+					} else if (event.key.keysym.sym == SDLKey::SDLK_MINUS) {
+						canvas.zoomOut();
+					} else if (event.key.keysym.sym == SDLKey::SDLK_LEFT) {
+						canvas.left();
+					} else if (event.key.keysym.sym == SDLKey::SDLK_RIGHT) {
+						canvas.right();
+					} else if (event.key.keysym.sym == SDLKey::SDLK_UP) {
+						canvas.up();
+					} else if (event.key.keysym.sym == SDLKey::SDLK_DOWN) {
+						canvas.down();
+					}
+				} else
+					gui.pushEvent(event);
 				break;
 
 			case SDL_KEYUP:
+				if (event.key.keysym.sym != SDLKey::SDLK_ESCAPE && event.key.keysym.mod != KMOD_LCTRL)
+					gui.pushEvent(event);
 				break;
 
 			default:
@@ -531,8 +539,6 @@ public:
 	}
 
 	virtual void configurePools(vector<GeneticPool>& pools) {
-		pools[0].params_.usePerfDesc_ = true;
-		pools[1].params_.usePerfDesc_ = true;
 	};
 };
 
@@ -647,8 +653,6 @@ public:
 	}
 
 	virtual void configurePools(vector<GeneticPool>& pools) {
-		pools[0].params_.usePerfDesc_ = true;
-		pools[1].params_.usePerfDesc_ = true;
 	};
 
 	Placer* createPlacer() {
@@ -764,13 +768,14 @@ int main(int argc, char** argv) {
 			false,// disableProjectileFitness
 
 			50.0,// range_
-			1,// max_speed_
-			1,// max_rotation
-
+			1, // max_speed_
+			1, // max_rotation
 			5, // max_cooldown
 			5, // max_ammo_
 			6, // max_damage_
-			1, // crashes_per_damage
+			30, // hardness_
+
+			500, // crashes_impulse_divider_
 			4  // num_perf_desc_
 		},
 		//BrainLayout
@@ -844,13 +849,8 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    Options::getInstance()->WINDOW_WIDTH = width;
-    Options::getInstance()->WINDOW_HEIGHT = height;
-    Options::getInstance()->FRAMERATE = frameRate;
-	GameState::getInstance()->setSlow(false);
-	GameState::getInstance()->setSlower(false);
-	Canvas::getInstance()->enableDrawGrid(false);
-	Canvas::getInstance()->enableDrawEngines(true);
+    save = vm.count("save");
+    assert(vm.count("scenario"));
 
     if(vm.count("load")) {
     	ifstream is(loadFile);
@@ -863,8 +863,30 @@ int main(int argc, char** argv) {
     	multiplyTeams(teams, multiply);
     }
 
-    save = vm.count("save");
-    assert(vm.count("scenario"));
+    Options& opt = *Options::getInstance();
+	opt.WINDOW_WIDTH = width;
+    opt.WINDOW_HEIGHT = height;
+    opt.FRAMERATE = frameRate;
+
+    GameState& gs = *GameState::getInstance();
+	Canvas& canvas = *Canvas::getInstance();
+	TimeTracker& timeTracker = *TimeTracker::getInstance();
+
+	timeTracker.setEnabled(true);
+
+	gs.setSlow(false);
+    gs.setSlower(false);
+
+    canvas.enableDrawGrid(false);
+    canvas.enableDrawEngines(true);
+
+	// initialize osd overlay
+	Gui::init(canvas.getSurface());
+	OsdScreenWidget::init(canvas.width(),canvas.height());
+	Gui& gui = *Gui::getInstance();
+	OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
+	gui.setScreen(&osd);
+
     scenario = getScenario(scenarioName);
     assert(scenario != NULL);
 #endif
