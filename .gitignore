@@ -19,5 +19,9 @@ box2d/Box2D/Makefile
 box2d/CMakeCache.txt
 box2d/CMakeFiles/
 box2d/Makefile
-kmlocal-1.7.2/bin/
+guichan/CMakeCache.txt
+guichan/CMakeFiles/
+guichan/Makefile
+
+kmlocal-1.7.2/bin/k*
 
