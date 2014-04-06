@@ -96,10 +96,14 @@ public:
 		}
 
 		void print(std::ostream& os) {
-			os << generationCnt_ << ":" << bestFitness_ << ":"
-					<< averageFitness_ << ":" << averageHits_ << ":"
-					<< averageFriendlyFire_ << ":" << averageCrash_ << ":" << averageHits_ << ":"
-					<< averageDamage_ << ":" << (averageAmmonition_ / 3) << ":"
+			os << generationCnt_ << ":"
+					<< bestFitness_ << ":"
+					<< averageFitness_ << ":"
+					<< averageHits_ << ":"
+					<< averageFriendlyFire_ << ":"
+					<< averageCrash_ << ":"
+					<< averageDamage_ << ":"
+					<< (averageAmmonition_ / 3) << ":"
 					<< (score_);
 		}
 	};
