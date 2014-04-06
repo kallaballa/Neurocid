@@ -1,5 +1,5 @@
 CXX      := g++
-CXXFLAGS := -std=c++0x -pedantic -Wall -I../kmlocal-1.7.2/src/ -I../fann/src/include -I../box2d/ -I../guichan/include/ `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf libavdevice libavformat libavfilter libavcodec libswresample libswscale libavutil` 
+CXXFLAGS := -std=c++0x -pedantic -Wall -I../kmlocal-1.7.2/src/ -I../fann/src/include -I../box2d/ -I../guichan/include/ `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf` 
 LDFLAGS  := -L/opt/local/lib -L../kmlocal-1.7.2/src/ -L../fann/src/ -L../box2d/Box2D -L../guichan/
 LIBS     := -lboost_system -lboost_program_options -lklocal -lm -lfann -lguichan -lguichan_sdl -lBox2D -lX11 `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf`
 .PHONY: all release info debug clean distclean 
@@ -26,8 +26,8 @@ endif
 ifdef WITHOUT_VIDEOENC
 CXXFLAGS += -D_NO_VIDEOENC
 else
-CXXFLAGS += `pkg-config --cflags libavdevice libavformat libavfilter libavcodec libswresample libswscale libavutil`
-LIBS     += `pkg-config --libs libavdevice libavformat libavfilter libavcodec libswresample libswscale libavutil`
+CXXFLAGS += -D__STDC_CONSTANT_MACROS `pkg-config --cflags libavformat libavcodec libswscale libavutil`
+LIBS     += `pkg-config --libs libavformat libavcodec libswscale libavutil`
 endif
 
 ifdef NO_ASSERT
