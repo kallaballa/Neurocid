@@ -26,9 +26,11 @@ using std::chrono::microseconds;
 struct TimeInfo {
 	size_t cnt_ = 0;
 	size_t totalTime_ = 0;
+	size_t last = 0;
 	map<string, TimeInfo> children_;
 
 	void add(size_t t) {
+		last = t;
 		totalTime_ += t;
 		++cnt_;
 		if(cnt_ == 100) {
@@ -37,7 +39,7 @@ struct TimeInfo {
 		}
 	}
 
-	string str() {
+	string str() const {
 		stringstream ss;
 		ss << (double)totalTime_/(double)cnt_/1000 << " = (" << (double)totalTime_/(double)1000 << '\\' << cnt_ << ')';
 		return ss.str();
