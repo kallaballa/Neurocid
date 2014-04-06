@@ -37,6 +37,8 @@ There are two shell scripts that are examples of how to run neurocid to train an
 * basic_training.sh - attempts to produce a well fighting population in a short time.
 * play.sh - loads a population and multiplies it 5 times to run it it in a big scenario.
 
+Please have a look at Hotkeys.txt to learn how to control the simulation
+
 **NOTE:** You might have to tweak hardcoded parameters in the scripts (e.g. resolution).
 
     
