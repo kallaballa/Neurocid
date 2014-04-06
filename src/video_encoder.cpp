@@ -35,6 +35,7 @@ gotOutput_(0),
 file_(NULL),
 yuvFrame_(NULL),
 initialzed_(false) {
+	av_log_set_level(AV_LOG_ERROR);
     /* register all the codecs (you can also register only the codec
        you wish to have smaller code */
     avcodec_register_all();
@@ -53,7 +54,6 @@ void VideoEncoder::init(const char* filename, enum AVCodecID codec_id) {
     assert(yuvFrame_ == NULL);
 
     Options& opts  = *Options::getInstance();
-    printf("Encode video file %s\n", filename);
 
     /* find the mpeg1 video encoder */
     codec_ = avcodec_find_encoder(codec_id);
@@ -215,7 +215,6 @@ void VideoEncoder::encode(SDL_Surface *surface) {
 	}
 
 	if (gotOutput_) {
-		printf("Write frame %3d (size=%5d)\n", frameIndex_, pkt_->size);
 		fwrite(pkt_->data, 1, pkt_->size, file_);
 		av_free_packet(pkt_);
 	}
@@ -243,7 +242,6 @@ void VideoEncoder::close() {
         }
 
         if (gotOutput_) {
-            printf("Write frame %3d (size=%5d)\n", frameIndex_, pkt_->size);
             fwrite(pkt_->data, 1, pkt_->size, file_);
             av_free_packet(pkt_);
         }
@@ -257,7 +255,6 @@ void VideoEncoder::close() {
     av_free(context_);
     av_freep(&yuvFrame_->data[0]);
     av_frame_free(&yuvFrame_);
-    printf("\n");
     codec_ = NULL;
     context_= NULL;
     frameIndex_=0;
