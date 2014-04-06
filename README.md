@@ -21,7 +21,7 @@ On Debian/Ubuntu you can install required packages like this (Video encoding not
 **NOTE:** Because of troubles with different ffmpeg implementations video encoding is not supported on debian/ubuntu. don't forget to use WITHOUT_VIDEOENC
 
 ### Build
-All dependencies except ffmpeg are included in the repo. if you have problems with the ffmpeg support you may disable video capturing functionality entirely by prefixing make with WITHOUT_VIDEOENC
+if you have problems with the ffmpeg support you may disable video capturing functionality entirely by prefixing make with WITHOUT_VIDEOENC
 
     git clone https://github.com/kallaballa/Neurocid.git
     cd Neurocid
