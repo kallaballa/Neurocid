@@ -51,6 +51,7 @@ void Game::fight(bool render) {
 	BattleField field(scenario_, teams_);
 	GameState& gs = *GameState::getInstance();
 	TimeTracker& tt = *TimeTracker::getInstance();
+	Renderer& renderer = *Renderer::getInstance();
 
 	tt.execute("battlefield", [&](){
 	for(size_t i = 0; (i < scenario_->bfl_.iterations_) && gs.isRunning(); ++i) {
@@ -67,13 +68,16 @@ void Game::fight(bool render) {
 			else if(gs.isSlower() && dur < 16000) {
 				std::this_thread::sleep_for(std::chrono::microseconds(6400 - dur));
 			}
-			Renderer::getInstance()->update(&field);
+			renderer.update(&field);
 		}
+#ifdef _NO_THREADS
+	    	renderer.render();
+#endif
 	}
 	});
 
 	if(render)
-		Renderer::getInstance()->update(NULL);
+		renderer.update(NULL);
 }
 
 void Game::score() {
