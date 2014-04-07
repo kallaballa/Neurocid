@@ -1,7 +1,7 @@
 CXX      := g++
 CXXFLAGS := -std=c++0x -pedantic -Wall -I../kmlocal-1.7.2/src/ -I../fann/src/include -I../box2d/ -I../guichan/include/ `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf` 
 LDFLAGS  := -L/opt/local/lib -L../kmlocal-1.7.2/src/ -L../fann/src/ -L../box2d/Box2D -L../guichan/
-LIBS     := -lboost_system -lboost_program_options -lklocal -lm -lfann -lguichan -lguichan_sdl -lBox2D -lX11 `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf`
+LIBS     := -lboost_system -lboost_program_options -lklocal -lm -lfann -lguichan -lguichan_sdl -lBox2D `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf`
 .PHONY: all release info debug clean distclean 
 NVCC     := /usr/local/cuda/bin/nvcc
 NVCC_HOST_CXX := g++-4.6
@@ -9,12 +9,21 @@ NVCC_CXXFLAGS := -Xcompiler -fpic -I/usr/local/cuda-5.0/samples/common/inc/
 
 ifdef JAVASCRIPT
 CXX			 := em++
-CXXFLAGS += -I/usr/local/include -D_NO_SERIALIZE -D_NO_PROGRAM_OPTIONS
+CXXFLAGS += -I/usr/local/include
+WITHOUT_SERIALIZE=1
+WITHOUT_VIDEOENC=1
+WITHOUT_THREADS=1
+WITHOUT_PROGRAM_OPTS=1
+WITOUT_POOL_ALLOC=1
 endif
 
 ifdef WITH_OPENMP
 CXXFLAGS += -fopenmp 
 LIBS     += -fopenmp
+endif
+
+ifdef WITOUT_POOL_ALLOC
+CXXFLAGS += -D_NO_BOOST_ALLOC
 endif
 
 ifdef WITHOUT_SERIALIZE
@@ -30,7 +39,15 @@ CXXFLAGS += -D__STDC_CONSTANT_MACROS `pkg-config --cflags libavformat libavcodec
 LIBS     += `pkg-config --libs libavformat libavcodec libswscale libavutil`
 endif
 
-ifdef NO_ASSERT
+ifdef WITHOUT_THREADS
+CXXFLAGS += -D_NO_THREADS
+endif
+
+ifdef WITHOUT_PROGRAM_OPTS
+CXXFLAGS += -D_NO_PROGRAM_OPTIONS
+endif
+
+ifdef WITHOUT_ASSERT
 CXXFLAGS += -DNDEBUG
 LIBS     += -DNDEBUG
 endif
@@ -54,7 +71,7 @@ info: CXXFLAGS += -g3 -O3
 info: LDFLAGS += -Wl,--export-dynamic -rdynamic
 info: dirs
 
-debug: CXXFLAGS += -g3 -O0 -D_CHECK_BRAIN_ALLOC -Werror
+debug: CXXFLAGS += -g3 -O0 -D_CHECK_BRAIN_ALLOC
 debug: LDFLAGS += -Wl,--export-dynamic -rdynamic
 debug: dirs
 
