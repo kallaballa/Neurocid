@@ -11,7 +11,9 @@
 #include "object.hpp"
 #include "2d.hpp"
 #include <vector>
+#ifndef _NO_BOOST_ALLOC
 #include <boost/pool/pool_alloc.hpp>
+#endif
 
 namespace neurocid {
 
@@ -50,7 +52,12 @@ public:
 	void calculate(Scan& scan);
 };
 
+#ifndef _NO_BOOST_ALLOC
 typedef vector<ScanObject, boost::pool_allocator<ScanObject>> ScanObjectVector;
+#else
+typedef vector<ScanObject> ScanObjectVector;
+#endif
+
 class Scan {
 public:
 	Vector2D dir_;
