@@ -15,11 +15,11 @@ function run() {
 
 [ -n "$1" ] && POP="$1"
 
-#POP=`run 51 AimOnOneNoMove $POP`
-#POP=`run 51 SymmetricLinesNoMoveShort $POP`
-POP=`run 200 SymmetricLinesAttackerMoveFacingInward $POP`
-POP=`run 200 SymmetricLinesAttackerMoveFarFacingInward $POP`
-POP=`run 100 SymmetricLinesFar $POP`
+#POP=`run 50 AimOnOneNoMove $POP`
+#POP=`run 50 SymmetricLinesNoMoveShort $POP`
+POP=`run 300 SymmetricLinesAttackerMoveFacingInward $POP`
+POP=`run 300 SymmetricLinesAttackerMoveFarFacingInward $POP`
+POP=`run 500 SymmetricLinesFar $POP`
 
 cp $POP basic_training.pop
 
