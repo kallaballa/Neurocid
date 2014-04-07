@@ -49,6 +49,7 @@ private:
 	bool drawCenters_;
 	bool drawGrid_;
 	bool drawProjectiles_;
+	bool drawElite_;
 
 	Coord width_;
 	Coord height_;
@@ -115,6 +116,10 @@ public:
 		drawProjectiles_ = e;
 	}
 
+	void enableDrawElite(bool e) {
+		drawElite_ = e;
+	}
+
 	bool isDrawCentersEnabled() {
 		return drawCenters_;
 	}
@@ -129,6 +134,10 @@ public:
 
 	bool isDrawProjectilesEnabled() {
 		return drawProjectiles_;
+	}
+
+	bool isDrawEliteEnabled() {
+		return drawElite_;
 	}
 };
 }

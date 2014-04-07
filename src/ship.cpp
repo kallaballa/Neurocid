@@ -149,9 +149,10 @@ void Ship::calculateFitness() {
 		perfDesc_[3] = damageRatioInv;
 
 		fitness_ = (aimRatio + (hits_ * damageRatioInv * friendlyRatioInv));
+		if(dead_)
+			fitness_ /= 2;
 	}
 
-	assert(fitness_ >= 0);
 	assert(!std::isnan(fitness_));
 	assert(!std::isinf(fitness_));	//
 	//std::cerr << "fitness:" << fitness_ << std::endl;

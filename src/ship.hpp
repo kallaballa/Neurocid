@@ -17,7 +17,7 @@
 namespace neurocid {
 
 struct ShipLayout {
-#ifndef _NO_SERIALIZEz
+#ifndef _NO_SERIALIZE
 	friend class boost::serialization::access;
 #endif
 	ProjectileLayout pl_;
@@ -77,19 +77,20 @@ public:
 	ShipLayout layout_;
 	Brain* brain_;
 
-	size_t ammonition_;
-	Coord flthrust_;
-	Coord frthrust_;
-	Coord blthrust_;
-	Coord brthrust_;
+	size_t ammonition_ = 0;
+	Coord flthrust_ = 0;
+	Coord frthrust_ = 0;
+	Coord blthrust_ = 0;
+	Coord brthrust_ = 0;
 
-	size_t friendlyFire_;
-	size_t crash_;
-	size_t crashDamage_;
-	size_t hits_;
-	size_t damage_;
-	size_t cool_down;
+	size_t friendlyFire_ = 0;
+	size_t crash_ = 0;
+	size_t crashDamage_= 0;
+	size_t hits_= 0;
+	size_t damage_= 0;
+	size_t cool_down = 0;
 	Coord fitness_ = 0;
+	bool isElite = false;
 	Scan scan_;
 
 #ifndef _NO_SERIALIZE
@@ -105,7 +106,8 @@ public:
 			teamID_(0),
 			layout_(),
 			brain_(NULL),
-			scan_(*this){};
+			scan_(*this)
+	{};
 	Ship(size_t teamID, ShipLayout tl, Brain* brain = NULL);
 	~Ship() {
 	};

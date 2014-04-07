@@ -120,8 +120,10 @@ void GeneticPool::copyNBest(size_t n, const size_t numCopies,
 	//add the required amount of copies of the n most fittest to the supplied population
 	while (n--) {
 		for (size_t i = 0; i < numCopies; ++i) {
-			Ship &t = in[(in.size() - 1) - n];
-			out.push_back(t.clone());
+			Ship& t = in[(in.size() - 1) - n];
+			Ship clone = t.clone();
+			clone.isElite = true;
+			out.push_back(clone);
 		}
 	}
 }
@@ -182,6 +184,7 @@ Population GeneticPool::epoch(Population& old_pop) {
 
 		for(Ship& t : old_pop) {
 			t.calculateFitness();
+			t.isElite = false;
 		}
 
 		//sort the population (for scaling and elitism)
@@ -204,6 +207,7 @@ Population GeneticPool::epoch(Population& old_pop) {
 
 	for(Ship& t : old_pop) {
 		t.calculateFitness();
+		t.isElite = false;
 	}
 
 	//sort the population (for scaling and elitism)

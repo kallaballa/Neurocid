@@ -26,6 +26,7 @@ Canvas::Canvas(Coord width, Coord height) :
 		drawCenters_(false),
 		drawGrid_(false),
 		drawProjectiles_(true),
+		drawElite_(false),
 		width_(width),
 		height_(height),
 		scale_(1),
@@ -108,8 +109,8 @@ void Canvas::up() {
 }
 
 void Canvas::down() {
-	viewPort_.ul_.y_ += (500 * zoom_);
-	viewPort_.lr_.y_ += (500 * zoom_);
+	viewPort_.ul_.y_ += (2000 * zoom_);
+	viewPort_.lr_.y_ += (2000 * zoom_);
 }
 
 void Canvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
@@ -165,10 +166,15 @@ void Canvas::drawShip(Ship& tank, Color c) {
     drawLine(tank.loc_.x_, tank.loc_.y_, tip.x_, tip.y_ ,c);
     drawEllipse(tank.loc_, tank.range_, tank.range_, c);
 	drawLine(tank.loc_.x_, tank.loc_.y_, tip.x_, tip.y_ ,c);
+	if(drawElite_ && tank.isElite) {
+	    drawEllipse(tank.loc_, 200, 200, {255,0,255});
+	}
+
 	if(drawEngines_) {
 		Vector2D across1 = dir;
 		Vector2D across2 = dir;
-		across2.rotate(90);
+		across1.rotate(-45);
+		across2.rotate(45);
 
 		Vector2D wc = tank.loc_;
 		Vector2D flengine = wc;
@@ -203,7 +209,7 @@ void Canvas::drawProjectile(Projectile& pro, Color& c) {
 		return;
 
 	Vector2D trail = pro.loc_;
-	trail += pro.getDirection() * -50;
+	trail += pro.getDirection() * -500;
 	drawLine(trail.x_,trail.y_, pro.loc_.x_, pro.loc_.y_, c);
 }
 
