@@ -164,7 +164,7 @@ b2Body* Physics::makeShipBody(Ship& t) {
     fixtureDef.shape = &dynamicCircle;
 
     // Set the box density to be non-zero, so it will be dynamic.
-    fixtureDef.density = 1.0f;
+    fixtureDef.density = 0.2f;
 
     fixtureDef.restitution = 0.3f;
 
@@ -175,7 +175,7 @@ b2Body* Physics::makeShipBody(Ship& t) {
 
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
-    body->SetLinearDamping(0.3);
+    body->SetLinearDamping(1);
     body->SetAngularDamping(0);
     return body;
 }
@@ -265,7 +265,8 @@ void Physics::step() {
 				Vector2D dir = o->getDirection();
 				Vector2D across1 = dir;
 				Vector2D across2 = dir;
-				across2.rotate(90);
+				across1.rotate(-45);
+				across2.rotate(45);
 
 				Vector2D flforce = across2 * (t->flthrust_ * t->layout_.max_speed_ * 8);
 				Vector2D frforce = across1 * -(t->frthrust_ * t->layout_.max_speed_ * 8);
@@ -300,6 +301,13 @@ void Physics::step() {
 						body->SetAngularVelocity(10);
 				}
 
+				b2Vec2 vel = body->GetLinearVelocity();
+				float speed = vel.Normalize();
+				float maxSpeed = 200.0 * t->layout_.max_speed_;
+				if ( speed > maxSpeed ) {
+				    body->SetLinearVelocity( maxSpeed * vel);
+				}
+
 				assert(o->rotation_ <= M_PI);
 			} else if(o->type() == PROJECTILE) {
 				Projectile* p = static_cast<Projectile*>(o);
@@ -307,9 +315,9 @@ void Physics::step() {
 					p->dead_ = true;
 					deadBodies_.push_back(body);
 				} else {
-					Vector2D force = p->getDirection() * p->layout_.max_speed_ * 20;
+					Vector2D force = p->getDirection() * (p->layout_.max_speed_ * 10000);
 					body->SetAwake(true);
-					body->ApplyLinearImpulse(b2Vec2(force.x_, force.y_), body->GetWorldCenter(),false);
+					body->SetLinearVelocity(b2Vec2(force.x_, force.y_));
 				}
 			}
 		}
