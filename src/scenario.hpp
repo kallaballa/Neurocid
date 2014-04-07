@@ -47,6 +47,7 @@ public:
 	virtual Placer* createPlacer() = 0;
 };
 
+
 } /* namespace neurocid */
 
 #endif /* SCENARIO_HPP_ */

@@ -1,5 +1,10 @@
 TARGET  := neurocid
-SRCS    := neurocid.cpp 
+
+ifdef JAVASCRIPT
+TARGET := neurocid.js
+endif
+
+SRCS    := neurocid.cpp eventloop.cpp declarative_scenarios.cpp
 #precompiled headers
 HEADERS := 
 GCH    := ${HEADERS:.h=.gch}
