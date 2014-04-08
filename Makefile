@@ -78,7 +78,6 @@ debug: LDFLAGS += -Wl,--export-dynamic -rdynamic
 debug: dirs
 
 clean: dirs
-distclean: dirs
 
 export LDFLAGS
 export CXXFLAGS
@@ -115,4 +114,9 @@ install:
 	cp neurocid ${DESTDIR}/${PREFIX}/bin
 	mkdir -p ${DESTDIR}/etc/
 	echo "export NEUROCID_PATH=\"${DESTDIR}/${PREFIX}/share/neurocid\"" > ${DESTDIR}/etc/neurocid
+
+distclean:
+	rm -r /usr/share/neurocid/
+	rm /etc/neurocid
+	rm /usr/bin/neurocid
 
