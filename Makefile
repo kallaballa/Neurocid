@@ -102,6 +102,7 @@ install:
 	cp game/neurocid-bin ${DESTDIR}/${PREFIX}/share/neurocid
 	cp -r examples/ ${DESTDIR}/${PREFIX}/share/neurocid
 	cp *.ttf ${DESTDIR}/${PREFIX}/share/neurocid
+	mkdir -p ${DESTDIR}/${PREFIX}/bin
 	cp neurocid ${DESTDIR}/${PREFIX}/bin
 	mkdir -p ${DESTDIR}/etc/
 	echo "export NEUROCID_PATH=\"${DESTDIR}/${PREFIX}/share/neurocid\"" > ${DESTDIR}/etc/neurocid
