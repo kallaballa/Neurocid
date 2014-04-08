@@ -90,6 +90,11 @@ dirs:
 	${MAKE} -C tests/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 #	./run.sh tests/tests
 
+debian-release:
+	${MAKE} -C src/ -${MAKEFLAGS} CXX=${CXX} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" release
+	${MAKE} -C game/ -${MAKEFLAGS} CXX=${CXX} release
+	${MAKE} -C tests/ -${MAKEFLAGS} CXX=${CXX} release
+
 debian-clean:
 	${MAKE} -C src/ -${MAKEFLAGS} CXX=${CXX} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" clean
 	${MAKE} -C game/ -${MAKEFLAGS} CXX=${CXX} clean
