@@ -31,9 +31,10 @@ if you have problems with the ffmpeg support you may disable video capturing fun
     cd Neurocid
     ./buildDeps.sh
     make
+    sudo make install
     
 ### Run
-There are two shell scripts that are examples of how to run neurocid to train and watch space ship populations.
+In the examples directory there are two shell scripts that are examples of how to run neurocid to train and watch space ship populations.
 * basic_training.sh - attempts to produce a well fighting population in a short time.
 * play.sh - loads a population and multiplies it 5 times to run it it in a big scenario.
 
