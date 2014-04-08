@@ -1,0 +1,403 @@
+------------------------------------------------------------
+kmltest: KMlocal (k-means clustering by local search)
+    Version: 1.7 (Use at your own risk)
+    Copyright: David M. Mount.
+    Latest Revision: August 10, 2005.
+------------------------------------------------------------
+
+stats = tree
+[Read Data Points:
+  data_size  = 20
+  file_name  = test1-dat.txt
+  dim        = 2
+]
+Contents of the kc-tree: [
+    ....Leaf n=1 <13> sm=[     0.91     0.87 ] ss=1.585
+    ...Split cd=0 cv=0.4475 nd=4 sm=[     1.19     3.56 ] ss=4.027
+    ......Leaf n=1 <17> sm=[     0.13     0.92 ] ss=0.8633
+    .....Split cd=0 cv=  0.13 nd=2 sm=[     0.18     1.81 ] ss=1.658
+    ......Leaf n=1 <19> sm=[     0.05     0.89 ] ss=0.7946
+    ....Split cd=1 cv=  0.88 nd=3 sm=[     0.28     2.69 ] ss=2.442
+    .....Leaf n=1 <6> sm=[      0.1     0.88 ] ss=0.7844
+    ..Split cd=1 cv=   0.5 nd=7 sm=[     3.01     4.23 ] ss=5.695
+    .....Leaf n=1 <3> sm=[     0.92     0.47 ] ss=1.067
+    ....Split cd=1 cv=  0.26 nd=2 sm=[     1.66     0.63 ] ss=1.64
+    .....Leaf n=1 <7> sm=[     0.74     0.16 ] ss=0.5732
+    ...Split cd=0 cv=0.4475 nd=3 sm=[     1.82     0.67 ] ss=1.668
+    ....Leaf n=1 <4> sm=[     0.16     0.04 ] ss=0.0272
+    .Split cd=0 cv=-0.025 nd=11 sm=[     1.42     6.26 ] ss=7.984
+    ....Leaf n=1 <18> sm=[    -0.08     0.61 ] ss=0.3785
+    ...Split cd=0 cv=-0.4975 nd=2 sm=[    -0.59     1.59 ] ss=1.599
+    ....Leaf n=1 <16> sm=[    -0.51     0.98 ] ss=1.22
+    ..Split cd=1 cv=   0.5 nd=4 sm=[    -1.59     2.03 ] ss=2.289
+    ....Leaf n=1 <0> sm=[    -0.29     0.17 ] ss=0.113
+    ...Split cd=0 cv=-0.4975 nd=2 sm=[       -1     0.44 ] ss=0.69
+    ....Leaf n=1 <15> sm=[    -0.71     0.27 ] ss=0.577
+    Split cd=1 cv=  0.02 nd=20 sm=[     4.72     2.09 ] ss=14.56
+    .....Leaf n=1 <2> sm=[      0.9    -0.18 ] ss=0.8424
+    ....Split cd=1 cv= -0.22 nd=3 sm=[     2.38    -0.92 ] ss=2.276
+    ......Leaf n=1 <14> sm=[     0.92    -0.38 ] ss=0.9908
+    .....Split cd=0 cv=0.6838 nd=2 sm=[     1.48    -0.74 ] ss=1.434
+    ......Leaf n=1 <1> sm=[     0.56    -0.36 ] ss=0.4432
+    ...Split cd=0 cv=0.4475 nd=4 sm=[     2.68       -1 ] ss=2.373
+    ....Leaf n=1 <5> sm=[      0.3    -0.08 ] ss=0.0964
+    ..Split cd=1 cv= -0.46 nd=8 sm=[     4.27    -3.95 ] ss=5.586
+    .....Leaf n=1 <9> sm=[      0.6    -0.55 ] ss=0.6625
+    ....Split cd=1 cv=  -0.7 nd=2 sm=[     1.34    -1.49 ] ss=2.094
+    .....Leaf n=1 <11> sm=[     0.74    -0.94 ] ss=1.431
+    ...Split cd=0 cv=0.4475 nd=4 sm=[     1.59    -2.95 ] ss=3.213
+    .....Leaf n=1 <10> sm=[     0.18    -0.64 ] ss=0.442
+    ....Split cd=1 cv=  -0.7 nd=2 sm=[     0.25    -1.46 ] ss=1.119
+    .....Leaf n=1 <8> sm=[     0.07    -0.82 ] ss=0.6773
+    .Split cd=0 cv=-0.025 nd=9 sm=[      3.3    -4.17 ] ss=6.575
+    ..Leaf n=1 <12> sm=[    -0.97    -0.22 ] ss=0.9893
+]
+       0	[        0        0 ] dist = 7.891e-309
+       1	[        0        0 ] dist = 6.963e-77
+       2	[        0        0 ] dist = 6.555e-260
+       3	[        0        0 ] dist = 6.014e-154
+
+[Run_k-means:
+  k-means_alg      = hybrid
+  data_size        = 20
+  kcenters         = 4
+  dim              = 2
+  max_tot_stage    = 50
+  min_consec_rdl   = 0.2
+  init_prob_accept = 0.5
+  temp_run_length  = 10
+  temp_reduc_fact  = 0.75
+]
+       0	[     0.18    -0.64 ] dist = 7.891e-309
+       1	[     0.05     0.89 ] dist = 6.963e-77
+       2	[    -0.71     0.27 ] dist = 6.555e-260
+       3	[     0.56    -0.36 ] dist = 6.014e-154
+    <stage: 0 curr: 0.1989 best: 0.1989 save: 0.1989 consecRDL: -Infinity >
+	swapping: [    -0.08     0.61 ]<-->Center[2]
+       0	[     0.18    -0.64 ] dist =   0.0445
+       1	[     0.05     0.89 ] dist =    1.167
+       2	[    -0.08     0.61 ] dist =   0.4941
+       3	[     0.56    -0.36 ] dist =    2.272
+    <stage: 1 curr: 0.281 best: 0.1989 save: 0.1989 consecRDL: -0.4128 >
+	swapping: [      0.9    -0.18 ]<-->Center[2]
+       0	[     0.18    -0.64 ] dist =   0.0445
+       1	[     0.05     0.89 ] dist =    1.072
+       2	[      0.9    -0.18 ] dist =    2.231
+       3	[     0.56    -0.36 ] dist =    2.272
+    <stage: 2 curr: 0.2892 best: 0.1989 save: 0.1989 consecRDL: -0.02922 >
+       0	[    -0.24    -0.56 ] dist =    1.543
+       1	[    -0.05   0.6987 ] dist =    2.763
+       2	[     0.87   0.0175 ] dist =   0.6045
+       3	[    0.472   -0.378 ] dist =   0.8725
+    <stage: 3 curr: 0.2205 best: 0.1989 save: 0.1989 consecRDL: 0.2373 >
+       0	[    -0.45    -0.52 ] dist =   0.8122
+       1	[  -0.1871   0.6743 ] dist =    1.439
+       2	[    0.878    0.188 ] dist =    1.173
+       3	[   0.4233  -0.4217 ] dist =   0.9861
+    <stage: 4 curr: 0.193 best: 0.1989 save: 0.1989 consecRDL: 0.125 >
+    <End of Run>
+	swapping: [    -0.51     0.98 ]<-->Center[0]
+       0	[    -0.51     0.98 ] dist =   0.3604
+       1	[  -0.1871   0.6743 ] dist =    1.304
+       2	[    0.878    0.188 ] dist =   0.7032
+       3	[   0.4233  -0.4217 ] dist =    1.492
+    <stage: 5 curr: 0.2357 best: 0.193 save: 0.193 consecRDL: -0.2214 >
+       0	[    -0.51     0.98 ] dist =        0
+       1	[  -0.2529   0.5029 ] dist =    2.518
+       2	[   0.8675     0.33 ] dist =   0.7032
+       3	[   0.4413  -0.4662 ] dist =    1.492
+    <stage: 6 curr: 0.2189 best: 0.193 save: 0.193 consecRDL: 0.07117 >
+    <End of Run>
+	swapping: [     0.07    -0.82 ]<-->Center[2]
+       0	[    -0.51     0.98 ] dist =        0
+       1	[  -0.2529   0.5029 ] dist =    2.282
+       2	[     0.07    -0.82 ] dist =   0.6221
+       3	[   0.4413  -0.4662 ] dist =    1.474
+    <stage: 7 curr: 0.3403 best: 0.193 save: 0.193 consecRDL: -0.5545 >
+	swapping: [     0.16     0.04 ]<-->Center[2]
+       0	[    -0.51     0.98 ] dist =        0
+       1	[  -0.2529   0.5029 ] dist =     3.77
+       2	[     0.16     0.04 ] dist =   0.0445
+       3	[   0.4413  -0.4662 ] dist =    2.992
+    <stage: 8 curr: 0.2971 best: 0.193 save: 0.193 consecRDL: 0.1268 >
+	swapping: [     0.16     0.04 ]<-->Center[0]
+       0	[     0.16     0.04 ] dist =        0
+       1	[  -0.2529   0.5029 ] dist =    2.282
+       2	[     0.16     0.04 ] dist =    2.399
+       3	[   0.4413  -0.4662 ] dist =    1.262
+    <stage: 9 curr: 0.3118 best: 0.193 save: 0.193 consecRDL: -0.04943 >
+	swapping: [    -0.51     0.98 ]<-->Center[1]
+       0	[     0.16     0.04 ] dist =    2.399
+       1	[    -0.51     0.98 ] dist =    2.576
+       2	[     0.16     0.04 ] dist =        0
+       3	[   0.4413  -0.4662 ] dist =    1.262
+    <stage: 10 curr: 0.3604 best: 0.193 save: 0.193 consecRDL: -0.1556 >
+	swapping: [     0.07    -0.82 ]<-->Center[3]
+       0	[     0.16     0.04 ] dist =    3.963
+       1	[    -0.51     0.98 ] dist =    1.983
+       2	[     0.16     0.04 ] dist =        0
+       3	[     0.07    -0.82 ] dist =    1.262
+    <stage: 11 curr: 0.4239 best: 0.193 save: 0.193 consecRDL: -0.1762 >
+	swapping: [    -0.08     0.61 ]<-->Center[3]
+       0	[     0.16     0.04 ] dist =    5.633
+       1	[    -0.51     0.98 ] dist =    1.983
+       2	[     0.16     0.04 ] dist =        0
+       3	[    -0.08     0.61 ] dist =   0.8616
+    <stage: 12 curr: 0.4666 best: 0.193 save: 0.193 consecRDL: -0.1008 >
+	swapping: [     0.18    -0.64 ]<-->Center[0]
+       0	[     0.18    -0.64 ] dist =     7.43
+       1	[    -0.51     0.98 ] dist =        0
+       2	[     0.16     0.04 ] dist =        0
+       3	[    -0.08     0.61 ] dist =    1.901
+    <stage: 13 curr: 0.3339 best: 0.193 save: 0.193 consecRDL: 0.2843 >
+       0	[   0.5117   -0.615 ] dist =    1.471
+       1	[    -0.51     0.98 ] dist =        0
+       2	[   0.2514  0.05143 ] dist =    3.307
+       3	[  0.06667     0.74 ] dist =    1.901
+    <stage: 14 curr: 0.2655 best: 0.193 save: 0.193 consecRDL: 0.2048 >
+       0	[   0.5671  -0.5529 ] dist =    1.147
+       1	[    -0.61    0.625 ] dist =   0.5441
+       2	[   0.1433     0.09 ] dist =    2.774
+       3	[    0.222    0.834 ] dist =   0.8464
+    <stage: 15 curr: 0.2063 best: 0.193 save: 0.193 consecRDL: 0.223 >
+       0	[   0.5671  -0.5529 ] dist =    1.098
+       1	[    -0.73   0.3433 ] dist =    1.116
+       2	[   0.2275   0.0725 ] dist =   0.6113
+       3	[   0.3383   0.7733 ] dist =    1.301
+    <stage: 16 curr: 0.1829 best: 0.193 save: 0.193 consecRDL: 0.1133 >
+    <End of Run>
+	swapping: [     0.18    -0.64 ]<-->Center[3]
+       0	[   0.5671  -0.5529 ] dist =    1.098
+       1	[    -0.73   0.3433 ] dist =    1.058
+       2	[   0.2275   0.0725 ] dist =   0.3044
+       3	[     0.18    -0.64 ] dist =    1.198
+    <stage: 17 curr: 0.3124 best: 0.1829 save: 0.1829 consecRDL: -0.7077 >
+	swapping: [     0.92    -0.38 ]<-->Center[2]
+       0	[   0.5671  -0.5529 ] dist =   0.6223
+       1	[    -0.73   0.3433 ] dist =    1.058
+       2	[     0.92    -0.38 ] dist =    4.523
+       3	[     0.18    -0.64 ] dist =   0.0445
+    <stage: 18 curr: 0.4089 best: 0.1829 save: 0.1829 consecRDL: -0.3089 >
+       0	[     0.55  -0.4825 ] dist =   0.5131
+       1	[   -0.285   0.5625 ] dist =    4.508
+       2	[    0.878    0.188 ] dist =    2.649
+       3	[   0.1367  -0.4733 ] dist =   0.5073
+    <stage: 19 curr: 0.2129 best: 0.1829 save: 0.1829 consecRDL: 0.4794 >
+       0	[    0.705  -0.5575 ] dist =    0.415
+       1	[   -0.285   0.5625 ] dist =     2.54
+       2	[   0.8675     0.33 ] dist =   0.7032
+       3	[   0.1775   -0.375 ] dist =   0.5997
+    <stage: 20 curr: 0.1966 best: 0.1829 save: 0.1829 consecRDL: 0.07649 >
+    <End of Run>
+	swapping: [    -0.29     0.17 ]<-->Center[1]
+       0	[    0.705  -0.5575 ] dist =   0.4769
+       1	[    -0.29     0.17 ] dist =     2.54
+       2	[   0.8675     0.33 ] dist =   0.3609
+       3	[   0.1775   -0.375 ] dist =   0.5544
+    <stage: 21 curr: 0.2582 best: 0.1829 save: 0.1829 consecRDL: -0.3135 >
+       0	[    0.744   -0.482 ] dist =   0.4769
+       1	[   -0.285   0.5625 ] dist =    3.772
+       2	[   0.8567      0.5 ] dist =   0.3609
+       3	[   0.1775   -0.375 ] dist =   0.5544
+    <stage: 22 curr: 0.1904 best: 0.1829 save: 0.1829 consecRDL: 0.2625 >
+       0	[    0.744   -0.482 ] dist =   0.4408
+       1	[   -0.285   0.5625 ] dist =     2.54
+       2	[   0.8567      0.5 ] dist =   0.2739
+       3	[   0.1775   -0.375 ] dist =   0.5544
+    <stage: 23 curr: 0.1904 best: 0.1829 save: 0.1829 consecRDL: 0 >
+    <End of Run>
+	swapping: [     0.92     0.47 ]<-->Center[1]
+       0	[   0.5671  -0.5529 ] dist =    1.098
+       1	[     0.92     0.47 ] dist =    1.058
+       2	[   0.2275   0.0725 ] dist =   0.3044
+       3	[   0.3383   0.7733 ] dist =    1.198
+    <stage: 24 curr: 0.2665 best: 0.1829 save: 0.1829 consecRDL: -0.4567 >
+       0	[   0.5671  -0.5529 ] dist =    1.098
+       1	[   0.8567      0.5 ] dist =   0.2886
+       2	[   -0.302    0.036 ] dist =    2.749
+       3	[   -0.062    0.856 ] dist =    1.194
+    <stage: 25 curr: 0.1495 best: 0.1829 save: 0.1829 consecRDL: 0.439 >
+       0	[   0.5338  -0.4938 ] dist =    1.393
+       1	[   0.8567      0.5 ] dist =   0.2739
+       2	[  -0.4525    0.065 ] dist =   0.9645
+       3	[   -0.062    0.856 ] dist =   0.3584
+    <stage: 26 curr: 0.143 best: 0.1829 save: 0.1829 consecRDL: 0.04376 >
+    <End of Run>
+	swapping: [    -0.29     0.17 ]<-->Center[2]
+       0	[   0.5338  -0.4938 ] dist =    1.356
+       1	[   0.8567      0.5 ] dist =   0.2739
+       2	[    -0.29     0.17 ] dist =   0.8706
+       3	[   -0.062    0.856 ] dist =   0.3584
+    <stage: 27 curr: 0.1504 best: 0.143 save: 0.143 consecRDL: -0.05237 >
+	swapping: [     0.18    -0.64 ]<-->Center[2]
+       0	[   0.5338  -0.4938 ] dist =    1.356
+       1	[   0.8567      0.5 ] dist =   0.2739
+       2	[     0.18    -0.64 ] dist =     1.02
+       3	[   -0.062    0.856 ] dist =   0.3584
+    <stage: 28 curr: 0.2387 best: 0.143 save: 0.143 consecRDL: -0.5868 >
+	swapping: [     0.74     0.16 ]<-->Center[3]
+       0	[   0.5338  -0.4938 ] dist =    1.313
+       1	[   0.8567      0.5 ] dist =   0.2739
+       2	[     0.18    -0.64 ] dist =    1.543
+       3	[     0.74     0.16 ] dist =    1.644
+    <stage: 29 curr: 0.5265 best: 0.143 save: 0.143 consecRDL: -1.206 >
+       0	[    0.624   -0.462 ] dist =   0.6558
+       1	[   0.2667    0.835 ] dist =    4.467
+       2	[   -0.344   -0.248 ] dist =    4.041
+       3	[     0.43   0.1575 ] dist =    1.367
+    <stage: 30 curr: 0.203 best: 0.143 save: 0.143 consecRDL: 0.6144 >
+       0	[   0.5671  -0.5529 ] dist =    1.179
+       1	[      0.1   0.8583 ] dist =    1.316
+       2	[  -0.6567  0.07333 ] dist =   0.9726
+       3	[     0.53   0.1475 ] dist =   0.5939
+    <stage: 31 curr: 0.1581 best: 0.143 save: 0.143 consecRDL: 0.2215 >
+       0	[   0.5117   -0.615 ] dist =   0.8485
+       1	[      0.1   0.8583 ] dist =    1.146
+       2	[  -0.6567  0.07333 ] dist =   0.3695
+       3	[    0.604    0.082 ] dist =   0.7976
+    <stage: 32 curr: 0.1536 best: 0.143 save: 0.143 consecRDL: 0.02862 >
+    <End of Run>
+	swapping: [      0.9    -0.18 ]<-->Center[3]
+       0	[   0.5117   -0.615 ] dist =   0.8068
+       1	[      0.1   0.8583 ] dist =    1.146
+       2	[  -0.6567  0.07333 ] dist =   0.3695
+       3	[      0.9    -0.18 ] dist =   0.7488
+    <stage: 33 curr: 0.1794 best: 0.143 save: 0.143 consecRDL: -0.1685 >
+	swapping: [      0.9    -0.18 ]<-->Center[2]
+       0	[   0.5117   -0.615 ] dist =    1.469
+       1	[      0.1   0.8583 ] dist =    1.146
+       2	[      0.9    -0.18 ] dist =   0.3695
+       3	[      0.9    -0.18 ] dist =   0.6045
+    <stage: 34 curr: 0.3577 best: 0.143 save: 0.143 consecRDL: -0.9938 >
+       0	[   0.3729  -0.4786 ] dist =    1.469
+       1	[  -0.1522   0.5967 ] dist =    5.082
+       2	[     0.87   0.0175 ] dist =   0.6045
+       3	[      0.9    -0.18 ] dist =        0
+    <stage: 35 curr: 0.2453 best: 0.143 save: 0.143 consecRDL: 0.3142 >
+       0	[   0.3729  -0.4786 ] dist =    1.203
+       1	[   -0.285   0.5625 ] dist =     2.69
+       2	[   0.8567      0.5 ] dist =   0.9728
+       3	[     0.91    -0.28 ] dist =   0.0404
+    <stage: 36 curr: 0.2019 best: 0.143 save: 0.143 consecRDL: 0.1772 >
+    <End of Run>
+	swapping: [    -0.71     0.27 ]<-->Center[2]
+       0	[   0.5338  -0.4938 ] dist =    1.356
+       1	[   0.8567      0.5 ] dist =   0.2739
+       2	[    -0.71     0.27 ] dist =   0.8706
+       3	[   -0.062    0.856 ] dist =   0.3584
+    <stage: 37 curr: 0.1454 best: 0.143 save: 0.143 consecRDL: -0.01682 >
+	swapping: [     0.92    -0.38 ]<-->Center[2]
+       0	[   0.5338  -0.4938 ] dist =    1.781
+       1	[   0.8567      0.5 ] dist =   0.2739
+       2	[     0.92    -0.38 ] dist =   0.4941
+       3	[   -0.062    0.856 ] dist =   0.3584
+    <stage: 38 curr: 0.2664 best: 0.143 save: 0.143 consecRDL: -0.8323 >
+	swapping: [    -0.29     0.17 ]<-->Center[1]
+       0	[   0.5338  -0.4938 ] dist =    1.386
+       1	[    -0.29     0.17 ] dist =   0.2739
+       2	[     0.92    -0.38 ] dist =   0.0404
+       3	[   -0.062    0.856 ] dist =    3.627
+    <stage: 39 curr: 0.2186 best: 0.143 save: 0.143 consecRDL: 0.1792 >
+	swapping: [     0.18    -0.64 ]<-->Center[3]
+       0	[   0.5338  -0.4938 ] dist =   0.9617
+       1	[    -0.29     0.17 ] dist =     1.02
+       2	[     0.92    -0.38 ] dist =    1.087
+       3	[     0.18    -0.64 ] dist =    1.303
+    <stage: 40 curr: 0.359 best: 0.143 save: 0.143 consecRDL: -0.642 >
+       0	[     0.55  -0.4825 ] dist =   0.4936
+       1	[  -0.2356   0.5044 ] dist =    3.992
+       2	[    0.878    0.188 ] dist =    2.649
+       3	[    0.125    -0.73 ] dist =   0.0445
+    <stage: 41 curr: 0.2162 best: 0.143 save: 0.143 consecRDL: 0.3978 >
+       0	[    0.624   -0.462 ] dist =   0.6395
+       1	[  -0.2356   0.5044 ] dist =    2.958
+       2	[   0.8675     0.33 ] dist =   0.7032
+       3	[    0.125    -0.73 ] dist =  0.02225
+    <stage: 42 curr: 0.2054 best: 0.143 save: 0.143 consecRDL: 0.04997 >
+    <End of Run>
+	swapping: [     0.16     0.04 ]<-->Center[3]
+       0	[   0.5338  -0.4938 ] dist =    1.356
+       1	[   0.8567      0.5 ] dist =   0.2739
+       2	[  -0.4525    0.065 ] dist =   0.8706
+       3	[     0.16     0.04 ] dist =   0.3584
+    <stage: 43 curr: 0.2652 best: 0.143 save: 0.143 consecRDL: -0.8552 >
+       0	[   0.5671  -0.5529 ] dist =    1.131
+       1	[    0.675    0.605 ] dist =   0.9783
+       2	[    -0.62      0.3 ] dist =    1.335
+       3	[    0.106    0.468 ] dist =     1.86
+    <stage: 44 curr: 0.1799 best: 0.143 save: 0.143 consecRDL: 0.3217 >
+       0	[   0.5338  -0.4938 ] dist =    1.393
+       1	[   0.8567      0.5 ] dist =   0.4059
+       2	[    -0.62      0.3 ] dist =    1.002
+       3	[    0.072    0.668 ] dist =   0.7967
+    <stage: 45 curr: 0.1592 best: 0.143 save: 0.143 consecRDL: 0.1148 >
+    <End of Run>
+	swapping: [    -0.51     0.98 ]<-->Center[1]
+       0	[   0.5338  -0.4938 ] dist =    1.356
+       1	[    -0.51     0.98 ] dist =   0.2739
+       2	[  -0.4525    0.065 ] dist =   0.8706
+       3	[   -0.062    0.856 ] dist =   0.3584
+    <stage: 46 curr: 0.2431 best: 0.143 save: 0.143 consecRDL: -0.7005 >
+       0	[    0.593   -0.332 ] dist =    2.904
+       1	[    -0.51     0.98 ] dist =        0
+       2	[  -0.4525    0.065 ] dist =   0.8706
+       3	[    0.222    0.834 ] dist =    1.087
+    <stage: 47 curr: 0.199 best: 0.143 save: 0.143 consecRDL: 0.1816 >
+    <End of Run>
+	swapping: [     0.16     0.04 ]<-->Center[2]
+       0	[    0.593   -0.332 ] dist =    2.183
+       1	[    -0.51     0.98 ] dist =        0
+       2	[     0.16     0.04 ] dist =   0.4948
+       3	[    0.222    0.834 ] dist =    1.301
+    <stage: 48 curr: 0.2576 best: 0.143 save: 0.143 consecRDL: -0.2945 >
+       0	[   0.5887  -0.4637 ] dist =    1.708
+       1	[    -0.61    0.625 ] dist =   0.5441
+       2	[     -0.2  -0.0225 ] dist =    1.598
+       3	[   0.3383   0.7733 ] dist =    1.301
+    <stage: 49 curr: 0.204 best: 0.143 save: 0.143 consecRDL: 0.2079 >
+       0	[   0.5567  -0.4211 ] dist =      1.8
+       1	[    -0.61    0.625 ] dist =    0.272
+       2	[  -0.3667 -0.003333 ] dist =   0.8106
+       3	[   0.3383   0.7733 ] dist =    1.198
+    <stage: 50 curr: 0.1985 best: 0.143 save: 0.143 consecRDL: 0.02697 >
+    <End of Run>
+
+[k-means completed:
+  n_stages      = 50
+  total_time    = 0.05 sec
+  init_time     = 0 sec
+  stage_time    = 0.001 sec/stage_(excl_init) 0.001 sec/stage_(incl_init)
+  average_distort = 0.143
+  (Final Center Points:
+       0	[   0.5338  -0.4938 ] dist =    1.356
+       1	[   0.8567      0.5 ] dist =   0.2739
+       2	[  -0.4525    0.065 ] dist =   0.8706
+       3	[   -0.062    0.856 ] dist =   0.3584
+  )
+]
+  (Cluster assignments:
+    Point  Center  Squared Dist
+    -----  ------  ------------
+       0       2      0.03743
+       1       0      0.01858
+       2       0       0.2326
+       3       1     0.004911
+       4       2       0.3758
+       5       0       0.2258
+       6       3      0.02682
+       7       1       0.1292
+       8       0       0.3215
+       9       0     0.007553
+      10       0       0.1465
+      11       0       0.2417
+      12       2        0.349
+      13       1       0.1397
+      14       0       0.1621
+      15       2       0.1083
+      16       3       0.2161
+      17       3      0.04096
+      18       3      0.06084
+      19       3       0.0137
+  )
+  (Validating assignments.  Found 0 mismatches.)
+<END_OF_RUN>

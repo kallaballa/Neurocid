@@ -1,0 +1,223 @@
+------------------------------------------------------------
+kmltest: KMlocal (k-means clustering by local search)
+    Version: 1.7 (Use at your own risk)
+    Copyright: David M. Mount.
+    Latest Revision: August 10, 2005.
+------------------------------------------------------------
+
+stats = tree
+[Read Data Points:
+  data_size  = 20
+  file_name  = test1-dat.txt
+  dim        = 2
+]
+Contents of the kc-tree: [
+    ....Leaf n=1 <13> sm=[     0.91     0.87 ] ss=1.585
+    ...Split cd=0 cv=0.4475 nd=4 sm=[     1.19     3.56 ] ss=4.027
+    ......Leaf n=1 <17> sm=[     0.13     0.92 ] ss=0.8633
+    .....Split cd=0 cv=  0.13 nd=2 sm=[     0.18     1.81 ] ss=1.658
+    ......Leaf n=1 <19> sm=[     0.05     0.89 ] ss=0.7946
+    ....Split cd=1 cv=  0.88 nd=3 sm=[     0.28     2.69 ] ss=2.442
+    .....Leaf n=1 <6> sm=[      0.1     0.88 ] ss=0.7844
+    ..Split cd=1 cv=   0.5 nd=7 sm=[     3.01     4.23 ] ss=5.695
+    .....Leaf n=1 <3> sm=[     0.92     0.47 ] ss=1.067
+    ....Split cd=1 cv=  0.26 nd=2 sm=[     1.66     0.63 ] ss=1.64
+    .....Leaf n=1 <7> sm=[     0.74     0.16 ] ss=0.5732
+    ...Split cd=0 cv=0.4475 nd=3 sm=[     1.82     0.67 ] ss=1.668
+    ....Leaf n=1 <4> sm=[     0.16     0.04 ] ss=0.0272
+    .Split cd=0 cv=-0.025 nd=11 sm=[     1.42     6.26 ] ss=7.984
+    ....Leaf n=1 <18> sm=[    -0.08     0.61 ] ss=0.3785
+    ...Split cd=0 cv=-0.4975 nd=2 sm=[    -0.59     1.59 ] ss=1.599
+    ....Leaf n=1 <16> sm=[    -0.51     0.98 ] ss=1.22
+    ..Split cd=1 cv=   0.5 nd=4 sm=[    -1.59     2.03 ] ss=2.289
+    ....Leaf n=1 <0> sm=[    -0.29     0.17 ] ss=0.113
+    ...Split cd=0 cv=-0.4975 nd=2 sm=[       -1     0.44 ] ss=0.69
+    ....Leaf n=1 <15> sm=[    -0.71     0.27 ] ss=0.577
+    Split cd=1 cv=  0.02 nd=20 sm=[     4.72     2.09 ] ss=14.56
+    .....Leaf n=1 <2> sm=[      0.9    -0.18 ] ss=0.8424
+    ....Split cd=1 cv= -0.22 nd=3 sm=[     2.38    -0.92 ] ss=2.276
+    ......Leaf n=1 <14> sm=[     0.92    -0.38 ] ss=0.9908
+    .....Split cd=0 cv=0.6838 nd=2 sm=[     1.48    -0.74 ] ss=1.434
+    ......Leaf n=1 <1> sm=[     0.56    -0.36 ] ss=0.4432
+    ...Split cd=0 cv=0.4475 nd=4 sm=[     2.68       -1 ] ss=2.373
+    ....Leaf n=1 <5> sm=[      0.3    -0.08 ] ss=0.0964
+    ..Split cd=1 cv= -0.46 nd=8 sm=[     4.27    -3.95 ] ss=5.586
+    .....Leaf n=1 <9> sm=[      0.6    -0.55 ] ss=0.6625
+    ....Split cd=1 cv=  -0.7 nd=2 sm=[     1.34    -1.49 ] ss=2.094
+    .....Leaf n=1 <11> sm=[     0.74    -0.94 ] ss=1.431
+    ...Split cd=0 cv=0.4475 nd=4 sm=[     1.59    -2.95 ] ss=3.213
+    .....Leaf n=1 <10> sm=[     0.18    -0.64 ] ss=0.442
+    ....Split cd=1 cv=  -0.7 nd=2 sm=[     0.25    -1.46 ] ss=1.119
+    .....Leaf n=1 <8> sm=[     0.07    -0.82 ] ss=0.6773
+    .Split cd=0 cv=-0.025 nd=9 sm=[      3.3    -4.17 ] ss=6.575
+    ..Leaf n=1 <12> sm=[    -0.97    -0.22 ] ss=0.9893
+]
+       0	[        0        0 ] dist = 7.891e-309
+       1	[        0        0 ] dist = 6.963e-77
+       2	[        0        0 ] dist = 6.555e-260
+       3	[        0        0 ] dist = 6.014e-154
+
+[Run_k-means:
+  k-means_alg      = lloyd
+  data_size        = 20
+  kcenters         = 4
+  dim              = 2
+  max_tot_stage    = 20
+  max_run_stage    = 3
+  min_accum_rdl    = 0.2
+]
+       0	[     0.18    -0.64 ] dist = 7.891e-309
+       1	[     0.05     0.89 ] dist = 6.963e-77
+       2	[    -0.71     0.27 ] dist = 6.555e-260
+       3	[     0.56    -0.36 ] dist = 6.014e-154
+	<stage: 0 curr: 0.1989 best: 0.1989 accumRDL: 0% >
+       0	[    0.125    -0.73 ] dist =   0.0445
+       1	[      0.1   0.8583 ] dist =    1.167
+       2	[  -0.6567  0.07333 ] dist =   0.4941
+       3	[   0.6489  -0.2022 ] dist =    2.272
+	<stage: 1 curr: 0.1692 best: 0.1692 accumRDL: 14.92% >
+       0	[     0.33     -0.8 ] dist =   0.4446
+       1	[      0.1   0.8583 ] dist =    1.146
+       2	[  -0.6567  0.07333 ] dist =   0.3695
+       3	[   0.6375    -0.11 ] dist =    1.424
+	<stage: 2 curr: 0.1557 best: 0.1557 accumRDL: 21.69% >
+    <Generating new random centers>
+       0	[   0.3975  -0.7375 ] dist =   0.4392
+       1	[      0.1   0.8583 ] dist =    1.146
+       2	[  -0.6567  0.07333 ] dist =   0.3695
+       3	[   0.6429 -0.04714 ] dist =     1.16
+	<stage: 3 curr: 0.1526 best: 0.1526 accumRDL: 1.981% >
+       0	[   0.3975  -0.7375 ] dist =   0.4054
+       1	[      0.1   0.8583 ] dist =    1.146
+       2	[  -0.6567  0.07333 ] dist =   0.3695
+       3	[   0.6429 -0.04714 ] dist =    1.132
+	<stage: 4 curr: 0.1526 best: 0.1526 accumRDL: 1.981% >
+       0	[   0.3975  -0.7375 ] dist =   0.4054
+       1	[      0.1   0.8583 ] dist =    1.146
+       2	[  -0.6567  0.07333 ] dist =   0.3695
+       3	[   0.6429 -0.04714 ] dist =    1.132
+	<stage: 5 curr: 0.1526 best: 0.1526 accumRDL: 1.981% >
+    <Generating new random centers>
+       0	[     0.91     0.87 ] dist =   0.4054
+       1	[    -0.08     0.61 ] dist =    1.146
+       2	[      0.1     0.88 ] dist =   0.3695
+       3	[    -0.97    -0.22 ] dist =    1.132
+	<stage: 6 curr: 0.7204 best: 0.1526 accumRDL: -362.6% >
+       0	[    0.878    0.188 ] dist =    3.358
+       1	[    0.185 -0.01625 ] dist =    7.796
+       2	[  0.09333   0.8967 ] dist =   0.0051
+       3	[  -0.3575  -0.3525 ] dist =    3.248
+	<stage: 7 curr: 0.2675 best: 0.1526 accumRDL: 62.86% >
+    <Generating new random centers>
+       0	[    0.878    0.188 ] dist =    1.028
+       1	[    0.345  -0.2867 ] dist =    2.159
+       2	[   -0.062    0.856 ] dist =   0.4873
+       3	[  -0.3575  -0.3525 ] dist =    1.677
+	<stage: 8 curr: 0.2017 best: 0.1526 accumRDL: 24.6% >
+    <Generating new random centers>
+       0	[    0.878    0.188 ] dist =    1.028
+       1	[   0.3729  -0.4786 ] dist =    1.467
+       2	[   -0.062    0.856 ] dist =   0.3584
+       3	[  -0.6567  0.07333 ] dist =    1.182
+	<stage: 9 curr: 0.1472 best: 0.1472 accumRDL: 27.04% >
+    <Generating new random centers>
+       0	[   0.8675     0.33 ] dist =   0.7032
+       1	[   0.4413  -0.4662 ] dist =    1.513
+       2	[   -0.062    0.856 ] dist =   0.3584
+       3	[  -0.6567  0.07333 ] dist =   0.3695
+	<stage: 10 curr: 0.1412 best: 0.1412 accumRDL: 4.068% >
+       0	[   0.8675     0.33 ] dist =   0.6221
+       1	[   0.4413  -0.4662 ] dist =    1.474
+       2	[   -0.062    0.856 ] dist =   0.3584
+       3	[  -0.6567  0.07333 ] dist =   0.3695
+	<stage: 11 curr: 0.1412 best: 0.1412 accumRDL: 4.068% >
+       0	[   0.8675     0.33 ] dist =   0.6221
+       1	[   0.4413  -0.4662 ] dist =    1.474
+       2	[   -0.062    0.856 ] dist =   0.3584
+       3	[  -0.6567  0.07333 ] dist =   0.3695
+	<stage: 12 curr: 0.1412 best: 0.1412 accumRDL: 4.068% >
+    <Generating new random centers>
+       0	[      0.9    -0.18 ] dist =   0.6221
+       1	[     0.92    -0.38 ] dist =    1.474
+       2	[     0.16     0.04 ] dist =   0.3584
+       3	[    -0.51     0.98 ] dist =   0.3695
+	<stage: 13 curr: 0.3533 best: 0.1412 accumRDL: -140% >
+       0	[   0.8675     0.33 ] dist =    1.667
+       1	[    0.705  -0.5575 ] dist =   0.6073
+       2	[ -0.09167  -0.2583 ] dist =    2.808
+       3	[    -0.17   0.7583 ] dist =    1.983
+	<stage: 14 curr: 0.1863 best: 0.1412 accumRDL: 47.25% >
+    <Generating new random centers>
+       0	[   0.8567      0.5 ] dist =   0.3609
+       1	[    0.744   -0.482 ] dist =   0.4769
+       2	[ -0.09167  -0.2583 ] dist =    1.894
+       3	[    -0.17   0.7583 ] dist =   0.9945
+	<stage: 15 curr: 0.1802 best: 0.1412 accumRDL: 3.305% >
+       0	[   0.8567      0.5 ] dist =   0.2739
+       1	[    0.744   -0.482 ] dist =   0.4408
+       2	[ -0.09167  -0.2583 ] dist =    1.894
+       3	[    -0.17   0.7583 ] dist =   0.9945
+	<stage: 16 curr: 0.1802 best: 0.1412 accumRDL: 3.305% >
+       0	[   0.8567      0.5 ] dist =   0.2739
+       1	[    0.744   -0.482 ] dist =   0.4408
+       2	[ -0.09167  -0.2583 ] dist =    1.894
+       3	[    -0.17   0.7583 ] dist =   0.9945
+	<stage: 17 curr: 0.1802 best: 0.1412 accumRDL: 3.305% >
+    <Generating new random centers>
+       0	[     0.91     0.87 ] dist =   0.2739
+       1	[      0.9    -0.18 ] dist =   0.4408
+       2	[    -0.97    -0.22 ] dist =    1.894
+       3	[     0.07    -0.82 ] dist =   0.9945
+	<stage: 18 curr: 0.391 best: 0.1412 accumRDL: -109.8% >
+       0	[   0.3383   0.7733 ] dist =    3.215
+       1	[   0.5971  -0.1929 ] dist =    1.523
+       2	[    -0.62      0.3 ] dist =    2.574
+       3	[     0.33     -0.8 ] dist =   0.5078
+	<stage: 19 curr: 0.1692 best: 0.1412 accumRDL: 56.73% >
+    <Generating new random centers>
+       0	[   0.3383   0.7733 ] dist =    1.198
+       1	[   0.5971  -0.1929 ] dist =   0.8793
+       2	[    -0.62      0.3 ] dist =    1.002
+       3	[     0.33     -0.8 ] dist =   0.3038
+	<stage: 20 curr: 0.1692 best: 0.1412 accumRDL: 0% >
+    <Generating new random centers>
+
+[k-means completed:
+  n_stages      = 20
+  total_time    = 0.02 sec
+  init_time     = 0 sec
+  stage_time    = 0.001 sec/stage_(excl_init) 0.001 sec/stage_(incl_init)
+  average_distort = 0.1412
+  (Final Center Points:
+       0	[   0.8675     0.33 ] dist =   0.6221
+       1	[   0.4413  -0.4662 ] dist =    1.474
+       2	[   -0.062    0.856 ] dist =   0.3584
+       3	[  -0.6567  0.07333 ] dist =   0.3695
+  )
+]
+  (Cluster assignments:
+    Point  Center  Squared Dist
+    -----  ------  ------------
+       0       3       0.1438
+       1       1      0.02539
+       2       0       0.2612
+       3       0      0.02236
+       4       1       0.3354
+       5       1       0.1691
+       6       2      0.02682
+       7       0      0.04516
+       8       1        0.263
+       9       1      0.03222
+      10       1      0.09844
+      11       1       0.3137
+      12       3       0.1842
+      13       0       0.2934
+      14       1       0.2366
+      15       3      0.04152
+      16       2       0.2161
+      17       2      0.04096
+      18       2      0.06084
+      19       2       0.0137
+  )
+  (Validating assignments.  Found 0 mismatches.)
+<END_OF_RUN>

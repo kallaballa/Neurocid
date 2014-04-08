@@ -1,0 +1,18 @@
+  stats tree				# statistics output level
+  show_assignments yes			# show final cluster assignments
+  validate yes				# validate assignments
+  dim 2					# dimension
+
+  data_size 20				# number of data points
+  seed 1				# random number seed
+read_data_pts test1-dat.txt		# read data points
+
+  kcenters 4				# number of centers
+  max_tot_stage 50 0 0 0		# number of stages
+  min_consec_rdl 0.20			# minimum improvement for Lloyd's
+  init_prob_accept 0.50			# init. prob. of accept. for SA
+  temp_run_length  10			# number of runs per temp change
+  temp_reduc_fact  0.75			# temperature reduction factor
+
+  seed 4				# use different seed
+run_kmeans hybrid			# run with this algorithm

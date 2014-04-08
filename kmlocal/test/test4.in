@@ -1,0 +1,18 @@
+  stats stage				# print trace information
+  show_assignments yes			# show final cluster assignments
+  validate yes				# validate assignments
+  dim 2					# dimension
+
+  data_size 1000			# number of data points
+  colors 20				# ...number of clusters
+  std_dev 0.01				# ...each with this std deviation
+  distribution clus_gauss		# clustered gaussian distribution
+  seed 1				# random number seed
+gen_data_pts				# generate the data points
+
+  kcenters 20				# number of centers
+  max_swaps 1				# number of swaps
+  max_tot_stage 500 0 0 0		# maximum total stages
+
+  seed 2				# use different seed
+run_kmeans swap				# run using swap

@@ -1,0 +1,18 @@
+  stats stage				# statistics output level
+  show_assignments yes			# show final cluster assignments
+  validate yes				# validate assignments
+  dim 2					# dimension
+
+  data_size 10000			# number of data points
+  colors 20				# ...number of clusters
+  std_dev 0.01				# ...each with this std deviation
+  distribution clus_gauss		# clustered gaussian distribution
+  seed 1				# random number seed
+gen_data_pts				# generate the data points
+
+  kcenters 20				# number of centers
+  max_tot_stage 1000 0 0 0		# number of stages
+  min_consec_rdl 0.10			# minimum improvement for Lloyd's
+
+  seed 4				# use different seed
+run_kmeans EZ-hybrid			# run with this algorithm
