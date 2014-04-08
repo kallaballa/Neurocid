@@ -104,5 +104,5 @@ install:
 	cp *.ttf ${DESTDIR}/${PREFIX}/share/neurocid
 	cp neurocid ${DESTDIR}/${PREFIX}/bin
 	mkdir -p ${DESTDIR}/etc/
-	echo "export NEUROCID_PATH=\"${DESTDIR}/${PREFIX}/share/neurocid\"" > /etc/neurocid
+	echo "export NEUROCID_PATH=\"${DESTDIR}/${PREFIX}/share/neurocid\"" > ${DESTDIR}/etc/neurocid
 
