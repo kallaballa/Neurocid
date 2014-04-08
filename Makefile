@@ -78,7 +78,6 @@ debug: LDFLAGS += -Wl,--export-dynamic -rdynamic
 debug: dirs
 
 clean: dirs
-
 distclean: dirs
 
 export LDFLAGS
@@ -90,6 +89,11 @@ dirs:
 	${MAKE} -C game/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 	${MAKE} -C tests/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 #	./run.sh tests/tests
+
+debian-clean:
+	${MAKE} -C src/ -${MAKEFLAGS} CXX=${CXX} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" clean
+	${MAKE} -C game/ -${MAKEFLAGS} CXX=${CXX} clean
+	${MAKE} -C tests/ -${MAKEFLAGS} CXX=${CXX} clean
 
 install: ${TARGET}
 install:
