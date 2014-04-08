@@ -1,4 +1,4 @@
-#include "brain.hpp"
+#include "brain_fann.hpp"
 #include "battlefield.hpp"
 #include <fann.h>
 #include <iostream>
@@ -9,26 +9,22 @@
 namespace neurocid {
 
 #ifdef _CHECK_BRAIN_ALLOC
-std::map<fann*, size_t> BasicBrain::nnAllocs_;
-size_t BasicBrain::nnAllocCnt_ = 0;
+std::map<fann*, size_t> BrainFann::nnAllocs_;
+size_t BrainFann::nnAllocCnt_ = 0;
 #endif
 
-BasicBrain::BasicBrain(BrainLayout layout, fann_type* weight): layout_(layout), nn_(NULL), inputs_(NULL) {
-	makeNN();
-    if(weight != NULL) {
-    	for(size_t i = 0; i < size(); ++i) {
-    		weights()[i] = weight[i];
-    	}
-    }
+BrainFann::BrainFann(const BrainFann& other): BasicBrain<fann_type>(other), nn_(other.nn_) {
 }
 
-BasicBrain::BasicBrain(const BasicBrain& other): layout_(other.layout_), nn_(other.nn_) , inputs_(other.inputs_) {
+BrainFann::~BrainFann() {
 }
 
-BasicBrain::~BasicBrain() {
+void BrainFann::applyInput(const size_t& i, const fann_type& value) {
+	assert(i < layout_.numInputs_);
+	inputs_[i] = value;
+	assert(!std::isnan(inputs_[i]) && !std::isinf(inputs_[i]) && inputs_[i] >= -1 && inputs_[i] <= 1);
 }
-
-void BasicBrain::makeNN() {
+void BrainFann::makeNN() {
 	assert(layout_.numLayers_ >= 3);
 	assert(layout_.numLayers_ < 20);
 	unsigned int* layerArray = new unsigned int[layout_.numLayers_];
@@ -55,7 +51,7 @@ void BasicBrain::makeNN() {
 #endif
 }
 
-void BasicBrain::destroy() {
+void BrainFann::destroy() {
 	assert(!destroyed_);
 	assert(nn_ != NULL);
 #ifdef _CHECK_BRAIN_ALLOC
@@ -72,28 +68,20 @@ void BasicBrain::destroy() {
 	destroyed_ = true;
 }
 
-void BasicBrain::reset() {
+void BrainFann::reset() {
 	assert(inputs_ != NULL);
     std::fill_n(inputs_, layout_.numInputs_, std::numeric_limits<fann_type>().max());
 }
 
-void BasicBrain::randomize() {
+void BrainFann::randomize() {
 	fann_randomize_weights(nn_, -1, 1);
 }
 
-size_t BasicBrain::size() const {
+size_t BrainFann::size() const {
 	return nn_->total_connections;
 }
 
-fann_type* BasicBrain::weights() {
-	return nn_->weights;
-}
-
-bool BasicBrain::isDestroyed() {
-	return destroyed_;
-}
-
-bool BasicBrain::operator==(BasicBrain& other) {
+bool BrainFann::operator==(BrainFann& other) {
 	assert(other.size() == this->size());
 	for(size_t i = 0; i < this->size(); ++i){
 		if(this->weights()[i] != other.weights()[i])
@@ -102,8 +90,32 @@ bool BasicBrain::operator==(BasicBrain& other) {
 	return true;
 }
 
-bool BasicBrain::operator!=(BasicBrain& other) {
+bool BrainFann::operator!=(BrainFann& other) {
 	return !operator==(other);
 }
 
+void BrainFann::update(const BattleFieldLayout& bfl, const Scan& scan) {
+	assert(nn_ != NULL);
+	assert(inputs_ != NULL);
+	assert(!destroyed_);
+	assert(layout_.numInputs_ == (scan.objects_.size() * 2) + 3);
+	assert(layout_.numInputs_ == fann_get_num_input(nn_));
+	assert(layout_.numOutputs == fann_get_num_output(nn_));
+}
+
+fann_type* BrainFann::weights() {
+	return nn_->weights;
+}
+
+void BrainFann::run() {
+	fann_type* outputs = fann_run(nn_, inputs_);
+	lthrust_ = outputs[0];
+	rthrust_ = outputs[1];
+	fthrust_ = outputs[2];
+	bthrust_ = outputs[3];
+	shoot_ = outputs[4];
+
+	assert(!std::isnan(bthrust_) && !std::isnan(fthrust_) && !std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(shoot_));
+	assert(!std::isinf(bthrust_) && !std::isinf(fthrust_) && !std::isinf(lthrust_) && !std::isinf(rthrust_) && !std::isinf(shoot_));
+}
 } /* namespace neurocid */

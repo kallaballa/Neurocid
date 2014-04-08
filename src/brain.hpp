@@ -42,49 +42,60 @@ struct BrainLayout  {
 class Ship;
 class Population;
 
-class BasicBrain {
-#ifdef _CHECK_BRAIN_ALLOC
-	static std::map<fann*, size_t> nnAllocs_;
-	static size_t nnAllocCnt_;
-#endif
+template<typename Tweight> class BasicBrain {
 #ifndef _NO_SERIALIZE
 	friend class boost::serialization::access;
 #endif
 public:
 	bool destroyed_ = false;
+	bool initialized_ = false;
 	BrainLayout  layout_;
-	fann *nn_;
-	fann_type lthrust_ = 0;
-	fann_type rthrust_ = 0;
-	fann_type fthrust_ = 0;
-	fann_type bthrust_ = 0;
-	fann_type shoot_ = 0;
-	fann_type* inputs_;
+	Tweight lthrust_ = 0;
+	Tweight rthrust_ = 0;
+	Tweight fthrust_ = 0;
+	Tweight bthrust_ = 0;
+	Tweight shoot_ = 0;
+	Tweight* inputs_ = NULL;
 
-	BasicBrain() :  layout_(), nn_(NULL), inputs_(NULL) {}
-	BasicBrain(BrainLayout layout, fann_type* weights = NULL);
-	BasicBrain(const BasicBrain& other);
-	virtual ~BasicBrain();
+	BasicBrain() {
+	}
 
-	void makeNN();
-	void destroy();
-	void reset();
-	void randomize();
-	size_t size() const;
-	fann_type* weights();
-	bool isDestroyed();
-	bool operator==(BasicBrain& other);
-	bool operator!=(BasicBrain& other);
+	void initialize(BrainLayout layout, Tweight* weight = NULL) {
+		layout_ = layout;
+		inputs_ = NULL;
+		makeNN();
+	    if(weight != NULL) {
+	    	for(size_t i = 0; i < size(); ++i) {
+	    		weights()[i] = weight[i];
+	    	}
+	    }
+	    initialized_ = true;
+	}
 
-	virtual void update(const BattleFieldLayout& bfl, const Scan& scan) = 0;
+	bool isDestroyed() {
+		return destroyed_;
+	}
 
+	BasicBrain(const BasicBrain& other) : inputs_(other.inputs_) {
+	};
+
+	virtual ~BasicBrain() {
+	};
+
+	virtual void makeNN() = 0;
+	virtual void applyInput(const size_t& i, const fann_type& value) = 0;
+	virtual void destroy() = 0;
+	virtual void randomize() = 0;
+	virtual void reset() = 0;
+	virtual size_t size() const = 0;
+	virtual Tweight* weights() = 0;
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
 	  ar & layout_;
-	  if(nn_ == NULL) {
+	  if(!initialized_)
 		  makeNN();
-	  }
+
 	  size_t s = size();
 	  ar & s;
 	  ar & boost::serialization::make_array(weights(), s);
@@ -92,23 +103,6 @@ public:
 #endif
 };
 
-class BrainNearest : public BasicBrain {
-public:
-	BrainNearest();
-	BrainNearest(BrainLayout layout, fann_type* weights = NULL);
-	virtual void update(const BattleFieldLayout& bfl, const Scan& scan);
-};
-
-class BrainSwarm : public BasicBrain {
-private:
-	void applyInput(const size_t& i, const fann_type& value);
-public:
-	BrainSwarm();
-	BrainSwarm(BrainLayout layout, fann_type* weights = NULL);
-	virtual void update(const BattleFieldLayout& bfl, const Scan& scan);
-};
-
-typedef BrainSwarm Brain;
 } /* namespace neurocid */
 
 #endif /* BRAIN_HPP_ */

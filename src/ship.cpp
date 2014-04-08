@@ -164,6 +164,7 @@ void Ship::think(BattleFieldLayout& bfl) {
 
 	assert(brain_ != NULL);
 	brain_->update(bfl, this->scan_);
+	brain_->run();
 }
 
 void Ship::move(BattleFieldLayout& bfl) {
@@ -238,7 +239,8 @@ void Ship::impact(Projectile& p) {
 Ship Ship::makeChild() const {
 	assert(brain_ != NULL);
 	Ship child(teamID_, layout_);
-	Brain* fresh  = new Brain(brain_->layout_);
+	Brain* fresh  = new Brain();
+	fresh->initialize(brain_->layout_);
 	child.setBrain(fresh);
 	return child;
 }
@@ -246,7 +248,8 @@ Ship Ship::makeChild() const {
 Ship Ship::clone() const {
 	assert(brain_ != NULL);
 	Ship child(teamID_, layout_);
-	Brain* fresh  = new Brain(brain_->layout_);
+	Brain* fresh  = new Brain();
+	fresh->initialize(brain_->layout_);
 	child.setBrain(fresh);
 
 	//copy brain

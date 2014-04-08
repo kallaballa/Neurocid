@@ -17,8 +17,9 @@ namespace neurocid {
 
 class Renderer {
 	double frameRate_;
-	bool enabled_;
-	BattleField* field_;
+	bool enabled_ = true;
+	bool notifiedDisable = false;
+	BattleField* field_ = NULL;
 	std::mutex updateMutex;
 	static Renderer* instance_;
 public:

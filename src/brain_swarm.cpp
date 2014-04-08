@@ -12,30 +12,8 @@
 namespace neurocid {
 using std::map;
 
-BrainSwarm::BrainSwarm() : BasicBrain() {
-}
-
-BrainSwarm::BrainSwarm(BrainLayout layout, fann_type* weight) : BasicBrain(layout, weight) {
-	for(size_t i = 0; i < layout.numInputs_; i++) {
-		inputs_[i] = 0;
-	}
-}
-
-void BrainSwarm::applyInput(const size_t& i, const fann_type& value) {
-	assert(i < layout_.numInputs_);
-	inputs_[i] = value;
-	assert(!std::isnan(inputs_[i]) && !std::isinf(inputs_[i]) && inputs_[i] >= -1 && inputs_[i] <= 1);
-}
-
 void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
-	assert(nn_ != NULL);
-	assert(inputs_ != NULL);
-	assert(!destroyed_);
-
-	size_t numInputs = layout_.numInputs_;
-	assert(layout_.numInputs_ == (scan.objects_.size() * 2) + 3);
-	assert(layout_.numInputs_ == fann_get_num_input(nn_));
-	assert(layout_.numOutputs == fann_get_num_output(nn_));
+	parentBrain_t::update(bfl, scan);
 
 	map<Coord, ScanObject> friendObj;
 	map<Coord, ScanObject> enemyObj;
@@ -114,21 +92,11 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	applyInput((inputCnt * 2), angVel / 10);
 	++inputCnt;
 
-	for(size_t i = 0; i < numInputs; ++i) {
+	for(size_t i = 0; i < layout_.numInputs_; ++i) {
 		assert(!std::isinf(inputs_[i]));
 		assert(!std::isnan(inputs_[i]));
 		assert(inputs_[i] != std::numeric_limits<fann_type>().max());
 	}
-
-	fann_type* outputs = fann_run(nn_, inputs_);
-	lthrust_ = outputs[0];
-	rthrust_ = outputs[1];
-	fthrust_ = outputs[2];
-	bthrust_ = outputs[3];
-	shoot_ = outputs[4];
-
-	assert(!std::isnan(bthrust_) && !std::isnan(fthrust_) && !std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(shoot_));
-	assert(!std::isinf(bthrust_) && !std::isinf(fthrust_) && !std::isinf(lthrust_) && !std::isinf(rthrust_) && !std::isinf(shoot_));
 
 	//	std::cerr << "output:\t" << lthrust_ << "\t" << rthrust_ << "\t" << shoot_ << std::endl;
 }

@@ -9,16 +9,21 @@
 #include "ship.hpp"
 #include "population.hpp"
 #include "genetic.hpp"
+#include "brain_swarm.hpp"
 #include <cstdlib>
 
+
 namespace neurocid {
+
+typedef BrainSwarm Brain;
 
 Population makePopulation(size_t teamID, size_t size, PopulationLayout& pl) {
 	Population p;
 	p.layout_ = pl;
 	for(size_t i = 0; i < size; i++) {
 		Ship t(teamID, pl.tl_);
-		Brain* b = new Brain(pl.bl_);
+		Brain* b = new Brain();
+		b->initialize(pl.bl_);
 		b->randomize();
 		t.setBrain(b);
 		p.push_back(t);

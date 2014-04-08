@@ -297,8 +297,10 @@ void Physics::step() {
 					body->SetAngularVelocity(0);
 				else {
 					float32 angVel = body->GetAngularVelocity();
-					if(angVel > 10)
-						body->SetAngularVelocity(10);
+					if(angVel > 5)
+						body->SetAngularVelocity(5);
+					else if(angVel < -5)
+						body->SetAngularVelocity(-5);
 				}
 
 				b2Vec2 vel = body->GetLinearVelocity();

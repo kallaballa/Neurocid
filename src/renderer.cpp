@@ -24,10 +24,7 @@ namespace neurocid {
 Renderer * Renderer::instance_ = NULL;
 
 Renderer::Renderer(size_t frameRate) :
-		frameRate_(frameRate),
-		enabled_(true),
-		field_(NULL),
-		updateMutex()  {
+		frameRate_(frameRate) {
 }
 
 void Renderer::update(BattleField* field) {
@@ -43,20 +40,29 @@ void Renderer::render() {
 	size_t dur = tt.measure([&]() {
 					updateMutex.lock();
 					if(field_ != NULL) {
-						canvas.clear();
 						if(isEnabled()) {
-						canvas.render(*field_);
+							canvas.clear();
+							canvas.render(*field_);
 #ifndef _NO_VIDEOENC
-						VideoEncoder::getInstance()->encode(Canvas::getInstance()->getSurface());
+							VideoEncoder::getInstance()->encode(Canvas::getInstance()->getSurface());
 #endif
+							Gui& gui = *Gui::getInstance();
+							OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
+							osd.update(*field_);
+							gui.logic();
+							gui.draw();
+							canvas.update();
+							notifiedDisable = false;
+						} else if (!notifiedDisable) {
+							canvas.clear();
+							Gui& gui = *Gui::getInstance();
+							OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
+							osd.update(*field_);
+							gui.logic();
+							gui.draw();
+							canvas.update();
+							notifiedDisable = true;
 						}
-
-						Gui& gui = *Gui::getInstance();
-						OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
-						osd.update(*field_);
-						gui.logic();
-						gui.draw();
-						canvas.update();
 					}
 					updateMutex.unlock();
 	});

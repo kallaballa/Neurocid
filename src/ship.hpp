@@ -7,7 +7,7 @@
 #include "2d.hpp"
 #include <cstring>
 #include <iostream>
-#include "brain.hpp"
+#include "brain_swarm.hpp"
 #include "scan.hpp"
 #ifndef _NO_SERIALIZE
 #include <boost/archive/text_iarchive.hpp>
@@ -15,6 +15,8 @@
 #endif
 
 namespace neurocid {
+
+typedef BrainSwarm Brain;
 
 struct ShipLayout {
 #ifndef _NO_SERIALIZE
