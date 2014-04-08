@@ -16,8 +16,8 @@ Following libraries can be disabled by prefixing make with WITHOUT_SERIALIZE=1:
 
 On Debian/Ubuntu you can install required packages like this (Video encoding not supported):
 
-    apt-get install pkg-config libsdl1.2-dev libsdl-gfx1.2-dev libsdl-image1.2-dev libsdl-ttf1.2-dev libboost-system-dev libboost-program_options-dev libboost-serialization-dev 
-    
+   apt-get install pkg-config libsdl1.2-dev libsdl-gfx1.2-dev libsdl-image1.2-dev libsdl-ttf2.0-dev libboost-system-dev libboost-program-options-dev libboost-serialization-dev
+ 
 On Opensuse 13.1
 
     sudo zypper install libSDL-devel libSDL_image-devel libSDL_gfx-devel boost-devel libffmpeg-devel
