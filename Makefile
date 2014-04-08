@@ -1,11 +1,13 @@
 CXX      := g++
-CXXFLAGS := -std=c++0x -pedantic -Wall -I../kmlocal-1.7.2/src/ -I../fann/src/include -I../box2d/ -I../guichan/include/ `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf` 
-LDFLAGS  := -L/opt/local/lib -L../kmlocal-1.7.2/src/ -L../fann/src/ -L../box2d/Box2D -L../guichan/
+CXXFLAGS := -std=c++0x -pedantic -Wall -I../kmlocal/src/ -I../fann/src/include -I../box2d/ -I../guichan/include/ `pkg-config --cflags SDL_gfx sdl SDL_image SDL_ttf` 
+LDFLAGS  := -L/opt/local/lib -L../kmlocal/src/ -L../fann/src/ -L../box2d/Box2D -L../guichan/
 LIBS     := -lboost_system -lboost_program_options -lklocal -lm -lfann -lguichan -lguichan_sdl -lBox2D `pkg-config --libs SDL_gfx sdl SDL_image SDL_ttf`
 .PHONY: all release info debug clean distclean 
 NVCC     := /usr/local/cuda/bin/nvcc
 NVCC_HOST_CXX := g++-4.6
 NVCC_CXXFLAGS := -Xcompiler -fpic -I/usr/local/cuda-5.0/samples/common/inc/
+DESTDIR := /
+PREFIX := /usr/local
 
 ifdef JAVASCRIPT
 CXX			 := em++
@@ -88,3 +90,18 @@ dirs:
 	${MAKE} -C game/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 	${MAKE} -C tests/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 	./run.sh tests/tests
+
+install: ${TARGET}
+install:
+	mkdir -p ${DESTDIR}/${PREFIX}/share/neurocid
+	cp kmlocal/src/libklocal.so* ${DESTDIR}/${PREFIX}/share/neurocid
+	cp fann/src/libfann.so* ${DESTDIR}/${PREFIX}/share/neurocid
+	cp guichan/libguichan*.so* ${DESTDIR}/${PREFIX}/share/neurocid
+	cp box2d/Box2D/libBox2D.so* ${DESTDIR}/${PREFIX}/share/neurocid
+	cp src/libneurocid.so ${DESTDIR}/${PREFIX}/share/neurocid
+	cp game/neurocid-bin ${DESTDIR}/${PREFIX}/share/neurocid
+	cp *.ttf ${DESTDIR}/${PREFIX}/share/neurocid
+	cp neurocid ${DESTDIR}/${PREFIX}/bin
+	mkdir -p ${DESTDIR}/etc/
+	echo "export NEUROCID_PATH=\"${DESTDIR}/${PREFIX}/share/neurocid\"" > /etc/neurocid
+

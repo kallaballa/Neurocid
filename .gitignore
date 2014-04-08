@@ -5,9 +5,9 @@ tests/tests
 teamA.png
 teamB.png
 timeseries.csv
-game/neurocid
+game/neurocid-bin
 render/makeAndRender
-src/libtankwar.so
+src/libneurocid.so
 *.pop
 *.csv
 *.so.*
@@ -22,6 +22,5 @@ box2d/Makefile
 guichan/CMakeCache.txt
 guichan/CMakeFiles/
 guichan/Makefile
-
-kmlocal-1.7.2/bin/k*
+kmlocal/bin/k*
 

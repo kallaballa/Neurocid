@@ -1,7 +1,7 @@
-TARGET  := neurocid
+TARGET  := neurocid-bin
 
 ifdef JAVASCRIPT
-TARGET := neurocid.js
+TARGET := neurocid-bin.js
 endif
 
 SRCS    := neurocid.cpp eventloop.cpp declarative_scenarios.cpp
