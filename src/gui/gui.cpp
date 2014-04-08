@@ -1,4 +1,5 @@
 #include "gui.hpp"
+#include "../util.hpp"
 
 namespace neurocid {
 
@@ -16,7 +17,14 @@ Gui::Gui(SDL_Surface* surface) : gcn::Gui() {
 		SDL_Quit();
 	}
 	try {
-	font_ = new gcn::contrib::SDLTrueTypeFont("DejaVuSansMono-Bold.ttf",14);
+	std::string neurocidPath = get_env("NEUROCID_PATH");
+
+	if(neurocidPath.empty()) {
+		std::cerr << "Environment variable $NEUROCID_PATH not set" << std::endl;
+		SDL_Quit();
+	}
+
+	font_ = new gcn::contrib::SDLTrueTypeFont(neurocidPath + "/DejaVuSansMono-Bold.ttf",14);
 	} catch(gcn::Exception& ex) {
 		std::cerr << ex.getMessage() << std::endl;
 		SDL_Quit();
