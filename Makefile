@@ -1,5 +1,5 @@
 CXX      := g++
-CXXFLAGS := -std=c++0x -pedantic -Wall -I../kmlocal/src/ -I../fann/src/include -I../box2d/ -I../guichan/include/ `pkg-config --cflags sdl SDL_gfx SDL_image SDL_ttf` 
+CXXFLAGS := -fno-strict-aliasing -std=c++0x -pedantic -Wall -I../kmlocal/src/ -I../fann/src/include -I../box2d/ -I../guichan/include/ `pkg-config --cflags sdl SDL_gfx SDL_image SDL_ttf` 
 LDFLAGS  := -L/opt/local/lib -L../kmlocal/src/ -L../fann/src/ -L../box2d/Box2D -L../guichan/
 LIBS     := -lboost_system -lboost_program_options -lklocal -lm -lfann -lguichan -lguichan_sdl -lBox2D `pkg-config --libs sdl SDL_gfx SDL_image SDL_ttf`
 .PHONY: all release info debug clean distclean 
