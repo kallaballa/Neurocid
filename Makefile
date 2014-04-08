@@ -100,6 +100,7 @@ install:
 	cp box2d/Box2D/libBox2D.so* ${DESTDIR}/${PREFIX}/share/neurocid
 	cp src/libneurocid.so ${DESTDIR}/${PREFIX}/share/neurocid
 	cp game/neurocid-bin ${DESTDIR}/${PREFIX}/share/neurocid
+	cp -r examples/ ${DESTDIR}/${PREFIX}/share/neurocid
 	cp *.ttf ${DESTDIR}/${PREFIX}/share/neurocid
 	cp neurocid ${DESTDIR}/${PREFIX}/bin
 	mkdir -p ${DESTDIR}/etc/
