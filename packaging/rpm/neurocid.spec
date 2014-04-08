@@ -8,7 +8,7 @@ Prefix: /usr
 BuildRequires: gcc-c++
 Requires: 
 %else
-BuildRequires: gcc-c++ libSDL-devel libSDL_image-devel libSDL_gfx-devel boost-devel
+BuildRequires: gcc-c++ cmake libSDL-devel libSDL_image-devel libSDL_gfx-devel libSDL_ttf-devel boost-devel
 Requires: libSDL-1_2-0 libSDL_gfx13 libSDL_image-1_2-0 libSDL_ttf-2_0-0 libboost_serialization1_53_0 libboost_program_options1_53_0
 %endif
 Release: 1 
@@ -23,36 +23,36 @@ A space ship simulation controlled by neural networks, evolved through a genetic
 %setup -q
 
 %build 
-make
+./build_deps.sh
+WITHOUT_VIDEOENC=1 make
 
 %install 
 rm -rf $RPM_BUILD_ROOT
-./build_deps.sh
-WITHOUT_VIDEOENC=1 make PREFIX=/usr DESTDIR=$RPM_BUILD_ROOT install
+make PREFIX=/usr DESTDIR=$RPM_BUILD_ROOT install
 
 %clean 
 rm -rf $RPM_BUILD_ROOT
 
 %files 
 %defattr(-,root,root) 
-/usr/local/share/neurocid/DejaVuSansMono-Bold.ttf
-/usr/local/share/neurocid/DejaVuSansMono.ttf
-/usr/local/share/neurocid/libBox2D.so
-/usr/local/share/neurocid/libBox2D.so.2.3.0
-/usr/local/share/neurocid/libfann.so
-/usr/local/share/neurocid/libfann.so.2
-/usr/local/share/neurocid/libfann.so.2.2.0
-/usr/local/share/neurocid/libguichan_opengl.so
-/usr/local/share/neurocid/libguichan_opengl.so.0.9.0
-/usr/local/share/neurocid/libguichan_sdl.so
-/usr/local/share/neurocid/libguichan_sdl.so.0.9.0
-/usr/local/share/neurocid/libguichan.so
-/usr/local/share/neurocid/libguichan.so.0.9.0
-/usr/local/share/neurocid/libklocal.so
-/usr/local/share/neurocid/libneurocid.so
-/usr/local/share/neurocid/neurocid-bin
-/usr/local/share/neurocid/examples/play.sh
-/usr/local/share/neurocid/examples/basic_training.sh
+/usr/share/neurocid/DejaVuSansMono-Bold.ttf
+/usr/share/neurocid/DejaVuSansMono.ttf
+/usr/share/neurocid/libBox2D.so
+/usr/share/neurocid/libBox2D.so.2.3.0
+/usr/share/neurocid/libfann.so
+/usr/share/neurocid/libfann.so.2
+/usr/share/neurocid/libfann.so.2.2.0
+/usr/share/neurocid/libguichan_opengl.so
+/usr/share/neurocid/libguichan_opengl.so.0.9.0
+/usr/share/neurocid/libguichan_sdl.so
+/usr/share/neurocid/libguichan_sdl.so.0.9.0
+/usr/share/neurocid/libguichan.so
+/usr/share/neurocid/libguichan.so.0.9.0
+/usr/share/neurocid/libklocal.so
+/usr/share/neurocid/libneurocid.so
+/usr/share/neurocid/neurocid-bin
+/usr/share/neurocid/examples/play.sh
+/usr/share/neurocid/examples/basic_training.sh
 /etc/neurocid
 /usr/bin/neurocid
 
