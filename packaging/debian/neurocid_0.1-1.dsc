@@ -10,5 +10,5 @@ Build-Depends: debhelper (>= 7.0.50~), pkg-config, g++-4.7, libsdl1.2-dev, libsd
 Package-List: 
  neurocid deb misc optional
 Files: 
- 228cf44b4c0c162f87de70af06089191 11272005 neurocid-0.1.tar.bz2
+ bfc5b5aeeecfb1c1ab89f5dfd14ad1c8 11268981 neurocid-0.1.tar.bz2
 

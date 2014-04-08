@@ -8,6 +8,20 @@ NVCC_HOST_CXX := g++-4.6
 NVCC_CXXFLAGS := -Xcompiler -fpic -I/usr/local/cuda-5.0/samples/common/inc/
 DESTDIR := /
 PREFIX := /usr/local
+MACHINE := $(shell uname -m)
+RELEASE := `cat /etc/*.release`
+
+ifeq ($(strip $(RELEASE)),)
+  ifeq ($(MACHINE), x86_64)
+    LIBDIR = lib64
+  endif
+  ifeq ($(MACHINE), i686)
+    LIBDIR = lib
+  endif
+else
+  # debian derivate
+  LIBDIR = lib
+endif
 
 ifdef JAVASCRIPT
 CXX			 := em++
@@ -101,22 +115,22 @@ debian-clean:
 
 install: ${TARGET}
 install:
-	mkdir -p ${DESTDIR}/${PREFIX}/share/neurocid
-	cp kmlocal/src/libklocal.so* ${DESTDIR}/${PREFIX}/share/neurocid
-	cp fann/src/libfann.so* ${DESTDIR}/${PREFIX}/share/neurocid
-	cp guichan/libguichan*.so* ${DESTDIR}/${PREFIX}/share/neurocid
-	cp box2d/Box2D/libBox2D.so* ${DESTDIR}/${PREFIX}/share/neurocid
-	cp src/libneurocid.so ${DESTDIR}/${PREFIX}/share/neurocid
-	cp game/neurocid-bin ${DESTDIR}/${PREFIX}/share/neurocid
-	cp -r examples/ ${DESTDIR}/${PREFIX}/share/neurocid
-	cp *.ttf ${DESTDIR}/${PREFIX}/share/neurocid
+	mkdir -p ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
+	cp kmlocal/src/libklocal.so* ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
+	cp fann/src/libfann.so* ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
+	cp guichan/libguichan*.so* ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
+	cp box2d/Box2D/libBox2D.so* ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
+	cp src/libneurocid.so ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
+	cp game/neurocid-bin ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
+	cp -r examples/ ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
+	cp *.ttf ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
 	mkdir -p ${DESTDIR}/${PREFIX}/bin
 	cp neurocid ${DESTDIR}/${PREFIX}/bin
 	mkdir -p ${DESTDIR}/etc/
-	echo "export NEUROCID_PATH=\"${DESTDIR}/${PREFIX}/share/neurocid\"" > ${DESTDIR}/etc/neurocid
+	echo "export NEUROCID_PATH=\"${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid\"" > ${DESTDIR}/etc/neurocid
 
 distclean:
-	rm -r /usr/share/neurocid/
+	rm -r /usr/${LIBDIR}/neurocid/
 	rm /etc/neurocid
 	rm /usr/bin/neurocid
 

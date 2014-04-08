@@ -19,7 +19,8 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 
-	WITHOUT_VIDEOENC=1 make
+  ./build-deps.sh
+	WITHOUT_VIDEOENC=1 make debian-release
 	# --- end custom part for compiling
 
 	touch build-stamp
