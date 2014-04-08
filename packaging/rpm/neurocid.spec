@@ -35,6 +35,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files 
 %defattr(-,root,root) 
+/usr/share/neurocid
+/usr/share/neurocid/examples
 /usr/share/neurocid/DejaVuSansMono-Bold.ttf
 /usr/share/neurocid/DejaVuSansMono.ttf
 /usr/share/neurocid/libBox2D.so
