@@ -1,4 +1,4 @@
-Summary: A space ship simulation controlled by neural networks, evolved through a genetic algorithm
+Summary: A space ship simulation controlled by neural networks
 %define version 0.1
 License: GPLv3
 Group: Amusements/Games/Other
@@ -35,26 +35,26 @@ rm -rf $RPM_BUILD_ROOT
 
 %files 
 %defattr(-,root,root) 
-${_libdir}/neurocid
-${_libdir}/neurocid/examples
-${_libdir}/neurocid/DejaVuSansMono-Bold.ttf
-${_libdir}/neurocid/DejaVuSansMono.ttf
-${_libdir}/neurocid/libBox2D.so
-${_libdir}/neurocid/libBox2D.so.2.3.0
-${_libdir}/neurocid/libfann.so
-${_libdir}/neurocid/libfann.so.2
-${_libdir}/neurocid/libfann.so.2.2.0
-${_libdir}/neurocid/libguichan_opengl.so
-${_libdir}/neurocid/libguichan_opengl.so.0.9.0
-${_libdir}/neurocid/libguichan_sdl.so
-${_libdir}/neurocid/libguichan_sdl.so.0.9.0
-${_libdir}/neurocid/libguichan.so
-${_libdir}/neurocid/libguichan.so.0.9.0
-${_libdir}/neurocid/libklocal.so
-${_libdir}/neurocid/libneurocid.so
-${_libdir}/neurocid/neurocid-bin
-${_libdir}/neurocid/examples/play.sh
-${_libdir}/neurocid/examples/basic_training.sh
+%{_libdir}/neurocid
+%{_libdir}/neurocid/examples
+%{_libdir}/neurocid/DejaVuSansMono-Bold.ttf
+%{_libdir}/neurocid/DejaVuSansMono.ttf
+%{_libdir}/neurocid/libBox2D.so
+%{_libdir}/neurocid/libBox2D.so.2.3.0
+%{_libdir}/neurocid/libfann.so
+%{_libdir}/neurocid/libfann.so.2
+%{_libdir}/neurocid/libfann.so.2.2.0
+%{_libdir}/neurocid/libguichan_opengl.so
+%{_libdir}/neurocid/libguichan_opengl.so.0.9.0
+%{_libdir}/neurocid/libguichan_sdl.so
+%{_libdir}/neurocid/libguichan_sdl.so.0.9.0
+%{_libdir}/neurocid/libguichan.so
+%{_libdir}/neurocid/libguichan.so.0.9.0
+%{_libdir}/neurocid/libklocal.so
+%{_libdir}/neurocid/libneurocid.so
+%{_libdir}/neurocid/neurocid-bin
+%{_libdir}/neurocid/examples/play.sh
+%{_libdir}/neurocid/examples/basic_training.sh
 /etc/neurocid
 /usr/bin/neurocid
 

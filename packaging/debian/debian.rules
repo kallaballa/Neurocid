@@ -19,7 +19,7 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 
-  ./build-deps.sh
+	./build_deps.sh
 	WITHOUT_VIDEOENC=1 make debian-release
 	# --- end custom part for compiling
 

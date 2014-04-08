@@ -9,17 +9,11 @@ NVCC_CXXFLAGS := -Xcompiler -fpic -I/usr/local/cuda-5.0/samples/common/inc/
 DESTDIR := /
 PREFIX := /usr/local
 MACHINE := $(shell uname -m)
-RELEASE := $(shell cat /etc/*release | head -n1 | cut -d"=" -f2)
 
-ifeq ($(RELEASE), openSUSE)
-  ifeq ($(MACHINE), x86_64)
-    LIBDIR = lib64
-  endif
-  ifeq ($(MACHINE), i686)
-    LIBDIR = lib
-  endif
-else
-  # debian derivate
+ifeq ($(MACHINE), x86_64)
+  LIBDIR = lib64
+endif
+ifeq ($(MACHINE), i686)
   LIBDIR = lib
 endif
 
