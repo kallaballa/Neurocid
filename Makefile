@@ -127,7 +127,7 @@ install:
 	mkdir -p ${DESTDIR}/${PREFIX}/bin
 	cp neurocid ${DESTDIR}/${PREFIX}/bin
 	mkdir -p ${DESTDIR}/etc/
-	echo "export NEUROCID_PATH=\"${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid\"" > ${DESTDIR}/etc/neurocid
+	echo "export NEUROCID_PATH=\"/${PREFIX}/${LIBDIR}/neurocid\"" > ${DESTDIR}/etc/neurocid
 
 distclean:
 	rm -r /usr/${LIBDIR}/neurocid/
