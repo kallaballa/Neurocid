@@ -7,6 +7,7 @@
 #include "battlefield.hpp"
 #include "population.hpp"
 #include "time_tracker.hpp"
+
 #include <sstream>
 #include <thread>
 #include <chrono>
@@ -31,8 +32,8 @@ Canvas::Canvas(Coord width, Coord height) :
 		height_(height),
 		scale_(1),
 		zoom_(1),
-		viewPort_() {
-
+		viewPort_(),
+		background_(this) {
 	if (width > 0 && height > 0) {
 		if (SDL_Init(SDL_INIT_VIDEO) == -1) {
 			cerr << "Can't init SDL: " << SDL_GetError() << endl;
@@ -47,6 +48,7 @@ Canvas::Canvas(Coord width, Coord height) :
 		}
 	}
 
+	background_.init();
 }
 
 Canvas::~Canvas() {
@@ -59,20 +61,28 @@ void Canvas::calculateScale() {
 	scale_ = std::min(scaleX, scaleY) * preScale / zoom_;
 }
 
-Sint16 Canvas::scaleX(const Coord& c) {
-	Coord len = (viewPort_.lr_.x_ - viewPort_.ul_.x_) * scale_;
-	Coord pos = (c - viewPort_.ul_.x_) * scale_;
+Sint16 Canvas::scaleX(const Coord& c, const Coord& scale) {
+	Coord len = (viewPort_.lr_.x_ - viewPort_.ul_.x_) * scale;
+	Coord pos = (c - viewPort_.ul_.x_) * scale;
 	Coord scaled = (((width_ - len) / 2) + pos);
 
 	return (Sint16)round(scaled);
 }
 
-Sint16 Canvas::scaleY(const Coord& c) {
-	Coord len = (viewPort_.lr_.y_ - viewPort_.ul_.y_) * scale_;
-	Coord pos = (c - viewPort_.ul_.y_) * scale_;
+Sint16 Canvas::scaleY(const Coord& c, const Coord& scale) {
+	Coord len = (viewPort_.lr_.y_ - viewPort_.ul_.y_) * scale;
+	Coord pos = (c - viewPort_.ul_.y_) * scale;
 	Coord scaled = (((height_ - len) / 2) + pos);
 
 	return (Sint16)round(scaled);
+}
+
+Sint16 Canvas::scaleX(const Coord& c) {
+	return scaleX(c, scale_);
+}
+
+Sint16 Canvas::scaleY(const Coord& c) {
+	return scaleY(c, scale_);
 }
 
 void Canvas::zoomIn() {
@@ -113,49 +123,32 @@ void Canvas::down() {
 	viewPort_.lr_.y_ += (2000 * zoom_);
 }
 
+void Canvas::drawStar(Star& s) {
+	double alpha = s.alpha;
+
+	for(size_t i = 0; i < s.radius; i++) {
+		if(s.scale == 0)
+			circleRGBA(screen_, Sint16(s.x), Sint16(s.y), i, s.r,s.g,s.b, round(alpha));
+		else
+			circleRGBA(screen_, scaleX(s.x), scaleY(s.y), round(i * scale_ * scale_), s.r,s.g,s.b, round(alpha));
+
+		if(alpha <= s.step)
+			break;
+		alpha -= s.step;
+	}
+}
+
+void Canvas::drawSurface(SDL_Surface *s, SDL_Rect& srect, Coord x, Coord y) {
+	SDL_Rect drect = {scaleX(x), scaleY(y), 0, 0};
+	SDL_BlitSurface(s, &srect, screen_, &drect);
+}
+
 void Canvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
 	ellipseRGBA(screen_, scaleX(loc.x_), scaleY(loc.y_), round(rangeX * scale_), round(rangeY * scale_), c.r, c.g, c.b, 255);
 }
 
 void Canvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c) {
     lineRGBA(screen_, scaleX(x0), scaleY(y0), scaleX(x1), scaleY(y1), c.r, c.g, c.b, 255);
-}
-
-void fill_circle(SDL_Surface *surface, int cx, int cy, int radius, Uint32 pixel)
-{
-    // Note that there is more to altering the bitrate of this
-    // method than just changing this value.  See how pixels are
-    // altered at the following web page for tips:
-    //   http://www.libsdl.org/intro.en/usingvideo.html
-    static const int BPP = 4;
-
-    double r = (double)radius;
-
-    for (double dy = 1; dy <= r; dy += 1.0)
-    {
-        // This loop is unrolled a bit, only iterating through half of the
-        // height of the circle.  The result is used to draw a scan line and
-        // its mirror image below it.
-
-        // The following formula has been simplified from our original.  We
-        // are using half of the width of the circle because we are provided
-        // with a center and we need left/right coordinates.
-
-        double dx = floor(sqrt((2.0 * r * dy) - (dy * dy)));
-        int x = cx - dx;
-
-        // Grab a pointer to the left-most pixel for each half of the circle
-        Uint8 *target_pixel_a = (Uint8 *)surface->pixels + ((int)(cy + r - dy)) * surface->pitch + x * BPP;
-        Uint8 *target_pixel_b = (Uint8 *)surface->pixels + ((int)(cy - r + dy)) * surface->pitch + x * BPP;
-
-        for (; x <= cx + dx; x++)
-        {
-            *(Uint32 *)target_pixel_a = pixel;
-            *(Uint32 *)target_pixel_b = pixel;
-            target_pixel_a += BPP;
-            target_pixel_b += BPP;
-        }
-    }
 }
 
 void Canvas::drawShip(Ship& tank, Color c) {
@@ -218,7 +211,9 @@ void Canvas::drawExplosion(Object& o, Color& c) {
 }
 
 void Canvas::clear() {
-	SDL_FillRect(screen_,NULL, 0x000000);
+	SDL_Rect clrDest = {0,0, width_, height_};
+	SDL_FillRect(screen_, &clrDest, 0);
+	background_.draw(screen_);
 }
 
 void Canvas::update() {
@@ -245,6 +240,15 @@ Rect Canvas::findBounds(BattleField& field) {
 	return {min, max};
 }
 
+
+void Canvas::drawBorder(BattleField& field) {
+	Color darkred = {127,0,0};
+	drawLine(0,0,0, field.layout_.height_, darkred);
+	drawLine(0,0,field.layout_.width_, 0, darkred);
+	drawLine(field.layout_.width_,field.layout_.height_, field.layout_.width_,0, darkred);
+	drawLine(field.layout_.width_,field.layout_.height_, 0,field.layout_.height_, darkred);
+}
+
 void Canvas::drawGrid(BattleField& field) {
 	Color grey = {32,32,32};
 	Color darkred = {127,0,0};
@@ -257,10 +261,6 @@ void Canvas::drawGrid(BattleField& field) {
 	}
 
 	drawEllipse(Vector2D(field.layout_.width_/2, field.layout_.height_/2), 20, 20, darkred);
-	drawLine(0,0,0, field.layout_.height_, darkred);
-	drawLine(0,0,field.layout_.width_, 0, darkred);
-	drawLine(field.layout_.width_,field.layout_.height_, field.layout_.width_,0, darkred);
-	drawLine(field.layout_.width_,field.layout_.height_, 0,field.layout_.height_, darkred);
 }
 
 void Canvas::drawCenters(Scanner& scanner) {
@@ -281,6 +281,8 @@ void Canvas::render(BattleField& field) {
 	if(zoom_ == 1)
 		viewPort_ = findBounds(field);
 	calculateScale();
+
+	drawBorder(field);
 
 	if(drawGrid_)
 		drawGrid(field);

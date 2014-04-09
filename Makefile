@@ -1,8 +1,8 @@
 CXX      := g++
 CXXFLAGS := -fno-strict-aliasing -std=c++0x -pedantic -Wall -I../kmlocal/src/ -I../fann/src/include -I../box2d/ -I../guichan/include/ `pkg-config --cflags sdl SDL_gfx SDL_image SDL_ttf` 
-LDFLAGS  := -L/opt/local/lib -L../kmlocal/src/ -L../fann/src/ -L../box2d/Box2D -L../guichan/
-LIBS     := -lboost_system -lboost_program_options -lklocal -lm -lfann -lguichan -lguichan_sdl -lBox2D `pkg-config --libs sdl SDL_gfx SDL_image SDL_ttf`
-.PHONY: all release info debug clean distclean 
+LDFLAGS  := -L/opt/local/lib -L../kmlocal/src/ -L../fann/src/ -L../box2d/Box2D -L../guichan/ -L../libnoise/lib
+LIBS     := -lklocal -lm -lfann -lguichan -lguichan_sdl -lBox2D `pkg-config --libs sdl SDL_gfx SDL_image SDL_ttf`
+.PHONY: all release debian-release info debug clean debian-clean distclean 
 NVCC     := /usr/local/cuda/bin/nvcc
 NVCC_HOST_CXX := g++-4.6
 NVCC_CXXFLAGS := -Xcompiler -fpic -I/usr/local/cuda-5.0/samples/common/inc/
@@ -39,7 +39,7 @@ endif
 ifdef WITHOUT_SERIALIZE
 CXXFLAGS += -D_NO_SERIALIZE
 else
-LIBS     += -lboost_serialization
+LIBS     += -lboost_system -lboost_serialization
 endif
 
 ifdef WITHOUT_VIDEOENC
@@ -55,6 +55,8 @@ endif
 
 ifdef WITHOUT_PROGRAM_OPTS
 CXXFLAGS += -D_NO_PROGRAM_OPTIONS
+else
+LIBS += -lboost_system -lboost_program_options
 endif
 
 ifdef WITHOUT_ASSERT
@@ -108,7 +110,6 @@ debian-clean:
 	${MAKE} -C tests/ -${MAKEFLAGS} CXX=${CXX} clean
 
 install: ${TARGET}
-install:
 	mkdir -p ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
 	cp kmlocal/src/libklocal.so* ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
 	cp fann/src/libfann.so* ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
@@ -124,7 +125,7 @@ install:
 	echo "export NEUROCID_PATH=\"/${PREFIX}/${LIBDIR}/neurocid\"" > ${DESTDIR}/etc/neurocid
 
 distclean:
-	rm -r /usr/${LIBDIR}/neurocid/
+	rm -r ${PREFIX}/${LIBDIR}/neurocid/
 	rm /etc/neurocid
-	rm /usr/bin/neurocid
+	rm ${PREFIX}/bin/neurocid
 

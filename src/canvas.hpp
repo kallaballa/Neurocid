@@ -3,6 +3,7 @@
 
 #include "options.hpp"
 #include "projectile.hpp"
+#include "background.hpp"
 
 #include <algorithm>
 #include <SDL/SDL.h>
@@ -56,20 +57,25 @@ private:
 	Coord scale_;
 	Coord zoom_;
 	Rect viewPort_;
-	map<string,string> osdMap_;
+	Background background_;
 
 	void calculateScale();
+	Sint16 scaleX(const Coord& c, const Coord& scale);
+	Sint16 scaleY(const Coord& c, const Coord& scale);
 	Sint16 scaleX(const Coord& c);
 	Sint16 scaleY(const Coord& c);
 	Rect findBounds(BattleField& field);
+public:
+	void drawBorder(BattleField& field);
 	void drawGrid(BattleField& field);
+	void drawStar(Star& s);
+	void drawSurface(SDL_Surface *s, SDL_Rect& srect, Coord x, Coord y);
 	void drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c);
 	void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
 	void drawShip(Ship& tank, Color c);
 	void drawProjectile(Projectile& pro, Color& c);
 	void drawExplosion(Object& o, Color& c);
 	void drawCenters(Scanner& scanner);
-public:
 	void zoomIn();
 	void zoomOut();
 	void left();
