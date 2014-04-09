@@ -58,6 +58,7 @@ void playGame(size_t gameIter, Scenario* scenario, vector<Population>& teams, ve
 }
 
 int main(int argc, char** argv) {
+	srand(time(0));
 	loadScenarios();
 	PopulationLayout pl = {
 		//Ship Layout
