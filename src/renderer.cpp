@@ -43,15 +43,16 @@ void Renderer::render() {
 						if(isEnabled()) {
 							canvas.clear();
 							canvas.render(*field_);
-#ifndef _NO_VIDEOENC
-							VideoEncoder::getInstance()->encode(Canvas::getInstance()->getSurface());
-#endif
 							Gui& gui = *Gui::getInstance();
 							OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
 							osd.update(*field_);
 							gui.logic();
 							gui.draw();
 							canvas.update();
+#ifndef _NO_VIDEOENC
+							VideoEncoder::getInstance()->encode(Canvas::getInstance()->getSurface());
+#endif
+
 							notifiedDisable = false;
 						} else if (!notifiedDisable) {
 							canvas.clear();
