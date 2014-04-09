@@ -130,7 +130,7 @@ void Canvas::drawStar(Star& s) {
 		if(s.scale == 0)
 			circleRGBA(screen_, Sint16(s.x), Sint16(s.y), i, s.r,s.g,s.b, round(alpha));
 		else
-			circleRGBA(screen_, scaleX(s.x), scaleY(s.y), round(i * scale_ * scale_), s.r,s.g,s.b, round(alpha));
+			circleRGBA(screen_, scaleX(s.x, scale_ * s.scale), scaleY(s.y, scale_ * s.scale), round(i * scale_ * s.scale), s.r,s.g,s.b, round(alpha));
 
 		if(alpha <= s.step)
 			break;
@@ -289,7 +289,7 @@ void Canvas::render(BattleField& field) {
 
 	Color red = {255,0,0};
 	Color neonYellow = {243,243,21};
-	Color neonOrange = {255, 100, 100};
+	Color lightBlue = {21, 243, 243};
 
 	size_t teamCnt = 0;
 	for(Population& team : field.teams_) {
@@ -307,7 +307,7 @@ void Canvas::render(BattleField& field) {
 					if(t.teamID_ == 0)
 						this->drawProjectile(*p,neonYellow);
 					else
-						this->drawProjectile(*p,neonOrange);
+						this->drawProjectile(*p,lightBlue);
 				}
 				p->explode_ = false;
 			}

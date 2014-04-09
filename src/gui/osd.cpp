@@ -10,10 +10,12 @@ namespace neurocid {
 using std::stringstream;
 
 OsdWidget::OsdWidget() : NeurocidWidget<gcn::TextBox>(){
-	setBackgroundColor(gcn::Color(200,200,200,50));
-	setBaseColor(gcn::Color(200,200,200,0));
-	setForegroundColor(gcn::Color(200,200,200,50));
-	setFrameColor(gcn::Color(200,200,200,50));
+	gcn::Color c(255,150,150,120);
+	gcn::Color f(255,230,230,120);
+	setBackgroundColor(c);
+	setBaseColor(c);
+	setForegroundColor(f);
+	setFrameColor(c);
 	setFrameSize(2);
 }
 
@@ -46,7 +48,8 @@ OsdScreenWidget::OsdScreenWidget(Sint16 width, Sint16 height) : NeurocidWidget<g
 	int fs = 10;
 	setDimension(gcn::Rectangle(fs, fs, width - (fs * 2), height - (fs * 2)));
 	setFrameSize(fs);
-	setFrameColor({200,200,200,50});
+	gcn::Color c(255,150,150,120);
+	setFrameColor(c);
 
 	osdStatistics_ = new OsdWidget();
     osdStatistics_->setPosition(10, 10);
@@ -59,7 +62,7 @@ OsdScreenWidget::OsdScreenWidget(Sint16 width, Sint16 height) : NeurocidWidget<g
 
     osdStatus_ = new OsdWidget();
     osdStatus_->setPosition(10, height - 43);
-    osdStatus_->setBackgroundColor({200,200,200,50});
+    osdStatus_->setBackgroundColor(c);
     osdStatus_->setForegroundColor({255,180,180,128});
     osdStatus_->setFrameSize(10);
 
