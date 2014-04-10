@@ -121,6 +121,7 @@ install: ${TARGET}
 	cp *.ttf ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
 	mkdir -p ${DESTDIR}/${PREFIX}/bin
 	cp neurocid ${DESTDIR}/${PREFIX}/bin
+	cp neurocid-dbg ${DESTDIR}/${PREFIX}/bin
 	mkdir -p ${DESTDIR}/etc/
 	echo "export NEUROCID_PATH=\"/${PREFIX}/${LIBDIR}/neurocid\"" > ${DESTDIR}/etc/neurocid
 
@@ -128,4 +129,8 @@ distclean:
 	rm -r ${PREFIX}/${LIBDIR}/neurocid/
 	rm /etc/neurocid
 	rm ${PREFIX}/bin/neurocid
+
+plot:
+	gnuplot < graphTeamA.gnuplot > teamA.png
+	gnuplot < graphTeamB.gnuplot > teamB.png
 
