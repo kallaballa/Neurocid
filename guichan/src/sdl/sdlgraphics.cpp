@@ -6,11 +6,11 @@
  * /______/ //______/ //_/ //_____/\ /_/ //_/ //_/ //_/ //_/ /|_/ /
  * \______\/ \______\/ \_\/ \_____\/ \_\/ \_\/ \_\/ \_\/ \_\/ \_\/
  *
- * Copyright (c) 2004 - 2008 Olof Naessén and Per Larsson
+ * Copyright (c) 2004 - 2008 Olof Naessï¿½n and Per Larsson
  *
  *
  * Per Larsson a.k.a finalman
- * Olof Naessén a.k.a jansem/yakslem
+ * Olof Naessï¿½n a.k.a jansem/yakslem
  *
  * Visit: http://guichan.sourceforge.net
  *
@@ -52,6 +52,8 @@
 #include "guichan/image.hpp"
 #include "guichan/sdl/sdlimage.hpp"
 #include "guichan/sdl/sdlpixel.hpp"
+#include <SDL/SDL_gfxPrimitives.h>
+#include <SDL/SDL_gfxBlitFunc.h>
 
 // For some reason an old version of MSVC did not like std::abs,
 // so we added this macro.
@@ -240,126 +242,17 @@ namespace gcn
         }
     }
 
-    void SDLGraphics::drawHLine(int x1, int y, int x2)
+    void SDLGraphics::drawRectangle(const Rectangle& rectangle)
     {
-        if (mClipStack.empty())
-        {
-            throw GCN_EXCEPTION("Clip stack is empty, perhaps you called a draw funtion outside of _beginDraw() and _endDraw()?");
-        }
+        int x1 = rectangle.x;
+        int x2 = rectangle.x + rectangle.width - 1;
+        int y1 = rectangle.y;
+        int y2 = rectangle.y + rectangle.height - 1;
 
-        const ClipRectangle& top = mClipStack.top();
-
-        x1 += top.xOffset;
-        y += top.yOffset;
-        x2 += top.xOffset;
-
-        if (y < top.y || y >= top.y + top.height)
-        {
-            return;
-        }
-
-        if (x1 > x2)
-        {
-            x1 ^= x2;
-            x2 ^= x1;
-            x1 ^= x2;
-        }
-
-        if (top.x > x1)
-        {
-            if (top.x > x2)
-            {
-                return;
-            }
-
-            x1 = top.x;
-        }
-
-        if (top.x + top.width <= x2)
-        {
-            if (top.x + top.width <= x1)
-            {
-                return;
-            }
-
-            x2 = top.x + top.width -1;
-        }
-
-        int bpp = mTarget->format->BytesPerPixel;
-
-        SDL_LockSurface(mTarget);
-
-        Uint8 *p = (Uint8 *)mTarget->pixels + y * mTarget->pitch + x1 * bpp;
-
-        Uint32 pixel = SDL_MapRGB(mTarget->format,
-                                  mColor.r,
-                                  mColor.g,
-                                  mColor.b);
-        switch(bpp)
-        {
-            case 1:
-                for (;x1 <= x2; ++x1)
-                {
-                    *(p++) = pixel;
-                }
-                break;
-
-            case 2:
-            {
-                Uint16* q = (Uint16*)p;
-                for (;x1 <= x2; ++x1)
-                {
-                    *(q++) = pixel;
-                }
-                break;
-            }
-            case 3:
-                if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
-                {
-                    for (;x1 <= x2; ++x1)
-                    {
-                        p[0] = (pixel >> 16) & 0xff;
-                        p[1] = (pixel >> 8) & 0xff;
-                        p[2] = pixel & 0xff;
-                        p += 3;
-                    }
-                }
-                else
-                {
-                    for (;x1 <= x2; ++x1)
-                    {
-                        p[0] = pixel & 0xff;
-                        p[1] = (pixel >> 8) & 0xff;
-                        p[2] = (pixel >> 16) & 0xff;
-                        p += 3;
-                    }
-                }
-                break;
-
-            case 4:
-            {
-                Uint32* q = (Uint32*)p;
-                for (;x1 <= x2; ++x1)
-                {
-                    if (mAlpha)
-                    {
-                        *q = SDLAlpha32(pixel,*q,mColor.a);
-                        q++;
-                    }
-                    else
-                    {
-                        *(q++) = pixel;
-                    }
-                }
-                break;
-            }
-
-        } // end switch
-
-        SDL_UnlockSurface(mTarget);
+        rectangleRGBA(mTarget, x1, y1, x2, y2, mColor.r, mColor.g, mColor.b, mColor.a);
     }
 
-    void SDLGraphics::drawVLine(int x, int y1, int y2)
+    void SDLGraphics::drawPie(int x, int y, int rad, int start, int end)
     {
         if (mClipStack.empty())
         {
@@ -369,137 +262,41 @@ namespace gcn
         const ClipRectangle& top = mClipStack.top();
 
         x += top.xOffset;
-        y1 += top.yOffset;
-        y2 += top.yOffset;
-
-        if (x < top.x || x >= top.x + top.width)
-        {
-            return;
-        }
-
-        if (y1 > y2)
-        {
-            y1 ^= y2;
-            y2 ^= y1;
-            y1 ^= y2;
-        }
-
-        if (top.y > y1)
-        {
-            if (top.y > y2)
-            {
-                return;
-            }
-
-            y1 = top.y;
-        }
-
-        if (top.y + top.height <= y2)
-        {
-            if (top.y + top.height <= y1)
-            {
-                return;
-            }
-
-            y2 = top.y + top.height - 1;
-        }
-
-        int bpp = mTarget->format->BytesPerPixel;
-
-        SDL_LockSurface(mTarget);
-
-        Uint8 *p = (Uint8 *)mTarget->pixels + y1 * mTarget->pitch + x * bpp;
-
-        Uint32 pixel = SDL_MapRGB(mTarget->format, mColor.r, mColor.g, mColor.b);
-
-        switch(bpp)
-        {
-          case 1:
-              for (;y1 <= y2; ++y1)
-              {
-                  *p = pixel;
-                  p += mTarget->pitch;
-              }
-              break;
-
-          case 2:
-              for (;y1 <= y2; ++y1)
-              {
-                  *(Uint16*)p = pixel;
-                  p += mTarget->pitch;
-              }
-              break;
-
-          case 3:
-              if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
-              {
-                  for (;y1 <= y2; ++y1)
-                  {
-                      p[0] = (pixel >> 16) & 0xff;
-                      p[1] = (pixel >> 8) & 0xff;
-                      p[2] = pixel & 0xff;
-                      p += mTarget->pitch;
-                  }
-              }
-              else
-              {
-                  for (;y1 <= y2; ++y1)
-                  {
-                      p[0] = pixel & 0xff;
-                      p[1] = (pixel >> 8) & 0xff;
-                      p[2] = (pixel >> 16) & 0xff;
-                      p += mTarget->pitch;
-                  }
-              }
-              break;
-
-          case 4:
-              for (;y1 <= y2; ++y1)
-              {
-                  if (mAlpha)
-                  {
-                      *(Uint32*)p = SDLAlpha32(pixel,*(Uint32*)p,mColor.a);
-                  }
-                  else
-                  {
-                      *(Uint32*)p = pixel;
-                  }
-                  p += mTarget->pitch;
-              }
-              break;
-
-        } // end switch
-
-        SDL_UnlockSurface(mTarget);
+        y += top.yOffset;
+        pieRGBA(mTarget, x ,y,rad,start,end, mColor.r, mColor.g, mColor.b, mColor.a);
     }
 
-    void SDLGraphics::drawRectangle(const Rectangle& rectangle)
+    void SDLGraphics::drawArc(int x, int y, int rad, int start, int end)
     {
-        int x1 = rectangle.x;
-        int x2 = rectangle.x + rectangle.width - 1;
-        int y1 = rectangle.y;
-        int y2 = rectangle.y + rectangle.height - 1;
+        if (mClipStack.empty())
+        {
+            throw GCN_EXCEPTION("Clip stack is empty, perhaps you called a draw funtion outside of _beginDraw() and _endDraw()?");
+        }
 
-        drawHLine(x1, y1, x2);
-        drawHLine(x1, y2, x2);
+        const ClipRectangle& top = mClipStack.top();
 
-        drawVLine(x1, y1, y2);
-        drawVLine(x2, y1, y2);
+        x += top.xOffset;
+        y += top.yOffset;
+        arcRGBA(mTarget, x ,y,rad,start,end, mColor.r, mColor.g, mColor.b, mColor.a);
+    }
+
+    void SDLGraphics::fillPie(int x, int y, int rad, int start, int end)
+    {
+        if (mClipStack.empty())
+        {
+            throw GCN_EXCEPTION("Clip stack is empty, perhaps you called a draw funtion outside of _beginDraw() and _endDraw()?");
+        }
+
+        const ClipRectangle& top = mClipStack.top();
+
+        x += top.xOffset;
+        y += top.yOffset;
+
+        filledPieRGBA(mTarget, x ,y,rad,start,end, mColor.r, mColor.g, mColor.b, mColor.a);
     }
 
     void SDLGraphics::drawLine(int x1, int y1, int x2, int y2)
     {
-        if (x1 == x2)
-        {
-            drawVLine(x1, y1, y2);
-            return;
-        }
-        if (y1 == y2)
-        {
-            drawHLine(x1, y1, x2);
-            return;
-        }
-
         if (mClipStack.empty())
         {
             throw GCN_EXCEPTION("Clip stack is empty, perhaps you called a draw funtion outside of _beginDraw() and _endDraw()?");
@@ -512,155 +309,7 @@ namespace gcn
         x2 += top.xOffset;
         y2 += top.yOffset;
 
-        // Draw a line with Bresenham
-
-        int dx = ABS(x2 - x1);
-        int dy = ABS(y2 - y1);
-
-        if (dx > dy)
-        {
-            if (x1 > x2)
-            {
-                // swap x1, x2
-                x1 ^= x2;
-                x2 ^= x1;
-                x1 ^= x2;
-
-                // swap y1, y2
-                y1 ^= y2;
-                y2 ^= y1;
-                y1 ^= y2;
-            }
-
-            if (y1 < y2)
-            {
-                int y = y1;
-                int p = 0;
-
-                for (int x = x1; x <= x2; x++)
-                {
-                    if (top.isContaining(x, y))
-                    {
-                        if (mAlpha)
-                        {
-                            SDLputPixelAlpha(mTarget, x, y, mColor);
-                        }
-                        else
-                        {
-                            SDLputPixel(mTarget, x, y, mColor);
-                        }
-                    }
-
-                    p += dy;
-
-                    if (p * 2 >= dx)
-                    {
-                        y++;
-                        p -= dx;
-                    }
-                }
-            }
-            else
-            {
-                int y = y1;
-                int p = 0;
-
-                for (int x = x1; x <= x2; x++)
-                {
-                    if (top.isContaining(x, y))
-                    {
-                        if (mAlpha)
-                        {
-                            SDLputPixelAlpha(mTarget, x, y, mColor);
-                        }
-                        else
-                        {
-                            SDLputPixel(mTarget, x, y, mColor);
-                        }
-                    }
-
-                    p += dy;
-
-                    if (p * 2 >= dx)
-                    {
-                        y--;
-                        p -= dx;
-                    }
-                }
-            }
-        }
-        else
-        {
-            if (y1 > y2)
-            {
-                // swap y1, y2
-                y1 ^= y2;
-                y2 ^= y1;
-                y1 ^= y2;
-
-                // swap x1, x2
-                x1 ^= x2;
-                x2 ^= x1;
-                x1 ^= x2;
-            }
-
-            if (x1 < x2)
-            {
-                int x = x1;
-                int p = 0;
-
-                for (int y = y1; y <= y2; y++)
-                {
-                    if (top.isContaining(x, y))
-                    {
-                        if (mAlpha)
-                        {
-                            SDLputPixelAlpha(mTarget, x, y, mColor);
-                        }
-                        else
-                        {
-                            SDLputPixel(mTarget, x, y, mColor);
-                        }
-                    }
-
-                    p += dx;
-
-                    if (p * 2 >= dy)
-                    {
-                        x++;
-                        p -= dy;
-                    }
-                }
-            }
-            else
-            {
-                int x = x1;
-                int p = 0;
-
-                for (int y = y1; y <= y2; y++)
-                {
-                    if (top.isContaining(x, y))
-                    {
-                        if (mAlpha)
-                        {
-                            SDLputPixelAlpha(mTarget, x, y, mColor);
-                        }
-                        else
-                        {
-                            SDLputPixel(mTarget, x, y, mColor);
-                        }
-                    }
-
-                    p += dx;
-
-                    if (p * 2 >= dy)
-                    {
-                        x--;
-                        p -= dy;
-                    }
-                }
-            }
-        }
+        lineRGBA(mTarget, x1, y1, x2, y2, mColor.r, mColor.g, mColor.b, mColor.a);
     }
 
     void SDLGraphics::setColor(const Color& color)

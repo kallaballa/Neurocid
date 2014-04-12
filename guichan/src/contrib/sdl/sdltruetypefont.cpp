@@ -6,11 +6,11 @@
  * /______/ //______/ //_/ //_____/\ /_/ //_/ //_/ //_/ //_/ /|_/ /
  * \______\/ \______\/ \_\/ \_____\/ \_\/ \_\/ \_\/ \_\/ \_\/ \_\/
  *
- * Copyright (c) 2004 - 2008 Olof Naessén and Per Larsson
+ * Copyright (c) 2004 - 2008 Olof Naessï¿½n and Per Larsson
  *
  *
  * Per Larsson a.k.a finalman
- * Olof Naessén a.k.a jansem/yakslem
+ * Olof Naessï¿½n a.k.a jansem/yakslem
  *
  * Visit: http://guichan.sourceforge.net
  *
@@ -110,22 +110,28 @@ namespace gcn
         
             Color col = sdlGraphics->getColor();
 
+            SDL_Color shadowCol;
             SDL_Color sdlCol;
             sdlCol.b = col.b;
             sdlCol.r = col.r;
             sdlCol.g = col.g;
 
             SDL_Surface *textSurface;
+            SDL_Surface *shadowSurface;
             if (mAntiAlias)
             {
                 textSurface = TTF_RenderText_Blended(mFont, text.c_str(), sdlCol);
+                shadowSurface = TTF_RenderText_Blended(mFont, text.c_str(), shadowCol);
             }
             else
             {
                 textSurface = TTF_RenderText_Solid(mFont, text.c_str(), sdlCol);
+                shadowSurface = TTF_RenderText_Blended(mFont, text.c_str(), shadowCol);
             }
         
-            SDL_Rect dst, src;
+            SDL_Rect dst, dsts, src;
+            dsts.x = x + 2;
+            dsts.y = y + yoffset + 2;
             dst.x = x;
             dst.y = y + yoffset;
             src.w = textSurface->w;
@@ -133,8 +139,10 @@ namespace gcn
             src.x = 0;
             src.y = 0;
         
+            sdlGraphics->drawSDLSurface(shadowSurface, src, dsts);
             sdlGraphics->drawSDLSurface(textSurface, src, dst);
-            SDL_FreeSurface(textSurface);        
+            SDL_FreeSurface(shadowSurface);
+            SDL_FreeSurface(textSurface);
         }
     
         void SDLTrueTypeFont::setRowSpacing(int spacing)

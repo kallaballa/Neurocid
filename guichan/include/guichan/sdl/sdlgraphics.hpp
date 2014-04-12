@@ -6,11 +6,11 @@
  * /______/ //______/ //_/ //_____/\ /_/ //_/ //_/ //_/ //_/ /|_/ /
  * \______\/ \______\/ \_\/ \_____\/ \_\/ \_\/ \_\/ \_\/ \_\/ \_\/
  *
- * Copyright (c) 2004 - 2008 Olof Naessén and Per Larsson
+ * Copyright (c) 2004 - 2008 Olof Naessï¿½n and Per Larsson
  *
  *
  * Per Larsson a.k.a finalman
- * Olof Naessén a.k.a jansem/yakslem
+ * Olof Naessï¿½n a.k.a jansem/yakslem
  *
  * Visit: http://guichan.sourceforge.net
  *
@@ -121,6 +121,9 @@ namespace gcn
         virtual void drawLine(int x1, int y1, int x2, int y2);
 
         virtual void drawRectangle(const Rectangle& rectangle);
+        virtual void drawPie(int x, int y, int rad, int start, int end);
+        virtual void drawArc(int x, int y, int rad, int start, int end);
+        virtual void fillPie(int x, int y, int rad, int start, int end);
 
         virtual void fillRectangle(const Rectangle& rectangle);
 
@@ -129,24 +132,6 @@ namespace gcn
         virtual const Color& getColor() const;
 
     protected:
-        /**
-         * Draws a horizontal line.
-         *
-         * @param x1 the start coordinate of the line.
-         * @param y the y coordinate of the line.
-         * @param x2 the end coordinate of the line.
-         */
-        virtual void drawHLine(int x1, int y, int x2);
-
-        /**
-         * Draws a vertical line.
-         *
-         * @param x the x coordinate of the line.
-         * @param y1 the start coordinate of the line.
-         * @param y2 the end coordinate of the line.
-         */
-        virtual void drawVLine(int x, int y1, int y2);
-
         SDL_Surface* mTarget;
         Color mColor;
         bool mAlpha;
