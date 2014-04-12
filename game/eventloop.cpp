@@ -12,7 +12,9 @@
 #include "renderer.hpp"
 #include "gui/gui.hpp"
 #include "gui/osd.hpp"
+#include "gui/help.hpp"
 
+#include <thread>
 #include <SDL/SDL.h>
 #include <SDL/SDL_events.h>
 
@@ -48,6 +50,7 @@ void EventLoop::process() {
 	Renderer& renderer = *Renderer::getInstance();
 	Gui& gui = *Gui::getInstance();
 	OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
+	HelpScreen& help = *HelpScreen::getInstance();
 
 	SDL_Event event;
 
@@ -57,7 +60,7 @@ void EventLoop::process() {
 			if (event.key.keysym.sym == SDLKey::SDLK_ESCAPE) {
 				std::cerr << "Quitting" << std::endl;
 				gameState.stop();
-			} else if (event.key.keysym.mod == KMOD_LALT || event.key.keysym.mod == KMOD_RALT) {
+			} else if (!help.isOpen() && (event.key.keysym.mod == KMOD_LALT || event.key.keysym.mod == KMOD_RALT)) {
 				if (event.key.keysym.sym == SDLKey::SDLK_SPACE) {
 					if (renderer.isEnabled()) {
 						if (gameState.isSlow()) {
@@ -139,9 +142,12 @@ void EventLoop::process() {
 			break;
 
 		default:
+			gui.pushEvent(event);
 			break;
 		}
 	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(40));
+
 }
 
 } /* namespace tankwar */

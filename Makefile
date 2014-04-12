@@ -79,7 +79,7 @@ release: LDFLAGS += -s
 release: CXXFLAGS += -g0 -O3
 release: dirs
 
-info: CXXFLAGS += -g3 -O3
+info: CXXFLAGS += -g3 -O0
 info: LDFLAGS += -Wl,--export-dynamic -rdynamic
 info: dirs
 

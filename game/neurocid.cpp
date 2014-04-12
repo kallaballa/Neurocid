@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
 		},
 		//BrainLayout
 		{
-		    83, // inputs
+		    123, // inputs
 			5,  // outputs
 			8,  // layers
 			11  // neurons per hidden layer
@@ -224,13 +224,19 @@ int main(int argc, char** argv) {
 #ifndef _NO_THREADS
     EventLoop el;
     Renderer& renderer = *Renderer::getInstance();
+
+    std::thread eventThread([&]() {
+        while(gs.isRunning()) {
+        	el.process();
+        }
+    });
+
     while(gs.isRunning()) {
-    	el.process();
     	renderer.render();
     }
 
+    eventThread.join();
 	gameThread.join();
 #endif
-
 	SDL_Quit();
 }
