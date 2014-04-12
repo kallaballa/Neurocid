@@ -1,74 +1,57 @@
 #include "osd.hpp"
+#include "theme.hpp"
+#include "help.hpp"
 #include "../time_tracker.hpp"
 #include "../battlefield.hpp"
 #include "../renderer.hpp"
-#include <sstream>
-#include <iostream>
+#include <thread>
 
 namespace neurocid {
 
-using std::stringstream;
-
-OsdWidget::OsdWidget() : NeurocidWidget<gcn::TextBox>(){
-	gcn::Color c(255,150,150,120);
-	gcn::Color f(255,230,230,120);
-	setBackgroundColor(c);
-	setBaseColor(c);
-	setForegroundColor(f);
-	setFrameColor(c);
-	setFrameSize(2);
-}
-
-void OsdWidget::clear() {
-	gcn::TextBox::setText("");
-}
-
-void OsdWidget::addLine(const string& key, const string& value) {
-	stringstream ss;
-	string text = gcn::TextBox::getText();
-	if(!text.empty())
-		ss <<  text << std::endl;
-	ss << key << ": " << value;
-	gcn::TextBox::setText(ss.str());
-}
-
-void OsdWidget::addLine(const string& value) {
-	stringstream ss;
-	string text = gcn::TextBox::getText();
-	if(!text.empty())
-		ss <<  text << std::endl;
-	ss << value;
-	gcn::TextBox::setText(ss.str());
-}
-
 OsdScreenWidget* OsdScreenWidget::instance_ = NULL;
 
-OsdScreenWidget::OsdScreenWidget(Sint16 width, Sint16 height) : NeurocidWidget<gcn::Container>() {
+OsdScreenWidget::OsdScreenWidget(Sint16 width, Sint16 height) : NeurocidWidget<gcn::Container>(), gcn::ActionListener() {
 	setOpaque(false);
-	int fs = 10;
+	int fs = 0;
 	setDimension(gcn::Rectangle(fs, fs, width - (fs * 2), height - (fs * 2)));
 	setFrameSize(fs);
-	gcn::Color c(255,150,150,120);
-	setFrameColor(c);
 
 	osdStatistics_ = new OsdWidget();
-    osdStatistics_->setPosition(10, 10);
-    osdStatistics_->setFrameSize(10);
+    osdStatistics_->setPosition(20, 20);
+
+    osdDeadA_ = new OsdWidget();
+
+    Color da = Theme::teamA;
+    da.a = 150;
+    osdDeadA_ = new OsdWidget();
+    osdDeadA_->setDimension(gcn::Rectangle(width - 260, 20, 100, 60));
+    osdDeadA_->setVisible(true);
+    osdDeadA_->setBackgroundColor(da);
+
+    osdDeadB_ = new OsdWidget();
+    osdDeadB_->setDimension(gcn::Rectangle(width - 130, 20, 100, 60));
+    osdDeadB_->setVisible(true);
+    Color db = Theme::teamB;
+    db.a = 150;
+    osdDeadB_->setBackgroundColor(db);
 
     osdTracker_ = new OsdWidget();
-    osdTracker_->setPosition(10, 115);
-    osdTracker_->setFrameSize(10);
+    osdTracker_->setPosition(20, 145);
     osdTracker_->setVisible(false);
 
     osdStatus_ = new OsdWidget();
-    osdStatus_->setPosition(10, height - 43);
-    osdStatus_->setBackgroundColor(c);
-    osdStatus_->setForegroundColor({255,180,180,128});
-    osdStatus_->setFrameSize(10);
+    osdStatus_->setPosition(20, height - 38);
+
+    helpButton_ = new Button("Help");
+    helpButton_->setDimension({width - 70,height - 40, 50, 25});
+    helpButton_->addActionListener(this);
 
     add(osdStatistics_);
     add(osdTracker_);
     add(osdStatus_);
+    add(osdDeadA_);
+    add(osdDeadB_);
+    add(helpButton_);
     gcn::Container cont;
 }
 
@@ -121,5 +104,22 @@ void OsdScreenWidget::update(BattleField& field) {
 			}
 		}
 	}
+
+	osdDeadA_->clear();
+	osdDeadA_->addLine("alive", std::to_string(field.teams_[0].size() - field.teams_[0].countDead()));
+	osdDeadB_->clear();
+	osdDeadB_->addLine("alive", std::to_string(field.teams_[1].size() - field.teams_[1].countDead()));
 }
-} /* namespace tankwar */
+
+void OsdScreenWidget::action(const gcn::ActionEvent& event) {
+	std::thread t([&](){
+	HelpScreen& help = *HelpScreen::getInstance();
+	Gui& gui = *Gui::getInstance();
+	Widget* top = gui.getTop();
+	gui.setTop(&help);
+	help.query();
+	gui.setTop(top);
+	});
+	t.detach();
+}
+} /* namespace neurocid */

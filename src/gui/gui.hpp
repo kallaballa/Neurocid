@@ -56,6 +56,7 @@ public:
 	virtual void drawFrame(gcn::Widget* w, gcn::Graphics* graphics);
 };
 
+
 template <typename Twidget> class NeurocidWidget : public Twidget, public NeurocidBorder {
 public:
 	NeurocidWidget() : Twidget() {
@@ -68,7 +69,6 @@ public:
 		NeurocidBorder::drawFrame(this, graphics);
 	}
 };
-
 
 } /* namespace neurocid */
 

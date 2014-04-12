@@ -1,5 +1,7 @@
 #include "gui.hpp"
 #include "../util.hpp"
+#include "guichan/sdl/sdlgraphics.hpp"
+#include "theme.hpp"
 
 namespace neurocid {
 
@@ -24,7 +26,7 @@ Gui::Gui(SDL_Surface* surface) : gcn::Gui() {
 		SDL_Quit();
 	}
 
-	font_ = new gcn::contrib::SDLTrueTypeFont(neurocidPath + "/DejaVuSansMono-Bold.ttf",14);
+	font_ = new gcn::contrib::SDLTrueTypeFont(neurocidPath + "/DejaVuSansMono-Bold.ttf",18);
 	} catch(gcn::Exception& ex) {
 		std::cerr << ex.getMessage() << std::endl;
 		SDL_Quit();
@@ -51,25 +53,30 @@ void NeurocidBorder::drawFrame(gcn::Widget* w, gcn::Graphics* graphics) {
 	int width = w->getWidth() + w->getFrameSize() * 2 - 1;
 	int height = w->getHeight() + w->getFrameSize() * 2 - 1;
 
-	gcn::Color highlightColor = frameColor_;
-	if(compound_)
-		highlightColor = frameColor_ + 0x303030;
+	Color inner = w->getBackgroundColor();
+	Color mid = Theme::osdWidgetFrameMid;
+	Color outter = Theme::osdWidgetFrameOutter;
 
-	gcn::Color shadowColor = frameColor_;
-	if(compound_)
-		shadowColor = frameColor_ - 0x303030;
+	unsigned int i, frameSize = w->getFrameSize();
+	gcn::SDLGraphics* sdlg = static_cast<gcn::SDLGraphics*>(graphics);
 
-	highlightColor.a = frameColor_.a;
-	shadowColor.a = frameColor_.a;
+	sdlg->setColor(outter);
+	int br = frameSize;
+	for (i = 0; i < frameSize; ++i) {
+		if(i > 1 && i <= 2)
+			sdlg->setColor(mid);
+		else if(i > 2)
+			sdlg->setColor(inner);
 
-	unsigned int i;
-	for (i = 0; i < w->getFrameSize(); ++i) {
-		graphics->setColor(highlightColor);
-		graphics->fillRectangle(i, i, width - (i * 2) + 1, 1);
-		graphics->fillRectangle(i, i + 1, 1, height - (i * 2) - 1);
-		graphics->setColor(shadowColor);
-		graphics->fillRectangle(width - i, i + 1, 1, height - (i * 2));
-		graphics->fillRectangle(i, height - i, width - (i * 2), 1);
+		sdlg->drawLine(br, i, 					width - br, i);
+		sdlg->drawLine(width - i, br, 			width - i,  height - br);
+		sdlg->drawLine(width - br,  height - i , br, height - i);
+		sdlg->drawLine(i, height - br, 			i, br);
+
+		sdlg->fillPie(br,br,br - i, -180, -90);
+		sdlg->fillPie(width - br,br,br - i, -90, 0);
+		sdlg->fillPie(width - br, height - br,br - i, 0, 90);
+		sdlg->fillPie(br, height - br,br - i, 90, 180);
 	}
 }
 

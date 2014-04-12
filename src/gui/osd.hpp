@@ -1,7 +1,8 @@
 #ifndef OSD_HPP_
 #define OSD_HPP_
 
-#include "../gui/gui.hpp"
+#include "gui.hpp"
+#include "widgets.hpp"
 #include <string>
 
 namespace neurocid {
@@ -10,19 +11,13 @@ using std::string;
 
 class BattleField;
 
-class OsdWidget : public NeurocidWidget<gcn::TextBox> {
-public:
-	OsdWidget();
-
-	void clear();
-	void addLine(const string& key, const string& value);
-	void addLine(const string& value);
-};
-
-class OsdScreenWidget : public NeurocidWidget<gcn::Container> {
+class OsdScreenWidget : public NeurocidWidget<gcn::Container>, gcn::ActionListener {
 	OsdWidget* osdStatistics_;
 	OsdWidget* osdTracker_;
 	OsdWidget* osdStatus_;
+	OsdWidget* osdDeadA_;
+	OsdWidget* osdDeadB_;
+	Button* helpButton_;
 
 	static OsdScreenWidget* instance_;
 	OsdScreenWidget(Sint16 width, Sint16 height);
@@ -68,7 +63,10 @@ public:
 	bool isOsdStatusVisible() {
 		return osdStatus_->isVisible();
 	}
+
+	virtual void action(const gcn::ActionEvent& event);
 };
+
 
 } /* namespace neurocid */
 
