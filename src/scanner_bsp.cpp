@@ -16,6 +16,8 @@ void BspScanner::buildBsps(BattleField& field) {
 	assert(field.teams_.size() == 2);
 	bspA_.clear();
 	bspB_.clear();
+
+	// interpreting friendly fire seems too irritating. so we only scan enemy projectiles.
 	bspPA_.clear();
 	bspPB_.clear();
 
@@ -42,6 +44,7 @@ void BspScanner::buildBsps(BattleField& field) {
 		}
 	}
 }
+
 void BspScanner::findInRange(ObjectBsp& bsp, Object& from, ScanObjectType type, ScanObjectVector& result, size_t range) {
 	vector<Object*> objects;
 	bsp.find_within_range(&from, range, std::back_inserter(objects));
@@ -49,6 +52,18 @@ void BspScanner::findInRange(ObjectBsp& bsp, Object& from, ScanObjectType type, 
 	for(size_t i = 0; i < objects.size(); ++i) {
 		result.push_back(ScanObject{type, objects[i]->loc_, objects[i]->distance(from)});
 	}
+}
+
+bool BspScanner::findNearest(ObjectBsp& bsp, Object& from, ScanObjectType type, ScanObjectVector& result) {
+	assert(!from.dead_);
+	vector<Object*> found;
+	auto nearest = bsp.find_nearest(&from, std::numeric_limits<Coord>().max());
+	Object* obj = static_cast<Object*>(*nearest.first);
+	if(obj != NULL) {
+		result.push_back(ScanObject{type,obj->loc_,nearest.second});
+		return true;
+	}
+	return false;
 }
 
 std::pair<Object*,Coord> BspScanner::findNearest(ObjectBsp& bsp, Object& from) {

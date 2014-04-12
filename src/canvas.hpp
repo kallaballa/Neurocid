@@ -21,11 +21,7 @@ namespace neurocid {
 using std::string;
 using std::map;
 
-struct Color {
-	uint8_t r;
-	uint8_t g;
-	uint8_t b;
-};
+typedef gcn::Color Color;
 
 class BattleField;
 class Ship;
@@ -36,14 +32,6 @@ private:
 	static Canvas* instance_;
 	Canvas(Coord width, Coord height);
 	~Canvas();
-
-	std::vector<Color> teamColors_ = {
-			{ 0, 192, 0 },
-			{ 64, 64, 255 },
-			{ 0, 255,255 },
-			{ 255, 0, 255 },
-			{ 255, 255, 0 }
-	};
 
 	struct SDL_Surface *screen_;
 	bool drawEngines_;

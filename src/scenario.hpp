@@ -34,10 +34,11 @@ public:
 		phl_.velocityIterations_ = 6;
 		phl_.coordToMetersFactor_ = 0.05f;
 
-		scl_.disableClusterCenters = false;
+		scl_.disableClusterCenters = true;
 		scl_.numClusters_ = 3;
 		scl_.numFriends_ = 20;
 		scl_.numEnemies_ = 20;
+		scl_.numProjectiles_ = 20;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {};

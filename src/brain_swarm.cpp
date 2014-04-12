@@ -12,51 +12,39 @@
 namespace neurocid {
 using std::map;
 
+void sortByAngularDistance(map<Coord, ScanObject>& angMap, const ScanObjectVector& scanObjects, const ScanObjectType& type) {
+	for (const ScanObject& so : scanObjects) {
+		assert(so.type_ != INVALID);
+		if(so.type_ == type) {
+			Coord angDist = so.angDist_;
+			auto it = angMap.find(angDist);
+			while(it != angMap.end()) {
+				if(angDist > 0)
+					angDist -= fRand(0.00000001, 0.00009);
+				else
+					angDist += fRand(0.00000001, 0.00009);
+
+				it = angMap.find(angDist);
+			}
+
+			angMap[angDist] = so;
+		}
+	}
+}
+
 void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	parentBrain_t::update(bfl, scan);
 
 	map<Coord, ScanObject> friendObj;
 	map<Coord, ScanObject> enemyObj;
+	map<Coord, ScanObject> projectileObj;
 
 	//sort the friendly and enemy scan objects by their angular distance
-	for (const ScanObject& so : scan.objects_) {
-		assert(so.type_ != INVALID);
-		if(so.type_ == FRIEND) {
-			Coord angDist = so.angDist_;
-			auto it = friendObj.find(angDist);
-			while(it != friendObj.end()) {
-				if(angDist > 0)
-					angDist -= fRand(0.00000001, 0.00009);
-				else
-					angDist += fRand(0.00000001, 0.00009);
+	sortByAngularDistance(friendObj, scan.objects_, FRIEND);
+	sortByAngularDistance(enemyObj, scan.objects_, ENEMY);
+	sortByAngularDistance(projectileObj, scan.objects_, PROJECTILE_);
 
-				it = friendObj.find(angDist);
-			}
-
-			friendObj[angDist] = so;
-		}
-	}
-
-	for (const ScanObject& so : scan.objects_) {
-		assert(so.type_ != INVALID);
-		if(so.type_ == ENEMY) {
-			Coord angDist = so.angDist_;
-			assert(angDist != NO_COORD);
-			auto it = enemyObj.find(angDist);
-			while(it != enemyObj.end()) {
-				if(angDist > 0)
-					angDist -= fRand(0.00000001, 0.00009);
-				else
-					angDist += fRand(0.00000001, 0.00009);
-
-				it = enemyObj.find(angDist);
-			}
-
-			enemyObj[angDist] = so;
-		}
-	}
-
-	assert(enemyObj.size() + friendObj.size() == scan.objects_.size());
+	assert(enemyObj.size() + friendObj.size() + projectileObj.size() == scan.objects_.size());
 
 	size_t inputCnt = 0;
 	for (auto it : friendObj) {
@@ -69,6 +57,15 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	}
 
 	for (auto it : enemyObj) {
+		ScanObject& so = it.second;
+		if (so.vector_ != NO_VECTOR2D) {
+			applyInput(inputCnt * 2, so.vector_.x_);
+			applyInput(inputCnt * 2 + 1, so.vector_.y_);
+		}
+		++inputCnt;
+	}
+
+	for (auto it : projectileObj) {
 		ScanObject& so = it.second;
 		if (so.vector_ != NO_VECTOR2D) {
 			applyInput(inputCnt * 2, so.vector_.x_);

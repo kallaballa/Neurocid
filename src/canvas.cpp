@@ -7,6 +7,7 @@
 #include "battlefield.hpp"
 #include "population.hpp"
 #include "time_tracker.hpp"
+#include "gui/theme.hpp"
 
 #include <sstream>
 #include <thread>
@@ -144,23 +145,23 @@ void Canvas::drawSurface(SDL_Surface *s, SDL_Rect& srect, Coord x, Coord y) {
 }
 
 void Canvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
-	ellipseRGBA(screen_, scaleX(loc.x_), scaleY(loc.y_), round(rangeX * scale_), round(rangeY * scale_), c.r, c.g, c.b, 255);
+	ellipseRGBA(screen_, scaleX(loc.x_), scaleY(loc.y_), round(rangeX * scale_), round(rangeY * scale_), c.r, c.g, c.b, c.a);
 }
 
 void Canvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c) {
-    lineRGBA(screen_, scaleX(x0), scaleY(y0), scaleX(x1), scaleY(y1), c.r, c.g, c.b, 255);
+    lineRGBA(screen_, scaleX(x0), scaleY(y0), scaleX(x1), scaleY(y1), c.r, c.g, c.b, c.a);
 }
 
-void Canvas::drawShip(Ship& tank, Color c) {
-	Vector2D dir = tank.getDirection();
-	Vector2D tip = tank.loc_;
-    tip += dir * (tank.range_) * 5;
+void Canvas::drawShip(Ship& ship, Color c) {
+	Vector2D dir = ship.getDirection();
+	Vector2D tip = ship.loc_;
+    tip += dir * (ship.range_) * 5;
 
-    drawLine(tank.loc_.x_, tank.loc_.y_, tip.x_, tip.y_ ,c);
-    drawEllipse(tank.loc_, tank.range_, tank.range_, c);
-	drawLine(tank.loc_.x_, tank.loc_.y_, tip.x_, tip.y_ ,c);
-	if(drawElite_ && tank.isElite) {
-	    drawEllipse(tank.loc_, 200, 200, {255,0,255});
+    drawLine(ship.loc_.x_, ship.loc_.y_, tip.x_, tip.y_ ,c);
+    drawEllipse(ship.loc_, ship.range_, ship.range_, c);
+	drawLine(ship.loc_.x_, ship.loc_.y_, tip.x_, tip.y_ ,c);
+	if(drawElite_ && ship.isElite) {
+	    drawEllipse(ship.loc_, 200, 200, {255,0,255});
 	}
 
 	if(drawEngines_) {
@@ -169,31 +170,36 @@ void Canvas::drawShip(Ship& tank, Color c) {
 		across1.rotate(-45);
 		across2.rotate(45);
 
-		Vector2D wc = tank.loc_;
+		Vector2D wc = ship.loc_;
 		Vector2D flengine = wc;
 		Vector2D frengine = wc;
 		Vector2D blengine = wc;
 		Vector2D brengine = wc;
 
-		flengine += (across1 * (tank.range_));
-		frengine += (across2 * (tank.range_));
-		blengine += (across2 * -(tank.range_));
-		brengine += (across1 * -(tank.range_));
+		flengine += (across1 * (ship.range_));
+		frengine += (across2 * (ship.range_));
+		blengine += (across2 * -(ship.range_));
+		brengine += (across1 * -(ship.range_));
 
 		Vector2D flforce = flengine;
-		flforce += across2 * -(tank.flthrust_ * 600);
+		flforce += across2 * -(ship.flthrust_ * 600);
 		Vector2D frforce = frengine;
-		frforce += across1 * (tank.frthrust_ * 600);
+		frforce += across1 * (ship.frthrust_ * 600);
 		Vector2D blforce = blengine;
-		blforce += across1 * (tank.blthrust_ * 600);
+		blforce += across1 * (ship.blthrust_ * 600);
 		Vector2D brforce = brengine;
-		brforce += across2 * -(tank.brthrust_ * 600);
+		brforce += across2 * -(ship.brthrust_ * 600);
 
-		Color red = {255,0,0};
-		drawLine(flengine.x_, flengine.y_, flforce.x_, flforce.y_, red);
-		drawLine(frengine.x_, frengine.y_, frforce.x_, frforce.y_, red);
-		drawLine(blengine.x_, blengine.y_, blforce.x_, blforce.y_, red);
-		drawLine(brengine.x_, brengine.y_, brforce.x_, brforce.y_, red);
+		Color cengine;
+		if(ship.teamID_ == 0)
+			cengine = Theme::enginesA;
+		else
+			cengine = Theme::enginesB;
+
+		drawLine(flengine.x_, flengine.y_, flforce.x_, flforce.y_, cengine);
+		drawLine(frengine.x_, frengine.y_, frforce.x_, frforce.y_, cengine);
+		drawLine(blengine.x_, blengine.y_, blforce.x_, blforce.y_, cengine);
+		drawLine(brengine.x_, brengine.y_, brforce.x_, brforce.y_, cengine);
 	}
 }
 
@@ -211,7 +217,7 @@ void Canvas::drawExplosion(Object& o, Color& c) {
 }
 
 void Canvas::clear() {
-	SDL_Rect clrDest = {0,0, width_, height_};
+	SDL_Rect clrDest = {0,0, Uint16(width_), Uint16(height_)};
 	SDL_FillRect(screen_, &clrDest, 0);
 	background_.draw(screen_);
 }
@@ -240,44 +246,38 @@ Rect Canvas::findBounds(BattleField& field) {
 	return {min, max};
 }
 
-
 void Canvas::drawBorder(BattleField& field) {
-	Color darkred = {127,0,0};
-	drawLine(0,0,0, field.layout_.height_, darkred);
-	drawLine(0,0,field.layout_.width_, 0, darkred);
-	drawLine(field.layout_.width_,field.layout_.height_, field.layout_.width_,0, darkred);
-	drawLine(field.layout_.width_,field.layout_.height_, 0,field.layout_.height_, darkred);
+	drawLine(0,0,0, field.layout_.height_, Theme::battleFieldBorder);
+	drawLine(0,0,field.layout_.width_, 0, Theme::battleFieldBorder);
+	drawLine(field.layout_.width_,field.layout_.height_, field.layout_.width_,0, Theme::battleFieldBorder);
+	drawLine(field.layout_.width_,field.layout_.height_, 0,field.layout_.height_, Theme::battleFieldBorder);
 }
 
 void Canvas::drawGrid(BattleField& field) {
-	Color grey = {32,32,32};
-	Color darkred = {127,0,0};
-
-	for(Coord x = 0; x < field.layout_.width_; x+=1000) {
-		drawLine(x,0,x, field.layout_.height_, grey);
+	for(Coord x = 0; x < field.layout_.width_; x+=5000) {
+		drawLine(x,0,x, field.layout_.height_, Theme::battleFieldGrid);
 	}
-	for(Coord y = 0; y < field.layout_.height_; y+=1000) {
-		drawLine(0,y,field.layout_.width_,y, grey);
+	for(Coord y = 0; y < field.layout_.height_; y+=5000) {
+		drawLine(0,y,field.layout_.width_,y, Theme::battleFieldGrid);
 	}
 
-	drawEllipse(Vector2D(field.layout_.width_/2, field.layout_.height_/2), 20, 20, darkred);
+	drawEllipse(Vector2D(field.layout_.width_/2, field.layout_.height_/2), 20, 20, Theme::battleFieldCenter);
 }
 
 void Canvas::drawCenters(Scanner& scanner) {
 	for(Vector2D center : scanner.centersA_) {
-		drawEllipse(center, 3/ scale_, 3/ scale_, teamColors_[0]);
-		drawEllipse(center, 10/ scale_, 10/ scale_, teamColors_[0]);
+		drawEllipse(center, 3/ scale_, 3/ scale_, Theme::teamA);
+		drawEllipse(center, 10/ scale_, 10/ scale_, Theme::teamA);
 	}
 
 	for(Vector2D center : scanner.centersB_) {
-		drawEllipse(center, 3/ scale_, 3/ scale_, teamColors_[1]);
-		drawEllipse(center, 10/ scale_, 10/ scale_, teamColors_[1]);
+		drawEllipse(center, 3/ scale_, 3/ scale_, Theme::teamB);
+		drawEllipse(center, 10/ scale_, 10/ scale_, Theme::teamB);
 	}
 }
 
 void Canvas::render(BattleField& field) {
 	assert(field.teams_.size() == 2);
-	assert(teamColors_.size() >= field.teams_.size());
 	if(zoom_ == 1)
 		viewPort_ = findBounds(field);
 	calculateScale();
@@ -287,27 +287,27 @@ void Canvas::render(BattleField& field) {
 	if(drawGrid_)
 		drawGrid(field);
 
-	Color red = {255,0,0};
-	Color neonYellow = {243,243,21};
-	Color lightBlue = {21, 243, 243};
-
 	size_t teamCnt = 0;
 	for(Population& team : field.teams_) {
 		for(Ship& t : team) {
 			if(t.explode_)
-				this->drawExplosion(t, red);
-			else if(!t.dead_)
-				this->drawShip(t, teamColors_[teamCnt]);
+				this->drawExplosion(t, Theme::explosion);
+			else if(!t.dead_) {
+				if(t.teamID_ == 0 )
+					this->drawShip(t, Theme::teamA);
+				else
+					this->drawShip(t, Theme::teamB);
+			}
 			t.explode_ = false;
 
 			for(Projectile* p : t.projectiles_) {
 				if(p->explode_)
-					this->drawExplosion(*p, red);
+					this->drawExplosion(*p, Theme::explosion);
 				else if(!p->dead_) {
 					if(t.teamID_ == 0)
-						this->drawProjectile(*p,neonYellow);
+						this->drawProjectile(*p,Theme::projectileA);
 					else
-						this->drawProjectile(*p,lightBlue);
+						this->drawProjectile(*p,Theme::projectileB);
 				}
 				p->explode_ = false;
 			}

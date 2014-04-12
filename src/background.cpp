@@ -20,59 +20,59 @@ Background::Background(Canvas* canvas) :
 }
 
 void Background::init() {
-	for(size_t i = 0; i < 200; i++) {
+	for(size_t i = 0; i < 100; i++) {
 		Star s;
 		s.x = fRand(0,canvas_->width());
 		s.y = fRand(0,canvas_->height());
-		s.radius = fRand(0,3);
+		s.radius = fRand(2,5);
 		s.r = 255 - iRand(0,20);
 		s.g = 255 - iRand(0,20);
 		s.b = 255 - iRand(0,20);
 		s.alpha = fRand(10,128);
-		s.step = fRand(0,255/s.radius);
+		s.step = 255/s.radius;
 		s.scale = 0;
 		buffers_.push_back(s);
 	}
 
-	for(size_t i = 0; i < 500; i++) {
+	for(size_t i = 0; i < 50; i++) {
 		Star s;
-		s.x = fRand(0,300000);
-		s.y = fRand(0,300000);
-		s.radius = fRand(0,60);
-		s.r = 255 - iRand(0,20);
-		s.g = 255 - iRand(0,20);
-		s.b = 255 - iRand(0,20);
-		s.alpha = fRand(10,64);
-		s.step = fRand(0,255/s.radius);
-		s.scale = 1.5;
+		s.x = fRand(-600000,600000);
+		s.y = fRand(-600000,600000);
+		s.radius = fRand(1000,5000);
+		s.r = 255 - iRand(0,10);
+		s.g = 255 - iRand(0,10);
+		s.b = 255 - iRand(0,10);
+		s.alpha = fRand(10,128);
+		s.step = 255/s.radius;
+		s.scale = 0.7;
 		buffers_.push_back(s);
 	}
 
-	for(size_t i = 0; i < 500; i++) {
+	for(size_t i = 0; i < 50; i++) {
 		Star s;
-		s.x = fRand(0,300000);
-		s.y = fRand(0,300000);
-		s.radius = fRand(0,60);
-		s.r = 255 - iRand(0,20);
-		s.g = 255 - iRand(0,20);
-		s.b = 255 - iRand(0,20);
-		s.alpha = fRand(10,64);
-		s.step = fRand(0,255/s.radius);
-		s.scale = 3;
+		s.x = fRand(-600000,600000);
+		s.y = fRand(-600000,600000);
+		s.radius = fRand(1000,5000);
+		s.r = 255 - iRand(0,10);
+		s.g = 255 - iRand(0,10);
+		s.b = 255 - iRand(0,10);
+		s.alpha = fRand(10,128);
+		s.step = 255/s.radius;
+		s.scale = 0.4;
 		buffers_.push_back(s);
 	}
 
-	for(size_t i = 0; i < 500; i++) {
+	for(size_t i = 0; i < 50; i++) {
 		Star s;
-		s.x = fRand(0,300000);
-		s.y = fRand(0,300000);
-		s.radius = fRand(0,60);
-		s.r = 255 - iRand(0,20);
-		s.g = 255 - iRand(0,20);
-		s.b = 255 - iRand(0,20);
-		s.alpha = fRand(10,64);
-		s.step = fRand(0,255/s.radius);
-		s.scale = 6;
+		s.x = fRand(-600000,600000);
+		s.y = fRand(-600000,600000);
+		s.radius = fRand(1000,5000);
+		s.r = 255 - iRand(0,10);
+		s.g = 255 - iRand(0,10);
+		s.b = 255 - iRand(0,10);
+		s.alpha = fRand(10,128);
+		s.step = 255/s.radius;
+		s.scale = 0.2;
 		buffers_.push_back(s);
 	}
 }
