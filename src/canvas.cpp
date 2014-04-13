@@ -126,16 +126,19 @@ void Canvas::down() {
 
 void Canvas::drawStar(Star& s) {
 	double alpha = s.alpha;
-
+	double lastR = 0;
 	for(size_t i = 0; i < s.radius; i++) {
 		if(s.scale == 0)
 			circleRGBA(screen_, Sint16(s.x), Sint16(s.y), i, s.r,s.g,s.b, round(alpha));
-		else
-			circleRGBA(screen_, scaleX(s.x, scale_ * s.scale), scaleY(s.y, scale_ * s.scale), round(i * scale_ * s.scale), s.r,s.g,s.b, round(alpha));
-
-		if(alpha <= s.step)
-			break;
-		alpha -= s.step;
+		else {
+			double r = round(i * scale_ * s.scale);
+			if(r != lastR)
+				circleRGBA(screen_, scaleX(s.x, scale_ * s.scale), scaleY(s.y, scale_ * s.scale), r, s.r,s.g,s.b, round(alpha));
+			lastR = r;
+		}
+		if(i == s.discontinuity)
+			alpha /= 3;
+		alpha *= s.step;
 	}
 }
 

@@ -11,12 +11,18 @@ using std::string;
 
 class BattleField;
 
-class OsdScreenWidget : public NeurocidWidget<gcn::Container>, gcn::ActionListener {
+class OsdScreenWidget : public Container, gcn::ActionListener {
 	OsdWidget* osdStatistics_;
 	OsdWidget* osdTracker_;
 	OsdWidget* osdStatus_;
 	OsdWidget* osdDeadA_;
 	OsdWidget* osdDeadB_;
+
+	Container* scoreContainer;
+	OsdWidget* osdScore_;
+	OsdWidget* osdScoreA_;
+	OsdWidget* osdScoreB_;
+
 	Button* helpButton_;
 
 	static OsdScreenWidget* instance_;

@@ -60,23 +60,33 @@ void NeurocidBorder::drawFrame(gcn::Widget* w, gcn::Graphics* graphics) {
 	unsigned int i, frameSize = w->getFrameSize();
 	gcn::SDLGraphics* sdlg = static_cast<gcn::SDLGraphics*>(graphics);
 
-	sdlg->setColor(outter);
 	int br = frameSize;
 	for (i = 0; i < frameSize; ++i) {
-		if(i > 1 && i <= 2)
+		if(i == 0)
+			sdlg->setColor(outter);
+		else if(i <= 2)
 			sdlg->setColor(mid);
-		else if(i > 2)
+		else
 			sdlg->setColor(inner);
 
 		sdlg->drawLine(br, i, 					width - br, i);
-		sdlg->drawLine(width - i, br, 			width - i,  height - br);
-		sdlg->drawLine(width - br,  height - i , br, height - i);
 		sdlg->drawLine(i, height - br, 			i, br);
 
 		sdlg->fillPie(br,br,br - i, -180, -90);
+		sdlg->fillPie(br, height - br,br - i, 90, 180);
+		if(bevel_) {
+			if(i == 0)
+				sdlg->setColor(outter);
+			else if(i <= 2)
+				sdlg->setColor(inner);
+			else
+				sdlg->setColor(mid);
+		}
+		sdlg->drawLine(width - i, br, 			width - i,  height - br);
+		sdlg->drawLine(width - br,  height - i , br, height - i);
+
 		sdlg->fillPie(width - br,br,br - i, -90, 0);
 		sdlg->fillPie(width - br, height - br,br - i, 0, 90);
-		sdlg->fillPie(br, height - br,br - i, 90, 180);
 	}
 }
 

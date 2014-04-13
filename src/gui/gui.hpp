@@ -40,12 +40,12 @@ public:
 
 class NeurocidBorder {
 	gcn::Color frameColor_;
-	bool compound_ = false;
+	bool bevel_ = false;
 public:
 	virtual ~NeurocidBorder() {};
 
-	void setCompount(bool c) {
-		compound_ = c;
+	void setBevel(bool c) {
+		bevel_ = c;
 	}
 
 	void setFrameColor(gcn::Color& c) {

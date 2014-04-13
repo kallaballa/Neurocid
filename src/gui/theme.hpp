@@ -37,7 +37,8 @@ public:
 	static Color osdWidgetFrameOutter;
 	static Color buttonBg;
 	static Color buttonFg;
-
+	static Color labelBg;
+	static Color labelFg;
 };
 
 } /* namespace neurocid */

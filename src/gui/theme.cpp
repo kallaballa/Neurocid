@@ -23,11 +23,15 @@ Color Theme::battleFieldCenter = {127,0,0,255};
 Color Theme::battleFieldBorder = {127,0,0,255};
 Color Theme::battleFieldGrid = {32,32,32,255};
 
-Color Theme::osdWidgetBg = {80,80,243,150};
+Color Theme::osdWidgetBg = {100,100,243,150};
 Color Theme::osdWidgetFg = {255,255,255,255};
 Color Theme::osdWidgetFrameMid = {0,0,0,255};
 Color Theme::osdWidgetFrameOutter = {255,255,255,255};
 
-Color Theme::buttonBg = {0,0,0,0};
-Color Theme::buttonFg = {120,120,243,255};
+Color Theme::buttonBg = {80,80,243,150};
+Color Theme::buttonFg = {255,255,255,255};
+
+Color Theme::labelBg = {80,80,243,150};
+Color Theme::labelFg = {255,255,255,255};
+
 } /* namespace neurocid */

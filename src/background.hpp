@@ -27,6 +27,7 @@ struct Star {
 	Uint8 b;
 	double alpha;
 	double step;
+	size_t discontinuity;
 	double scale;
 };
 
