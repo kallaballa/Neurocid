@@ -17,10 +17,10 @@ namespace neurocid {
 
 typedef BrainSwarm Brain;
 
-Population makePopulation(size_t teamID, size_t size, PopulationLayout& pl) {
+Population make_population(size_t teamID, PopulationLayout& pl) {
 	Population p;
 	p.layout_ = pl;
-	for(size_t i = 0; i < size; i++) {
+	for(size_t i = 0; i < pl.size_; i++) {
 		Ship t(teamID, pl.tl_);
 		Brain* b = new Brain();
 		b->initialize(pl.bl_);
@@ -31,14 +31,14 @@ Population makePopulation(size_t teamID, size_t size, PopulationLayout& pl) {
 	return p;
 }
 
-vector<Population> makeTeams(size_t numTeams, size_t teamSize, PopulationLayout& pl) {
+vector<Population> make_teams(size_t numTeams, size_t teamSize, PopulationLayout& pl) {
 	vector<Population> teams(numTeams);
 	size_t teamID = 0;
-	std::generate(teams.begin(), teams.end(), [&]() { return makePopulation(teamID++, teamSize, pl); });
+	std::generate(teams.begin(), teams.end(), [&]() { return make_population(teamID++, pl); });
 	return teams;
 }
 
-vector<GeneticPool> makePools(size_t numTeams, GeneticLayout& gp) {
+vector<GeneticPool> make_pools(size_t numTeams, GeneticLayout& gp) {
 	vector<GeneticPool> pools(numTeams);
 	std::generate(pools.begin(), pools.end(), [&]() { return GeneticPool(gp); });
 	return pools;

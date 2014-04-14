@@ -158,6 +158,17 @@ inline void read_team(size_t teamID, Population& team, istream& is) {
 	  s.teamID_ = teamID;
   }
 
+  if(team.size() > team.layout_.size_)
+	  team.resize(team.layout_.size_);
+  else if(team.size() < team.layout_.size_) {
+	  while(team.size() < team.layout_.size_) {
+		  for(Ship& s : team) {
+			  team.push_back(s.clone());
+			  if(team.size() == team.layout_.size_)
+				  break;
+		  }
+	  }
+  }
 #else
   assert(false);
 #endif
