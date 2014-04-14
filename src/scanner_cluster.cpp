@@ -38,7 +38,8 @@ pair<Vector2D, Coord> ClusterScanner::findNearestCenter(const vector<Vector2D>& 
 
 void ClusterScanner::scanClusterCenters(Population& team, vector<Vector2D>& result, size_t numCenters) {
     size_t teamSize = team.size();
-	if(teamSize < numCenters) {
+    assert(teamSize != 0);
+    if(teamSize < numCenters) {
 	    	size_t n = 0;
 	    	while(n < numCenters) {
 				for(size_t i = 0;  i < team.size(); ++i) {
