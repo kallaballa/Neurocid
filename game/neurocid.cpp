@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
 #endif
     //initialize the core subsystems - this is mandatory
     neurocid::init(width,height,frameRate);
-    //initialize the canvas (graphical frontend) - this is optional
+    //initialize the canvas (graphical frontend) - this is mandatory
     neurocid::init_canvas();
     //initialize the gui - this is optional
     neurocid::init_gui();
