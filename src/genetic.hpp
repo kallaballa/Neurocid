@@ -10,7 +10,7 @@ using namespace std;
 
 namespace neurocid {
 
-struct GeneticParams {
+struct GeneticLayout {
 	double mutationRate;
 	double crossoverRate;
 	size_t crossoverIterations;
@@ -34,8 +34,8 @@ private:
 	void copyNBest(size_t n, const size_t numCopies, Population& in, Population& out);
 	void calculateStatistics(Population& pop);
 public:
-	GeneticParams params_;
-	GeneticPool(GeneticParams params);
+	GeneticLayout params_;
+	GeneticPool(GeneticLayout params);
 	GeneticPool();
 
 	//this runs the GA for one generation.

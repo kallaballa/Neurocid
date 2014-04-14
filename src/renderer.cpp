@@ -30,6 +30,8 @@ Renderer::Renderer(size_t frameRate) :
 void Renderer::update(BattleField* field) {
 	updateMutex.lock();
 	field_ = field;
+	if(field_ == NULL)
+		Canvas::getInstance()->reset();
 	updateMutex.unlock();
 }
 

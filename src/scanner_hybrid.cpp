@@ -21,7 +21,7 @@ namespace neurocid {
 void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, ObjectBsp& bspFriends, ObjectBsp& bspEnemies, ObjectBsp& bspEnemyProjectiles, BattleFieldLayout& bfl) {
 	Coord numFriends = ClusterScanner::layout_.numFriends_;
 	Coord numEnemies = ClusterScanner::layout_.numEnemies_;
-	Coord numProjectiles = ClusterScanner::layout_.numEnemies_;
+	Coord numProjectiles = ClusterScanner::layout_.numProjectiles_;
 	size_t rangeOfSight = 3000;
 
 	for(size_t i = 0; i < friends.size(); ++i) {
@@ -78,7 +78,7 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 		}
 
 		assert(t.scan_.objects_.size() == (numFriends + numEnemies));
-
+/*
 		// Scan for projectiles
 		size_t startNum = (numFriends + numEnemies);
 		size_t targetNum = (numFriends + numEnemies + numProjectiles);
@@ -106,7 +106,7 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 		}
 
 		assert(t.scan_.objects_.size() == targetNum);
-
+*/
 		//Scan for near misses
 		for(Projectile* p : t.projectiles_) {
 			if(p->dead_ || t.layout_.disableProjectileFitness_)

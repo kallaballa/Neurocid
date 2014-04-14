@@ -151,6 +151,22 @@ void Canvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
 	ellipseRGBA(screen_, scaleX(loc.x_), scaleY(loc.y_), round(rangeX * scale_), round(rangeY * scale_), c.r, c.g, c.b, c.a);
 }
 
+void Canvas::drawExplosion(Explosion& expl, Color c) {
+	size_t lastR = 0, r = 0;
+	for(size_t i = 0; i < expl.tick_; ++i) {
+	    if(scale_ < 0.013)
+	    	r = round(i * i * 3 * scale_);
+	    else
+	    	r = round(i * i * scale_);
+
+	    c = c + Color(0,10,0);
+	    c.a = std::min(size_t(128 + (255 / (i + 1))), size_t(255));
+	    if(lastR != r)
+	    	circleRGBA(screen_, scaleX(expl.loc_.x_), scaleY(expl.loc_.y_), r, c.r, c.g, c.b, c.a);
+		lastR = r;
+	}
+}
+
 void Canvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c) {
     lineRGBA(screen_, scaleX(x0), scaleY(y0), scaleX(x1), scaleY(y1), c.r, c.g, c.b, c.a);
 }
@@ -158,11 +174,19 @@ void Canvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c) {
 void Canvas::drawShip(Ship& ship, Color c) {
 	Vector2D dir = ship.getDirection();
 	Vector2D tip = ship.loc_;
-    tip += dir * (ship.range_) * 5;
+    if(scale_ < 0.013)
+    	tip += dir * (ship.range_) * 10;
+    else
+    	tip += dir * (ship.range_) * 5;
 
     drawLine(ship.loc_.x_, ship.loc_.y_, tip.x_, tip.y_ ,c);
-    drawEllipse(ship.loc_, ship.range_, ship.range_, c);
-	drawLine(ship.loc_.x_, ship.loc_.y_, tip.x_, tip.y_ ,c);
+    if(scale_ < 0.013)
+        drawEllipse(ship.loc_, ship.range_ * 3, ship.range_ * 3, c);
+    else
+    	drawEllipse(ship.loc_, ship.range_, ship.range_, c);
+    drawLine(ship.loc_.x_, ship.loc_.y_, tip.x_, tip.y_ ,c);
+
+
 	if(drawElite_ && ship.isElite) {
 	    drawEllipse(ship.loc_, 200, 200, {255,0,255});
 	}
@@ -213,10 +237,6 @@ void Canvas::drawProjectile(Projectile& pro, Color& c) {
 	Vector2D trail = pro.loc_;
 	trail += pro.getDirection() * -500;
 	drawLine(trail.x_,trail.y_, pro.loc_.x_, pro.loc_.y_, c);
-}
-
-void Canvas::drawExplosion(Object& o, Color& c) {
-	drawEllipse(o.loc_, 10, 10, c);
 }
 
 void Canvas::clear() {
@@ -294,7 +314,7 @@ void Canvas::render(BattleField& field) {
 	for(Population& team : field.teams_) {
 		for(Ship& t : team) {
 			if(t.explode_)
-				this->drawExplosion(t, Theme::explosion);
+				explosions_.push_back({t.loc_, 20});
 			else if(!t.dead_) {
 				if(t.teamID_ == 0 )
 					this->drawShip(t, Theme::teamA);
@@ -305,7 +325,7 @@ void Canvas::render(BattleField& field) {
 
 			for(Projectile* p : t.projectiles_) {
 				if(p->explode_)
-					this->drawExplosion(*p, Theme::explosion);
+					explosions_.push_back({p->loc_, 20});
 				else if(!p->dead_) {
 					if(t.teamID_ == 0)
 						this->drawProjectile(*p,Theme::projectileA);
@@ -318,7 +338,21 @@ void Canvas::render(BattleField& field) {
 		++teamCnt;
 	}
 
+	for(auto it = explosions_.begin(); it != explosions_.end(); ++it) {
+		Explosion& e = *it;
+		if(e.end())
+			it = explosions_.erase(it);
+		else {
+			drawExplosion(e,{255,64,0,255});
+			e.next();
+		}
+	}
+
 	if(drawCenters_)
 		drawCenters(field.scanner_);
+}
+
+void Canvas::reset() {
+	explosions_.clear();
 }
 }

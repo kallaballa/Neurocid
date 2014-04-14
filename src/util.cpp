@@ -38,7 +38,7 @@ vector<Population> makeTeams(size_t numTeams, size_t teamSize, PopulationLayout&
 	return teams;
 }
 
-vector<GeneticPool> makePools(size_t numTeams, GeneticParams& gp) {
+vector<GeneticPool> makePools(size_t numTeams, GeneticLayout& gp) {
 	vector<GeneticPool> pools(numTeams);
 	std::generate(pools.begin(), pools.end(), [&]() { return GeneticPool(gp); });
 	return pools;

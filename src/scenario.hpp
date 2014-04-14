@@ -29,10 +29,10 @@ public:
 		gl_.spacing_ = 100;
 
 		phl_.gravity_ = {0,0};
-		phl_.timeStep_ = 1.0f/60.0f;
+		phl_.timeStep_ = 1.0f/30.0f;
 		phl_.positionIterations_ = 2;
 		phl_.velocityIterations_ = 6;
-		phl_.coordToMetersFactor_ = 0.05f;
+		phl_.coordToMetersFactor_ = 0.03f;
 
 		scl_.disableClusterCenters = true;
 		scl_.numClusters_ = 3;
@@ -43,8 +43,6 @@ public:
 
 	virtual void configureTeams(vector<Population>& teams) {};
 	virtual void configurePools(vector<GeneticPool>& pools) {};
-	virtual void restoreTeams(vector<Population>& teams) {};
-	virtual void restorePools(vector<GeneticPool>& pools) {};
 	virtual Placer* createPlacer() = 0;
 };
 

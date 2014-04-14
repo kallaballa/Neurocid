@@ -19,8 +19,8 @@ using std::vector;
 using std::string;
 
 void registerScenario(const string& name, Scenario* s);
-void loadScenarios();
-Scenario* getScenario(const string& name);
+void load_delarative_scenarios();
+Scenario* get_declarative_scenario(const string& name);
 void multiplyTeams(vector<Population>& teams, size_t n);
 } /* namespace neurocid */
 

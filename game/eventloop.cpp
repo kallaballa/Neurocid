@@ -30,16 +30,23 @@ inline void dumpTeams() {
 	if(game != NULL) {
 		  time_t rawtime;
 		  struct tm * timeinfo;
-		  char buffer[80];
+		  char bufferA[80];
+		  char bufferB[80];
 
 		  time (&rawtime);
 		  timeinfo = localtime(&rawtime);
 
-		  strftime(buffer,80,"dump%d-%m-%Y_%I:%M:%S.pop",timeinfo);
-		  string filename(buffer);
+		  strftime(bufferA,80,"dumpA_%d-%m-%Y_%I:%M:%S.pop",timeinfo);
+		  strftime(bufferB,80,"dumpB_%d-%m-%Y_%I:%M:%S.pop",timeinfo);
 
-		ofstream os(filename);
-		write_teams(game->teams_, os);
+		  string filenameA(bufferA);
+		  string filenameB(bufferB);
+
+		  ofstream osa(filenameA);
+		  write_team(game->teams_[0], osa);
+
+		  ofstream osb(filenameB);
+		  write_team(game->teams_[1], osb);
 	}
 	gameState.resume();
 }

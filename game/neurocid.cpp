@@ -1,18 +1,7 @@
 #include "population.hpp"
-#include "renderer.hpp"
-#include "game.hpp"
-#include "gamestate.hpp"
-#include "time_tracker.hpp"
-#include "scenario.hpp"
-#include "canvas.hpp"
-#include "gui/gui.hpp"
-#include "gui/osd.hpp"
+#include "neurocid.hpp"
 #include "eventloop.hpp"
 #include "declarative_scenarios.hpp"
-
-#ifndef _NO_VIDEOENC
-#include "video_encoder.hpp"
-#endif
 
 #ifndef _NO_THREAD
 #include <thread>
@@ -22,112 +11,37 @@
 #include <boost/program_options.hpp>
 #endif
 
-using namespace neurocid;
-
 #ifndef _NO_PROGRAM_OPTIONS
 namespace po = boost::program_options;
 #endif
+
+namespace nc = neurocid;
 
 using std::string;
 using std::cerr;
 using std::endl;
 using std::vector;
 
-void playGame(size_t gameIter, Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools, const string& videoFile) {
-	GameState& gs = *GameState::getInstance();
-	TimeTracker& tt = *TimeTracker::getInstance();
-
-#ifndef _NO_VIDEOENC
-	VideoEncoder& ve = *VideoEncoder::getInstance();
-	if(!videoFile.empty())
-		ve.init(videoFile.c_str(), AV_CODEC_ID_H264);
-#endif
-	while(gs.isRunning() && --gameIter > 0) {
-		tt.execute("game", [&](){
-			Game game(scenario, teams, pools);
-			gs.setCurrentGame(&game);
-			teams = game.play(true);
-			gs.setCurrentGame(NULL);
-		});
-	}
-#ifndef _NO_VIDEOENC
-	if(!videoFile.empty())
-		ve.close();
-#endif
-	gs.stop();
-}
-
 int main(int argc, char** argv) {
-	srand(time(0));
-	loadScenarios();
-	PopulationLayout pl = {
-		//Ship Layout
-		{
-		    //Projectile Layout
-			{
-				1,    // max_speed
-				10000, // max_travel
-				5     // range
-			},
-			false, // isDummy
-			true,// canShoot
-			true,// canRotate
-			true,// canMove
-			false,// disableProjectileFitness
-
-			50.0,// range_
-			1, // max_speed_
-			1, // max_rotation
-			5, // max_cooldown
-			5, // max_ammo_
-			6, // max_damage_
-
-			1, // crashes_per_damage_
-			4  // num_perf_desc_
-		},
-		//BrainLayout
-		{
-		    123, // inputs
-			5,  // outputs
-			8,  // layers
-			11  // neurons per hidden layer
-		}
-	};
-
-	GeneticParams gp = {
-			0.1, // mutationRate
-			0.7, // crossoverRate
-			1,   // crossoverIterations
-			0.3, // maxPertubation
-			4,   // numElite
-			1,   // numEliteCopies
-			false// usePerfDesc_
-	};
-
-	string loadFile;
-	string saveFile;
+	string loadAFile;
+	string saveAFile;
+	string loadBFile;
+	string saveBFile;
 	string captureFile;
 	string scenarioName;
-	bool save = false;
-	bool load = false;
-	Scenario* scenario = NULL;
 	size_t gameIterations = 1000;
-	size_t multiply = 0;
 	size_t width = 800;
 	size_t height = 800;
 	size_t frameRate = 25;
-	vector<Population> teams;
-	vector<GeneticPool> pools(2);
-	pools[0] = GeneticPool(gp);
-	pools[1] = GeneticPool(gp);
 
 #ifndef _NO_PROGRAM_OPTIONS
 	po::options_description genericDesc("Options");
 	genericDesc.add_options()
 		("iterations,i", po::value< size_t >(&gameIterations), "Run n iterations of the game")
-		("multiply,m", po::value< size_t >(&multiply), "Multiply the number of tanks in the populations")
-		("load,l", po::value< string >(&loadFile), "Load the population from a file before running the scenario")
-		("save,s", po::value< string >(&saveFile), "Save the population to a file after running the scenario")
+		("loadA", po::value< string >(&loadAFile), "Load the population as team A from a file before running the scenario")
+		("loadB", po::value< string >(&loadBFile), "Load the population as team B from a file before running the scenario")
+		("saveA", po::value< string >(&saveAFile), "Save the team A population to a file after running the scenario")
+		("saveB", po::value< string >(&saveBFile), "Save the team B population to a file after running the scenario")
 		("capture,c", po::value< string >(&captureFile), "Capture the game to a video file")
 		("width,x", po::value< size_t >(&width), "The window width")
 		("height,y", po::value< size_t >(&height), "The window height")
@@ -157,82 +71,70 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    load = vm.count("load");
-    save = vm.count("save");
-    assert(vm.count("scenario"));
-	scenario = getScenario(scenarioName);
+	srand(time(0));
+	nc::load_delarative_scenarios();
 #else
-    scenario = getScenario("SymmetricLinesFar");
+    scenarioName = "SymmetricLinesFar";
 #endif
-    assert(scenario != NULL);
+    neurocid::init(width,height,frameRate);
+    nc::Scenario* scenario = nc::get_declarative_scenario(scenarioName);
 
-    Options& opt = *Options::getInstance();
-	opt.WINDOW_WIDTH = width;
-    opt.WINDOW_HEIGHT = height;
-    opt.FRAMERATE = frameRate;
+    if(scenario == NULL) {
+    	std::cerr << "Unknown scenario: " + scenarioName << std::endl;
+    	exit(1);
+    }
+    nc::PopulationLayout pl = nc::make_default_population_layout();
+	nc::GeneticLayout gp = nc::make_default_genetic_layout();
+	vector<nc::Population> teams(2);
+	vector<nc::GeneticPool> pools(2);
+	pools[0] = nc::GeneticPool(gp);
+	pools[1] = nc::GeneticPool(gp);
 
-    GameState& gs = *GameState::getInstance();
-	Canvas& canvas = *Canvas::getInstance();
-	TimeTracker& timeTracker = *TimeTracker::getInstance();
-
-	timeTracker.setEnabled(true);
-
-	gs.setSlow(false);
-    gs.setSlower(false);
-
-    canvas.enableDrawGrid(false);
-    canvas.enableDrawEngines(true);
-
-	// initialize osd overlay
-	Gui::init(canvas.getSurface());
-	OsdScreenWidget::init(canvas.width(),canvas.height());
-	Gui& gui = *Gui::getInstance();
-	OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
-	gui.setScreen(&osd);
-
-    if(load) {
-    	ifstream is(loadFile);
-    	read_teams(teams,is);
+    if(!loadAFile.empty()) {
+    	ifstream is(loadAFile);
+    	nc::read_team(0,teams[0],is);
     } else {
-    	teams = makeTeams(2,20, pl);
+    	teams[0] = nc::makePopulation(0, 20, pl);
     }
 
-    if(multiply > 1) {
-    	multiplyTeams(teams, multiply);
+    if(!loadBFile.empty()) {
+    	ifstream is(loadBFile);
+        nc::read_team(1,teams[1],is);
+    } else {
+        teams[1] = nc::makePopulation(1, 20, pl);
     }
-
 #ifndef _NO_THREADS
     std::thread gameThread([&]() {
 #endif
     	teams[0].score_ = 0;
     	teams[1].score_ = 0;
-    	playGame(gameIterations, scenario, teams, pools, captureFile);
-        if(save) {
-      	  if(teams[0].size() > 20)
-      		  teams[0].resize(20);
+    	neurocid::play_game(gameIterations, scenario, teams, pools, captureFile);
 
-      	  if(teams[1].size() > 20)
-      		  teams[1].resize(20);
-
-        	ofstream os(saveFile);
-        	write_teams(teams,os);
+    	if(!saveAFile.empty()) {
+        	ofstream os(saveAFile);
+        	write_team(teams[0],os);
         }
-#ifndef _NO_THREADS
+
+        if(!saveBFile.empty()) {
+        	ofstream os(saveBFile);
+        	write_team(teams[1],os);
+        }
+
+        #ifndef _NO_THREADS
 	});
 #endif
 
 #ifndef _NO_THREADS
-    EventLoop el;
-    Renderer& renderer = *Renderer::getInstance();
-
     std::thread eventThread([&]() {
-        while(gs.isRunning()) {
+	    nc::EventLoop el;
+
+        while(neurocid::is_running()) {
         	el.process();
         }
     });
 
-    while(gs.isRunning()) {
-    	renderer.render();
+    while(neurocid::is_running()) {
+    	neurocid::render();
     }
 
     eventThread.join();

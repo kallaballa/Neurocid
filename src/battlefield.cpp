@@ -35,6 +35,7 @@ void BattleField::scan() {
 }
 
 void BattleField::think() {
+	#pragma omp parallel for
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		Population& team = teams_[i];
 

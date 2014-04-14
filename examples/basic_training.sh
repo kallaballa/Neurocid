@@ -3,11 +3,10 @@
 set -x
 function run() {
   m=1
-	[ -n "$4" ] && m=$4;
-  if [ -n "$3" ]; then
-		neurocid -m $m -i $1  -s $2.pop -l $3 $2 > timeseries.csv 
+	if [ -n "$3" ]; then
+    neurocid -i $1 --saveA $2.pop --loadA $3 $2 > timeseries.csv
 	else
-    neurocid -m $m -i $1  -s $2.pop $2 > timeseries.csv             
+    neurocid -i $1 --saveA $2.pop $2 > timeseries.csv
 	fi
   cp timeseries.csv $2.csv
   echo $2.pop

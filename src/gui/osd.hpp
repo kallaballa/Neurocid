@@ -19,7 +19,6 @@ class OsdScreenWidget : public Container, gcn::ActionListener {
 	OsdWidget* osdDeadB_;
 
 	Container* scoreContainer;
-	OsdWidget* osdScore_;
 	OsdWidget* osdScoreA_;
 	OsdWidget* osdScoreB_;
 

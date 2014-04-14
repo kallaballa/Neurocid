@@ -44,7 +44,7 @@ OsdScreenWidget::OsdScreenWidget(Sint16 width, Sint16 height) : Container(), gcn
     osdDeadB_->setBackgroundColor(db);
 
     osdTracker_ = new OsdWidget();
-    osdTracker_->setPosition(20, 145);
+    osdTracker_->setPosition(20, 165);
     osdTracker_->setVisible(false);
 
     osdStatus_ = new OsdWidget();

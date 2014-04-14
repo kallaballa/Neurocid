@@ -13,14 +13,14 @@ namespace neurocid {
 using std::vector;
 class Population;
 class GeneticPool;
-struct GeneticParams;
+struct GeneticLayout;
 struct BrainLayout;
 struct ShipLayout;
 struct PopulationLayout;
 
 Population makePopulation(size_t teamID, size_t size, PopulationLayout& pl);
 vector<Population> makeTeams(size_t numTeams, size_t teamSize, PopulationLayout& pl);
-vector<GeneticPool> makePools(size_t numTeams, GeneticParams& gp);
+vector<GeneticPool> makePools(size_t numTeams, GeneticLayout& gp);
 
 Coord fRand(Coord fMin, Coord fMax);
 int iRand(int x,int y);

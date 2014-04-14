@@ -7,7 +7,7 @@
 
 namespace neurocid {
 
-GeneticPool::GeneticPool(GeneticParams params) :
+GeneticPool::GeneticPool(GeneticLayout params) :
 		params_(params) {
 	initialized_ = true;
 }

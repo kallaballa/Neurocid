@@ -27,7 +27,7 @@ struct PopulationLayout {
 #ifndef _NO_SERIALIZE
 	friend class boost::serialization::access;
 #endif
-
+	size_t size_;
 	ShipLayout tl_;
 	BrainLayout bl_;
 
@@ -48,7 +48,6 @@ class Population: public vector<Ship> {
 public:
 	struct Statistics {
 		Statistics() {
-			generationCnt_ = 0;
 			reset();
 		}
 
@@ -149,19 +148,24 @@ public:
 };
 
 
-inline void read_teams(vector<Population>& teams, istream& is) {
+inline void read_team(size_t teamID, Population& team, istream& is) {
 #ifndef _NO_SERIALIZE
   boost::archive::text_iarchive ia(is);
-  ia >> teams;
+  ia >> team;
+
+  for(Ship& s : team) {
+	  s.teamID_ = teamID;
+  }
+
 #else
   assert(false);
 #endif
 }
 
-inline void write_teams(vector<Population>& teams, ostream& os) {
+inline void write_team(Population& team, ostream& os) {
 #ifndef _NO_SERIALIZE
   boost::archive::text_oarchive oa(os);
-  oa << teams;
+  oa << team;
 #else
   assert(false);
 #endif

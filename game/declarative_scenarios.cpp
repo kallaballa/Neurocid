@@ -18,7 +18,7 @@ public:
 	SymmetricLines() : Scenario() {
 		bfl_.width_ = 300000;
 		bfl_.height_ = 300000;
-		bfl_.iterations_ = 1500;
+		bfl_.iterations_ = 750;
 
 		gl_.center_ = {150000,150000};
 		gl_.distance_ = 10000;
@@ -75,20 +75,6 @@ public:
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
 	}
-
-	virtual void restorePools(vector<GeneticPool>& pools) {
-		pools[1] = pools[0];
-	};
-
-	virtual void restoreTeams(vector<Population>& teams) {
-		teams[1].clear();
-		//clone teamB from teamA
-		for(Ship& t : teams[0]) {
-			Ship c = t.clone();
-			c.teamID_ = 1;
-			teams[1].push_back(c);
-		}
-	}
 };
 
 class SymmetricLinesAttackerMove : public SymmetricLines {
@@ -110,20 +96,6 @@ public:
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
 
-	}
-
-	virtual void restorePools(vector<GeneticPool>& pools) {
-		pools[1] = pools[0];
-	};
-
-	virtual void restoreTeams(vector<Population>& teams) {
-		teams[1].clear();
-		//clone teamB from teamA
-		for(Ship& t : teams[0]) {
-			Ship c = t.clone();
-			c.teamID_ = 1;
-			teams[1].push_back(c);
-		}
 	}
 };
 
@@ -158,20 +130,6 @@ public:
 
 	virtual Placer* createPlacer() {
 		return new FuzzyOppositePlacer<IterRot, OppositeFacer, Spacer>({0, M_PI}, {M_PI}, {Scenario::gl_});
-	}
-
-	virtual void restorePools(vector<GeneticPool>& pools) {
-		pools[1] = pools[0];
-	};
-
-	virtual void restoreTeams(vector<Population>& teams) {
-		teams[1].clear();
-		//clone teamB from teamA
-		for(Ship& t : teams[0]) {
-			Ship c = t.clone();
-			c.teamID_ = 1;
-			teams[1].push_back(c);
-		}
 	}
 };
 
@@ -220,20 +178,6 @@ public:
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
 	}
-
-	virtual void restorePools(vector<GeneticPool>& pools) {
-		pools[1] = pools[0];
-	};
-
-	virtual void restoreTeams(vector<Population>& teams) {
-		teams[1].clear();
-		//clone teamB from teamA
-		for(Ship& t : teams[0]) {
-			Ship c = t.clone();
-			c.teamID_ = 1;
-			teams[1].push_back(c);
-		}
-	}
 };
 
 class SymmetricLinesNoMoveTwoRows : public SymmetricLines {
@@ -243,20 +187,6 @@ public:
 
 	virtual Placer* createPlacer() {
 		return new OppositePlacerTwoRows<RandomRot, RandomFacer, Spacer>({}, {}, {Scenario::gl_});
-	}
-
-	virtual void restorePools(vector<GeneticPool>& pools) {
-		pools[1] = pools[0];
-	};
-
-	virtual void restoreTeams(vector<Population>& teams) {
-		teams[1].clear();
-		//clone teamB from teamA
-		for(Ship& t : teams[0]) {
-			Ship c = t.clone();
-			c.teamID_ = 1;
-			teams[1].push_back(c);
-		}
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -291,7 +221,7 @@ public:
 class SymmetricLinesFar : public SymmetricLines {
 public:
 	SymmetricLinesFar() : SymmetricLines() {
-		bfl_.iterations_ = 4000;
+		bfl_.iterations_ = 2000;
 		gl_.distance_ = 30000;
 		gl_.spacing_ = 400;
 	}
@@ -319,20 +249,6 @@ public:
 		defenderTL.max_damage_ = 100;
 		teams[1].update(defenderTL);
 	}
-
-	virtual void restorePools(vector<GeneticPool>& pools) {
-		pools[1] = pools[0];
-	};
-
-	virtual void restoreTeams(vector<Population>& teams) {
-		teams[1].clear();
-		//clone teamB from teamA
-		for(Ship& t : teams[0]) {
-			Ship c = t.clone();
-			c.teamID_ = 1;
-			teams[1].push_back(c);
-		}
-	}
 };
 
 class SymmetricLinesAttackerMoveFarFacingInward : public SymmetricLinesAttackerMoveFar {
@@ -357,7 +273,7 @@ public:
 	SymmetricLinesHuge() : SymmetricLines() {
 		bfl_.width_ = 300000;
 		bfl_.height_ = 300000;
-		bfl_.iterations_ = 6000;
+		bfl_.iterations_ = 3000;
 		gl_.center_ = {150000,150000};
 		gl_.distance_ = 100000;
 		gl_.spacing_ = 1000;
@@ -385,7 +301,7 @@ public:
 class AimOnOne : public Scenario {
 public:
 	AimOnOne() : Scenario(){
-		bfl_.iterations_ = 800;
+		bfl_.iterations_ = 400;
 		bfl_.width_ = 300000;
 		bfl_.height_ = 300000;
 
@@ -427,30 +343,15 @@ public:
 		pools[1] = GeneticPool(); //dummy pool;
 	}
 
-	virtual void restorePools(vector<GeneticPool>& pools) {
-		pools[1] = pools[0];
-	};
-
-
 	virtual Placer* createPlacer() {
 		return new FuzzyOppositePlacer<RandomRot, RandomFacer, Spacer>({}, {}, {Scenario::gl_});
-	}
-
-	virtual void restoreTeams(vector<Population>& teams) {
-		teams[1].clear();
-		//clone teamB from teamA
-		for(Ship& t : teams[0]) {
-			Ship c = t.clone();
-			c.teamID_ = 1;
-			teams[1].push_back(c);
-		}
 	}
 };
 
 class AimOnOneNoMove : public AimOnOne {
 public:
 	AimOnOneNoMove() : AimOnOne() {
-		bfl_.iterations_ = 300;
+		bfl_.iterations_ = 150;
 		gl_.distance_ = 6000;
 		gl_.spacing_ = 400;
 	}
@@ -470,7 +371,7 @@ public:
 	CrossHuge() : SymmetricLines() {
 		bfl_.width_ = 300000;
 		bfl_.height_ = 300000;
-		bfl_.iterations_ = 7000;
+		bfl_.iterations_ = 3500;
 		gl_.center_ = {150000,150000};
 		gl_.distance_ = 100000;
 		gl_.spacing_ = 1000;
@@ -517,7 +418,7 @@ void multiplyTeams(vector<Population>& teams, size_t n) {
 	teams[1] = newB;
 }
 
-Scenario* getScenario(const string& name) {
+Scenario* get_declarative_scenario(const string& name) {
 	auto it = registeredScenarios.find(name);
 	if (it == registeredScenarios.end())
 		return NULL;
@@ -525,7 +426,7 @@ Scenario* getScenario(const string& name) {
 		return (*it).second;
 }
 
-void loadScenarios() {
+void load_delarative_scenarios() {
 	registerScenario("AimOnOneNoMove", new AimOnOneNoMove());
 	registerScenario("AimOnOne", new AimOnOne());
 	registerScenario("SymmetricLinesNoMoveTwoRows",

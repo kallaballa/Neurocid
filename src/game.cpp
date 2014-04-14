@@ -177,11 +177,9 @@ vector<Population> Game::play(bool render) {
 	std::cerr << "game/s: " << 1000000.0f/dur << std::endl;
 
 	if(!GameState::getInstance()->isRunning()) {
-		scenario_->restoreTeams(teams_);
 		return teams_;
 	}
 	else {
-		scenario_->restoreTeams(newTeams_);
 		return newTeams_;
 	}
 }

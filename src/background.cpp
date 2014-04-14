@@ -46,20 +46,6 @@ void Background::init() {
 		s.alpha = fRand(200,255);
 		s.step = 0.997;
 		s.discontinuity = round(s.radius / 8);
-		s.scale = 0.7;
-		buffers_.push_back(s);
-	}
-	for(size_t i = 0; i < 200; i++) {
-		Star s;
-		s.x = fRand(-600000,600000);
-		s.y = fRand(-600000,600000);
-		s.radius = fRand(1000,4000);
-		s.r = 255 - iRand(0,10);
-		s.g = 255 - iRand(0,10);
-		s.b = 255 - iRand(0,10);
-		s.alpha = fRand(200,255);
-		s.step = 0.997;
-		s.discontinuity = round(s.radius / 8);
 		s.scale = 0.4;
 		buffers_.push_back(s);
 	}
