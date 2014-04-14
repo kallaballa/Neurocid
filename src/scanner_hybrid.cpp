@@ -22,7 +22,7 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 	Coord numFriends = ClusterScanner::layout_.numFriends_;
 	Coord numEnemies = ClusterScanner::layout_.numEnemies_;
 	Coord numProjectiles = ClusterScanner::layout_.numProjectiles_;
-	size_t rangeOfSight = 3000;
+	size_t rangeOfSight = 10000;
 
 	for(size_t i = 0; i < friends.size(); ++i) {
 		Ship& t = friends[i];
