@@ -48,6 +48,7 @@ class Population: public vector<Ship> {
 public:
 	struct Statistics {
 		Statistics() {
+			generationCnt_ = 0;
 			reset();
 		}
 

@@ -38,7 +38,6 @@ public:
 
 	virtual void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
-
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.isDummy_ = false;
 		attackerTL.max_ammo_ = 5;
@@ -292,6 +291,7 @@ public:
 		defenderTL.disableProjectileFitness_ = true;
 		defenderTL.max_ammo_ = 40;
 		teams[1].update(defenderTL);
+		multiplyTeams(teams,5);
 	}
 
 	virtual void configurePools(vector<GeneticPool>& pools) {
@@ -391,6 +391,7 @@ public:
 		defenderTL.max_ammo_ = 40;
 		defenderTL.max_cooldown = 5;
 		teams[1].update(defenderTL);
+		multiplyTeams(teams,5);
 	}
 
 	virtual void configurePools(vector<GeneticPool>& pools) {
