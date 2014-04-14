@@ -160,7 +160,7 @@ void Canvas::drawExplosion(Explosion& expl, Color c) {
 	    	r = round(i * i * scale_);
 
 	    c = c + Color(0,10,0);
-	    c.a = std::min(size_t(128 + (255 / (i + 1))), size_t(255));
+	    c.a = std::min(size_t(200 + (255 / (i + 1))), size_t(255));
 	    if(lastR != r)
 	    	circleRGBA(screen_, scaleX(expl.loc_.x_), scaleY(expl.loc_.y_), r, c.r, c.g, c.b, c.a);
 		lastR = r;
