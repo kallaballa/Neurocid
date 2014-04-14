@@ -165,6 +165,18 @@ inline void read_team(size_t teamID, Population& team, istream& is) {
 inline void write_team(Population& team, ostream& os) {
 #ifndef _NO_SERIALIZE
   boost::archive::text_oarchive oa(os);
+  if(team.size() > team.layout_.size_)
+	  team.resize(team.layout_.size_);
+  else if(team.size() < team.layout_.size_) {
+	  while(team.size() < team.layout_.size_) {
+		  for(Ship& s : team) {
+			  team.push_back(s.clone());
+			  if(team.size() == team.layout_.size_)
+				  break;
+		  }
+	  }
+  }
+
   oa << team;
 #else
   assert(false);
