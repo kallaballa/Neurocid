@@ -23,6 +23,7 @@ using std::endl;
 using std::vector;
 
 int main(int argc, char** argv) {
+	//command line parsing
 	string loadAFile;
 	string saveAFile;
 	string loadBFile;
@@ -72,44 +73,56 @@ int main(int argc, char** argv) {
     }
 
 	srand(time(0));
-	nc::load_delarative_scenarios();
 #else
     scenarioName = "SymmetricLinesFar";
 #endif
+    //initialize the core subsystems - this is mandatory
     neurocid::init(width,height,frameRate);
-    nc::Scenario* scenario = nc::get_declarative_scenario(scenarioName);
+    //initialize the canvas (graphical frontend) - this is optional
+    neurocid::init_canvas();
+    //initialize the gui - this is optional
+    neurocid::init_gui();
+
+	nc::load_delarative_scenarios();
+	// get a declarative scenario by name
+	nc::Scenario* scenario = nc::get_declarative_scenario(scenarioName);
 
     if(scenario == NULL) {
     	std::cerr << "Unknown scenario: " + scenarioName << std::endl;
     	exit(1);
     }
-    nc::PopulationLayout pl = nc::make_default_population_layout();
-	nc::GeneticLayout gp = nc::make_default_genetic_layout();
-	vector<nc::Population> teams(2);
-	vector<nc::GeneticPool> pools(2);
-	pools[0] = nc::GeneticPool(gp);
-	pools[1] = nc::GeneticPool(gp);
 
+    //get default layouts
+    nc::PopulationLayout pl = nc::make_default_population_layout();
+	nc::GeneticLayout gl = nc::make_default_genetic_layout();
+	vector<nc::GeneticPool> pools = nc::make_pools(2,gl);
+
+	vector<nc::Population> teams(2);
+
+	//either load or create a team
     if(!loadAFile.empty()) {
     	ifstream is(loadAFile);
     	nc::read_team(0,teams[0],is);
     } else {
-    	teams[0] = nc::makePopulation(0, 20, pl);
+    	teams[0] = nc::make_population(0, pl);
     }
 
     if(!loadBFile.empty()) {
     	ifstream is(loadBFile);
         nc::read_team(1,teams[1],is);
     } else {
-        teams[1] = nc::makePopulation(1, 20, pl);
+        teams[1] = nc::make_population(1, pl);
     }
+
 #ifndef _NO_THREADS
     std::thread gameThread([&]() {
 #endif
     	teams[0].score_ = 0;
     	teams[1].score_ = 0;
+    	//play the game!
     	neurocid::play_game(gameIterations, scenario, teams, pools, captureFile);
 
+    	//save the result if requested
     	if(!saveAFile.empty()) {
         	ofstream os(saveAFile);
         	write_team(teams[0],os);
@@ -125,6 +138,7 @@ int main(int argc, char** argv) {
 #endif
 
 #ifndef _NO_THREADS
+    //event loop
     std::thread eventThread([&]() {
 	    nc::EventLoop el;
 
@@ -133,6 +147,7 @@ int main(int argc, char** argv) {
         }
     });
 
+    //rendering loop. needs to be in the main thread!
     while(neurocid::is_running()) {
     	neurocid::render();
     }
