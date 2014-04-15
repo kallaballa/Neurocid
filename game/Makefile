@@ -4,7 +4,7 @@ ifdef JAVASCRIPT
 TARGET := neurocid-bin.js
 endif
 
-SRCS    := neurocid.cpp eventloop.cpp declarative_scenarios.cpp
+SRCS    := neurocid.cpp eventloop.cpp generative_scenarios.cpp
 #precompiled headers
 HEADERS := 
 GCH    := ${HEADERS:.h=.gch}

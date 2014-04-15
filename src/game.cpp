@@ -22,8 +22,6 @@ Game::Game(Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& p
 		teams_(teams),
 		newTeams_(teams.size()),
 		pools_(pools) {
-	scenario->configureTeams(teams);
-	scenario->configurePools(pools);
 }
 
 Game::~Game() {

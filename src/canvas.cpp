@@ -41,7 +41,7 @@ Canvas::Canvas(Coord width, Coord height) :
 			exit(1);
 		}
 		atexit(SDL_Quit);
-		SDL_WM_SetCaption("NN SpaceShip Simulation", NULL);
+		SDL_WM_SetCaption("Neurocid", NULL);
 		screen_ = SDL_SetVideoMode(width, height, 16, SDL_SWSURFACE);
 		if (screen_ == NULL) {
 			cerr << "Can't set video mode: " << SDL_GetError() << endl;
@@ -264,6 +264,13 @@ Rect Canvas::findBounds(BattleField& field) {
 			max.x_ = std::max(t.loc_.x_, max.x_);
 			max.y_ = std::max(t.loc_.y_, max.y_);
 		}
+	}
+
+	for(Explosion& e : explosions_) {
+			min.x_ = std::min(e.loc_.x_, min.x_);
+			min.y_ = std::min(e.loc_.y_, min.y_);
+			max.x_ = std::max(e.loc_.x_, max.x_);
+			max.y_ = std::max(e.loc_.y_, max.y_);
 	}
 
 	return {min, max};

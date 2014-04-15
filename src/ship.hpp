@@ -32,6 +32,8 @@ struct ShipLayout {
 	Coord range_;
 	Coord max_speed_;
 	Coord max_rotation_;
+	Coord max_fuel_;
+	Coord fuel_rate_;
 
 	size_t max_cooldown;
 	size_t max_ammo_;
@@ -53,6 +55,8 @@ struct ShipLayout {
 	  ar & range_;
 	  ar & max_speed_;
 	  ar & max_rotation_;
+	  ar & max_fuel_;
+	  ar & fuel_rate_;
 
 	  ar & max_cooldown;
 	  ar & max_ammo_;
@@ -84,7 +88,6 @@ public:
 	Coord frthrust_ = 0;
 	Coord blthrust_ = 0;
 	Coord brthrust_ = 0;
-
 	size_t friendlyFire_ = 0;
 	size_t crash_ = 0;
 	size_t crashDamage_= 0;

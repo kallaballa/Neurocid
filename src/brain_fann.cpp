@@ -98,7 +98,7 @@ void BrainFann::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	assert(nn_ != NULL);
 	assert(inputs_ != NULL);
 	assert(!destroyed_);
-	assert(layout_.numInputs_ == (scan.objects_.size() * 2) + 3);
+	assert(layout_.numInputs_ == (scan.objects_.size() * 2) + 4);
 	assert(layout_.numInputs_ == fann_get_num_input(nn_));
 	assert(layout_.numOutputs == fann_get_num_output(nn_));
 }

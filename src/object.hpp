@@ -32,6 +32,8 @@ public:
 	Coord angVel_;
 	Coord rotation_;
 	Coord range_;
+	Coord fuel_;
+	Coord max_fuel_;
 	bool explode_;
 	bool dead_;
 
@@ -81,6 +83,7 @@ public:
 		ar & range_;
 		ar & explode_;
 		ar & dead_;
+		ar & fuel_;
 	}
 #endif
 };

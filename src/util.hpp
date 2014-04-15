@@ -18,9 +18,9 @@ struct BrainLayout;
 struct ShipLayout;
 struct PopulationLayout;
 
-Population makePopulation(size_t teamID, size_t size, PopulationLayout& pl);
-vector<Population> makeTeams(size_t numTeams, size_t teamSize, PopulationLayout& pl);
-vector<GeneticPool> makePools(size_t numTeams, GeneticLayout& gp);
+Population make_population(size_t teamID, PopulationLayout& pl);
+vector<Population> make_teams(size_t numTeams, size_t teamSize, PopulationLayout& pl);
+vector<GeneticPool> make_pools(size_t numTeams, GeneticLayout& gp);
 
 Coord fRand(Coord fMin, Coord fMax);
 int iRand(int x,int y);

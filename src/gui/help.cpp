@@ -14,7 +14,7 @@ HelpScreen::HelpScreen() : NeurocidWidget<gcn::Window>(), Form(), gcn::ActionLis
 	setFrameSize(fs);
 	Options& opts = *Options::getInstance();
 
-	setDimension({opts.WINDOW_WIDTH/2 - 262, opts.WINDOW_HEIGHT/2 - 230,545,460});
+	setDimension({int(opts.WINDOW_WIDTH/2 - 262), int(opts.WINDOW_HEIGHT/2 - 230),545,460});
 	closeButton_ = new Button("Close");
 	closeButton_->setDimension({235,400,70,30});
 	closeButton_->setEnabled(true);

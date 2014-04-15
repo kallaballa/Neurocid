@@ -87,6 +87,7 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 		angVel = -10;
 
 	applyInput((inputCnt * 2), angVel / 10);
+	applyInput((inputCnt * 2) + 1, scan.fuel_ / scan.max_fuel_);
 	++inputCnt;
 
 	for(size_t i = 0; i < layout_.numInputs_; ++i) {

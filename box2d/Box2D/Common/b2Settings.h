@@ -77,7 +77,7 @@ typedef double float64;
 #define b2_polygonRadius		(2.0f * b2_linearSlop)
 
 /// Maximum number of sub-steps per contact in continuous physics simulation.
-#define b2_maxSubSteps			8
+#define b2_maxSubSteps			4
 
 
 // Dynamics
@@ -99,7 +99,7 @@ typedef double float64;
 
 /// The maximum linear velocity of a body. This limit is very large and is used
 /// to prevent numerical problems. You shouldn't need to adjust this.
-#define b2_maxTranslation			8.0f
+#define b2_maxTranslation			10.0f
 #define b2_maxTranslationSquared	(b2_maxTranslation * b2_maxTranslation)
 
 /// The maximum angular velocity of a body. This limit is very large and is used
@@ -110,7 +110,7 @@ typedef double float64;
 /// This scale factor controls how fast overlap is resolved. Ideally this would be 1 so
 /// that overlap is removed in one time step. However using values close to 1 often lead
 /// to overshoot.
-#define b2_baumgarte				0.2f
+#define b2_baumgarte				0.75f
 #define b2_toiBaugarte				0.75f
 
 

@@ -30,10 +30,7 @@ public:
 	  return enabled_;
 	}
 
-	void setEnabled(bool e) {
-	  enabled_ = e;
-	}
-
+	void setEnabled(bool e);
 	void setFramerate(double frameRate) {
 		frameRate_ = frameRate;
 	}

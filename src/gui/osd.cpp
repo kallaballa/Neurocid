@@ -34,12 +34,12 @@ OsdScreenWidget::OsdScreenWidget(Sint16 width, Sint16 height) : Container(), gcn
     osdScoreB_->setBackgroundColor(db);
 
     osdDeadA_ = new OsdWidget();
-    osdDeadA_->setDimension(gcn::Rectangle(width - 260, 20, 100, 60));
+    osdDeadA_->setPosition(width - 260, 20);
     osdDeadA_->setVisible(true);
     osdDeadA_->setBackgroundColor(da);
 
     osdDeadB_ = new OsdWidget();
-    osdDeadB_->setDimension(gcn::Rectangle(width - 130, 20, 100, 60));
+    osdDeadB_->setPosition(width - 130, 20);
     osdDeadB_->setVisible(true);
     osdDeadB_->setBackgroundColor(db);
 

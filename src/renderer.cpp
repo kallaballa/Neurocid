@@ -35,6 +35,12 @@ void Renderer::update(BattleField* field) {
 	updateMutex.unlock();
 }
 
+void Renderer::setEnabled(bool e) {
+	if(!enabled_ && e)
+		Canvas::getInstance()->reset();
+	enabled_ = e;
+}
+
 void Renderer::render() {
 	size_t sleep = (size_t) round(1000 / frameRate_);
 	TimeTracker& tt = *TimeTracker::getInstance();
@@ -58,6 +64,7 @@ void Renderer::render() {
 							notifiedDisable = false;
 						} else if (!notifiedDisable) {
 							canvas.clear();
+							canvas.reset();
 							Gui& gui = *Gui::getInstance();
 							OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
 							osd.update(*field_);

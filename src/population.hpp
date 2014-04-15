@@ -34,6 +34,7 @@ struct PopulationLayout {
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
+      ar & size_;
 	  ar & tl_;
 	  ar & bl_;
 	}

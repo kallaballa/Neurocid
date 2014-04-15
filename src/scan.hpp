@@ -64,12 +64,16 @@ public:
 	Vector2D loc_;
 	Vector2D vel_;
 	Coord angVel_;
+	Coord fuel_;
+	Coord max_fuel_;
 
 	Scan(Object& o) :
 		dir_(o.getDirection()),
 		loc_(o.loc_),
 		vel_(o.vel_),
-		angVel_(o.angVel_){
+		angVel_(o.angVel_),
+		fuel_(o.fuel_),
+		max_fuel_(o.max_fuel_) {
 	}
 
 	ScanObjectVector objects_;

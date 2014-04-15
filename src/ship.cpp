@@ -269,6 +269,8 @@ void Ship::resetGameState() {
 	frthrust_ = 0;
 	blthrust_ = 0;
 	brthrust_ = 0;
+	fuel_ = layout_.max_fuel_;
+	max_fuel_ = layout_.max_fuel_;
 	dead_ = false;
 	explode_ = false;
 	cool_down = 0;
