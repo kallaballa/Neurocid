@@ -270,7 +270,7 @@ void Physics::step() {
 
 				if(t->fuel_ > 0) {
 					Coord fLeft = t->fuel_;
-					Coord fRate = t->layout_.fuel_rate_;
+					Coord fRate = t->layout_.fuelRate_;
 					Coord fRequired = std::abs(t->flthrust_ * fRate) +
 							std::abs(t->frthrust_ * fRate) +
 							std::abs(t->blthrust_ * fRate) +
@@ -287,10 +287,10 @@ void Physics::step() {
 
 					t->fuel_ -= fRequired;
 
-					Vector2D flforce = across2 * (t->flthrust_ * t->layout_.max_speed_ * 8);
-					Vector2D frforce = across1 * -(t->frthrust_ * t->layout_.max_speed_ * 8);
-					Vector2D blforce = across1 * -(t->blthrust_ * t->layout_.max_speed_ * 8);
-					Vector2D brforce = across2 * (t->brthrust_ * t->layout_.max_speed_ * 8);
+					Vector2D flforce = across2 * (t->flthrust_ * t->layout_.maxSpeed_ * 8);
+					Vector2D frforce = across1 * -(t->frthrust_ * t->layout_.maxSpeed_ * 8);
+					Vector2D blforce = across1 * -(t->blthrust_ * t->layout_.maxSpeed_ * 8);
+					Vector2D brforce = across2 * (t->brthrust_ * t->layout_.maxSpeed_ * 8);
 
 					b2Vec2 wc = body->GetWorldCenter();
 					Vector2D flengine(wc.x, wc.y);
@@ -331,7 +331,7 @@ void Physics::step() {
 
 				b2Vec2 vel = body->GetLinearVelocity();
 				float speed = vel.Normalize();
-				float maxSpeed = 150.0 * t->layout_.max_speed_;
+				float maxSpeed = 100.0 * t->layout_.maxSpeed_;
 				if ( speed > maxSpeed ) {
 				    body->SetLinearVelocity( maxSpeed * vel);
 				}

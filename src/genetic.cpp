@@ -23,12 +23,15 @@ GeneticPool::GeneticPool() :
 void GeneticPool::mutate(Brain& brain) {
 	//traverse the chromosome and mutate each weight dependent
 	//on the mutation rate
-	fann_type* weights = brain.weights();
-	for (size_t i = 0; i < brain.size(); ++i) {
-		//do we perturb this weight?
-		if (fRand(0, 1) < params_.mutationRate) {
-			//add or subtract a small value to the weight
-			weights[i] += ((fRand(0, 1) - fRand(0, 1)) * params_.maxPertubation);
+
+	for(size_t b = 0; b < brain.layout_.numBrains_ + 1; ++b) {
+		fann_type* weights = brain.weights(b);
+		for (size_t i = 0; i < brain.size(b); ++i) {
+			//do we perturb this weight?
+			if (fRand(0, 1) < params_.mutationRate) {
+				//add or subtract a small value to the weight
+				weights[i] += ((fRand(0, 1) - fRand(0, 1)) * params_.maxPertubation);
+			}
 		}
 	}
 }
@@ -63,48 +66,50 @@ std::pair<Ship, Ship> GeneticPool::crossover(Ship &mum, Ship &dad, size_t iterat
 	Ship baby1 = mum.makeChild();
 	Ship baby2 = mum.makeChild();
 
-	fann_type* wMum = mum.brain_->weights();
-	fann_type* wDad = dad.brain_->weights();
-	fann_type* wBaby1 = baby1.brain_->weights();
-	fann_type* wBaby2 = baby2.brain_->weights();
+	for(size_t b = 0; b < mum.brain_->layout_.numBrains_ + 1; ++b) {
+		fann_type* wMum = mum.brain_->weights(b);
+		fann_type* wDad = dad.brain_->weights(b);
+		fann_type* wBaby1 = baby1.brain_->weights(b);
+		fann_type* wBaby2 = baby2.brain_->weights(b);
 
-	//just return parents as offspring dependent on the rate or if parents are the same
-	if ((fRand(0,1) > params_.crossoverRate) || (mum == dad)) {
-		baby1.brain_->destroy();
-		baby2.brain_->destroy();
-		return {mum.clone(), dad.clone()};
-	}
-
-	size_t last_cp = 0;
-	size_t cp = 0;
-	bool cross = false;
-
-	for(size_t i = 0; i < iterations && cp < (mum.brain_->size() - 1); ++i) {
-		//determine a crossover point
-		cp = iRand(last_cp, mum.brain_->size() - 1);
-
-		//create the offspring
-		for (size_t j = last_cp; j < cp; ++j) {
-			if(cross) {
-				wBaby1[j] = wMum[j];
-				wBaby2[j] = wDad[j];
-			} else {
-				wBaby1[j] = wDad[j];
-				wBaby2[j] = wMum[j];
-			}
+		//just return parents as offspring dependent on the rate or if parents are the same
+		if ((fRand(0,1) > params_.crossoverRate) || (mum == dad)) {
+			baby1.brain_->destroy();
+			baby2.brain_->destroy();
+			return {mum.clone(), dad.clone()};
 		}
 
-		last_cp = cp;
-		cross = !cross;
-	}
+		size_t last_cp = 0;
+		size_t cp = 0;
+		bool cross = false;
 
-	for (size_t i = last_cp; i < mum.brain_->size(); ++i) {
-		if(cross) {
-			wBaby1[i] = wMum[i];
-			wBaby2[i] = wDad[i];
-		} else {
-			wBaby1[i] = wDad[i];
-			wBaby2[i] = wMum[i];
+		for(size_t i = 0; i < iterations && cp < (mum.brain_->size(b) - 1); ++i) {
+			//determine a crossover point
+			cp = iRand(last_cp, mum.brain_->size(b) - 1);
+
+			//create the offspring
+			for (size_t j = last_cp; j < cp; ++j) {
+				if(cross) {
+					wBaby1[j] = wMum[j];
+					wBaby2[j] = wDad[j];
+				} else {
+					wBaby1[j] = wDad[j];
+					wBaby2[j] = wMum[j];
+				}
+			}
+
+			last_cp = cp;
+			cross = !cross;
+		}
+
+		for (size_t i = last_cp; i < mum.brain_->size(b); ++i) {
+			if(cross) {
+				wBaby1[i] = wMum[i];
+				wBaby2[i] = wDad[i];
+			} else {
+				wBaby1[i] = wDad[i];
+				wBaby2[i] = wMum[i];
+			}
 		}
 	}
 
@@ -219,13 +224,13 @@ Population GeneticPool::epoch(Population& old_pop) {
 	//Now to add a little elitism we shall add in some copies of the
 	//fittest genomes. Make sure we add an EVEN number or the roulette
 	//wheel sampling will crash
-	if(params_.numElite_ <= old_pop.size()){
+	if(params_.numElite_ < old_pop.size()){
 		if (!(params_.numEliteCopies_ * (params_.numElite_ % 2))) {
 			copyNBest(params_.numElite_, params_.numEliteCopies_, old_pop, new_pop);
 		}
 	}
 
-	assert(old_pop.layout_.tl_.num_perf_desc == 4);
+	assert(old_pop.layout_.tl_.numPerfDesc == 4);
 	PerfDescBsp<4,Ship> pdb;
 	if(params_.usePerfDesc_) {
 		for(Ship& t : old_pop) {
@@ -253,7 +258,8 @@ Population GeneticPool::epoch(Population& old_pop) {
 
 		//now copy into vecNewPop population
 		new_pop.push_back(babies.first);
-		new_pop.push_back(babies.second);
+		if(new_pop.size() < old_pop.size())
+			new_pop.push_back(babies.second);
 	}
 	assert(new_pop.size() == old_pop.size());
 	old_pop.stats_.generationCnt_++;

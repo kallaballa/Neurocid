@@ -48,7 +48,7 @@ public:
 	Scan scan_;
 
 	Projectile(Ship& owner, ProjectileLayout& layout, Vector2D& loc, Coord& rotation) :
-		Object(PROJECTILE, loc, rotation, layout.range_, false, false),
+		Object(PROJECTILE, loc, rotation, layout.range_, 0, 0, false, false),
 		owner_(&owner),
 		layout_(layout),
 		startLoc_(loc),

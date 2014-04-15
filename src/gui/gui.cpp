@@ -16,20 +16,20 @@ Gui::Gui(SDL_Surface* surface) : gcn::Gui() {
 	 //Initialize SDL_ttf
 	if( TTF_Init() == -1 ) {
 		std::cerr << "Can't initialize TTF" << std::endl;
-		SDL_Quit();
+		exit(1);
 	}
 	try {
 	std::string neurocidPath = get_env("NEUROCID_PATH");
 
 	if(neurocidPath.empty()) {
 		std::cerr << "Environment variable $NEUROCID_PATH not set" << std::endl;
-		SDL_Quit();
+		exit(1);
 	}
 
 	font_ = new gcn::contrib::SDLTrueTypeFont(neurocidPath + "/DejaVuSansMono-Bold.ttf",18);
 	} catch(gcn::Exception& ex) {
 		std::cerr << ex.getMessage() << std::endl;
-		SDL_Quit();
+		exit(1);
 	}
 	gcn::Widget::setGlobalFont(font_);
 	setGraphics(graphics_);
@@ -37,7 +37,7 @@ Gui::Gui(SDL_Surface* surface) : gcn::Gui() {
 
 	if(SDL_EnableKeyRepeat( 100, SDL_DEFAULT_REPEAT_INTERVAL )) {
 		fprintf( stderr, "Setting keyboard repeat failed: %s\n", SDL_GetError( ) );
-		SDL_Quit();
+		exit(1);
 	}
 }
 

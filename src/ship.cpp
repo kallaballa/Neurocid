@@ -12,7 +12,7 @@
 namespace neurocid {
 
 Ship::Ship(size_t teamID, ShipLayout tl, Brain* brain) :
-		Object(SHIP, {0,0}, 0, tl.range_, false, false),
+		Object(SHIP, {0,0}, 0, tl.range_, tl.maxFuel_, tl.maxFuel_, false, false),
 		teamID_(teamID),
 		layout_(tl),
 		brain_(brain),
@@ -108,14 +108,14 @@ void Ship::calculateFitness() {
 		}
 	}
 
-	assert(layout_.num_perf_desc == 4);
+	assert(layout_.numPerfDesc == 4);
 	if(projectiles_.empty()) {
 		fitness_ = 0;
-		perfDesc_.reserve(layout_.num_perf_desc);
+		perfDesc_.reserve(layout_.numPerfDesc);
 		std::fill(perfDesc_.begin(), perfDesc_.end(), 0);
 	} else {
 		// calulate projectile/aim fitness
-		assert(projectiles_.size() <= layout_.max_ammo_);
+		assert(projectiles_.size() <= layout_.maxAmmo_);
 		assert(ratedProjectiles > 0 || layout_.disableProjectileFitness_);
 		Coord aimRatio = 0;
 		if(!layout_.disableProjectileFitness_) {
@@ -134,7 +134,7 @@ void Ship::calculateFitness() {
 		Coord shots = projectiles_.size();
 		Coord hitRatio = (Coord(hits_) / shots);
 		Coord friendlyRatioInv = (1.0 / ((Coord(friendlyFire_) / shots) + 1));
-		Coord damageRatioInv = (1.0 / ((Coord(damage_) / layout_.max_damage_) + 1));
+		Coord damageRatioInv = (1.0 / ((Coord(damage_) / layout_.maxDamage_) + 1));
 		assert(hitRatio >= 0);
 		assert(hitRatio <= 1);
 		assert(damageRatioInv >= 0.5);
@@ -142,7 +142,7 @@ void Ship::calculateFitness() {
 		assert(friendlyRatioInv >= 0);
 		assert(friendlyRatioInv <= 1);
 
-		perfDesc_.reserve(layout_.num_perf_desc);
+		perfDesc_.reserve(layout_.numPerfDesc);
 		perfDesc_[0] = aimRatio;
 		perfDesc_[1] = hitRatio;
 		perfDesc_[2] = friendlyRatioInv;
@@ -192,20 +192,20 @@ void Ship::move(BattleFieldLayout& bfl) {
 
 void Ship::damage() {
 	damage_++;
-	if (damage_ >= layout_.max_damage_) {
+	if (damage_ >= layout_.maxDamage_) {
 		death();
 	}
 }
 
 void Ship::death() {
-	damage_ = layout_.max_damage_;
+	damage_ = layout_.maxDamage_;
 	dead_ = true;
 	explode_ = true;
 }
 
 // demote and execute this unit
 void Ship::kill() {
-	friendlyFire_ = layout_.max_ammo_;
+	friendlyFire_ = layout_.maxAmmo_;
 	hits_ = 0;
 	death();
 }
@@ -214,7 +214,7 @@ void Ship::crash() {
 	crash_++;
 	crashDamage_++;
 
-	if(crashDamage_ >= layout_.crashes_per_damage_) {
+	if(crashDamage_ >= layout_.crashesPerDamage_) {
 		crashDamage_ = 0;
 		damage();
 	}
@@ -253,14 +253,16 @@ Ship Ship::clone() const {
 	child.setBrain(fresh);
 
 	//copy brain
-	for(size_t i = 0; i < brain_->size(); ++i) {
-		child.brain_->weights()[i] = brain_->weights()[i];
+	for(size_t b = 0; b < brain_->layout_.numBrains_ + 1; ++b) {
+		for(size_t i = 0; i < brain_->size(b); ++i) {
+			child.brain_->weights(b)[i] = brain_->weights(b)[i];
+		}
 	}
 	return child;
 }
 
 void Ship::resetGameState() {
-	ammonition_ = layout_.max_ammo_;
+	ammonition_ = layout_.maxAmmo_;
 	for(Projectile* p : projectiles_) {
 		delete p;
 	}
@@ -269,8 +271,8 @@ void Ship::resetGameState() {
 	frthrust_ = 0;
 	blthrust_ = 0;
 	brthrust_ = 0;
-	fuel_ = layout_.max_fuel_;
-	max_fuel_ = layout_.max_fuel_;
+	fuel_ = layout_.maxFuel_;;
+	max_fuel_ = layout_.maxFuel_;;
 	dead_ = false;
 	explode_ = false;
 	cool_down = 0;
@@ -311,7 +313,7 @@ Projectile* Ship::shoot() {
 	assert(cool_down == 0);
 	assert(ammonition_ > 0);
 	--ammonition_;
-	cool_down = layout_.max_cooldown;
+	cool_down = layout_.maxCooldown_;
 	Vector2D loc = loc_;
 	loc += (getDirection() * range_);
 	Projectile* p = new Projectile(*this,layout_.pl_, loc, rotation_);

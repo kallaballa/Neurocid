@@ -30,16 +30,16 @@ struct ShipLayout {
 	bool disableProjectileFitness_;
 
 	Coord range_;
-	Coord max_speed_;
-	Coord max_rotation_;
-	Coord max_fuel_;
-	Coord fuel_rate_;
+	Coord maxSpeed_;
+	Coord maxRotation_;
+	Coord maxFuel_;
+	Coord fuelRate_;
 
-	size_t max_cooldown;
-	size_t max_ammo_;
-	size_t max_damage_;
-	size_t crashes_per_damage_;
-	size_t num_perf_desc;
+	size_t maxCooldown_;
+	size_t maxAmmo_;
+	size_t maxDamage_;
+	size_t crashesPerDamage_;
+	size_t numPerfDesc;
 
 #ifndef _NO_SERIALIZE
 	template<class Archive>
@@ -53,16 +53,16 @@ struct ShipLayout {
 	  ar & disableProjectileFitness_;
 
 	  ar & range_;
-	  ar & max_speed_;
-	  ar & max_rotation_;
-	  ar & max_fuel_;
-	  ar & fuel_rate_;
+	  ar & maxSpeed_;
+	  ar & maxRotation_;
+	  ar & maxFuel_;
+	  ar & fuelRate_;
 
-	  ar & max_cooldown;
-	  ar & max_ammo_;
-	  ar & max_damage_;
-	  ar & crashes_per_damage_;
-	  ar & num_perf_desc;
+	  ar & maxCooldown_;
+	  ar & maxAmmo_;
+	  ar & maxDamage_;
+	  ar & crashesPerDamage_;
+	  ar & numPerfDesc;
 	}
 #endif
 };
@@ -107,7 +107,7 @@ public:
 	  ar & brain_;
 	}
 #endif
-	Ship() : Object(SHIP, {0,0}, 0, 0, false, false),
+	Ship() : Object(SHIP, {0,0}, 0, 0, 0, 0,false, true),
 			teamID_(0),
 			layout_(),
 			brain_(NULL),

@@ -20,6 +20,17 @@ struct GeneticLayout {
 	bool usePerfDesc_;
 };
 
+inline GeneticLayout make_default_genetic_layout() {
+	return {
+			0.1, // mutationRate
+			0.7, // crossoverRate
+			1,   // crossoverIterations
+			0.3, // maxPertubation
+			4,   // numElite
+			1,   // numEliteCopies
+			false// usePerfDesc_
+	};
+}
 
 //-----------------------------------------------------------------------
 //

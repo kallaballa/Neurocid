@@ -1,10 +1,4 @@
-/*
- * CustomScenarios.cpp
- *
- *  Created on: Apr 7, 2014
- *      Author: elchaschab
- */
-#include "declarative_scenarios.hpp"
+#include "generative_scenarios.hpp"
 #include <map>
 
 namespace neurocid {
@@ -30,7 +24,7 @@ public:
 		phl_.velocityIterations_ = 6;
 		phl_.coordToMetersFactor_ = 0.05f;
 
-		scl_.disableClusterCenters = false;
+		scl_.disableClusterCenters_ = false;
 		scl_.numClusters_ = 3;
 		scl_.numFriends_ = 20;
 		scl_.numEnemies_ = 20;
@@ -40,14 +34,14 @@ public:
 		assert(teams.size() == 2);
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.isDummy_ = false;
-		attackerTL.max_ammo_ = 5;
-		attackerTL.max_cooldown = 20;
+		attackerTL.maxAmmo_ = 5;
+		attackerTL.maxCooldown_ = 20;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = false;
-		defenderTL.max_ammo_ = 5;
-		defenderTL.max_cooldown = 20;
+		defenderTL.maxAmmo_ = 5;
+		defenderTL.maxCooldown_ = 20;
 		teams[1].update(defenderTL);
 	}
 
@@ -71,7 +65,7 @@ public:
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
-		defenderTL.max_damage_ = 100;
+		defenderTL.maxDamage_ = 100;
 		teams[1].update(defenderTL);
 	}
 };
@@ -92,7 +86,7 @@ public:
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
-		defenderTL.max_damage_ = 100;
+		defenderTL.maxDamage_ = 100;
 		teams[1].update(defenderTL);
 
 	}
@@ -123,7 +117,7 @@ public:
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
-		defenderTL.max_damage_ = 100;
+		defenderTL.maxDamage_ = 100;
 		teams[1].update(defenderTL);
 	}
 
@@ -169,12 +163,12 @@ public:
 
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = false;
-		attackerTL.max_cooldown = 5;
+		attackerTL.maxCooldown_ = 5;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
-		defenderTL.max_damage_ = 100;
+		defenderTL.maxDamage_ = 100;
 		teams[1].update(defenderTL);
 	}
 };
@@ -197,7 +191,7 @@ public:
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
-		defenderTL.max_damage_ = 100;
+		defenderTL.maxDamage_ = 100;
 		teams[1].update(defenderTL);
 	}
 };
@@ -245,7 +239,7 @@ public:
 		SymmetricLinesFar::configureTeams(teams);
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
-		defenderTL.max_damage_ = 100;
+		defenderTL.maxDamage_ = 100;
 		teams[1].update(defenderTL);
 	}
 };
@@ -284,12 +278,12 @@ public:
 
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.disableProjectileFitness_ = true;
-		attackerTL.max_ammo_ = 40;
+		attackerTL.maxAmmo_ = 40;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.disableProjectileFitness_ = true;
-		defenderTL.max_ammo_ = 40;
+		defenderTL.maxAmmo_ = 40;
 		teams[1].update(defenderTL);
 		multiplyTeams(teams,5);
 	}
@@ -322,8 +316,8 @@ public:
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.isDummy_ = false;
 		attackerTL.canMove_ = true;
-		attackerTL.max_ammo_ = 5;
-		attackerTL.max_cooldown = 5;
+		attackerTL.maxAmmo_ = 5;
+		attackerTL.maxCooldown_ = 5;
 
 		teams[0].update(attackerTL);
 
@@ -334,7 +328,7 @@ public:
 
 		ShipLayout dummyTL = teams[1][0].layout_;
 		dummyTL.isDummy_ = true;
-		dummyTL.max_damage_ = 100;
+		dummyTL.maxDamage_ = 100;
 		teams[1].update(dummyTL);
 	}
 
@@ -360,7 +354,7 @@ public:
 		AimOnOne::configureTeams(teams);
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = false;
-		attackerTL.max_cooldown = 10;
+		attackerTL.maxCooldown_ = 10;
 
 		teams[0].update(attackerTL);
 	}
@@ -382,14 +376,14 @@ public:
 
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.disableProjectileFitness_ = true;
-		attackerTL.max_ammo_ = 40;
-		attackerTL.max_cooldown = 5;
+		attackerTL.maxAmmo_ = 40;
+		attackerTL.maxCooldown_ = 5;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.disableProjectileFitness_ = true;
-		defenderTL.max_ammo_ = 40;
-		defenderTL.max_cooldown = 5;
+		defenderTL.maxAmmo_ = 40;
+		defenderTL.maxCooldown_ = 5;
 		teams[1].update(defenderTL);
 		multiplyTeams(teams,5);
 	}

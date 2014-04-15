@@ -34,7 +34,7 @@ public:
 		phl_.velocityIterations_ = 6;
 		phl_.coordToMetersFactor_ = 0.03f;
 
-		scl_.disableClusterCenters = true;
+		scl_.disableClusterCenters_ = true;
 		scl_.numClusters_ = 3;
 		scl_.numFriends_ = 20;
 		scl_.numEnemies_ = 20;

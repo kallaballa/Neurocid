@@ -27,6 +27,7 @@ struct BrainLayout  {
 	size_t numOutputs;
 	size_t numLayers_;
 	size_t neuronsPerHidden;
+	size_t numBrains_;
 
 #ifndef _NO_SERIALIZE
 	template<class Archive>
@@ -35,6 +36,7 @@ struct BrainLayout  {
 	  ar & numOutputs;
 	  ar & numLayers_;
 	  ar & neuronsPerHidden;
+	  ar & numBrains_;
 	}
 #endif
 };
@@ -60,13 +62,15 @@ public:
 	BasicBrain() {
 	}
 
-	void initialize(BrainLayout layout, Tweight* weight = NULL) {
+	void initialize(BrainLayout layout, Tweight** weight = NULL) {
 		layout_ = layout;
 		inputs_ = NULL;
 		makeNN();
 	    if(weight != NULL) {
-	    	for(size_t i = 0; i < size(); ++i) {
-	    		weights()[i] = weight[i];
+	    	for(size_t b = 0; b < layout_.numBrains_ + 1; ++b) {
+	    	for(size_t i = 0; i < size(b); ++i) {
+	    		weights(b)[i] = weight[b][i];
+	    	}
 	    	}
 	    }
 	    initialized_ = true;
@@ -87,8 +91,8 @@ public:
 	virtual void destroy() = 0;
 	virtual void randomize() = 0;
 	virtual void reset() = 0;
-	virtual size_t size() const = 0;
-	virtual Tweight* weights() = 0;
+	virtual size_t size(const size_t& bi) const = 0;
+	virtual Tweight* weights(const size_t& bi) = 0;
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
@@ -96,9 +100,8 @@ public:
 	  if(!initialized_)
 		  makeNN();
 
-	  size_t s = size();
-	  ar & s;
-	  ar & boost::serialization::make_array(weights(), s);
+		for(size_t b = 0; b < layout_.numBrains_ + 1; ++b)
+			ar & boost::serialization::make_array(weights(b), size(b));
 	}
 #endif
 };

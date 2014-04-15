@@ -41,6 +41,46 @@ struct PopulationLayout {
 #endif
 };
 
+inline PopulationLayout make_default_population_layout() {
+	return {
+		20, // size_
+		//Ship Layout
+		{
+		    //Projectile Layout
+			{
+				1,    // max_speed
+				10000, // max_travel
+				5     // range
+			},
+			false, // isDummy
+			true,// canShoot
+			true,// canRotate
+			true,// canMove
+			false,// disableProjectileFitness
+
+			50.0,// range_
+			1.0, // max_speed_
+			1.0, // max_rotation
+			10000, // max_fuel
+			1, // fuel_rate
+			5, // max_cooldown
+			5, // max_ammo_
+			6, // max_damage_
+
+			1, // crashes_per_damage_
+			4  // num_perf_desc_
+		},
+		//BrainLayout
+		{
+		    84, // inputs
+			5,  // outputs
+			8,  // layers
+			11, // neurons per hidden layer
+			4
+		}
+	};
+}
+
 class Population: public vector<Ship> {
 #ifndef _NO_SERIALIZE
 	  friend class boost::serialization::access;
@@ -149,6 +189,20 @@ public:
 #endif
 };
 
+inline void scale_population(Population& team, size_t size) {
+	  if(team.size() > size) {
+		  //FIXME MEMORY LEAKING BRAINS
+		  team.resize(size);
+	  } else if(team.size() < size) {
+		  while(team.size() < size) {
+			  for(Ship& s : team) {
+				  team.push_back(s.clone());
+				  if(team.size() == size)
+					  break;
+			  }
+		  }
+	  }
+}
 
 inline void read_team(size_t teamID, Population& team, istream& is) {
 #ifndef _NO_SERIALIZE
@@ -158,18 +212,7 @@ inline void read_team(size_t teamID, Population& team, istream& is) {
   for(Ship& s : team) {
 	  s.teamID_ = teamID;
   }
-
-  if(team.size() > team.layout_.size_)
-	  team.resize(team.layout_.size_);
-  else if(team.size() < team.layout_.size_) {
-	  while(team.size() < team.layout_.size_) {
-		  for(Ship& s : team) {
-			  team.push_back(s.clone());
-			  if(team.size() == team.layout_.size_)
-				  break;
-		  }
-	  }
-  }
+  scale_population(team, team.layout_.size_);
 #else
   assert(false);
 #endif
@@ -178,18 +221,7 @@ inline void read_team(size_t teamID, Population& team, istream& is) {
 inline void write_team(Population& team, ostream& os) {
 #ifndef _NO_SERIALIZE
   boost::archive::text_oarchive oa(os);
-  if(team.size() > team.layout_.size_)
-	  team.resize(team.layout_.size_);
-  else if(team.size() < team.layout_.size_) {
-	  while(team.size() < team.layout_.size_) {
-		  for(Ship& s : team) {
-			  team.push_back(s.clone());
-			  if(team.size() == team.layout_.size_)
-				  break;
-		  }
-	  }
-  }
-
+  scale_population(team, team.layout_.size_);
   oa << team;
 #else
   assert(false);

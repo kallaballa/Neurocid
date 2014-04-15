@@ -24,7 +24,7 @@ class Population;
 class Ship;
 
 struct ScannerLayout {
-	bool disableClusterCenters;
+	bool disableClusterCenters_;
 	size_t numClusters_;
 	size_t numFriends_;
 	size_t numEnemies_;

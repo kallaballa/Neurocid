@@ -129,6 +129,12 @@ void Game::cleanup() {
 			t.brain_->destroy();
 		}
 	}
+
+	for(Population& p : newTeams_) {
+		for(Ship& t : p) {
+			t.resetGameState();
+		}
+	}
 }
 
 void Game::print() {

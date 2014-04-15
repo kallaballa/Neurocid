@@ -126,7 +126,7 @@ void ClusterScanner::prepare(BattleField& field) {
 	Population& teamA = field.teams_[0];
 	Population& teamB = field.teams_[1];
 
-	if(!layout_.disableClusterCenters) {
+	if(!layout_.disableClusterCenters_) {
 		assert(layout_.numClusters_ > 0);
 		centersA_.clear();
 		centersB_.clear();

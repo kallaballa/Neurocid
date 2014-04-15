@@ -1,12 +1,5 @@
-/*
- * CustomScenarios.hpp
- *
- *  Created on: Apr 7, 2014
- *      Author: elchaschab
- */
-
-#ifndef CUSTOMSCENARIOS_HPP_
-#define CUSTOMSCENARIOS_HPP_
+#ifndef GENERATIVE_SCENARIOS_HPP_
+#define GENERATIVE_SCENARIOS_HPP_
 
 #include "scenario.hpp"
 #include "population.hpp"
@@ -24,4 +17,4 @@ Scenario* get_declarative_scenario(const string& name);
 void multiplyTeams(vector<Population>& teams, size_t n);
 } /* namespace neurocid */
 
-#endif /* CUSTOMSCENARIOS_HPP_ */
+#endif /* GENERATIVE_SCENARIOS_HPP_ */

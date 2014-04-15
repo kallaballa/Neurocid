@@ -37,8 +37,8 @@ public:
 	bool explode_;
 	bool dead_;
 
-	Object(ObjectType type, Vector2D loc, Coord rotation, Coord range, bool explode, bool dead) :
-			type_(type), loc_(loc), vel_(), angVel_(0), rotation_(rotation), range_(range), explode_(explode), dead_(dead) {
+	Object(ObjectType type, Vector2D loc, Coord rotation, Coord range, 	Coord fuel, Coord max_fuel, bool explode, bool dead) :
+			type_(type), loc_(loc), vel_(), angVel_(0), rotation_(rotation), range_(range), fuel_(fuel), max_fuel_(max_fuel), explode_(explode), dead_(dead) {
 		assert(rotation != 10);
 	}
 

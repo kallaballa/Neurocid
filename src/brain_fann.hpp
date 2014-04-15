@@ -19,7 +19,7 @@ class BrainFann : public BasicBrain<fann_type> {
 	static std::map<fann*, size_t> nnAllocs_;
 	static size_t nnAllocCnt_;
 #endif
-	fann *nn_;
+	fann **nn_;
 public:
 	typedef fann_type value_type;
 	BrainFann() : BasicBrain<fann_type>(), nn_(NULL) {
@@ -33,8 +33,8 @@ public:
 	virtual void destroy();
 	virtual void randomize();
 	virtual void reset();
-	virtual size_t size() const;
-	virtual fann_type* weights();
+	virtual size_t size(const size_t& bi) const override;
+	virtual fann_type* weights(const size_t& bi) override;
 
 	virtual bool operator==(BrainFann& other);
 	virtual bool operator!=(BrainFann& other);

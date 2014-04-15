@@ -67,6 +67,9 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 			t.scan_.objects_.resize(numFriends + numEnemies);
 		}
 
+		if(t.scan_.objects_.size() == numFriends)
+			t.scan_.makeScanObject(ENEMY, NO_VECTOR2D, NO_COORD);
+
 		while(t.scan_.objects_.size() < (numFriends + numEnemies)) {
 			size_t s = t.scan_.objects_.size();
 			for(size_t i = numFriends; i < s; ++i) {

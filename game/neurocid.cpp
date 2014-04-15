@@ -1,7 +1,8 @@
 #include "population.hpp"
 #include "neurocid.hpp"
 #include "eventloop.hpp"
-#include "declarative_scenarios.hpp"
+#include "generative_scenarios.hpp"
+#include "json_scenario.hpp"
 
 #ifndef _NO_THREAD
 #include <thread>
@@ -83,15 +84,23 @@ int main(int argc, char** argv) {
     //initialize the gui - this is optional
     neurocid::init_gui();
 
-	nc::load_delarative_scenarios();
-	// get a declarative scenario by name
-	nc::Scenario* scenario = nc::get_declarative_scenario(scenarioName);
+    string suffix = ".nsj";
+    nc::Scenario* scenario = NULL;
 
-    if(scenario == NULL) {
-    	std::cerr << "Unknown scenario: " + scenarioName << std::endl;
-    	exit(1);
+    if(scenarioName.length() > suffix.length() && std::equal(suffix.rbegin(), suffix.rend(), scenarioName.rbegin())) {
+    	scenario = new nc::json::JsonScenario(scenarioName);
+    } else {
+		nc::load_delarative_scenarios();
+		// get a declarative scenario by name
+		scenario = nc::get_declarative_scenario(scenarioName);
+
+		if(scenario == NULL) {
+			std::cerr << "Unknown scenario: " + scenarioName << std::endl;
+			exit(1);
+		}
     }
 
+    assert(scenario != NULL);
     //get default layouts
     nc::PopulationLayout pl = nc::make_default_population_layout();
 	nc::GeneticLayout gl = nc::make_default_genetic_layout();

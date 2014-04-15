@@ -91,57 +91,6 @@ namespace neurocid {
 	#endif
 		gs.stop();
 	}
-
-	static PopulationLayout make_default_population_layout() {
-		return {
-			20, // size_
-			//Ship Layout
-			{
-			    //Projectile Layout
-				{
-					1,    // max_speed
-					10000, // max_travel
-					5     // range
-				},
-				false, // isDummy
-				true,// canShoot
-				true,// canRotate
-				true,// canMove
-				false,// disableProjectileFitness
-
-				50.0,// range_
-				1.0, // max_speed_
-				1.0, // max_rotation
-				10000, // max_fuel
-				1, // fuel_rate
-				5, // max_cooldown
-				5, // max_ammo_
-				6, // max_damage_
-
-				1, // crashes_per_damage_
-				4  // num_perf_desc_
-			},
-			//BrainLayout
-			{
-			    84, // inputs
-				5,  // outputs
-				8,  // layers
-				11  // neurons per hidden layer
-			}
-		};
-	}
-
-	static GeneticLayout make_default_genetic_layout() {
-		return {
-				0.1, // mutationRate
-				0.7, // crossoverRate
-				1,   // crossoverIterations
-				0.3, // maxPertubation
-				4,   // numElite
-				1,   // numEliteCopies
-				false// usePerfDesc_
-		};
-	}
 }
 
 #endif /* NEUROCID_HPP_ */
