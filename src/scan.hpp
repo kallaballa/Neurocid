@@ -23,30 +23,52 @@ enum ScanObjectType {
 	FRIEND,
 	ENEMY,
 	PROJECTILE_,
+	FRIEND_FACILITY,
+	ENEMY_FACILITY,
 	INVALID
 };
 
+inline void scale(Vector2D& v, const Coord& distance, const Coord& maxDistance) {
+	Coord dist = distance;
+	if(dist > maxDistance)
+		dist = maxDistance;
+
+	Coord scale;
+	// higher distance -> shorter vector  - but doesn't go under 0.5
+	// http://www.wolframalpha.com/input/?i=plot+s+%3D+1+-+%280.5+*+%28d+%2F+10000%29+%29+from+d+%3D+0+to+10000
+	if(dist > maxDistance)
+		scale = 1 - (0.5 * (dist / maxDistance));
+	else
+		scale = 0.5;
+
+	v.x_ *= scale;
+	v.y_ *= scale;
+	assert(v.x_ >= -1 && v.x_ <= 1 && v.y_ >= -1 && v.y_ <= 1);
+}
+
 class Scan;
 class ScanObject {
-	void scale(Vector2D& v, const Coord& distance, const Coord& maxDistance) const;
 public:
 	ScanObjectType type_;
 	Vector2D loc_;
 	Coord dis_;
 
-	Vector2D vector_ = NO_VECTOR2D;
+	Vector2D dir_ = NO_VECTOR2D;
 	Coord	 angDist_ = NO_COORD;
+	Vector2D vel_ = NO_VECTOR2D;
 
-	ScanObject(ScanObjectType type, Vector2D loc, Coord dis) :
+	ScanObject(const ScanObjectType& type, const Vector2D& loc, const Coord& dis, const Vector2D& vel) :
 		type_(type),
 		loc_(loc),
-		dis_(dis){
+		dis_(dis),
+		vel_(vel){
 	}
 
 	ScanObject() :
 		type_(INVALID),
 		loc_(NO_VECTOR2D),
-		dis_(NO_COORD){
+		dis_(NO_COORD),
+		vel_(NO_VECTOR2D){
 	}
 
 	void calculate(Scan& scan);
@@ -73,18 +95,20 @@ public:
 		vel_(o.vel_),
 		angVel_(o.angVel_),
 		fuel_(o.fuel_),
-		max_fuel_(o.max_fuel_) {
+		max_fuel_(o.maxFuel_) {
 	}
 
 	ScanObjectVector objects_;
 
-	void makeScanObject(ScanObjectType type, Vector2D loc, Coord dis) {
-		objects_.push_back(ScanObject(type, loc, dis));
+	void makeScanObject(ScanObjectType type, Vector2D loc, Coord dis, Vector2D vel) {
+		objects_.push_back(ScanObject(type, loc, dis, vel));
 	}
 
 	void calculate() {
+		Coord dist = vel_.length();
 		vel_.normalize();
 		vel_.rotate(dir_);
+		scale(vel_, dist, 10000);
 
 		for(ScanObject& so : objects_) {
 			so.calculate(*this);

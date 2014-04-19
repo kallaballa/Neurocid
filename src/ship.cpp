@@ -12,14 +12,13 @@
 namespace neurocid {
 
 Ship::Ship(size_t teamID, ShipLayout tl, Brain* brain) :
-		Object(SHIP, {0,0}, 0, tl.range_, tl.maxFuel_, tl.maxFuel_, false, false),
+		Object(SHIP, {0,0}, 0, tl.radius_, tl.startFuel_, tl.maxFuel_, false, false, false),
 		teamID_(teamID),
 		layout_(tl),
 		brain_(brain),
 		scan_(*this) {
 	resetGameState();
 }
-
 
 void Ship::setBrain(Brain* b) {
 	assert(brain_ == NULL);
@@ -47,7 +46,6 @@ void Ship::calculateFitness() {
 					Coord angDistPerfect = 0;
 					Vector2D perfect = (so.loc_ - p->startLoc_).normalize();
 					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
-					bool inRange = p->startLoc_.distance(so.loc_) < p->layout_.max_travel_;
 					Vector2D vdiff = candidate;
 
 					ASSERT_DIR(perfect);
@@ -63,46 +61,58 @@ void Ship::calculateFitness() {
 					if(distance > maxDistance)
 						distance = maxDistance;
 
-					//(higher distance -> higher diff) * (times angular distance)
+					//(higher distance -> higher diff)
 					Coord distPerfect = (distance / maxDistance);
-					angDistPerfect = (distPerfect * (angDistPerfect + 1)) / 2;
 
-					assert(angDistPerfect >= 0);
-					assert(angDistPerfect <= 1);
-					if(inRange)
-						angDistPerfect /= 2;
+					// euler distance matters more then angular distance does
+					// http://www.wolframalpha.com/input/?i=plot+d+%3D+%28b+*+%28a+%2B+1%29%29+%2F+2+from+a+%3D+0+to+1+b+%3D+0+to+1
+					Coord diffPerfect = (distPerfect * (angDistPerfect + 1)) / 2;
 
-					totalDiff += angDistPerfect;
+					assert(diffPerfect >= 0);
+					assert(diffPerfect <= 1);
+
+					//boost in range shots
+					if(so.dis_ < p->layout_.max_travel_)
+						diffPerfect /= 2;
+
+					totalDiff += diffPerfect;
 					++ratedProjectiles;
 				} else if(so.type_ == ScanObjectType::FRIEND) {
-					/*Coord angDistWorst = 0;
+					// FIXME rating friendly fire potential inhibits close range combat
+					continue;
+					Coord angDistWorst = 0;
 					Vector2D worst = (so.loc_ - p->startLoc_).normalize();
 					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
+					Vector2D vdiff = candidate;
 
 					ASSERT_DIR(worst);
 					ASSERT_DIR(candidate);
 
-					candidate.rotate(worst);
-					angDistWorst = 1 - (fabs(radFromDir(candidate)) / M_PI);
-					// a perpendicular friend is a good friend
-					//angDistWorst = fabs(M_PI_2 - angDistWorst) / M_PI_2;
+					vdiff.rotate(worst);
+					angDistWorst = fabs(radFromDir(vdiff)) / M_PI;
 
 					assert(angDistWorst >= 0);
 					assert(angDistWorst <= 1);
-					Coord distance = so.dis_;
+					// for rating friends use the distance of the projectile end loc and the friend loc at closest point
+					Coord distance = (so.loc_ - p->loc_ ).length();
 					Coord maxDistance = p->layout_.max_travel_ * 4;
 					if(distance > maxDistance)
 						distance = maxDistance;
 
-					//(low distance -> higher diff) * (times angular distance)
-					Coord distPerfect = 1 / ((distance / maxDistance) + 1);
-					angDistWorst =  angDistWorst * distPerfect;
+					//(higher distance -> higher diff)
+					Coord distWorst = (distance / maxDistance);
 
-					assert(angDistWorst >= 0);
-					assert(angDistWorst <= 1);
+					// euclidian distance matters more then angular distance does
+					// http://tinyurl.com/osvjczo
+					Coord diffWorst = 1.0 - ((distWorst * (angDistWorst + 1)) / 2);
 
-					totalDiff += angDistWorst;
-					++ratedProjectiles;*/
+					assert(diffWorst >= 0);
+					assert(diffWorst <= 1);
+
+					//don't give an additional penalty for being in range because that's very likely in a swarm
+
+					totalDiff += diffWorst;
+					++ratedProjectiles;
 				}
 			}
 		}
@@ -115,7 +125,6 @@ void Ship::calculateFitness() {
 		std::fill(perfDesc_.begin(), perfDesc_.end(), 0);
 	} else {
 		// calulate projectile/aim fitness
-		assert(projectiles_.size() <= layout_.maxAmmo_);
 		assert(ratedProjectiles > 0 || layout_.disableProjectileFitness_);
 		Coord aimRatio = 0;
 		if(!layout_.disableProjectileFitness_) {
@@ -130,11 +139,19 @@ void Ship::calculateFitness() {
 		if((totalDiff) > ratedProjectiles)
 			totalDiff = ratedProjectiles;
 
-		// calulate actual hit/damage/friendly_fire score
+		// calculate actual hit/damage/friendly_fire score
 		Coord shots = projectiles_.size();
 		Coord hitRatio = (Coord(hits_) / shots);
-		Coord friendlyRatioInv = (1.0 / ((Coord(friendlyFire_) / shots) + 1));
-		Coord damageRatioInv = (1.0 / ((Coord(damage_) / layout_.maxDamage_) + 1));
+
+		//friendly fire may cancel hit ratio completely in the worst case.
+		Coord friendlyRatioInv = 1.0 - (Coord(friendlyFire_) / shots);
+
+		//FIXME
+		if(friendlyRatioInv < 0)
+			friendlyRatioInv = 0;
+
+		//damage may half hit ratio in the worst case
+		Coord damageRatioInv = 1.0 / ((Coord(damage_) / layout_.maxDamage_) + 1);
 		assert(hitRatio >= 0);
 		assert(hitRatio <= 1);
 		assert(damageRatioInv >= 0.5);
@@ -148,9 +165,12 @@ void Ship::calculateFitness() {
 		perfDesc_[2] = friendlyRatioInv;
 		perfDesc_[3] = damageRatioInv;
 
-		fitness_ = (aimRatio + (hits_ * damageRatioInv * friendlyRatioInv));
+		fitness_ = (aimRatio + (hits_ * damageRatioInv * friendlyRatioInv) * ((recharged_/maxFuel_) + 1)) + (recharged_/maxFuel_/10);
 		if(dead_)
 			fitness_ /= 2;
+
+		if(fuel_ <= 0)
+			fitness_ /= 4;
 	}
 
 	assert(!std::isnan(fitness_));
@@ -178,7 +198,7 @@ void Ship::move(BattleFieldLayout& bfl) {
 	blthrust_ = brain_->fthrust_;
 	brthrust_ = brain_->bthrust_;
 
-	bool canShoot = layout_.canShoot_ && (cool_down == 0 && ammonition_ > 0);
+	bool canShoot = layout_.canShoot_ && (cool_down == 0 && fuel_ > layout_.fuelRate_);
 	bool wantsShoot = (brain_->shoot_ > 0.0);
 	if(canShoot && wantsShoot) {
 		willShoot_ = true;
@@ -205,14 +225,18 @@ void Ship::death() {
 
 // demote and execute this unit
 void Ship::kill() {
-	friendlyFire_ = layout_.maxAmmo_;
+	friendlyFire_ = projectiles_.size();
 	hits_ = 0;
+	recharged_ = 0;
+	fuel_ = 0;
+	scan_.objects_.clear();
 	death();
 }
 
 void Ship::crash() {
 	crash_++;
 	crashDamage_++;
+	crashed_ = true;
 
 	if(crashDamage_ >= layout_.crashesPerDamage_) {
 		crashDamage_ = 0;
@@ -234,6 +258,13 @@ void Ship::impact(Projectile& p) {
 	} else {
 		p.owner_->friendlyFire_++;
 	}
+}
+
+void Ship::recharge() {
+	Coord amount = (layout_.maxFuel_ - fuel_);
+	assert(amount >= 0);
+	recharged_ += amount;
+	fuel_ = layout_.maxFuel_;
 }
 
 Ship Ship::makeChild() const {
@@ -262,7 +293,6 @@ Ship Ship::clone() const {
 }
 
 void Ship::resetGameState() {
-	ammonition_ = layout_.maxAmmo_;
 	for(Projectile* p : projectiles_) {
 		delete p;
 	}
@@ -271,12 +301,13 @@ void Ship::resetGameState() {
 	frthrust_ = 0;
 	blthrust_ = 0;
 	brthrust_ = 0;
-	fuel_ = layout_.maxFuel_;;
-	max_fuel_ = layout_.maxFuel_;;
+	fuel_ = layout_.startFuel_;
+	maxFuel_ = layout_.maxFuel_;
 	dead_ = false;
 	explode_ = false;
 	cool_down = 0;
 	willShoot_ = false;
+	crashed_ = false;
 }
 
 void Ship::resetScore() {
@@ -286,6 +317,7 @@ void Ship::resetScore() {
 	hits_ = 0;
 	damage_ = 0;
 	fitness_ = 0;
+	recharged_ = 0;
 }
 
 void Ship::update(ShipLayout tl) {
@@ -311,11 +343,13 @@ bool Ship::willShoot() {
 
 Projectile* Ship::shoot() {
 	assert(cool_down == 0);
-	assert(ammonition_ > 0);
-	--ammonition_;
+	fuel_ -= layout_.ammoRate_;
+	if(fuel_ < 0)
+		fuel_ = 0;
+
 	cool_down = layout_.maxCooldown_;
 	Vector2D loc = loc_;
-	loc += (getDirection() * range_);
+	loc += (getDirection() * radius_);
 	Projectile* p = new Projectile(*this,layout_.pl_, loc, rotation_);
 	projectiles_.push_back(p);
 	return p;

@@ -149,7 +149,8 @@ void GeneticPool::calculateStatistics(Population& pop) {
 		pop.stats_.totalCrash_ += pop[i].crash_;
 		pop.stats_.totalHits_  += pop[i].hits_;
 		pop.stats_.totalDamage_  += pop[i].damage_;
-		pop.stats_.totalAmmonition_ += pop[i].ammonition_;
+		pop.stats_.totalRecharged_ += pop[i].recharged_;
+		pop.stats_.totalBrainSwitches_ += pop[i].brain_->brainSwitches();
 
 		//update fittest if necessary
 		if (highestSoFar == 0 || pop[i].fitness_ > highestSoFar) {
@@ -175,7 +176,8 @@ void GeneticPool::calculateStatistics(Population& pop) {
 	pop.stats_.averageCrash_ = pop.stats_.totalCrash_ / size;
 	pop.stats_.averageHits_ = pop.stats_.totalHits_ / size;
 	pop.stats_.averageDamage_ = pop.stats_.totalDamage_ / size;
-	pop.stats_.averageAmmonition_ = pop.stats_.totalAmmonition_ / size;
+	pop.stats_.averageRecharged_ = pop.stats_.totalRecharged_ / size;
+	pop.stats_.averageBrainSwitches_ = pop.stats_.totalBrainSwitches_ / size;
 }
 
 /*
@@ -224,6 +226,7 @@ Population GeneticPool::epoch(Population& old_pop) {
 	//Now to add a little elitism we shall add in some copies of the
 	//fittest genomes. Make sure we add an EVEN number or the roulette
 	//wheel sampling will crash
+	// we don't dont copy elites if we use perf descriptors since that is already a form of elitism
 	if(params_.numElite_ < old_pop.size()){
 		if (!(params_.numEliteCopies_ * (params_.numElite_ % 2))) {
 			copyNBest(params_.numElite_, params_.numEliteCopies_, old_pop, new_pop);
@@ -245,7 +248,7 @@ Population GeneticPool::epoch(Population& old_pop) {
 		Ship& mum = pickSpecimen(old_pop);
 		Ship* dad;
 		if(params_.usePerfDesc_) {
-			dad = &pdb.findClosestMate(mum);
+			dad = pdb.findClosestMate(&mum);
 		} else
 			dad = &pickSpecimen(old_pop);
 

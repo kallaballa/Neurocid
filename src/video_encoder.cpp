@@ -1,7 +1,6 @@
 #ifndef _NO_VIDEOENC
 
 #include "video_encoder.hpp"
-#include "options.hpp"
 #include <cassert>
 #include <cmath>
 #include <iostream>
@@ -33,6 +32,7 @@ pkt_(new AVPacket()),
 frameIndex_(0),
 gotOutput_(0),
 file_(NULL),
+rgbFrame_(NULL),
 yuvFrame_(NULL),
 initialzed_(false) {
 	av_log_set_level(AV_LOG_ERROR);
@@ -45,15 +45,13 @@ VideoEncoder::~VideoEncoder() {
 	delete pkt_;
 }
 
-void VideoEncoder::init(const char* filename, enum AVCodecID codec_id) {
+void VideoEncoder::init(size_t width, size_t height, size_t fps, const char* filename, enum AVCodecID codec_id) {
 	assert(codec_ == NULL);
     assert(context_ == NULL);
     assert(frameIndex_ == 0);
     assert(gotOutput_ == 0);
     assert(file_ == NULL);
     assert(yuvFrame_ == NULL);
-
-    Options& opts  = *Options::getInstance();
 
     /* find the mpeg1 video encoder */
     codec_ = avcodec_find_encoder(codec_id);
@@ -71,10 +69,10 @@ void VideoEncoder::init(const char* filename, enum AVCodecID codec_id) {
     /* put sample parameters */
     context_->bit_rate = 800000;
     /* resolution must be a multiple of two */
-    context_->width = opts.WINDOW_WIDTH;
-    context_->height = opts.WINDOW_HEIGHT;
+    context_->width = width;
+    context_->height = height;
     /* frames per second */
-    context_->time_base = AVRational{1,(int)opts.FRAMERATE};
+    context_->time_base = AVRational{1,fps};
     context_->gop_size = 10; /* emit one intra frame every ten frames */
     context_->max_b_frames = 1;
     context_->pix_fmt = AV_PIX_FMT_YUV420P;
@@ -180,6 +178,8 @@ void VideoEncoder::encode(SDL_Surface *surface) {
     assert(context_ != NULL);
     assert(file_ != NULL);
     assert(yuvFrame_ != NULL);
+    assert(rgbFrame_ != NULL);
+
     SDL_PixelFormat* fmt = surface->format;
     Uint8 r;
     Uint8 g;
@@ -228,6 +228,7 @@ void VideoEncoder::close() {
     assert(context_ != NULL);
     assert(file_ != NULL);
     assert(yuvFrame_ != NULL);
+    assert(rgbFrame_ != NULL);
 
     uint8_t endcode[] = { 0, 0, 1, 0xb7 };
     int ret;
@@ -254,6 +255,7 @@ void VideoEncoder::close() {
     avcodec_close(context_);
     av_free(context_);
     av_freep(&yuvFrame_->data[0]);
+    av_freep(&rgbFrame_->data[0]);
     av_frame_free(&yuvFrame_);
     codec_ = NULL;
     context_= NULL;
@@ -261,6 +263,7 @@ void VideoEncoder::close() {
     gotOutput_=0;
     file_=NULL;
     yuvFrame_=NULL;
+    rgbFrame_=NULL;
     initialzed_ = false;
 }
 } /* namespace neurocid */

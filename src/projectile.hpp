@@ -28,14 +28,14 @@ struct ProjectileLayout {
 
 	Coord max_speed_;
 	Coord max_travel_;
-	size_t range_;
+	size_t radius_;
 
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
 	  ar & max_speed_;
 	  ar & max_travel_;
-	  ar & range_;
+	  ar & radius_;
 	}
 #endif
 };
@@ -48,7 +48,7 @@ public:
 	Scan scan_;
 
 	Projectile(Ship& owner, ProjectileLayout& layout, Vector2D& loc, Coord& rotation) :
-		Object(PROJECTILE, loc, rotation, layout.range_, 0, 0, false, false),
+		Object(PROJECTILE, loc, rotation, layout.radius_, 0, 0, false, false, false),
 		owner_(&owner),
 		layout_(layout),
 		startLoc_(loc),

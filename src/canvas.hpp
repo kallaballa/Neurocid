@@ -27,6 +27,7 @@ typedef gcn::Color Color;
 
 class BattleField;
 class Ship;
+class Facility;
 class Object;
 
 class Explosion {
@@ -34,8 +35,9 @@ public:
 	size_t tick_ = 0;
 	size_t maxTick_;
 	Vector2D loc_;
+	Color color_;
 
-	Explosion(const Vector2D& loc, const size_t& maxTick) : maxTick_(maxTick), loc_(loc) {
+	Explosion(const Vector2D& loc, const size_t& maxTick, const Color& c) : maxTick_(maxTick), loc_(loc), color_(c) {
 	}
 
 	size_t next() {
@@ -81,9 +83,11 @@ public:
 	void drawStar(Star& s);
 	void drawSurface(SDL_Surface *s, SDL_Rect& srect, Coord x, Coord y);
 	void drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c);
+	void fillCircle(Vector2D loc, Coord radius, Color c);
 	void drawExplosion(Explosion& expl, Color c);
 	void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
 	void drawShip(Ship& tank, Color c);
+	void drawFacility(Facility& facility, Color c);
 	void drawProjectile(Projectile& pro, Color& c);
 	void drawCenters(Scanner& scanner);
 	void zoomIn();

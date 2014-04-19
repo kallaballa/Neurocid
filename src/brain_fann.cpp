@@ -9,11 +9,11 @@
 namespace neurocid {
 
 #ifdef _CHECK_BRAIN_ALLOC
-std::map<fann*, size_t> BrainFann::nnAllocs_;
+std::map<fann**, size_t> BrainFann::nnAllocs_;
 size_t BrainFann::nnAllocCnt_ = 0;
 #endif
 
-BrainFann::BrainFann(const BrainFann& other): BasicBrain<fann_type>(other), nn_(other.nn_) {
+BrainFann::BrainFann(const BrainFann& other): BasicBrain<fann_type>(other), nn_(other.nn_), lastBrain_(other.lastBrain_), brainSwitches_(other.brainSwitches_)  {
 }
 
 BrainFann::~BrainFann() {
@@ -83,6 +83,8 @@ void BrainFann::destroy() {
 }
 
 void BrainFann::reset() {
+	lastBrain_ = 0;
+	brainSwitches_ = 0;
 	assert(inputs_ != NULL);
     std::fill_n(inputs_, layout_.numInputs_, std::numeric_limits<fann_type>().max());
 }
@@ -121,7 +123,7 @@ void BrainFann::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	assert(nn_ != NULL);
 	assert(inputs_ != NULL);
 	assert(!destroyed_);
-	assert(layout_.numInputs_ == (scan.objects_.size() * 2) + 4);
+	assert(layout_.numInputs_ == (scan.objects_.size() * 4) + 5);
 
 	for(size_t i = 1; i < layout_.numBrains_ + 1; ++i) {
 		assert(layout_.numInputs_ == fann_get_num_input(nn_[i]));
@@ -140,6 +142,10 @@ void BrainFann::run() {
 		}
 	}
 
+	if(selected != lastBrain_)
+		++brainSwitches_;
+
+	lastBrain_ = selected;
 	outputs = fann_run(nn_[selected], inputs_);
 	lthrust_ = outputs[0];
 	rthrust_ = outputs[1];

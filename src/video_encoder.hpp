@@ -27,7 +27,7 @@ private:
 	VideoEncoder();
 public:
 	virtual ~VideoEncoder();
-    void init(const char* filename, enum AVCodecID codec_id);
+    void init(size_t width, size_t height, size_t fps, const char* filename, enum AVCodecID codec_id);
 	void encode(SDL_Surface *surface);
 	void close();
 

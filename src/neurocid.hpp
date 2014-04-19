@@ -70,9 +70,10 @@ namespace neurocid {
 		TimeTracker& tt = *TimeTracker::getInstance();
 
 	#ifndef _NO_VIDEOENC
+		Options& opt = *Options::getInstance();
 		VideoEncoder& ve = *VideoEncoder::getInstance();
 		if(!videoFile.empty())
-			ve.init(videoFile.c_str(), AV_CODEC_ID_H264);
+			ve.init(opt.WINDOW_WIDTH, opt.WINDOW_HEIGHT, opt.FRAMERATE, videoFile.c_str(), AV_CODEC_ID_H264);
 	#endif
 
 		scenario->configureTeams(teams);

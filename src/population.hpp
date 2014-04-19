@@ -1,16 +1,10 @@
-/*
- * population.hpp
- *
- *  Created on: Mar 1, 2014
- *      Author: elchaschab
- */
-
 #ifndef POPULATION_HPP_
 #define POPULATION_HPP_
 
 #include <vector>
 #include <iostream>
 #include "ship.hpp"
+#include "facility.hpp"
 
 #ifndef _NO_SERIALIZE
 #include <boost/serialization/vector.hpp>
@@ -30,6 +24,7 @@ struct PopulationLayout {
 	size_t size_;
 	ShipLayout tl_;
 	BrainLayout bl_;
+	FacilityLayout fl_;
 
 #ifndef _NO_SERIALIZE
 	template<class Archive>
@@ -37,6 +32,7 @@ struct PopulationLayout {
       ar & size_;
 	  ar & tl_;
 	  ar & bl_;
+	  ar & fl_;
 	}
 #endif
 };
@@ -48,35 +44,42 @@ inline PopulationLayout make_default_population_layout() {
 		{
 		    //Projectile Layout
 			{
-				1,    // max_speed
-				10000, // max_travel
-				5     // range
+				1,    // max_speed_
+				10000, // max_travel_
+				10     // radius_
 			},
-			false, // isDummy
-			true,// canShoot
-			true,// canRotate
-			true,// canMove
-			false,// disableProjectileFitness
+			false, // isDummy_
+			true,// canShoot_
+			true,// canRotate_
+			true,// canMove_
+			false,// disableProjectileFitness_
 
-			50.0,// range_
+			50.0,// radius_
 			1.0, // max_speed_
-			1.0, // max_rotation
-			10000, // max_fuel
-			1, // fuel_rate
-			5, // max_cooldown
-			5, // max_ammo_
-			6, // max_damage_
+			1.0, // max_rotation_
+			10000.0, // max_fuel_
+			10000.0, // start_fuel_
+			1.0, // fuel_rate_
+			5.0, // ammo_rate_
+			1.0, // hardness_
 
+			5, // max_cooldown_
+			6, // max_damage_
 			1, // crashes_per_damage_
 			4  // num_perf_desc_
 		},
 		//BrainLayout
 		{
-		    84, // inputs
+		    97, // inputs
 			5,  // outputs
-			8,  // layers
+			5,  // layers
 			11, // neurons per hidden layer
-			4
+			4   // num brains
+		},
+		//FacilityLayout
+		{
+			300,
+			6000
 		}
 	};
 }
@@ -87,6 +90,8 @@ class Population: public vector<Ship> {
 #endif
 
 public:
+	  vector<Facility> facilities_;
+
 	struct Statistics {
 		Statistics() {
 			generationCnt_ = 0;
@@ -106,13 +111,14 @@ public:
 		double totalCrash_;
 		double totalHits_;
 		double totalDamage_;
-		double totalAmmonition_;
+		double totalRecharged_;
+		double totalBrainSwitches_;
 		double averageFriendlyFire_;
 		double averageCrash_;
 		double averageHits_;
 		double averageDamage_;
-		double averageAmmonition_;
-
+		double averageRecharged_;
+		double averageBrainSwitches_;
 		size_t generationCnt_;
 		double score_;
 
@@ -126,13 +132,15 @@ public:
 			averageFriendlyFire_ = 0;
 			averageCrash_ = 0;
 			averageDamage_ = 0;
-			averageAmmonition_ = 0;
+			averageRecharged_ = 0;
+			averageBrainSwitches_ = 0;
 			totalFitness_ = 0;
 			totalCrash_ = 0;
 			totalFriendlyFire_ = 0;
 			totalHits_ = 0;
 			totalDamage_ = 0;
-			totalAmmonition_ = 0;
+			totalRecharged_ = 0;
+			totalBrainSwitches_ = 0;
 			score_ = 0;
 		}
 
@@ -144,7 +152,8 @@ public:
 					<< averageFriendlyFire_ << ":"
 					<< averageCrash_ << ":"
 					<< averageDamage_ << ":"
-					<< (averageAmmonition_ / 3) << ":"
+					<< (averageRecharged_ / 3) << ":"
+					<< averageBrainSwitches_ << ":"
 					<< (score_);
 		}
 	};
@@ -189,19 +198,25 @@ public:
 #endif
 };
 
+/* FIXME this is a very simple and stupid scaling mechanism.
+ * scenarios should avoid scaling down a lot and scenarios
+ * that scale up heavily
+ */
 inline void scale_population(Population& team, size_t size) {
-	  if(team.size() > size) {
-		  //FIXME MEMORY LEAKING BRAINS
-		  team.resize(size);
-	  } else if(team.size() < size) {
-		  while(team.size() < size) {
-			  for(Ship& s : team) {
-				  team.push_back(s.clone());
-				  if(team.size() == size)
-					  break;
-			  }
-		  }
-	  }
+	if (team.size() > size) {
+		for (size_t i = size; i < team.size(); ++i) {
+			team[i].brain_->destroy();
+		}
+		team.resize(size);
+	} else if (team.size() < size) {
+		while (team.size() < size) {
+			for (Ship& s : team) {
+				team.push_back(s.clone());
+				if (team.size() == size)
+					break;
+			}
+		}
+	}
 }
 
 inline void read_team(size_t teamID, Population& team, istream& is) {

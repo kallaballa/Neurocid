@@ -39,7 +39,10 @@ public:
 	};
 
 	Coord operator()(size_t tick) {
-		return normRotation(startInRad_ + (iterateByInRad_ * ((tick % ((size_t)(round(M_PI/iterateByInRad_) + 1))))));
+		if(iterateByInRad_ == 0)
+			return startInRad_;
+		else
+			return normRotation(startInRad_ + (iterateByInRad_ * ((tick % ((size_t)(round(M_PI/iterateByInRad_) + 1))))));
 	}
 };
 
@@ -120,8 +123,8 @@ public:
 		centerA += (axisDir * (gl.distance_/2));
 		centerB -= (axisDir * (gl.distance_/2));
 
-		Coord lengthA = (((teams[0][0].range_ + gl.spacing_) * (teams[0].size() - 1)) / 2);
-		Coord lengthB = (((teams[1][0].range_ + gl.spacing_) * (teams[1].size() - 1)) / 2);
+		Coord lengthA = (((teams[0][0].radius_ + gl.spacing_) * (teams[0].size() - 1)) / 2);
+		Coord lengthB = (((teams[1][0].radius_ + gl.spacing_) * (teams[1].size() - 1)) / 2);
 
 		Vector2D startA = centerA;
 		startA += (sideDirA * lengthA);
@@ -130,13 +133,13 @@ public:
 
 		for(size_t i = 0; i < teams[0].size(); i++) {
 			teams[0][i].loc_ = startA;
-			teams[0][i].loc_ -= (sideDirA * ((teams[0][i].range_ + gl.spacing_) * i));
+			teams[0][i].loc_ -= (sideDirA * ((teams[0][i].radius_ + gl.spacing_) * i));
 			teams[0][i].rotation_ = facer_(tick(), 0, rotation);
 		}
 
 		for(size_t i = 0; i < teams[1].size(); i++) {
 			teams[1][i].loc_ = startB;
-			teams[1][i].loc_ -= (sideDirB * ((teams[1][i].range_ + gl.spacing_) * i));
+			teams[1][i].loc_ -= (sideDirB * ((teams[1][i].radius_ + gl.spacing_) * i));
 			teams[1][i].rotation_ = facer_(tick(), 1, rotation);
 		}
 		Placer::place(teams);
@@ -173,8 +176,8 @@ public:
 		centerA += (axisDir * (gl.distance_/2));
 		centerB -= (axisDir * (gl.distance_/2));
 
-		Coord lengthA = (((teams[0][0].range_ + gl.spacing_) * (teams[0].size() - 1)) / 2);
-		Coord lengthB = (((teams[1][0].range_ + gl.spacing_) * (teams[1].size() - 1)) / 2);
+		Coord lengthA = (((teams[0][0].radius_ + gl.spacing_) * (teams[0].size() - 1)) / 2);
+		Coord lengthB = (((teams[1][0].radius_ + gl.spacing_) * (teams[1].size() - 1)) / 2);
 
 		Vector2D startA = centerA;
 		startA += (sideDirA * lengthA);
@@ -188,14 +191,14 @@ public:
 		assert(s == (firstRow + secondRow));
 		for(size_t i = 0; i < firstRow; i++) {
 			teams[0][i].loc_ = startA;
-			teams[0][i].loc_ -= (sideDirA * ((teams[0][i].range_ + gl.spacing_) * i));
+			teams[0][i].loc_ -= (sideDirA * ((teams[0][i].radius_ + gl.spacing_) * i));
 			teams[0][i].rotation_ = facer_(tick(), 0, rotation);
 		}
 
 		for(size_t i = 0; i < secondRow; i++) {
 			teams[0][firstRow + i].loc_ = startA;
-			teams[0][firstRow + i].loc_ += (axisDir * ((gl.spacing_ + teams[0][firstRow + i].range_) * 3));
-			teams[0][firstRow + i].loc_ -= (sideDirA * ((teams[0][firstRow + i].range_ + gl.spacing_) * i));
+			teams[0][firstRow + i].loc_ += (axisDir * ((gl.spacing_ + teams[0][firstRow + i].radius_) * 3));
+			teams[0][firstRow + i].loc_ -= (sideDirA * ((teams[0][firstRow + i].radius_ + gl.spacing_) * i));
 			teams[0][firstRow + i].rotation_ = facer_(tick(), 0, rotation);
 		}
 
@@ -205,14 +208,14 @@ public:
 		assert(s == (firstRow + secondRow));
 		for(size_t i = 0; i < firstRow; i++) {
 			teams[1][i].loc_ = startB;
-			teams[1][i].loc_ -= (sideDirB * ((teams[1][i].range_ + gl.spacing_) * i));
+			teams[1][i].loc_ -= (sideDirB * ((teams[1][i].radius_ + gl.spacing_) * i));
 			teams[1][i].rotation_ = facer_(tick(), 1, rotation);
 		}
 
 		for(size_t i = 0; i < secondRow; i++) {
 			teams[1][firstRow + i].loc_ = startB;
-			teams[1][firstRow + i].loc_ -= (axisDir * ((gl.spacing_ + teams[1][firstRow + i].range_) * 3));
-			teams[1][firstRow + i].loc_ -= (sideDirB * ((teams[1][firstRow + i].range_ + gl.spacing_) * i));
+			teams[1][firstRow + i].loc_ -= (axisDir * ((gl.spacing_ + teams[1][firstRow + i].radius_) * 3));
+			teams[1][firstRow + i].loc_ -= (sideDirB * ((teams[1][firstRow + i].radius_ + gl.spacing_) * i));
 			teams[1][firstRow + i].rotation_ = facer_(tick(), 1, rotation);
 		}
 
@@ -284,12 +287,12 @@ public:
 
 		for(size_t i = 0; i < firstHalf; i++) {
 			teams[tA][i].loc_ = startA;
-			Vector2D shift = (halfDirA * ((teams[0][i].range_ + gl.spacing_) * (i)));
+			Vector2D shift = (halfDirA * ((teams[0][i].radius_ + gl.spacing_) * (i)));
 			teams[tA][i].loc_ += shift;
 			teams[tA][i].rotation_ = facer_(tick(), 0, rotation);
 
 			teams[tB][i].loc_ = startA2;
-			shift = (halfDirA2 * ((teams[1][i].range_ + gl.spacing_) * (i)));
+			shift = (halfDirA2 * ((teams[1][i].radius_ + gl.spacing_) * (i)));
 			teams[tB][i].loc_ -= shift;
 			teams[tB][i].rotation_ = facer_(tick(), 1, rotation);
 		}
@@ -298,12 +301,12 @@ public:
 		tB = tA == 0 ? 1 : 0;
 		for(size_t i = 0; i < secondHalf; i++) {
 			teams[tA][firstHalf + i].loc_ = startB;
-			Vector2D shift = (halfDirB * ((teams[0][firstHalf + i].range_ + gl.spacing_) * (i)));
+			Vector2D shift = (halfDirB * ((teams[0][firstHalf + i].radius_ + gl.spacing_) * (i)));
 			teams[tA][firstHalf + i].loc_ += shift;
 			teams[tA][firstHalf + i].rotation_ = facer_(tick(), 0, rotation);
 
 			teams[tB][firstHalf + i].loc_ = startB2;
-			shift = (halfDirB2 * ((teams[1][firstHalf + i].range_ + gl.spacing_) * (i)));
+			shift = (halfDirB2 * ((teams[1][firstHalf + i].radius_ + gl.spacing_) * (i)));
 			teams[tB][firstHalf + i].loc_ -= shift;
 			teams[tB][firstHalf + i].rotation_ = facer_(tick(), 1, rotation);
 		}
@@ -341,8 +344,8 @@ public:
 		centerA += (axisDir * (gl.distance_/2));
 		centerB -= (axisDir * (gl.distance_/2));
 
-		Coord lengthA = (((teams[0][0].range_ + gl.spacing_) * (teams[0].size() - 1)) / 2);
-		Coord lengthB = (((teams[1][0].range_ + gl.spacing_) * (teams[1].size() - 1)) / 2);
+		Coord lengthA = (((teams[0][0].radius_ + gl.spacing_) * (teams[0].size() - 1)) / 2);
+		Coord lengthB = (((teams[1][0].radius_ + gl.spacing_) * (teams[1].size() - 1)) / 2);
 
 		Vector2D startA = centerA;
 		startA += (sideDirA * lengthA);
@@ -351,17 +354,33 @@ public:
 
 		for(size_t i = 0; i < teams[0].size(); i++) {
 			teams[0][i].loc_ = startA;
-			teams[0][i].loc_ -= (sideDirA * ((teams[0][i].range_ + gl.spacing_) * i));
+			teams[0][i].loc_ -= (sideDirA * ((teams[0][i].radius_ + gl.spacing_) * i));
 			teams[0][i].loc_ += (axisDir * fRand(-50, 50));
 			teams[0][i].rotation_ = facer_(tick(), 0, rotation);
 		}
 
+		startA += (axisDir * (teams[0].layout_.fl_.range_ * 4));
+		for(size_t i = 0; i < teams[0].facilities_.size(); i++) {
+			teams[0].facilities_[i].loc_ = startA;
+			teams[0].facilities_[i].loc_ -= (sideDirA * ((teams[0].layout_.fl_.radius_ + gl.spacing_) * i));
+			teams[0].facilities_[i].loc_ += (axisDir * fRand(-50, 50));
+		}
+
 		for(size_t i = 0; i < teams[1].size(); i++) {
 			teams[1][i].loc_ = startB;
-			teams[1][i].loc_ -= (sideDirB * ((teams[1][i].range_ + gl.spacing_) * i));
+			teams[1][i].loc_ -= (sideDirB * ((teams[1][i].radius_ + gl.spacing_) * i));
 			teams[1][i].loc_ += (axisDir * fRand(-50, 50));
 			teams[1][i].rotation_ = facer_(tick(), 1, rotation);
 		}
+
+		axisDir.rotate(180);
+		startB += (axisDir * (teams[1].layout_.fl_.range_ * 4));
+		for(size_t i = 0; i < teams[1].facilities_.size(); i++) {
+			teams[1].facilities_[i].loc_ = startB;
+			teams[1].facilities_[i].loc_ -= (sideDirB * ((teams[1].layout_.fl_.radius_ + gl.spacing_) * i));
+			teams[1].facilities_[i].loc_ += (axisDir * fRand(-50, 50));
+		}
+
 		Placer::place(teams);
 	}
 };

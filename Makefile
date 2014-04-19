@@ -83,7 +83,7 @@ info: CXXFLAGS += -g3 -O0
 info: LDFLAGS += -Wl,--export-dynamic -rdynamic
 info: dirs
 
-debug: CXXFLAGS += -g3 -O0 -D_CHECK_BRAIN_ALLOC
+debug: CXXFLAGS += -g3 -O0
 debug: LDFLAGS += -Wl,--export-dynamic -rdynamic
 debug: dirs
 

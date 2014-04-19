@@ -28,6 +28,8 @@ struct ScannerLayout {
 	size_t numClusters_;
 	size_t numFriends_;
 	size_t numEnemies_;
+	size_t numFriendFacilities_;
+	size_t numEnemyFacilities_;
 	size_t numProjectiles_;
 };
 
@@ -45,10 +47,14 @@ public:
 	ObjectBsp bspB_;
 	ObjectBsp bspPA_;
 	ObjectBsp bspPB_;
+	ObjectBsp bspFA_;
+	ObjectBsp bspFB_;
 
 	BspScanner(ScannerLayout& layout) : ScannerImpl(layout) {};
+	void findInRange(ObjectBsp& bsp, Object& from, vector<Object*>& result, size_t range);
 	void findInRange(ObjectBsp& bsp, Object& from, ScanObjectType type, ScanObjectVector& result, size_t range);
 	bool findNearest(ObjectBsp& bsp, Object& from, ScanObjectType type, ScanObjectVector& result);
+	size_t findNearestN(ObjectBsp& bsp, Object& from, ScanObjectType type, ScanObjectVector& result, size_t num);
 	std::pair<Object*,Coord> findNearest(ObjectBsp& bsp, Object& from);
 	void buildBsps(BattleField& field);
 
@@ -82,7 +88,7 @@ public:
 
 class HybridScanner : public ClusterScanner, public BspScanner {
 private:
-	void teamScan(Population& active, Population& passive, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, ObjectBsp& bspFriends, ObjectBsp& bspEnemies, ObjectBsp& bspEnemyProjectiles, BattleFieldLayout& bfl);
+	void teamScan(Population& active, Population& passive, vector<Vector2D>& ctrFriends, vector<Vector2D>& ctrEnemies, ObjectBsp& bspFriends, ObjectBsp& bspEnemies, ObjectBsp& bspFriendFacilities, ObjectBsp& bspEnemyFacilities, ObjectBsp& bspEnemyProjectiles, BattleFieldLayout& bfl);
 public:
 	HybridScanner(ScannerLayout& layout) : ClusterScanner(layout), BspScanner(layout) {};
 

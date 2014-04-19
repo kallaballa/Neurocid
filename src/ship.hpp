@@ -29,14 +29,16 @@ struct ShipLayout {
 	bool canMove_;
 	bool disableProjectileFitness_;
 
-	Coord range_;
+	Coord radius_;
 	Coord maxSpeed_;
 	Coord maxRotation_;
 	Coord maxFuel_;
+	Coord startFuel_;
 	Coord fuelRate_;
+	Coord ammoRate_;
+	Coord hardness_;
 
 	size_t maxCooldown_;
-	size_t maxAmmo_;
 	size_t maxDamage_;
 	size_t crashesPerDamage_;
 	size_t numPerfDesc;
@@ -52,14 +54,15 @@ struct ShipLayout {
 	  ar & canMove_;
 	  ar & disableProjectileFitness_;
 
-	  ar & range_;
+	  ar & radius_;
 	  ar & maxSpeed_;
 	  ar & maxRotation_;
 	  ar & maxFuel_;
+	  ar & startFuel_;
+	  ar & ammoRate_;
 	  ar & fuelRate_;
 
 	  ar & maxCooldown_;
-	  ar & maxAmmo_;
 	  ar & maxDamage_;
 	  ar & crashesPerDamage_;
 	  ar & numPerfDesc;
@@ -83,17 +86,20 @@ public:
 	ShipLayout layout_;
 	Brain* brain_;
 
-	size_t ammonition_ = 0;
 	Coord flthrust_ = 0;
 	Coord frthrust_ = 0;
 	Coord blthrust_ = 0;
 	Coord brthrust_ = 0;
+	size_t cool_down = 0;
+
 	size_t friendlyFire_ = 0;
 	size_t crash_ = 0;
 	size_t crashDamage_= 0;
 	size_t hits_= 0;
 	size_t damage_= 0;
-	size_t cool_down = 0;
+	Coord recharged_ = 0 ;
+
+
 	Coord fitness_ = 0;
 	bool isElite = false;
 	Scan scan_;
@@ -107,7 +113,7 @@ public:
 	  ar & brain_;
 	}
 #endif
-	Ship() : Object(SHIP, {0,0}, 0, 0, 0, 0,false, true),
+	Ship() : Object(SHIP, {0,0}, 0, 0, 0, 0,false, true, false),
 			teamID_(0),
 			layout_(),
 			brain_(NULL),
@@ -127,6 +133,7 @@ public:
 	void crash();
 	void impact(Ship& t);
 	void impact(Projectile& p);
+	void recharge();
 
 	void calculateFitness();
 	void resetGameState();

@@ -46,8 +46,9 @@ private:
 	void collide(Projectile& p1, Projectile& p2);
 	void collide(Projectile& p, Ship& t);
 	void collide(Ship& t1, Ship& t2);
-	void BeginContact(b2Contact* contact);
-	void EndContact(b2Contact* contact);
+	void BeginContact(b2Contact* contact)  override;
+	void EndContact(b2Contact* contact) override;
+	void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) override;
 public:
 	Physics(PhysicsLayout pl);
 	virtual ~Physics();

@@ -3,6 +3,7 @@
 #include "gui/gui.hpp"
 #include "gui/osd.hpp"
 #include "ship.hpp"
+#include "facility.hpp"
 #include "projectile.hpp"
 #include "battlefield.hpp"
 #include "population.hpp"
@@ -101,7 +102,7 @@ void Canvas::zoomOut() {
 	 else
 		zoom_ += 0.1;
 
-	zoom_ = std::min(zoom_, 1.0);
+	zoom_ = std::min(zoom_, 5.0);
 }
 
 void Canvas::left() {
@@ -131,7 +132,7 @@ void Canvas::drawStar(Star& s) {
 		if(s.scale == 0)
 			circleRGBA(screen_, Sint16(s.x), Sint16(s.y), i, s.r,s.g,s.b, round(alpha));
 		else {
-			double r = round(i * scale_ * s.scale);
+			double r = i * s.scale;
 			if(r != lastR)
 				circleRGBA(screen_, scaleX(s.x, scale_ * s.scale), scaleY(s.y, scale_ * s.scale), r, s.r,s.g,s.b, round(alpha));
 			lastR = r;
@@ -142,18 +143,10 @@ void Canvas::drawStar(Star& s) {
 	}
 }
 
-void Canvas::drawSurface(SDL_Surface *s, SDL_Rect& srect, Coord x, Coord y) {
-	SDL_Rect drect = {scaleX(x), scaleY(y), 0, 0};
-	SDL_BlitSurface(s, &srect, screen_, &drect);
-}
-
-void Canvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
-	ellipseRGBA(screen_, scaleX(loc.x_), scaleY(loc.y_), round(rangeX * scale_), round(rangeY * scale_), c.r, c.g, c.b, c.a);
-}
 
 void Canvas::drawExplosion(Explosion& expl, Color c) {
 	size_t lastR = 0, r = 0;
-	for(size_t i = 0; i < expl.tick_; ++i) {
+	for(size_t i = expl.tick_; i > 0 ; --i) {
 	    if(scale_ < 0.013)
 	    	r = round(i * i * 3 * scale_);
 	    else
@@ -167,6 +160,19 @@ void Canvas::drawExplosion(Explosion& expl, Color c) {
 	}
 }
 
+void Canvas::drawSurface(SDL_Surface *s, SDL_Rect& srect, Coord x, Coord y) {
+	SDL_Rect drect = {scaleX(x), scaleY(y), 0, 0};
+	SDL_BlitSurface(s, &srect, screen_, &drect);
+}
+
+void Canvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
+	ellipseRGBA(screen_, scaleX(loc.x_), scaleY(loc.y_), round(rangeX * scale_), round(rangeY * scale_), c.r, c.g, c.b, c.a);
+}
+
+void Canvas::fillCircle(Vector2D loc, Coord radius, Color c) {
+	filledCircleRGBA(screen_, scaleX(loc.x_), scaleY(loc.y_), round(radius * scale_), c.r, c.g, c.b, c.a);
+}
+
 void Canvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c) {
     lineRGBA(screen_, scaleX(x0), scaleY(y0), scaleX(x1), scaleY(y1), c.r, c.g, c.b, c.a);
 }
@@ -175,15 +181,15 @@ void Canvas::drawShip(Ship& ship, Color c) {
 	Vector2D dir = ship.getDirection();
 	Vector2D tip = ship.loc_;
     if(scale_ < 0.013)
-    	tip += dir * (ship.range_) * 10;
+    	tip += dir * (ship.radius_) * 10;
     else
-    	tip += dir * (ship.range_) * 5;
+    	tip += dir * (ship.radius_) * 5;
 
     drawLine(ship.loc_.x_, ship.loc_.y_, tip.x_, tip.y_ ,c);
     if(scale_ < 0.013)
-        drawEllipse(ship.loc_, ship.range_ * 3, ship.range_ * 3, c);
+        drawEllipse(ship.loc_, ship.radius_ * 3, ship.radius_ * 3, c);
     else
-    	drawEllipse(ship.loc_, ship.range_, ship.range_, c);
+    	drawEllipse(ship.loc_, ship.radius_, ship.radius_, c);
     drawLine(ship.loc_.x_, ship.loc_.y_, tip.x_, tip.y_ ,c);
 
 
@@ -203,10 +209,10 @@ void Canvas::drawShip(Ship& ship, Color c) {
 		Vector2D blengine = wc;
 		Vector2D brengine = wc;
 
-		flengine += (across1 * (ship.range_));
-		frengine += (across2 * (ship.range_));
-		blengine += (across2 * -(ship.range_));
-		brengine += (across1 * -(ship.range_));
+		flengine += (across1 * (ship.radius_));
+		frengine += (across2 * (ship.radius_));
+		blengine += (across2 * -(ship.radius_));
+		brengine += (across1 * -(ship.radius_));
 
 		Vector2D flforce = flengine;
 		flforce += across2 * -(ship.flthrust_ * 600);
@@ -228,6 +234,11 @@ void Canvas::drawShip(Ship& ship, Color c) {
 		drawLine(blengine.x_, blengine.y_, blforce.x_, blforce.y_, cengine);
 		drawLine(brengine.x_, brengine.y_, brforce.x_, brforce.y_, cengine);
 	}
+}
+
+void Canvas::drawFacility(Facility& facility, Color c) {
+		fillCircle(facility.loc_, facility.radius_, c);
+		drawEllipse(facility.loc_, facility.layout_.range_, facility.layout_.range_, c);
 }
 
 void Canvas::drawProjectile(Projectile& pro, Color& c) {
@@ -319,9 +330,20 @@ void Canvas::render(BattleField& field) {
 
 	size_t teamCnt = 0;
 	for(Population& team : field.teams_) {
+		for(Facility& f : team.facilities_) {
+			if(f.teamID_ == 0 )
+				this->drawFacility(f, Theme::teamA);
+			else
+				this->drawFacility(f, Theme::teamB);
+		}
+
 		for(Ship& t : team) {
 			if(t.explode_)
-				explosions_.push_back({t.loc_, 20});
+				explosions_.push_back({t.loc_, 20, {255,64,0,255}});
+
+			if(t.crashed_)
+				explosions_.push_back({t.loc_, 20, {64,128,255,128}});
+
 			else if(!t.dead_) {
 				if(t.teamID_ == 0 )
 					this->drawShip(t, Theme::teamA);
@@ -329,10 +351,10 @@ void Canvas::render(BattleField& field) {
 					this->drawShip(t, Theme::teamB);
 			}
 			t.explode_ = false;
-
+			t.crashed_ = false;
 			for(Projectile* p : t.projectiles_) {
 				if(p->explode_)
-					explosions_.push_back({p->loc_, 20});
+					explosions_.push_back({p->loc_, 20, {255,64,0,255}});
 				else if(!p->dead_) {
 					if(t.teamID_ == 0)
 						this->drawProjectile(*p,Theme::projectileA);
@@ -350,7 +372,7 @@ void Canvas::render(BattleField& field) {
 		if(e.end())
 			it = explosions_.erase(it);
 		else {
-			drawExplosion(e,{255,64,0,255});
+			drawExplosion(e,e.color_);
 			e.next();
 		}
 	}

@@ -20,8 +20,8 @@ public:
 	ScannerLayout scl_;
 
 	Scenario()  {
-		bfl_.width_ = 300000;
-		bfl_.height_ = 300000;
+		bfl_.width_ = 600000;
+		bfl_.height_ = 600000;
 		bfl_.iterations_ = 1500;
 
 		gl_.center_ = {150000,150000};
@@ -36,12 +36,15 @@ public:
 
 		scl_.disableClusterCenters_ = true;
 		scl_.numClusters_ = 3;
-		scl_.numFriends_ = 20;
-		scl_.numEnemies_ = 20;
-		scl_.numProjectiles_ = 20;
+		scl_.numFriends_ = 10;
+		scl_.numEnemies_ = 10;
+		scl_.numFriendFacilities_ = 3;
+		scl_.numEnemyFacilities_ = 3;
+		scl_.numProjectiles_ = 10;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {};
+
 	virtual void configurePools(vector<GeneticPool>& pools) {};
 	virtual Placer* createPlacer() = 0;
 };

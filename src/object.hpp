@@ -31,14 +31,15 @@ public:
 	Vector2D vel_;
 	Coord angVel_;
 	Coord rotation_;
-	Coord range_;
+	Coord radius_;
 	Coord fuel_;
-	Coord max_fuel_;
+	Coord maxFuel_;
 	bool explode_;
 	bool dead_;
+	bool crashed_;
 
-	Object(ObjectType type, Vector2D loc, Coord rotation, Coord range, 	Coord fuel, Coord max_fuel, bool explode, bool dead) :
-			type_(type), loc_(loc), vel_(), angVel_(0), rotation_(rotation), range_(range), fuel_(fuel), max_fuel_(max_fuel), explode_(explode), dead_(dead) {
+	Object(ObjectType type, Vector2D loc, Coord rotation, Coord radius, Coord fuel, Coord max_fuel, bool explode, bool dead, bool crashed) :
+			type_(type), loc_(loc), vel_(), angVel_(0), rotation_(rotation), radius_(radius), fuel_(fuel), maxFuel_(max_fuel), explode_(explode), dead_(dead), crashed_(crashed) {
 		assert(rotation != 10);
 	}
 
@@ -54,7 +55,7 @@ public:
 	}
 
 	inline bool collides(const Object& other) const {
-		return distance(other) < (this->range_ + other.range_);
+		return distance(other) < (this->radius_ + other.radius_);
 	}
 
 	virtual void move(BattleFieldLayout& bfl) = 0;
@@ -80,10 +81,12 @@ public:
 		ar & vel_;
 		ar & angVel_;
 		ar & rotation_;
-		ar & range_;
+		ar & radius_;
 		ar & explode_;
 		ar & dead_;
+		ar & maxFuel_;
 		ar & fuel_;
+		ar & crashed_;
 	}
 #endif
 };

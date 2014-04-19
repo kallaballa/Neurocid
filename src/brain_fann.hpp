@@ -16,13 +16,15 @@ class Population;
 
 class BrainFann : public BasicBrain<fann_type> {
 #ifdef _CHECK_BRAIN_ALLOC
-	static std::map<fann*, size_t> nnAllocs_;
+	static std::map<fann**, size_t> nnAllocs_;
 	static size_t nnAllocCnt_;
 #endif
 	fann **nn_;
+	size_t lastBrain_;
+	size_t brainSwitches_;
 public:
 	typedef fann_type value_type;
-	BrainFann() : BasicBrain<fann_type>(), nn_(NULL) {
+	BrainFann() : BasicBrain<fann_type>(), nn_(NULL), lastBrain_(0), brainSwitches_(0) {
 	}
 
 	BrainFann(const BrainFann& other);
@@ -40,6 +42,9 @@ public:
 	virtual bool operator!=(BrainFann& other);
 	virtual void update(const BattleFieldLayout& bfl, const Scan& scan);
 	void run();
+	size_t brainSwitches() {
+		return brainSwitches_;
+	}
 };
 
 } /* namespace neurocid */

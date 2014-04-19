@@ -150,28 +150,28 @@ vector<Population> Game::play(bool render) {
 
 	size_t dur = tt.measure([&]() {
 		tt.execute("game", "prepare", [&]() {
-					prepare();
-				});
+			prepare();
+		});
 
 		tt.execute("game", "place", [&]() {
-					place();
-				});
+			place();
+		});
 
 		tt.execute("game", "fight", [&]() {
-					fight(render);
-				});
+			fight(render);
+		});
 
 		tt.execute("game", "mate", [&]() {
-					mate();
-				});
+			mate();
+		});
 
 		tt.execute("game", "score", [&]() {
-					score();
-				});
+			score();
+		});
 
 		tt.execute("game", "print", [&]() {
-					print();
-				});
+			print();
+		});
 
 		tt.execute("game", "cleanup", [&]() {
 			cleanup();

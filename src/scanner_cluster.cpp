@@ -30,8 +30,8 @@ pair<Vector2D, Coord> ClusterScanner::findNearestCenter(const vector<Vector2D>& 
 		}
 	}
 
-	assert(nearest != NO_VECTOR2D);
-	assert(distance != NO_COORD);
+//	assert(nearest != NO_VECTOR2D);
+//	assert(distance != NO_COORD);
 
 	return {nearest,distance};
 }

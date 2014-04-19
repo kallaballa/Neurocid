@@ -33,12 +33,16 @@ public:
 	PerfDescBsp() : KDTree::KDTree<TnumDesc, Tunit*, std::pointer_to_binary_function<const Tunit*, const int&, Coord>>(std::ptr_fun(perfDescComponent<Tunit>)) {
 	}
 
-	Tunit& findClosestMate(Tunit& t) {
-		auto result = this->find_nearest_if(&t, std::numeric_limits<Coord>().max(), [&](Tunit* candidate) {
-			return (*candidate) != t;
+	Tunit* findClosestMate(Tunit* t) {
+		auto result = this->find_nearest_if(t, std::numeric_limits<Coord>().max(), [&](Tunit* candidate) {
+			return candidate != t;
 		});
-		assert(result.second != std::numeric_limits<Coord>().max());
-		return *(*result.first);
+		assert(t != (*result.first));
+
+		if(result.second == std::numeric_limits<Coord>().max())
+			return t; //there is no one else
+		else
+			return (*result.first);
 	}
 };
 }

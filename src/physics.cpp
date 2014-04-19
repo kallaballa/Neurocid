@@ -62,8 +62,6 @@ void Physics::BeginContact(b2Contact* contact) {
 			  collide(*static_cast<Projectile*>(oA), *static_cast<Ship*>(oB));
 		  } else if(oA->type() == SHIP && oB->type() == PROJECTILE) {
 			  collide(*static_cast<Projectile*>(oB), *static_cast<Ship*>(oA));
-		  } else if(oA->type() == SHIP && oB->type() == SHIP) {
-			  collide(*static_cast<Ship*>(oB), *static_cast<Ship*>(oA));
 		  }
 
 		  if(oA->dead_)
@@ -79,6 +77,26 @@ void Physics::BeginContact(b2Contact* contact) {
 void Physics::EndContact(b2Contact* contact) {
 
 }
+
+void Physics::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
+ {
+     b2Fixture* fixtureA = contact->GetFixtureA();
+     b2Fixture* fixtureB = contact->GetFixtureB();
+
+     //fixture with user data is a target, other fixture is an arrow
+     Object* oA = (Object*)fixtureA->GetBody()->GetUserData();
+     Object* oB = (Object*)fixtureB->GetBody()->GetUserData();
+
+     if(oA != NULL && oB != NULL && oA->type() == SHIP && oB->type() == SHIP) {
+    	 Ship* sA = static_cast<Ship*>(oA);
+    	 Ship* sB = static_cast<Ship*>(oB);
+		 if ( impulse->normalImpulses[0] > 300 * sA->layout_.hardness_ ) {
+			 collide(*sA,*sB);
+		 } else if (impulse->normalImpulses[0] > 300 * sB->layout_.hardness_) {
+			 collide(*sB,*sA);
+		 }
+     }
+ }
 
 float32 Physics::toMeters(Coord c) {
 	return c * layout_.coordToMetersFactor_;
@@ -157,7 +175,7 @@ b2Body* Physics::makeShipBody(Ship& t) {
     // Define another box shape for our dynamic body.
     b2CircleShape dynamicCircle;
     dynamicCircle.m_p.Set(0, 0);
-    dynamicCircle.m_radius = toMeters(t.range_);
+    dynamicCircle.m_radius = toMeters(t.radius_);
 
     // Define the dynamic body fixture.
     b2FixtureDef fixtureDef;
@@ -166,7 +184,7 @@ b2Body* Physics::makeShipBody(Ship& t) {
     // Set the box density to be non-zero, so it will be dynamic.
     fixtureDef.density = 0.2f;
 
-    fixtureDef.restitution = 0.3f;
+    fixtureDef.restitution = 0.5f;
 
     // Override the default friction.
     fixtureDef.friction = 0.0f;
@@ -194,7 +212,7 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
     // Define another box shape for our dynamic body.
     b2CircleShape dynamicCircle;
     dynamicCircle.m_p.Set(0, 0);
-    dynamicCircle.m_radius = toMeters(p.range_);
+    dynamicCircle.m_radius = toMeters(p.radius_);
 
     // Define the dynamic body fixture.
     b2FixtureDef fixtureDef;
@@ -284,7 +302,6 @@ void Physics::step() {
 						t->brthrust_ -= diff;
 						fRequired = fLeft;
 					}
-
 					t->fuel_ -= fRequired;
 
 					Vector2D flforce = across2 * (t->flthrust_ * t->layout_.maxSpeed_ * 8);
@@ -298,10 +315,10 @@ void Physics::step() {
 					Vector2D blengine(wc.x, wc.y);
 					Vector2D brengine(wc.x, wc.y);
 
-					flengine += (across1 * (t->range_));
-					frengine += (across2 * (t->range_));
-					blengine += (across2 * -(t->range_));
-					brengine += (across1 * -(t->range_));
+					flengine += (across1 * (t->radius_));
+					frengine += (across2 * (t->radius_));
+					blengine += (across2 * -(t->radius_));
+					brengine += (across1 * -(t->radius_));
 
 					body->ApplyLinearImpulse(b2Vec2(flforce.x_, flforce.y_), b2Vec2(flengine.x_, flengine.y_),false);
 					body->ApplyLinearImpulse(b2Vec2(frforce.x_, frforce.y_), b2Vec2(frengine.x_, frengine.y_),false);
@@ -312,11 +329,13 @@ void Physics::step() {
 					t->frthrust_ = 0;
 					t->blthrust_ = 0;
 					t->brthrust_ = 0;
-					t->death();
-					deadBodies_.push_back(body);
+					if(!t->layout_.isDummy_) {
+						t->death();
+						deadBodies_.push_back(body);
+					}
 				}
 				if (!t->layout_.canMove_ || t->layout_.isDummy_) {
-					body->SetLinearVelocity(b2Vec2(0,0));
+					body->SetLinearVelocity({0,0});
 				}
 
 				if(!t->layout_.canRotate_ || t->layout_.isDummy_)
@@ -331,7 +350,7 @@ void Physics::step() {
 
 				b2Vec2 vel = body->GetLinearVelocity();
 				float speed = vel.Normalize();
-				float maxSpeed = 100.0 * t->layout_.maxSpeed_;
+				float maxSpeed = 150.0 * t->layout_.maxSpeed_;
 				if ( speed > maxSpeed ) {
 				    body->SetLinearVelocity( maxSpeed * vel);
 				}
