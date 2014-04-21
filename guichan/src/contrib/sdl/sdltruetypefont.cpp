@@ -111,6 +111,9 @@ namespace gcn
             Color col = sdlGraphics->getColor();
 
             SDL_Color shadowCol;
+						shadowCol.r = 0;
+						shadowCol.g = 0;
+						shadowCol.g = 0;
             SDL_Color sdlCol;
             sdlCol.b = col.b;
             sdlCol.r = col.r;
