@@ -48,11 +48,11 @@ public:
 	Scan scan_;
 
 	Projectile(Ship& owner, ProjectileLayout& layout, Vector2D& loc, Coord& rotation) :
-		Object(PROJECTILE, loc, rotation, layout.radius_, 0, 0, false, false, false),
+		Object(PROJECTILE, loc, rotation, layout.radius_, false, false, false),
 		owner_(&owner),
 		layout_(layout),
 		startLoc_(loc),
-		scan_(*this){
+		scan_(this){
 	}
 
 	void move(BattleFieldLayout& bfl) {

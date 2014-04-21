@@ -124,6 +124,10 @@ void Game::mate() {
 
 void Game::cleanup() {
 	for(Population& p : teams_) {
+		for(Facility& f : p.facilities_) {
+			f.teamID_ = p[0].teamID_;
+		}
+
 		for(Ship& t : p) {
 			t.resetGameState();
 			t.brain_->destroy();
@@ -131,6 +135,10 @@ void Game::cleanup() {
 	}
 
 	for(Population& p : newTeams_) {
+		for(Facility& f : p.facilities_) {
+			f.teamID_ = p[0].teamID_;
+		}
+
 		for(Ship& t : p) {
 			t.resetGameState();
 		}

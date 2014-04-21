@@ -53,7 +53,7 @@ public:
 class Canvas {
 private:
 	static Canvas* instance_;
-	Canvas(Coord width, Coord height);
+	Canvas(Coord width, Coord height, BattleFieldLayout& bfl);
 	~Canvas();
 
 	struct SDL_Surface *screen_;
@@ -113,11 +113,14 @@ public:
 		return height_;
 	}
 
-	static Canvas* getInstance() {
-		if (instance_ == NULL)
-			instance_ = new Canvas(Options::getInstance()->WINDOW_WIDTH,
-					Options::getInstance()->WINDOW_HEIGHT);
+	static void init(BattleFieldLayout& bfl) {
+		assert(instance_ == NULL);
+		instance_ = new Canvas(Options::getInstance()->WINDOW_WIDTH,
+				Options::getInstance()->WINDOW_HEIGHT, bfl);
+	}
 
+	static Canvas* getInstance() {
+		assert(instance_ != NULL);
 		return instance_;
 	}
 

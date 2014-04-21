@@ -96,7 +96,7 @@ Ship make_ship(js::Object& obj, size_t teamID, PopulationLayout pl) {
 	s.layout_.maxFuel_ = get_double(obj, "ShipMaxFuel");
 	s.layout_.fuelRate_ = get_double(obj, "ShipFuelRate");
 	s.layout_.maxCooldown_ = get_size_t(obj, "ShipMaxCooldown");
-	s.layout_.ammoRate_ = get_size_t(obj, "ShipAmmoRate");
+	s.layout_.maxAmmo_ = get_size_t(obj, "ShipMaxAmmo");
 	s.layout_.maxDamage_ = get_size_t(obj, "ShipMaxDamage");
 	s.layout_.crashesPerDamage_ = get_size_t(obj, "ShipCrashesPerDamage");
 	s.layout_.numPerfDesc = get_size_t(obj, "ShipNumPerfDesc");

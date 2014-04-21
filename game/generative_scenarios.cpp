@@ -23,13 +23,13 @@ public:
 		assert(teams.size() == 2);
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.isDummy_ = false;
-		attackerTL.maxCooldown_ = 20;
+		attackerTL.maxCooldown_ = 5;
 		attackerTL.startFuel_ = 500;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = false;
-		defenderTL.maxCooldown_ = 20;
+		defenderTL.maxCooldown_ = 5;
 		defenderTL.startFuel_ = 500;
 		teams[1].update(defenderTL);
 
@@ -65,7 +65,8 @@ public:
 class SymmetricLinesAttackerMove : public SymmetricLines {
 public:
 	SymmetricLinesAttackerMove() : SymmetricLines() {
-		gl_.distance_ = 10500;
+		gl_.distance_ = 15000;
+		bfl_.iterations_ = 4000;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -73,13 +74,13 @@ public:
 		SymmetricLines::configureTeams(teams);
 
 		ShipLayout attackerTL = teams[0][0].layout_;
+		attackerTL.startFuel_ = 450;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.maxDamage_ = 100;
 		teams[1].update(defenderTL);
-
 	}
 };
 
@@ -92,16 +93,16 @@ public:
 
 	virtual void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
-		SymmetricLinesAttackerMove::configureTeams(teams);
+		SymmetricLines::configureTeams(teams);
 
 		ShipLayout attackerTL = teams[0][0].layout_;
+		attackerTL.startFuel_ = 800;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.maxDamage_ = 100;
 		teams[1].update(defenderTL);
-
 	}
 };
 
@@ -237,6 +238,13 @@ public:
 		bfl_.iterations_ = 15000;
 		gl_.distance_ = 120000;
 	}
+
+	virtual void configureTeams(vector<Population>& teams) {
+		SymmetricLinesFar::configureTeams(teams);
+		ShipLayout attackerTL = teams[0][0].layout_;
+		attackerTL.startFuel_ = 800;
+		teams[0].update(attackerTL);
+	}
 };
 
 class SymmetricLinesAttackerMoveFar : public SymmetricLinesFar {
@@ -275,9 +283,9 @@ public:
 	SymmetricLinesHuge() : SymmetricLines() {
 		bfl_.width_ = 600000;
 		bfl_.height_ = 600000;
-		bfl_.iterations_ = 3000;
+		bfl_.iterations_ = 6000;
 		gl_.center_ = {300000,300000};
-		gl_.distance_ = 100000;
+		gl_.distance_ = 200000;
 		gl_.spacing_ = 1000;
 	}
 
@@ -287,13 +295,17 @@ public:
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.startFuel_ = 2000;
 		attackerTL.maxFuel_ = 30000;
+		attackerTL.maxAmmo_ = 40;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.startFuel_ = 2000;
 		defenderTL.maxFuel_ = 30000;
+		defenderTL.maxAmmo_ = 40;
 		teams[1].update(defenderTL);
 		multiplyTeams(teams,5);
+		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
+		teams[1].facilities_.push_back(Facility(1, teams[1].layout_.fl_, {0,0}));
 	}
 
 	virtual void configurePools(vector<GeneticPool>& pools) {

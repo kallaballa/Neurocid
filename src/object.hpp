@@ -32,14 +32,12 @@ public:
 	Coord angVel_;
 	Coord rotation_;
 	Coord radius_;
-	Coord fuel_;
-	Coord maxFuel_;
 	bool explode_;
 	bool dead_;
 	bool crashed_;
 
-	Object(ObjectType type, Vector2D loc, Coord rotation, Coord radius, Coord fuel, Coord max_fuel, bool explode, bool dead, bool crashed) :
-			type_(type), loc_(loc), vel_(), angVel_(0), rotation_(rotation), radius_(radius), fuel_(fuel), maxFuel_(max_fuel), explode_(explode), dead_(dead), crashed_(crashed) {
+	Object(ObjectType type, Vector2D loc, Coord rotation, Coord radius, bool explode, bool dead, bool crashed) :
+			type_(type), loc_(loc), vel_(), angVel_(0), rotation_(rotation), radius_(radius), explode_(explode), dead_(dead), crashed_(crashed) {
 		assert(rotation != 10);
 	}
 
@@ -84,8 +82,6 @@ public:
 		ar & radius_;
 		ar & explode_;
 		ar & dead_;
-		ar & maxFuel_;
-		ar & fuel_;
 		ar & crashed_;
 	}
 #endif

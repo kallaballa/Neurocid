@@ -23,6 +23,7 @@ struct ShipLayout {
 	friend class boost::serialization::access;
 #endif
 	ProjectileLayout pl_;
+
 	bool isDummy_;
 	bool canShoot_;
 	bool canRotate_;
@@ -35,9 +36,10 @@ struct ShipLayout {
 	Coord maxFuel_;
 	Coord startFuel_;
 	Coord fuelRate_;
-	Coord ammoRate_;
 	Coord hardness_;
 
+	size_t maxAmmo_;
+	size_t startAmmo_;
 	size_t maxCooldown_;
 	size_t maxDamage_;
 	size_t crashesPerDamage_;
@@ -59,9 +61,10 @@ struct ShipLayout {
 	  ar & maxRotation_;
 	  ar & maxFuel_;
 	  ar & startFuel_;
-	  ar & ammoRate_;
 	  ar & fuelRate_;
+	  ar & hardness_;
 
+	  ar & maxAmmo_;
 	  ar & maxCooldown_;
 	  ar & maxDamage_;
 	  ar & crashesPerDamage_;
@@ -85,11 +88,13 @@ public:
 	size_t teamID_;
 	ShipLayout layout_;
 	Brain* brain_;
+	Scan scan_;
 
 	Coord flthrust_ = 0;
 	Coord frthrust_ = 0;
 	Coord blthrust_ = 0;
 	Coord brthrust_ = 0;
+	size_t ammo_ = 0;
 	size_t cool_down = 0;
 
 	size_t friendlyFire_ = 0;
@@ -97,12 +102,14 @@ public:
 	size_t crashDamage_= 0;
 	size_t hits_= 0;
 	size_t damage_= 0;
-	Coord recharged_ = 0 ;
+	size_t failedShots_ = 0;
+	size_t captured_ = 0;
 
+	Coord fuel_ = 0;
+	Coord recharged_ = 0 ;
 
 	Coord fitness_ = 0;
 	bool isElite = false;
-	Scan scan_;
 
 #ifndef _NO_SERIALIZE
 	template<class Archive>
@@ -113,11 +120,11 @@ public:
 	  ar & brain_;
 	}
 #endif
-	Ship() : Object(SHIP, {0,0}, 0, 0, 0, 0,false, true, false),
+	Ship() : Object(SHIP, {0,0}, 0, 0,false, true, false),
 			teamID_(0),
 			layout_(),
 			brain_(NULL),
-			scan_(*this)
+			scan_(this)
 	{};
 	Ship(size_t teamID, ShipLayout tl, Brain* brain = NULL);
 	~Ship() {
@@ -134,6 +141,7 @@ public:
 	void impact(Ship& t);
 	void impact(Projectile& p);
 	void recharge();
+	void capture();
 
 	void calculateFitness();
 	void resetGameState();

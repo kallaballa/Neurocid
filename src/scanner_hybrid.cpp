@@ -32,8 +32,7 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 		if(t.dead_ || t.layout_.isDummy_)
 			continue;
 
-		t.scan_ = Scan(t);
-		assert(!std::isnan(t.scan_.angVel_));
+		t.scan_ = Scan(&t);
 
 		// Scan for friends.
 		findNearest(bspFriends, t, FRIEND, t.scan_.objects_);
@@ -109,7 +108,7 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 		}
 
 		assert(t.scan_.objects_.size() == targetNum);
-/*
+
 		startNum = (numFriends + numEnemies + numFriendFacilities);
 		targetNum = (numFriends + numEnemies + numFriendFacilities + numEnemyFacilities);
 		findNearestN(bspEnemyFacilities, t, ENEMY_FACILITY, t.scan_.objects_, numEnemyFacilities);
@@ -134,7 +133,7 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 		}
 
 		assert(t.scan_.objects_.size() == targetNum);
-*/
+
 		/*
 		// Scan for projectiles
 		size_t startNum = (numFriends + numEnemies);
@@ -169,7 +168,7 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 			if(p->dead_ || t.layout_.disableProjectileFitness_)
 				continue;
 
-			p->scan_ = Scan(*p);
+			p->scan_ = Scan(p);
 
 			auto result = findNearest(bspEnemies, *p);
 			assert(p->scan_.objects_.empty() || p->scan_.objects_.size() == 2);
@@ -215,20 +214,73 @@ void HybridScanner::scan(BattleField& field) {
 	teamScan(teamB, teamA, centersB_, centersA_, bspB_, bspA_, bspFB_, bspFA_, bspPA_, field.layout_);
 
 
+	vector<Object*> objsA;
+	vector<Object*> objsB;
+
 	for(Facility& f : teamA.facilities_) {
-		vector<Object*> objs;
-		findInRange(bspA_, f, objs, f.layout_.range_);
-		for(Object* o: objs) {
-			static_cast<Ship*>(o)->recharge();
+		findInRange(bspA_, f, objsA, f.layout_.range_);
+		findInRange(bspB_, f, objsB, f.layout_.range_);
+		signed long diff = objsA.size() - objsB.size();
+		if(diff >= 3) {
+			if(f.teamID_ != 0) {
+				for(Object* o: objsA) {
+					static_cast<Ship*>(o)->capture();
+				}
+			}
+			f.teamID_ = 0;
+		} else if(diff <= -3) {
+			if(f.teamID_ != 1) {
+				for(Object* o: objsB) {
+					static_cast<Ship*>(o)->capture();
+				}
+			}
+			f.teamID_ = 1;
 		}
+
+		if(f.teamID_ == 0) {
+			for(Object* o: objsA) {
+				static_cast<Ship*>(o)->recharge();
+			}
+		} else {
+			for(Object* o: objsB) {
+				static_cast<Ship*>(o)->recharge();
+			}
+		}
+		objsA.clear();
+		objsB.clear();
 	}
 
 	for(Facility& f : teamB.facilities_) {
-		vector<Object*> objs;
-		findInRange(bspB_, f, objs, f.layout_.range_);
-		for(Object* o: objs) {
-			static_cast<Ship*>(o)->recharge();
+		findInRange(bspA_, f, objsA, f.layout_.range_);
+		findInRange(bspB_, f, objsB, f.layout_.range_);
+		signed long diff = objsA.size() - objsB.size();
+		if(diff >= 1) {
+			if(f.teamID_ != 0) {
+				for(Object* o: objsA) {
+					static_cast<Ship*>(o)->capture();
+				}
+			}
+			f.teamID_ = 0;
+		} else if(diff <= -1) {
+			if(f.teamID_ != 1) {
+				for(Object* o: objsB) {
+					static_cast<Ship*>(o)->capture();
+				}
+			}
+			f.teamID_ = 1;
 		}
+
+		if(f.teamID_ == 0) {
+			for(Object* o: objsA) {
+				static_cast<Ship*>(o)->recharge();
+			}
+		} else {
+			for(Object* o: objsB) {
+				static_cast<Ship*>(o)->recharge();
+			}
+		}
+		objsA.clear();
+		objsB.clear();
 	}
 }
 

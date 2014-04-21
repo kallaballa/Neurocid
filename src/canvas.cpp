@@ -23,7 +23,7 @@ using std::endl;
 
 Canvas* Canvas::instance_ = NULL;
 
-Canvas::Canvas(Coord width, Coord height) :
+Canvas::Canvas(Coord width, Coord height, BattleFieldLayout& bfl) :
 		screen_(NULL),
 		drawEngines_(false),
 		drawCenters_(false),
@@ -50,7 +50,7 @@ Canvas::Canvas(Coord width, Coord height) :
 		}
 	}
 
-	background_.init();
+	background_.init(bfl);
 }
 
 Canvas::~Canvas() {

@@ -30,15 +30,15 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	ScanObjectVector friendObj;
 	ScanObjectVector enemyObj;
 	ScanObjectVector friendFacilityObj;
-	//ScanObjectVector enemyFacilityObj;
+	ScanObjectVector enemyFacilityObj;
 
 	//sort the friendly and enemy scan objects by their angular distance
 	sortByAngularDistance(friendObj, scan.objects_, FRIEND);
 	sortByAngularDistance(enemyObj, scan.objects_, ENEMY);
 	sortByAngularDistance(friendFacilityObj, scan.objects_, FRIEND_FACILITY);
-	//sortByAngularDistance(enemyFacilityObj, scan.objects_, ENEMY_FACILITY);
+	sortByAngularDistance(enemyFacilityObj, scan.objects_, ENEMY_FACILITY);
 
-	assert(enemyObj.size() + friendObj.size() + friendFacilityObj.size() == scan.objects_.size());
+	assert(enemyObj.size() + friendObj.size() + friendFacilityObj.size() + enemyFacilityObj.size() == scan.objects_.size());
 
 	size_t inputCnt = 0;
 	for (ScanObject& so : friendObj) {
@@ -71,7 +71,7 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 		++inputCnt;
 	}
 
-	/*for (ScanObject& so : enemyFacilityObj) {
+	for (ScanObject& so : enemyFacilityObj) {
 		if (so.dir_ != NO_VECTOR2D) {
 			applyInput(inputCnt * 4, so.dir_.x_);
 			applyInput(inputCnt * 4 + 1, so.dir_.y_);
@@ -79,7 +79,7 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 			applyInput(inputCnt * 4 + 3, so.vel_.y_);
 		}
 		++inputCnt;
-	}*/
+	}
 
 	/*for (ScanObject& so : projectileObj) {
 		if (so.dir_ != NO_VECTOR2D) {
@@ -90,8 +90,10 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 		}
 		++inputCnt;
 	}*/
-	Vector2D vel = scan.vel_;
-	Coord angVel = scan.angVel_;
+
+	Ship& ship = *static_cast<Ship*>(scan.object_);
+	Vector2D vel = scan.normVel_;
+	Coord angVel = ship.angVel_;
 	if(angVel > 10)
 		angVel = 10;
 	else if(angVel < -10)
@@ -100,8 +102,10 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	applyInput((inputCnt * 4), vel.x_);
 	applyInput((inputCnt * 4) + 1, vel.y_);
 	applyInput((inputCnt * 4) + 2, angVel / 10);
-	applyInput((inputCnt * 4) + 3, scan.fuel_ / scan.max_fuel_);
-	applyInput((inputCnt * 4) + 4, shoot_ ? 1 : 0);
+	applyInput((inputCnt * 4) + 3, ship.fuel_ / ship.layout_.maxFuel_);
+	applyInput((inputCnt * 4) + 4, ship.ammo_ / ship.layout_.maxAmmo_);
+	applyInput((inputCnt * 4) + 5, ship.cool_down / ship.layout_.maxCooldown_);
+	applyInput((inputCnt * 4) + 6, ship.willShoot() ? 1 : -1);
 
 	for(size_t i = 0; i < layout_.numInputs_; ++i) {
 		assert(!std::isinf(inputs_[i]));

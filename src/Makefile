@@ -3,7 +3,7 @@ ifdef JAVASCRIPT
 TARGET := libneurocid.js
 endif
 
-SRCS    := brain_swarm.cpp brain_fann.cpp battlefield.cpp canvas.cpp ship.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner_bsp.cpp scanner_cluster.cpp time_tracker.cpp scanner_hybrid.cpp scan.cpp video_encoder.cpp gui/gui.cpp gui/osd.cpp ../guichan/src/contrib/sdl/sdltruetypefont.cpp background.cpp gui/theme.cpp gui/widgets.cpp gui/help.cpp
+SRCS    := brain_swarm.cpp brain_fann.cpp battlefield.cpp canvas.cpp ship.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner_bsp.cpp scanner_cluster.cpp time_tracker.cpp scanner_hybrid.cpp scan.cpp video_encoder.cpp gui/gui.cpp gui/osd.cpp ../guichan/src/contrib/sdl/sdltruetypefont.cpp background.cpp gui/theme.cpp gui/widgets.cpp gui/help.cpp frontend.cpp
 ifdef TANKWAR_GPU
 SRCS += KMeans.cpp
 endif

@@ -60,9 +60,10 @@ inline PopulationLayout make_default_population_layout() {
 			10000.0, // max_fuel_
 			10000.0, // start_fuel_
 			1.0, // fuel_rate_
-			5.0, // ammo_rate_
 			1.0, // hardness_
 
+			20,// max_ammo_
+			0, // start_ammo_
 			5, // max_cooldown_
 			6, // max_damage_
 			1, // crashes_per_damage_
@@ -70,7 +71,7 @@ inline PopulationLayout make_default_population_layout() {
 		},
 		//BrainLayout
 		{
-		    97, // inputs
+		    111, // inputs
 			5,  // outputs
 			5,  // layers
 			11, // neurons per hidden layer

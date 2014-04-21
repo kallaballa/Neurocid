@@ -354,30 +354,33 @@ public:
 
 		for(size_t i = 0; i < teams[0].size(); i++) {
 			teams[0][i].loc_ = startA;
-			teams[0][i].loc_ -= (sideDirA * ((teams[0][i].radius_ + gl.spacing_) * i));
+			teams[0][i].loc_ -= (sideDirA * ((teams[0][i].radius_ * 2 + gl.spacing_) * i));
 			teams[0][i].loc_ += (axisDir * fRand(-50, 50));
 			teams[0][i].rotation_ = facer_(tick(), 0, rotation);
 		}
 
-		startA += (axisDir * (teams[0].layout_.fl_.range_ * 4));
+		startA += (axisDir * (teams[0].layout_.fl_.range_ * 10));
+		startA += sideDirA * fRand(0,teams[0].layout_.fl_.range_ * 4);
 		for(size_t i = 0; i < teams[0].facilities_.size(); i++) {
 			teams[0].facilities_[i].loc_ = startA;
-			teams[0].facilities_[i].loc_ -= (sideDirA * ((teams[0].layout_.fl_.radius_ + gl.spacing_) * i));
+			teams[0].facilities_[i].loc_ -= (sideDirA * ((teams[0].layout_.fl_.range_ * 3 + gl.spacing_) * i));
 			teams[0].facilities_[i].loc_ += (axisDir * fRand(-50, 50));
 		}
 
 		for(size_t i = 0; i < teams[1].size(); i++) {
 			teams[1][i].loc_ = startB;
-			teams[1][i].loc_ -= (sideDirB * ((teams[1][i].radius_ + gl.spacing_) * i));
+			teams[1][i].loc_ -= (sideDirB * ((teams[1][i].radius_ *2 + gl.spacing_) * i));
 			teams[1][i].loc_ += (axisDir * fRand(-50, 50));
 			teams[1][i].rotation_ = facer_(tick(), 1, rotation);
 		}
 
 		axisDir.rotate(180);
-		startB += (axisDir * (teams[1].layout_.fl_.range_ * 4));
+		startB += (axisDir * (teams[1].layout_.fl_.range_ * 10));
+		startB += sideDirB * fRand(0,teams[1].layout_.fl_.range_ * 4);
+
 		for(size_t i = 0; i < teams[1].facilities_.size(); i++) {
 			teams[1].facilities_[i].loc_ = startB;
-			teams[1].facilities_[i].loc_ -= (sideDirB * ((teams[1].layout_.fl_.radius_ + gl.spacing_) * i));
+			teams[1].facilities_[i].loc_ -= (sideDirB * ((teams[1].layout_.fl_.range_ * 3 + gl.spacing_) * i));
 			teams[1].facilities_[i].loc_ += (axisDir * fRand(-50, 50));
 		}
 

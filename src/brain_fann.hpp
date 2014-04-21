@@ -8,6 +8,7 @@
 #include <vector>
 #include "scan.hpp"
 #include "brain.hpp"
+#include "battlefieldlayout.hpp"
 
 namespace neurocid {
 

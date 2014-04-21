@@ -30,10 +30,10 @@ public:
 	Scan scan_;
 
 	Facility(const size_t& teamID, const FacilityLayout& layout, const Vector2D& loc) :
-		Object(FACILITY, loc, 0, layout.radius_, 0, 0, false, false, false),
+		Object(FACILITY, loc, 0, layout.radius_, false, false, false),
 		teamID_(teamID),
 		layout_(layout),
-		scan_(*this){
+		scan_(this){
 	}
 
 	void move(BattleFieldLayout& bfl) {

@@ -8,12 +8,8 @@
 #ifndef SCAN_HPP_
 #define SCAN_HPP_
 
-#include "object.hpp"
 #include "2d.hpp"
 #include <vector>
-#ifndef _NO_BOOST_ALLOC
-#include <boost/pool/pool_alloc.hpp>
-#endif
 
 namespace neurocid {
 
@@ -74,46 +70,20 @@ public:
 	void calculate(Scan& scan);
 };
 
-#ifndef _NO_BOOST_ALLOC
-typedef vector<ScanObject, boost::pool_allocator<ScanObject>> ScanObjectVector;
-#else
 typedef vector<ScanObject> ScanObjectVector;
-#endif
+
+class Object;
 
 class Scan {
 public:
-	Vector2D dir_;
-	Vector2D loc_;
-	Vector2D vel_;
-	Coord angVel_;
-	Coord fuel_;
-	Coord max_fuel_;
-
-	Scan(Object& o) :
-		dir_(o.getDirection()),
-		loc_(o.loc_),
-		vel_(o.vel_),
-		angVel_(o.angVel_),
-		fuel_(o.fuel_),
-		max_fuel_(o.maxFuel_) {
-	}
-
+	Object* object_;
 	ScanObjectVector objects_;
+	Vector2D normVel_;
+	Vector2D normDir_;
 
-	void makeScanObject(ScanObjectType type, Vector2D loc, Coord dis, Vector2D vel) {
-		objects_.push_back(ScanObject(type, loc, dis, vel));
-	}
-
-	void calculate() {
-		Coord dist = vel_.length();
-		vel_.normalize();
-		vel_.rotate(dir_);
-		scale(vel_, dist, 10000);
-
-		for(ScanObject& so : objects_) {
-			so.calculate(*this);
-		}
-	}
+	Scan(Object* object);
+	void makeScanObject(ScanObjectType type, Vector2D loc, Coord dis, Vector2D vel);
+	void calculate();
 };
 } /* namespace neurocid */
 

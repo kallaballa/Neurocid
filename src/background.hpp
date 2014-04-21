@@ -17,6 +17,7 @@ namespace neurocid {
 using std::vector;
 
 class Canvas;
+class BattleFieldLayout;
 
 struct Star {
 	Coord x;
@@ -37,7 +38,7 @@ private:
 	vector<Star> buffers_;
 public:
 	Background(Canvas* canvas);
-	void init();
+	void init(BattleFieldLayout& bfl);
 	void draw(SDL_Surface* surface);
 };
 

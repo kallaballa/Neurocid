@@ -1,5 +1,5 @@
 #include "population.hpp"
-#include "neurocid.hpp"
+#include "frontend.hpp"
 #include "eventloop.hpp"
 #include "generative_scenarios.hpp"
 #include "json_scenario.hpp"
@@ -77,13 +77,6 @@ int main(int argc, char** argv) {
 #else
     scenarioName = "SymmetricLinesFar";
 #endif
-    //initialize the core subsystems - this is mandatory
-    neurocid::init(width,height,frameRate);
-    //initialize the canvas (graphical frontend) - this is mandatory
-    neurocid::init_canvas();
-    //initialize the gui - this is optional
-    neurocid::init_gui();
-
     string suffix = ".nsj";
     nc::Scenario* scenario = NULL;
 
@@ -99,8 +92,11 @@ int main(int argc, char** argv) {
 			exit(1);
 		}
     }
-
     assert(scenario != NULL);
+
+    //initialize all subsystems - core, canvas, gui
+    nc::init_full(width,height,frameRate, scenario->bfl_);
+
     //get default layouts
     nc::PopulationLayout pl = nc::make_default_population_layout();
 	nc::GeneticLayout gl = nc::make_default_genetic_layout();
@@ -164,5 +160,5 @@ int main(int argc, char** argv) {
     eventThread.join();
 	gameThread.join();
 #endif
-	SDL_Quit();
+	nc::quit();
 }
