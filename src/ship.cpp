@@ -58,7 +58,7 @@ void Ship::calculateFitness() {
 					assert(angDistPerfect >= 0);
 					assert(angDistPerfect <= 1);
 					Coord distance = so.dis_;
-					Coord maxDistance = 600000;
+					Coord maxDistance = p->layout_.max_travel_ * 5;
 					if(distance > maxDistance)
 						distance = maxDistance;
 
@@ -66,8 +66,7 @@ void Ship::calculateFitness() {
 					Coord distPerfect = (distance / maxDistance);
 
 					// euler distance matters more then angular distance does.
-					//http://tinyurl.com/kyhbu7c
-					Coord diffPerfect = (std::sqrt(distPerfect) * (angDistPerfect + 1)) / 2;
+					Coord diffPerfect = (distPerfect * (angDistPerfect + 1)) / 2;
 
 					assert(diffPerfect >= 0);
 					assert(diffPerfect <= 1);
@@ -105,13 +104,12 @@ void Ship::calculateFitness() {
 
 					// euclidian distance matters more then angular distance does
 					// http://tinyurl.com/kyhbu7c
-					Coord diffWorst = 1.0 - (std::sqrt(distWorst) * (angDistWorst + 1)) / 2;
+					Coord diffWorst = 1.0 - (std::pow(distWorst,2) * (std::pow(angDistWorst,2) + 1)) / 2;
 
 					assert(diffWorst >= 0);
 					assert(diffWorst <= 1);
 
 					//don't give an additional penalty for being in range because that's very likely in a swarm
-
 					totalDiff += diffWorst;
 					++ratedProjectiles;
 				}
@@ -119,7 +117,7 @@ void Ship::calculateFitness() {
 		}
 	}
 
-	assert(layout_.numPerfDesc == 4);
+	assert(layout_.numPerfDesc == 6);
 	if(projectiles_.empty()) {
 		fitness_ = 0;
 		perfDesc_.reserve(layout_.numPerfDesc);
@@ -132,6 +130,8 @@ void Ship::calculateFitness() {
 			aimRatio = (1.0 - (totalDiff / (ratedProjectiles)));
 			assert(aimRatio >= 0);
 			assert(aimRatio <= 1);
+			//scale the aimratio up to make the difference more clear in the genetic algorithm
+			//aimRatio *= 6;
 		}
 
 		// don't remove the assert!
@@ -144,6 +144,7 @@ void Ship::calculateFitness() {
 		Coord shots = projectiles_.size();
 		Coord failRatio = (failedShots_/shots);
 		Coord hitRatio = (Coord(hits_) / shots);
+		Coord rechargeRatio = (recharged_/layout_.maxFuel_);
 
 		//friendly fire may cancel hit ratio completely in the worst case.
 		Coord friendlyRatioInv = 1.0 - (Coord(friendlyFire_) / shots);
@@ -162,15 +163,32 @@ void Ship::calculateFitness() {
 		perfDesc_[1] = hitRatio;
 		perfDesc_[2] = friendlyRatioInv;
 		perfDesc_[3] = damageRatioInv;
+		perfDesc_[4] = failRatio;
+		perfDesc_[5] = rechargeRatio;
 
-		fitness_ = (((pow(aimRatio,2) * 6) / (failRatio + 1))
-				+ ((hits_/2) * damageRatioInv * friendlyRatioInv)) * (((recharged_/layout_.maxFuel_)/3) + 1);
+		fitness_ = (aimRatio / (failRatio + 1))
+				+ (hits_ * damageRatioInv * friendlyRatioInv) * ((rechargeRatio / 3) + 1);
 
 		if(dead_)
 			fitness_ /= 2;
+	}
 
-		if(fuel_ <= 0)
-			fitness_ /= 4;
+	/*
+	 * those that died of fuel depletion are fitter if the were close to a facility.
+	 * only has a noticeable effect on units that didn't score otherwise
+	 */
+	if(fitness_ == 0 && fuel_ <= 0) {
+		Coord minDist = NO_COORD;
+		for(const ScanObject& so : scan_.objects_) {
+			if(so.type_ == FRIEND_FACILITY) {
+				minDist = std::min(minDist, so.dis_);
+			}
+		}
+
+		if(minDist != NO_COORD) {
+			assert(minDist <= 600000);
+			fitness_ += 0.01 - ((minDist/600000) / 100);
+		}
 	}
 
 	assert(!std::isnan(fitness_));

@@ -60,11 +60,12 @@ void play_game(size_t gameIter, Scenario* scenario,
 	GameState& gs = *GameState::getInstance();
 	TimeTracker& tt = *TimeTracker::getInstance();
 	Options& opt = *Options::getInstance();
+#ifndef _NO_VIDEOENC
 	VideoEncoder& ve = *VideoEncoder::getInstance();
 	if (!videoFile.empty())
 		ve.init(opt.WINDOW_WIDTH, opt.WINDOW_HEIGHT, opt.FRAMERATE,
 				videoFile.c_str(), AV_CODEC_ID_H264);
-
+#endif;
 	scenario->configureTeams(teams);
 	scenario->configurePools(pools);
     while(gs.isRunning() && --gameIter > 0) {
@@ -75,9 +76,10 @@ void play_game(size_t gameIter, Scenario* scenario,
                     gs.setCurrentGame(NULL);
             });
     }
-	if (!videoFile.empty())
+#ifndef _NO_VIDEOENC
+    if (!videoFile.empty())
 		ve.close();
-
+#endif
 	gs.stop();
 }
 

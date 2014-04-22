@@ -359,8 +359,14 @@ public:
 			teams[0][i].rotation_ = facer_(tick(), 0, rotation);
 		}
 
+
 		startA += (axisDir * (teams[0].layout_.fl_.range_ * 10));
-		startA += sideDirA * fRand(0,teams[0].layout_.fl_.range_ * 4);
+		Vector2D transDir = sideDirA;
+		if(iRand(0,1))
+			transDir.rotate(180);
+
+		startA += transDir * fRand(0,teams[0].layout_.fl_.range_ * 4);
+
 		for(size_t i = 0; i < teams[0].facilities_.size(); i++) {
 			teams[0].facilities_[i].loc_ = startA;
 			teams[0].facilities_[i].loc_ -= (sideDirA * ((teams[0].layout_.fl_.range_ * 3 + gl.spacing_) * i));
@@ -376,7 +382,11 @@ public:
 
 		axisDir.rotate(180);
 		startB += (axisDir * (teams[1].layout_.fl_.range_ * 10));
-		startB += sideDirB * fRand(0,teams[1].layout_.fl_.range_ * 4);
+		transDir = sideDirB;
+		if(iRand(0,1))
+			transDir.rotate(180);
+
+		startB += transDir * fRand(0,teams[1].layout_.fl_.range_ * 4);
 
 		for(size_t i = 0; i < teams[1].facilities_.size(); i++) {
 			teams[1].facilities_[i].loc_ = startB;

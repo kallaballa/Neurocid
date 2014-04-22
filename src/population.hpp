@@ -67,7 +67,7 @@ inline PopulationLayout make_default_population_layout() {
 			5, // max_cooldown_
 			6, // max_damage_
 			1, // crashes_per_damage_
-			4  // num_perf_desc_
+			6  // num_perf_desc_
 		},
 		//BrainLayout
 		{

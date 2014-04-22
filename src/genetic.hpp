@@ -28,7 +28,7 @@ inline GeneticLayout make_default_genetic_layout() {
 			0.3, // maxPertubation
 			4,   // numElite
 			1,   // numEliteCopies
-			false// usePerfDesc_
+			false // usePerfDesc_
 	};
 }
 

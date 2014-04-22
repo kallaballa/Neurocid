@@ -233,8 +233,8 @@ Population GeneticPool::epoch(Population& old_pop) {
 		}
 	}
 
-	assert(old_pop.layout_.tl_.numPerfDesc == 4);
-	PerfDescBsp<4,Ship> pdb;
+	assert(old_pop.layout_.tl_.numPerfDesc == 6);
+	PerfDescBsp<6,Ship> pdb;
 	if(params_.usePerfDesc_) {
 		for(Ship& t : old_pop) {
 			pdb.insert(&t);

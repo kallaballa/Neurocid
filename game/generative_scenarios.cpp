@@ -24,13 +24,14 @@ public:
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.isDummy_ = false;
 		attackerTL.maxCooldown_ = 5;
-		attackerTL.startFuel_ = 500;
+		attackerTL.startFuel_ = 1000;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = false;
 		defenderTL.maxCooldown_ = 5;
-		defenderTL.startFuel_ = 500;
+		defenderTL.startFuel_ = 1000;
+		defenderTL.radius_ = 200;
 		teams[1].update(defenderTL);
 
 		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
@@ -74,12 +75,13 @@ public:
 		SymmetricLines::configureTeams(teams);
 
 		ShipLayout attackerTL = teams[0][0].layout_;
-		attackerTL.startFuel_ = 450;
+		attackerTL.startFuel_ = 1200;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = true;
 		defenderTL.maxDamage_ = 100;
+		defenderTL.radius_ = 200;
 		teams[1].update(defenderTL);
 	}
 };
@@ -93,10 +95,10 @@ public:
 
 	virtual void configureTeams(vector<Population>& teams) {
 		assert(teams.size() == 2);
-		SymmetricLines::configureTeams(teams);
+		SymmetricLinesAttackerMove::configureTeams(teams);
 
 		ShipLayout attackerTL = teams[0][0].layout_;
-		attackerTL.startFuel_ = 800;
+		attackerTL.startFuel_ = 2000;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
@@ -242,8 +244,13 @@ public:
 	virtual void configureTeams(vector<Population>& teams) {
 		SymmetricLinesFar::configureTeams(teams);
 		ShipLayout attackerTL = teams[0][0].layout_;
-		attackerTL.startFuel_ = 800;
+		attackerTL.startFuel_ = 2000;
 		teams[0].update(attackerTL);
+
+		ShipLayout defenderTL = teams[1][0].layout_;
+		defenderTL.startFuel_ = 2000;
+		teams[1].update(defenderTL);
+
 	}
 };
 

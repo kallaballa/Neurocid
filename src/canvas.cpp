@@ -237,8 +237,15 @@ void Canvas::drawShip(Ship& ship, Color c) {
 }
 
 void Canvas::drawFacility(Facility& facility, Color c) {
-		fillCircle(facility.loc_, facility.radius_, c);
-		drawEllipse(facility.loc_, facility.layout_.range_, facility.layout_.range_, c);
+		fillCircle(facility.loc_, facility.layout_.range_, c);
+		for(size_t i = 0; i < 3; ++i) {
+			Sint16 start = iRand(0,360);
+			Sint16 end = iRand(start,360);
+			pieRGBA(screen_, scaleX(facility.loc_.x_), scaleY(facility.loc_.y_), round(scale_ * (facility.layout_.range_ / 1.5 )), start, end, 0, 0, 255, 255);
+			start = iRand(0,360);
+			end = iRand(start,360);
+			pieRGBA(screen_, scaleX(facility.loc_.x_), scaleY(facility.loc_.y_), round(scale_ * (facility.layout_.range_ / 1.5 )), start, end, 255, 255, 0, 255);
+		}
 }
 
 void Canvas::drawProjectile(Projectile& pro, Color& c) {
