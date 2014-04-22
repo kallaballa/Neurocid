@@ -31,7 +31,6 @@ public:
 		defenderTL.isDummy_ = false;
 		defenderTL.maxCooldown_ = 5;
 		defenderTL.startFuel_ = 1000;
-		defenderTL.radius_ = 200;
 		teams[1].update(defenderTL);
 
 		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));

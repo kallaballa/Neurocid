@@ -65,7 +65,7 @@ void play_game(size_t gameIter, Scenario* scenario,
 	if (!videoFile.empty())
 		ve.init(opt.WINDOW_WIDTH, opt.WINDOW_HEIGHT, opt.FRAMERATE,
 				videoFile.c_str(), AV_CODEC_ID_H264);
-#endif;
+#endif
 	scenario->configureTeams(teams);
 	scenario->configurePools(pools);
     while(gs.isRunning() && --gameIter > 0) {
