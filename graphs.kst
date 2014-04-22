@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kst version="2.0">
+    <data>
+        <source reader="ASCII file" file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv">
+            <properties vector="INDEX" interpretation="1" delimiters="#" columntype="2" columndelimiter=":" headerstart="0" fields="0" readfields="false" usedot="true" columnwidthisconst="false" readunits="false" units="0" limitFileBuffer="false" limitFileBufferSize="0" useThreads="1" asciiTimeFormat="hh:mm:ss.zzz" dataRate="1" offsetDateTime="false" offsetFileDate="false" offsetRelavive="true" dateTimeOffset="2014-04-16T16:54:07" relativeOffset="0"/>
+        </source>
+    </data>
+    <variables>
+        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="INDEX" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="23" initialXNum="265"/>
+        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 2" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="bestfit" initialVNum="24" initialXNum="277"/>
+        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 3" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avgfit" initialVNum="25" initialXNum="289"/>
+        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 4" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avghits" initialVNum="26" initialXNum="301"/>
+        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 5" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avgfriendly" initialVNum="27" initialXNum="313"/>
+        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 6" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avgcrash" initialVNum="28" initialXNum="325"/>
+        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 8" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avgbs" initialVNum="29" initialXNum="337"/>
+        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 11" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="bestfit" initialVNum="37" initialXNum="433"/>
+        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 12" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avgfit" initialVNum="38" initialXNum="445"/>
+        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 13" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avghits" initialVNum="39" initialXNum="457"/>
+        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 14" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avgfriendly" initialVNum="40" initialXNum="469"/>
+        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 15" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avgcrash" initialVNum="41" initialXNum="481"/>
+        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 16" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avgdmg" initialVNum="42" initialXNum="493"/>
+    </variables>
+    <objects/>
+    <relations>
+        <curve xvector="INDEX (V23)" yvector="bestfit (V24)" color="#ff0000" headcolor="#000000" barfillcolor="#000000" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="0" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="0" initialCNum="22"/>
+        <curve xvector="INDEX (V23)" yvector="avgfit (V25)" color="#0000ff" headcolor="#000000" barfillcolor="#000000" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="1" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="3276849" initialCNum="23"/>
+        <curve xvector="INDEX (V23)" yvector="avghits (V26)" color="#008000" headcolor="#000000" barfillcolor="#000000" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="2" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="0" initialCNum="24"/>
+        <curve xvector="INDEX (V23)" yvector="avgfriendly (V27)" color="#000000" headcolor="#000000" barfillcolor="#000000" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="3" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="0" initialCNum="25"/>
+        <curve xvector="INDEX (V23)" yvector="avgcrash (V28)" color="#ff00ff" headcolor="#000000" barfillcolor="#000000" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="4" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="65536" initialCNum="26"/>
+        <curve xvector="INDEX (V23)" yvector="avgbs (V29)" color="#4682b4" headcolor="#000000" barfillcolor="#000000" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="5" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="43188224" initialCNum="27"/>
+        <curve xvector="INDEX (V23)" yvector="bestfit (V37)" color="#ff0000" headcolor="#000000" barfillcolor="#000000" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="0" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="0" initialCNum="34"/>
+        <curve xvector="INDEX (V23)" yvector="avgfit (V38)" color="#0000ff" headcolor="#000000" barfillcolor="#000000" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="1" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="0" initialCNum="35"/>
+        <curve xvector="INDEX (V23)" yvector="avghits (V39)" color="#00aa00" headcolor="#000000" barfillcolor="#000000" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="2" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="0" initialCNum="36"/>
+        <curve xvector="INDEX (V23)" yvector="avgfriendly (V40)" color="#000000" headcolor="#000000" barfillcolor="#000000" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="3" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="0" initialCNum="37"/>
+        <curve xvector="INDEX (V23)" yvector="avgcrash (V41)" color="#ff00ff" headcolor="#000000" barfillcolor="#000000" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="4" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="0" initialCNum="38"/>
+        <curve xvector="INDEX (V23)" yvector="avgdmg (V42)" color="#0055ff" headcolor="#000000" barfillcolor="#000000" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="5" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="0" initialCNum="39"/>
+    </relations>
+    <graphics>
+        <view name="View &amp;1" width="1595" height="786" color="#ffffff" style="1">
+            <plot tiedxzoom="false" tiedyzoom="false" leftlabelvisible="true" bottomlabelvisible="true" rightlabelvisible="true" toplabelvisible="true" globalfont="Sans Serif,9,-1,5,50,0,0,0,0,0" globalfontscale="16" globalfontcolor="#000000" showlegend="true" hidebottomaxislabel="false" hidetopaxislabel="false" hideleftaxislabel="false" hiderightaxislabel="false" numberaxislabelscale="true" initialPlotNum="5" name="Plot">
+                <position x="2.99999881928624" y="391.35837653681" z="500"/>
+                <rect x="0" y="0" width="1586.99937540243" height="384.512457413716"/>
+                <relativesize width="0.994983934421584" height="0.489201599762998" centerx="0.499372844213479" centery="0.742512220411791" posx="0.0018808770026873" posy="0.497911420530292" leftx="0.0018808770026873" lefty="0.98711302029329" rightx="0.996864811424271" righty="0.98711302029329" fixaspect="false" lockpostodata="false"/>
+                <transform m11="1" m12="0" m13="0" m21="0" m22="1" m23="0" m31="0" m32="0" m33="1"/>
+                <pen style="1" width="1" miterlimit="2" cap="16" joinStyle="64">
+                    <brush color="#000000" style="1"/>
+                </pen>
+                <brush color="#ffffff" style="1"/>
+                <legend auto="true" title="" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="9.6" color="#000000" verticaldisplay="false" name="Legend">
+                    <position x="102.413678429983" y="94.3526665547755" z="500"/>
+                    <rect x="0" y="0" width="949" height="30"/>
+                    <relativesize width="0.629310605481349" height="0.103443832266845" centerx="0.342117965594186" centery="0.330512238714068" posx="0.0274626628535113" posy="0.278790322580645" leftx="0.0274626628535113" lefty="0.38223415484749" rightx="0.656773268334861" righty="0.38223415484749" fixaspect="false" lockpostodata="false"/>
+                    <transform m11="1" m12="0" m13="0" m21="0" m22="1" m23="0" m31="0" m32="0" m33="1"/>
+                    <pen style="1" width="1" miterlimit="2" cap="16" joinStyle="64">
+                        <brush color="#000000" style="1"/>
+                    </pen>
+                    <brush color="#ffffff" style="1"/>
+                </legend>
+                <cartesianrender name="Cartesian Plot" type="1">
+                    <relation tag="bestfit vs INDEX (C34)"/>
+                    <relation tag="avgfit vs INDEX (C35)"/>
+                    <relation tag="avghits vs INDEX (C36)"/>
+                    <relation tag="avgfriendly vs INDEX (C37)"/>
+                    <relation tag="avgcrash vs INDEX (C38)"/>
+                    <relation tag="avgdmg vs INDEX (C39)"/>
+                </cartesianrender>
+                <plotaxis id="xaxis" visible="true" log="false" reversed="false" autobaseoffset="true" baseoffset="false" forceoffsetmin="false" interpret="false" interpretation="1" display="4" displayformatstring="hh:mm:ss.zzz" majortickmode="5" minortickcount="5" autominortickcount="true" drawmajorticks="true" drawminorticks="true" drawmajorgridlines="true" drawminorgridlines="false" drawmajorgridlinecolor="#a0a0a4" drawminorgridlinecolor="#a0a0a4" drawmajorgridlinestyle="2" drawminorgridlinestyle="2" drawmajorgridlinewidth="1" drawminorgridlinewidth="1" significantdigits="9" rotation="0" zoommode="2" timezonename="GMT" timezoneoffset="0">
+                    <plotmarkers xaxis="true" linecolor="#000000" linestyle="1" linewidth="1" curvemode="0"/>
+                </plotaxis>
+                <plotaxis id="yaxis" visible="true" log="false" reversed="false" autobaseoffset="true" baseoffset="false" forceoffsetmin="false" interpret="false" interpretation="1" display="4" displayformatstring="hh:mm:ss.zzz" majortickmode="5" minortickcount="5" autominortickcount="true" drawmajorticks="true" drawminorticks="true" drawmajorgridlines="true" drawminorgridlines="false" drawmajorgridlinecolor="#a0a0a4" drawminorgridlinecolor="#a0a0a4" drawmajorgridlinestyle="2" drawminorgridlinestyle="2" drawmajorgridlinewidth="1" drawminorgridlinewidth="1" significantdigits="9" rotation="0" zoommode="2" timezonename="GMT" timezoneoffset="0">
+                    <plotmarkers xaxis="false" linecolor="#000000" linestyle="1" linewidth="1" curvemode="-8215066"/>
+                </plotaxis>
+                <plotlabel id="leftlabel" visible="true" overridetext="" autolabel="true" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <plotlabel id="rightlabel" visible="true" overridetext="" autolabel="true" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <plotlabel id="toplabel" visible="true" overridetext="" autolabel="true" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <plotlabel id="bottomlabel" visible="true" overridetext="" autolabel="true" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <plotlabel id="numberlabel" visible="true" overridetext="" autolabel="true" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <projectionrect x="101.932586242924" y="0.00173208987191131" width="59.2528949279006" height="5.8996170444103"/>
+            </plot>
+            <plot tiedxzoom="false" tiedyzoom="false" leftlabelvisible="true" bottomlabelvisible="true" rightlabelvisible="true" toplabelvisible="true" globalfont="Sans Serif,9,-1,5,50,0,0,0,0,0" globalfontscale="16" globalfontcolor="#000000" showlegend="true" hidebottomaxislabel="false" hidetopaxislabel="false" hideleftaxislabel="false" hiderightaxislabel="false" numberaxislabelscale="true" initialPlotNum="4" name="Plot">
+                <position x="2.99999881928624" y="6.84591912309287" z="500"/>
+                <rect x="0" y="0" width="1586.99937540243" height="384.512457413716"/>
+                <relativesize width="0.994983934421584" height="0.489201599762998" centerx="0.499372844213479" centery="0.253310620648793" posx="0.0018808770026873" posy="0.00870982076729373" leftx="0.0018808770026873" lefty="0.497911420530292" rightx="0.996864811424271" righty="0.497911420530292" fixaspect="false" lockpostodata="false"/>
+                <transform m11="1" m12="0" m13="0" m21="0" m22="1" m23="0" m31="0" m32="0" m33="1"/>
+                <pen style="1" width="1" miterlimit="2" cap="16" joinStyle="64">
+                    <brush color="#000000" style="1"/>
+                </pen>
+                <brush color="#ffffff" style="1"/>
+                <legend auto="true" title="" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="9.6" color="#000000" verticaldisplay="false" name="Legend">
+                    <position x="106.450823246559" y="56.0157366084868" z="500"/>
+                    <rect x="0" y="0" width="929" height="30"/>
+                    <relativesize width="0.616048000518624" height="0.103443832266845" centerx="0.338163815956801" centery="0.198321607014412" posx="0.0301398156974896" posy="0.146599690880989" leftx="0.0301398156974896" lefty="0.250043523147834" rightx="0.646187816216113" righty="0.250043523147834" fixaspect="false" lockpostodata="false"/>
+                    <transform m11="1" m12="0" m13="0" m21="0" m22="1" m23="0" m31="0" m32="0" m33="1"/>
+                    <pen style="1" width="1" miterlimit="2" cap="16" joinStyle="64">
+                        <brush color="#000000" style="1"/>
+                    </pen>
+                    <brush color="#ffffff" style="1"/>
+                </legend>
+                <cartesianrender name="Cartesian Plot" type="1">
+                    <relation tag="bestfit vs INDEX (C22)"/>
+                    <relation tag="avgfit vs INDEX (C23)"/>
+                    <relation tag="avghits vs INDEX (C24)"/>
+                    <relation tag="avgfriendly vs INDEX (C25)"/>
+                    <relation tag="avgcrash vs INDEX (C26)"/>
+                    <relation tag="avgbs vs INDEX (C27)"/>
+                </cartesianrender>
+                <plotaxis id="xaxis" visible="true" log="false" reversed="false" autobaseoffset="true" baseoffset="false" forceoffsetmin="false" interpret="false" interpretation="1" display="4" displayformatstring="hh:mm:ss.zzz" majortickmode="5" minortickcount="5" autominortickcount="true" drawmajorticks="true" drawminorticks="true" drawmajorgridlines="true" drawminorgridlines="false" drawmajorgridlinecolor="#a0a0a4" drawminorgridlinecolor="#a0a0a4" drawmajorgridlinestyle="2" drawminorgridlinestyle="2" drawmajorgridlinewidth="1" drawminorgridlinewidth="1" significantdigits="9" rotation="0" zoommode="2" timezonename="GMT" timezoneoffset="0">
+                    <plotmarkers xaxis="true" linecolor="#000000" linestyle="1" linewidth="1" curvemode="0"/>
+                </plotaxis>
+                <plotaxis id="yaxis" visible="true" log="false" reversed="false" autobaseoffset="true" baseoffset="false" forceoffsetmin="false" interpret="false" interpretation="1" display="4" displayformatstring="hh:mm:ss.zzz" majortickmode="5" minortickcount="5" autominortickcount="true" drawmajorticks="true" drawminorticks="true" drawmajorgridlines="true" drawminorgridlines="false" drawmajorgridlinecolor="#a0a0a4" drawminorgridlinecolor="#a0a0a4" drawmajorgridlinestyle="2" drawminorgridlinestyle="2" drawmajorgridlinewidth="1" drawminorgridlinewidth="1" significantdigits="9" rotation="0" zoommode="2" timezonename="GMT" timezoneoffset="0">
+                    <plotmarkers xaxis="false" linecolor="#000000" linestyle="1" linewidth="1" curvemode="43567328"/>
+                </plotaxis>
+                <plotlabel id="leftlabel" visible="true" overridetext="" autolabel="true" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <plotlabel id="rightlabel" visible="true" overridetext="" autolabel="true" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <plotlabel id="toplabel" visible="true" overridetext="" autolabel="true" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <plotlabel id="bottomlabel" visible="true" overridetext="" autolabel="true" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <plotlabel id="numberlabel" visible="true" overridetext="" autolabel="true" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <projectionrect x="199.782095428471" y="-0.304375614254739" width="14.1669427495453" height="2.78550831670165"/>
+            </plot>
+        </view>
+    </graphics>
+</kst>
