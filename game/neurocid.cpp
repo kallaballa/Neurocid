@@ -2,7 +2,10 @@
 #include "frontend.hpp"
 #include "eventloop.hpp"
 #include "generative_scenarios.hpp"
+
+#ifndef _NO_JSON
 #include "json_scenario.hpp"
+#endif
 
 #ifndef _NO_THREAD
 #include <thread>
@@ -81,7 +84,9 @@ int main(int argc, char** argv) {
     nc::Scenario* scenario = NULL;
 
     if(scenarioName.length() > suffix.length() && std::equal(suffix.rbegin(), suffix.rend(), scenarioName.rbegin())) {
+#ifndef _NO_JSON
     	scenario = new nc::json::JsonScenario(scenarioName);
+#endif
     } else {
 		nc::load_delarative_scenarios();
 		// get a declarative scenario by name

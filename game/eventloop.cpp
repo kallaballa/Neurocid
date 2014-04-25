@@ -52,6 +52,7 @@ inline void dumpTeams() {
 }
 
 void EventLoop::process() {
+#ifndef _NO_EVENTLOOP
 	GameState& gameState = *GameState::getInstance();
 	Canvas& canvas = *Canvas::getInstance();
 	Renderer& renderer = *Renderer::getInstance();
@@ -154,7 +155,7 @@ void EventLoop::process() {
 		}
 	}
 	std::this_thread::sleep_for(std::chrono::milliseconds(40));
-
+#endif
 }
 
 } /* namespace tankwar */

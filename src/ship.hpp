@@ -17,6 +17,7 @@
 namespace neurocid {
 
 typedef BrainSwarm Brain;
+struct BattleFieldLayout;
 
 struct ShipLayout {
 #ifndef _NO_SERIALIZE
@@ -143,7 +144,7 @@ public:
 	void recharge();
 	void capture();
 
-	void calculateFitness();
+	void calculateFitness(const BattleFieldLayout& bfl);
 	void resetGameState();
 	void resetScore();
 	void update(ShipLayout tl);

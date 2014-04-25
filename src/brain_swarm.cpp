@@ -93,6 +93,7 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 	Ship& ship = *static_cast<Ship*>(scan.object_);
 	Vector2D vel = scan.normVel_;
+	Vector2D center = scan.normCenter_;
 	Coord angVel = ship.angVel_;
 	if(angVel > 10)
 		angVel = 10;
@@ -101,11 +102,13 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 	applyInput((inputCnt * 4), vel.x_);
 	applyInput((inputCnt * 4) + 1, vel.y_);
-	applyInput((inputCnt * 4) + 2, angVel / 10);
-	applyInput((inputCnt * 4) + 3, ship.fuel_ / ship.layout_.maxFuel_);
-	applyInput((inputCnt * 4) + 4, ship.ammo_ / ship.layout_.maxAmmo_);
-	applyInput((inputCnt * 4) + 5, ship.cool_down / ship.layout_.maxCooldown_);
-	applyInput((inputCnt * 4) + 6, ship.willShoot() ? 1 : -1);
+	applyInput((inputCnt * 4) + 2, center.x_);
+	applyInput((inputCnt * 4) + 3, center.y_);
+	applyInput((inputCnt * 4) + 4, angVel / 10);
+	applyInput((inputCnt * 4) + 5, ((ship.fuel_ / ship.layout_.maxFuel_) * 2.0) -1.0);
+	applyInput((inputCnt * 4) + 6, ((ship.ammo_ / ship.layout_.maxAmmo_) * 2.0) -1.0);
+	applyInput((inputCnt * 4) + 7, ((ship.cool_down / ship.layout_.maxCooldown_) * 2.0) -1.0);
+//	applyInput((inputCnt * 4) + 6, ship.willShoot() ? 1 : -1);
 
 	for(size_t i = 0; i < layout_.numInputs_; ++i) {
 		assert(!std::isinf(inputs_[i]));

@@ -1,7 +1,7 @@
 CXX      := g++
-CXXFLAGS := -fno-strict-aliasing -std=c++0x -pedantic -Wall -I../kmlocal/src/ -I../fann/src/include -I../box2d/ -I../guichan/include/ `pkg-config --cflags sdl SDL_gfx SDL_image SDL_ttf` 
+CXXFLAGS := -fno-strict-aliasing -std=c++0x -pedantic -Wall -I../kmlocal/src/ -I../fann/src/include -I../box2d/ -I../guichan/include/ `pkg-config --cflags sdl SDL_image SDL_ttf` 
 LDFLAGS  := -L/opt/local/lib -L../kmlocal/src/ -L../fann/src/ -L../box2d/Box2D -L../guichan/ -L../libnoise/lib
-LIBS     := -lklocal -lm -lfann -lguichan -lguichan_sdl -lBox2D `pkg-config --libs sdl SDL_gfx SDL_image SDL_ttf`
+LIBS     := -lklocal -lm -lfann -lguichan -lguichan_sdl -lBox2D `pkg-config --libs sdl SDL_image SDL_ttf`
 .PHONY: all release debian-release info debug clean debian-clean distclean 
 NVCC     := /usr/local/cuda/bin/nvcc
 NVCC_HOST_CXX := g++-4.6
@@ -24,7 +24,26 @@ WITHOUT_SERIALIZE=1
 WITHOUT_VIDEOENC=1
 WITHOUT_THREADS=1
 WITHOUT_PROGRAM_OPTS=1
-WITOUT_POOL_ALLOC=1
+WITHOUT_POOL_ALLOC=1
+WITHOUT_JSON=1
+WITHOUT_EVENTLOOP=1
+WITHOUT_SDLGFX=1
+endif
+
+ifdef WITHOUT_SDLGFX
+CXXFLAGS += -D_NO_SDLGFX
+else
+CXXFLAGS += `pkg-config --cflags SDL_gfx`
+LIBS +=  `pkg-config --libs SDL_gfx`
+endif
+
+
+ifdef WITHOUT_EVENTLOOP
+CXXFLAGS += -D_NO_EVENTLOOP
+endif
+
+ifdef WITHOUT_JSON
+CXXFLAGS += -D_NO_JSON
 endif
 
 ifdef WITH_OPENMP
@@ -83,7 +102,7 @@ info: CXXFLAGS += -g3 -O0
 info: LDFLAGS += -Wl,--export-dynamic -rdynamic
 info: dirs
 
-debug: CXXFLAGS += -g3 -O0
+debug: CXXFLAGS += -g3 -O0 -ffpe-trap=invalid,zero,overflow
 debug: LDFLAGS += -Wl,--export-dynamic -rdynamic
 debug: dirs
 
@@ -95,8 +114,8 @@ export LIBS
 
 dirs:
 	${MAKE} -C src/ ${MAKEFLAGS} CXX=${CXX} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" ${MAKECMDGOALS}
-ifndef JAVASCRIPT
 	${MAKE} -C game/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
+ifndef JAVASCRIPT
 	${MAKE} -C tests/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 endif
 #	./run.sh tests/tests

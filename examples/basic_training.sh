@@ -16,12 +16,14 @@ function run() {
 
 [ -n "$1" ] && POP="$1"
 
-#POP=`run 10000 AimOnOneNoMove $POP`
+#POP=`run 1000 AimOnOneNoMove $POP`
 #POP=`run 300 SymmetricLinesNoMoveShort $POP`
-POP=`run 2000 SymmetricLinesAttackerMove $POP`
+POP=`run 1000 SymmetricLinesAttackerMove $POP`
 #POP=`run 500 SymmetricLinesAttackerMoveFar $POP`
-POP=`run 500 SymmetricLinesAttackerMoveLong $POP`
+POP=`run 1000 SymmetricLinesAttackerMoveLong $POP`
+POP=`run 1000 SymmetricLines $POP $POP`
 POP=`run 5000 SymmetricLinesFarLong $POP $POP`
+
 
 
 

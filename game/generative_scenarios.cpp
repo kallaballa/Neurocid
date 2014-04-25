@@ -12,10 +12,10 @@ public:
 	SymmetricLines() : Scenario() {
 		bfl_.width_ = 600000;
 		bfl_.height_ = 600000;
-		bfl_.iterations_ = 750;
+		bfl_.iterations_ = 5000;
 
 		gl_.center_ = {300000,300000};
-		gl_.distance_ = 10000;
+		gl_.distance_ = 20000;
 		gl_.spacing_ = 400;
 	}
 
@@ -23,12 +23,14 @@ public:
 		assert(teams.size() == 2);
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.isDummy_ = false;
+		attackerTL.canMove_ = true;
 		attackerTL.maxCooldown_ = 5;
 		attackerTL.startFuel_ = 1000;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.isDummy_ = false;
+		defenderTL.canMove_ = true;
 		defenderTL.maxCooldown_ = 5;
 		defenderTL.startFuel_ = 1000;
 		teams[1].update(defenderTL);
@@ -38,7 +40,7 @@ public:
 	}
 
 	virtual Placer* createPlacer() {
-		return new FuzzyOppositePlacer<IterRot, OppositeFacer, Spacer>({0,0}, {0}, {Scenario::gl_});
+		return new FuzzyOppositePlacer<IterRot, RandomFacer, Spacer>({0,0}, {}, {Scenario::gl_});
 	}
 };
 
@@ -74,7 +76,7 @@ public:
 		SymmetricLines::configureTeams(teams);
 
 		ShipLayout attackerTL = teams[0][0].layout_;
-		attackerTL.startFuel_ = 1200;
+		attackerTL.startFuel_ = 1000;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
@@ -192,7 +194,7 @@ public:
 	}
 
 	virtual Placer* createPlacer() {
-		return new OppositePlacerTwoRows<IterRot, OppositeFacer, Spacer>({0,0}, {0}, {Scenario::gl_});
+		return new OppositePlacerTwoRows<IterRot, RandomFacer, Spacer>({0,0}, {}, {Scenario::gl_});
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -289,7 +291,7 @@ public:
 	SymmetricLinesHuge() : SymmetricLines() {
 		bfl_.width_ = 600000;
 		bfl_.height_ = 600000;
-		bfl_.iterations_ = 6000;
+		bfl_.iterations_ = 10000;
 		gl_.center_ = {300000,300000};
 		gl_.distance_ = 200000;
 		gl_.spacing_ = 1000;
@@ -300,13 +302,13 @@ public:
 
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.startFuel_ = 2000;
-		attackerTL.maxFuel_ = 30000;
+		attackerTL.maxFuel_ = 10000;
 		attackerTL.maxAmmo_ = 40;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.startFuel_ = 2000;
-		defenderTL.maxFuel_ = 30000;
+		defenderTL.maxFuel_ = 10000;
 		defenderTL.maxAmmo_ = 40;
 		teams[1].update(defenderTL);
 		multiplyTeams(teams,5);
@@ -374,6 +376,7 @@ public:
 		AimOnOne::configureTeams(teams);
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = false;
+		attackerTL.startAmmo_ = 5;
 		attackerTL.maxCooldown_ = 10;
 
 		teams[0].update(attackerTL);
@@ -408,7 +411,7 @@ public:
 	};
 
 	Placer* createPlacer() {
-		return new CrossPlacerTwoRows<IterRot, OppositeFacer, Spacer>({0,0}, {0}, {Scenario::gl_});
+		return new CrossPlacerTwoRows<IterRot, RandomFacer, Spacer>({0,0}, {}, {Scenario::gl_});
 	}
 };
 

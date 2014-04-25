@@ -123,7 +123,7 @@ void BrainFann::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	assert(nn_ != NULL);
 	assert(inputs_ != NULL);
 	assert(!destroyed_);
-	assert(layout_.numInputs_ == (scan.objects_.size() * 4) + 7);
+	assert(layout_.numInputs_ == (scan.objects_.size() * 4) + 8);
 
 	for(size_t i = 1; i < layout_.numBrains_ + 1; ++i) {
 		assert(layout_.numInputs_ == fann_get_num_input(nn_[i]));
@@ -136,7 +136,7 @@ void BrainFann::run() {
 	fann_type val = -1;
 	size_t selected = 1;
 	for(size_t i = 0; i < layout_.numBrains_; ++i) {
-		if(outputs[i] >= val) {
+		if(outputs[i] > val) {
 			val = outputs[i];
 			selected = i + 1;
 		}

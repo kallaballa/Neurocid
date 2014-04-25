@@ -90,18 +90,18 @@ void Game::score() {
 	size_t damage = (teams_[0].stats_.totalDamage_+ teams_[1].stats_.totalDamage_);
 
 	assert(collisions == damage);*/
-	vector<size_t> alive(2,0);
+	vector<size_t> dead(2,0);
 
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		Population& team = teams_[i];
 		for(Ship& t : team) {
-			if(!t.dead_)
-				++alive[i];
+			if(t.dead_)
+				++dead[i];
 		}
 	}
 
-	if(alive[0] != alive[1]) {
-		if(alive[0] > alive[1]) {
+	if(dead[0] != dead[1]) {
+		if(dead[0] < dead[1]) {
 			teams_[0].score_++;
 			teams_[0].winner_=true;
 		} else {
@@ -117,7 +117,7 @@ void Game::score() {
 void Game::mate() {
 	newTeams_.clear();
 	for(size_t i = 0; i < teams_.size(); ++i) {
-		newTeams_.push_back(pools_[i].epoch(teams_[i]));
+		newTeams_.push_back(pools_[i].epoch(teams_[i],scenario_->bfl_));
 	}
 }
 

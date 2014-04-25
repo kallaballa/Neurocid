@@ -29,13 +29,9 @@ inline void scale(Vector2D& v, const Coord& distance, const Coord& maxDistance) 
 	if(dist > maxDistance)
 		dist = maxDistance;
 
-	Coord scale;
-	// higher distance -> shorter vector  - but doesn't go under 0.5
-	// http://www.wolframalpha.com/input/?i=plot+s+%3D+1+-+%280.5+*+%28d+%2F+10000%29+%29+from+d+%3D+0+to+10000
-	if(dist > maxDistance)
-		scale = 1 - (0.5 * (dist / maxDistance));
-	else
-		scale = 0.5;
+	// higher distance -> shorter vector  - but doesn't go under 0.1
+	// http://www.wolframalpha.com/input/?i=plot+s+%3D+1+-+%280.9+*+%28d+%2F+600000%29+%29+from+d+%3D+0+to+600000
+	Coord scale = 1.0 - (0.9 * (dist / maxDistance));
 
 	v.x_ *= scale;
 	v.y_ *= scale;
@@ -43,6 +39,8 @@ inline void scale(Vector2D& v, const Coord& distance, const Coord& maxDistance) 
 }
 
 class Scan;
+struct BattleFieldLayout;
+
 class ScanObject {
 public:
 	ScanObjectType type_;
@@ -67,7 +65,7 @@ public:
 		vel_(NO_VECTOR2D){
 	}
 
-	void calculate(Scan& scan);
+	void calculate(Scan& scan, const BattleFieldLayout& bfl);
 };
 
 typedef vector<ScanObject> ScanObjectVector;
@@ -80,10 +78,11 @@ public:
 	ScanObjectVector objects_;
 	Vector2D normVel_;
 	Vector2D normDir_;
+	Vector2D normCenter_;
 
 	Scan(Object* object);
 	void makeScanObject(ScanObjectType type, Vector2D loc, Coord dis, Vector2D vel);
-	void calculate();
+	void calculate(const BattleFieldLayout& bfl);
 };
 } /* namespace neurocid */
 

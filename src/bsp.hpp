@@ -44,6 +44,12 @@ public:
 		else
 			return (*result.first);
 	}
+
+	std::vector<Tunit*> findInRange(Tunit* t, Coord range) {
+		std::vector<Tunit*> result;
+		this->find_within_range(t, range, std::back_inserter(result));
+		return result;
+	}
 };
 }
 

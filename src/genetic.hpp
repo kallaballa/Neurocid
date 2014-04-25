@@ -10,6 +10,8 @@ using namespace std;
 
 namespace neurocid {
 
+struct BattleFieldLayout;
+
 struct GeneticLayout {
 	double mutationRate;
 	double crossoverRate;
@@ -24,11 +26,11 @@ inline GeneticLayout make_default_genetic_layout() {
 	return {
 			0.1, // mutationRate
 			0.7, // crossoverRate
-			2,   // crossoverIterations
+			4,   // crossoverIterations
 			0.3, // maxPertubation
 			4,   // numElite
 			1,   // numEliteCopies
-			false // usePerfDesc_
+			true// usePerfDesc_
 	};
 }
 
@@ -50,7 +52,7 @@ public:
 	GeneticPool();
 
 	//this runs the GA for one generation.
-	virtual Population epoch(Population& old_pop);
+	virtual Population epoch(Population& old_pop, const BattleFieldLayout& bfl);
 };
 }
 

@@ -26,9 +26,10 @@ void Ship::setBrain(Brain* b) {
 	brain_ = b;
 }
 
-void Ship::calculateFitness() {
+void Ship::calculateFitness(const BattleFieldLayout& bfl) {
 	Coord totalDiff = 0;
 	size_t ratedProjectiles = 0;
+	Coord maxDistance = hypot(bfl.width_,bfl.height_);
 
 	if (!layout_.disableProjectileFitness_) {
 		for (Projectile* p : projectiles_) {
@@ -55,47 +56,38 @@ void Ship::calculateFitness() {
 					vdiff.rotate(perfect);
 					angDistPerfect = fabs(radFromDir(vdiff)) / M_PI;
 
-					assert(angDistPerfect >= 0);
-					assert(angDistPerfect <= 1);
+					assert(angDistPerfect >= 0.0);
+					assert(angDistPerfect <= 1.0);
 					Coord distance = so.dis_;
-					Coord maxDistance = p->layout_.max_travel_ * 5;
 					if(distance > maxDistance)
 						distance = maxDistance;
 
 					//(higher distance -> higher diff)
 					Coord distPerfect = (distance / maxDistance);
 
-					// euler distance matters more then angular distance does.
-					Coord diffPerfect = (distPerfect * (angDistPerfect + 1)) / 2;
+					// euclidian distance matters more then angular distance does.
+					Coord diffPerfect = (std::pow(distPerfect,2) * (angDistPerfect + 1.0)) / 2.0;
 
 					assert(diffPerfect >= 0);
-					assert(diffPerfect <= 1);
+					assert(diffPerfect <= 1.0);
 
-					//boost in range shots
-					if(so.dis_ < p->layout_.max_travel_)
-						diffPerfect /= 2;
+					if((so.loc_ - p->loc_).length() < p->layout_.max_travel_)
+						diffPerfect /= 2.0;
+
+/*					diffPerfect /= ((p->layout_.max_travel_/5000)  / (((so.loc_ - p->startLoc_).length()/5000) + 1));
+					diffPerfect /= 100;
+
+					if(std::isinf(diffPerfect))
+						diffPerfect = 0;*/
+
+					assert(diffPerfect >= 0);
+					assert(diffPerfect <= 1.0);
 
 					totalDiff += diffPerfect;
 					++ratedProjectiles;
 				} else if(so.type_ == ScanObjectType::FRIEND) {
 					continue;
-					Coord angDistWorst = 0;
-					Vector2D worst = (so.loc_ - p->startLoc_).normalize();
-					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
-					Vector2D vdiff = candidate;
-
-					ASSERT_DIR(worst);
-					ASSERT_DIR(candidate);
-
-					vdiff.rotate(worst);
-					// a perpendicular friend is a good friend
-					angDistWorst = fabs(radFromDir(vdiff)) / M_PI;
-
-					assert(angDistWorst >= 0);
-					assert(angDistWorst <= 1);
-					// for rating friends use the distance of the projectile end loc and the friend loc at closest point
 					Coord distance = so.dis_;
-					Coord maxDistance = 600000;
 					if(distance > maxDistance)
 						distance = maxDistance;
 
@@ -104,7 +96,7 @@ void Ship::calculateFitness() {
 
 					// euclidian distance matters more then angular distance does
 					// http://tinyurl.com/kyhbu7c
-					Coord diffWorst = 1.0 - (std::pow(distWorst,2) * (std::pow(angDistWorst,2) + 1)) / 2;
+					Coord diffWorst = 1.0 - distWorst;
 
 					assert(diffWorst >= 0);
 					assert(diffWorst <= 1);
@@ -128,17 +120,11 @@ void Ship::calculateFitness() {
 		Coord aimRatio = 0;
 		if(!layout_.disableProjectileFitness_) {
 			aimRatio = (1.0 - (totalDiff / (ratedProjectiles)));
-			assert(aimRatio >= 0);
-			assert(aimRatio <= 1);
+			assert(aimRatio >= 0.0);
+			assert(aimRatio <= 1.0);
 			//scale the aimratio up to make the difference more clear in the genetic algorithm
 			//aimRatio *= 6;
 		}
-
-		// don't remove the assert!
-		assert((totalDiff) <= (ratedProjectiles + 0.01));
-		//get rid of noise spikes
-		if((totalDiff) > ratedProjectiles)
-			totalDiff = ratedProjectiles;
 
 		// calculate actual hit/damage/friendly_fire score
 		Coord shots = projectiles_.size();
@@ -151,12 +137,12 @@ void Ship::calculateFitness() {
 
 		//damage may half hit ratio in the worst case
 		Coord damageRatioInv = 1.0 / ((Coord(damage_) / layout_.maxDamage_) + 1);
-		assert(hitRatio >= 0);
-		assert(hitRatio <= 1);
+		assert(hitRatio >= 0.0);
+		assert(hitRatio <= 1.0);
 		assert(damageRatioInv >= 0.5);
-		assert(damageRatioInv <= 1);
-		assert(friendlyRatioInv >= 0);
-		assert(friendlyRatioInv <= 1);
+		assert(damageRatioInv <= 1.0);
+		assert(friendlyRatioInv >= 0.0);
+		assert(friendlyRatioInv <= 1.0);
 
 		perfDesc_.reserve(layout_.numPerfDesc);
 		perfDesc_[0] = aimRatio;
@@ -166,11 +152,10 @@ void Ship::calculateFitness() {
 		perfDesc_[4] = failRatio;
 		perfDesc_[5] = rechargeRatio;
 
-		fitness_ = (aimRatio / (failRatio + 1))
-				+ (hits_ * damageRatioInv * friendlyRatioInv) * ((rechargeRatio / 3) + 1);
+		fitness_ = (aimRatio / (failRatio + 1) + (hits_ * 3) * damageRatioInv * friendlyRatioInv);
 
 		if(dead_)
-			fitness_ /= 2;
+			fitness_ /= 2.0;
 	}
 
 	/*
@@ -186,8 +171,8 @@ void Ship::calculateFitness() {
 		}
 
 		if(minDist != NO_COORD) {
-			assert(minDist <= 600000);
-			fitness_ += 0.01 - ((minDist/600000) / 100);
+			assert(minDist <= maxDistance);
+			fitness_ += 0.01 - ((minDist/maxDistance) / 100);
 		}
 	}
 

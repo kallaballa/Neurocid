@@ -21,6 +21,10 @@ public:
 		instance_ = new Gui(surface);
 	}
 
+	static bool isInitalized() {
+		return instance_ != NULL;
+	}
+
 	static Gui* getInstance() {
 		assert(instance_ != NULL);
 		return instance_;

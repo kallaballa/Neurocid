@@ -358,7 +358,7 @@ void Physics::step() {
 				assert(o->rotation_ <= M_PI);
 			} else if(o->type() == PROJECTILE) {
 				Projectile* p = static_cast<Projectile*>(o);
-				if(hypot(p->loc_.x_ - p->startLoc_.x_, p->loc_.y_ - p->startLoc_.y_) > p->layout_.max_travel_) {
+				if((p->loc_ - p->startLoc_).length() > p->layout_.max_travel_) {
 					p->dead_ = true;
 					deadBodies_.push_back(body);
 				} else {

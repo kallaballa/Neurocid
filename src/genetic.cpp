@@ -1,11 +1,15 @@
 #include "genetic.hpp"
 #include "fann.h"
 #include "util.hpp"
+#include "battlefieldlayout.hpp"
 #include <algorithm>
 #include <iostream>
 #include <assert.h>
+#include <set>
 
 namespace neurocid {
+
+using std::set;
 
 GeneticPool::GeneticPool(GeneticLayout params) :
 		params_(params) {
@@ -72,21 +76,25 @@ std::pair<Ship, Ship> GeneticPool::crossover(Ship &mum, Ship &dad, size_t iterat
 		fann_type* wBaby1 = baby1.brain_->weights(b);
 		fann_type* wBaby2 = baby2.brain_->weights(b);
 
-		//just return parents as offspring dependent on the rate or if parents are the same
 		if ((fRand(0,1) > params_.crossoverRate) || (mum == dad)) {
-			baby1.brain_->destroy();
-			baby2.brain_->destroy();
-			return {mum.clone(), dad.clone()};
+			for (size_t i = 0; i  < mum.brain_->size(b); ++i ) {
+				wBaby1[i] = wMum[i];
+				wBaby2[i] = wDad[i];
+			}
+			continue;
 		}
 
 		size_t last_cp = 0;
-		size_t cp = 0;
 		bool cross = false;
 
-		for(size_t i = 0; i < iterations && cp < (mum.brain_->size(b) - 1); ++i) {
-			//determine a crossover point
-			cp = iRand(last_cp, mum.brain_->size(b) - 1);
+		//generate up to "iterations" crossover points and perform them in ascending order
+		set<size_t> crossPoints;
 
+		for(size_t i = 0; i < iterations; ++i) {
+			crossPoints.insert(iRand(0, mum.brain_->size(b) - 1));
+		}
+
+		for(const size_t& cp : crossPoints) {
 			//create the offspring
 			for (size_t j = last_cp; j < cp; ++j) {
 				if(cross) {
@@ -151,7 +159,7 @@ void GeneticPool::calculateStatistics(Population& pop) {
 		pop.stats_.totalDamage_  += pop[i].damage_;
 		pop.stats_.totalRecharged_ += pop[i].recharged_;
 		pop.stats_.totalBrainSwitches_ += pop[i].brain_->brainSwitches();
-
+		std::cerr << i << ": " << pop[i].brain_->brainSwitches() << std::endl;
 		//update fittest if necessary
 		if (highestSoFar == 0 || pop[i].fitness_ > highestSoFar) {
 			highestSoFar = pop[i].fitness_;
@@ -183,14 +191,14 @@ void GeneticPool::calculateStatistics(Population& pop) {
 /*
  * Use the genetic algorithm to construct a new population from the old
  */
-Population GeneticPool::epoch(Population& old_pop) {
+Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl) {
 	if(!initialized_ || old_pop.size() == 1) {
 		Population new_pop = old_pop;
 		new_pop.clear();
 		old_pop.stats_.reset();
 
 		for(Ship& t : old_pop) {
-			t.calculateFitness();
+			t.calculateFitness(bfl);
 			t.isElite = false;
 		}
 
@@ -213,7 +221,7 @@ Population GeneticPool::epoch(Population& old_pop) {
 	old_pop.stats_.reset();
 
 	for(Ship& t : old_pop) {
-		t.calculateFitness();
+		t.calculateFitness(bfl);
 		t.isElite = false;
 	}
 
@@ -248,7 +256,18 @@ Population GeneticPool::epoch(Population& old_pop) {
 		Ship& mum = pickSpecimen(old_pop);
 		Ship* dad;
 		if(params_.usePerfDesc_) {
-			dad = pdb.findClosestMate(&mum);
+			Ship* closest = pdb.findClosestMate(&mum);
+			Coord range = closest->distance(mum) * 2;
+			vector<Ship*> result = pdb.findInRange(&mum, range);
+			if(result.empty()) {
+				dad = closest;
+			} else {
+				std::sort(result.begin(), result.end(), [&](const Ship* s1, const Ship* s2){
+					return s1->fitness_ < s2->fitness_;
+				});
+
+				dad = result.back();
+			}
 		} else
 			dad = &pickSpecimen(old_pop);
 

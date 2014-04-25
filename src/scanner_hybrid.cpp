@@ -36,7 +36,7 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 
 		// Scan for friends.
 		findNearest(bspFriends, t, FRIEND, t.scan_.objects_);
-		findInRange(bspFriends, t, FRIEND, t.scan_.objects_, rangeOfSight);
+		findNearestN(bspFriends, t, FRIEND, t.scan_.objects_, numFriends - t.scan_.objects_.size());
 
 		if(t.scan_.objects_.size() > numFriends) {
 			t.scan_.objects_.resize(numFriends);
@@ -198,10 +198,10 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 				p->scan_.makeScanObject(FRIEND, NO_VECTOR2D, NO_COORD, NO_VECTOR2D);
 			}
 
-			p->scan_.calculate();
+			p->scan_.calculate(bfl);
 		}
 
-		t.scan_.calculate();
+		t.scan_.calculate(bfl);
 	}
 }
 

@@ -360,12 +360,12 @@ public:
 		}
 
 
-		startA += (axisDir * (teams[0].layout_.fl_.range_ * 10));
+		startA += (axisDir * fRand(teams[0].layout_.fl_.range_ * 5,teams[0].layout_.fl_.range_ * 10));
 		Vector2D transDir = sideDirA;
 		if(iRand(0,1))
 			transDir.rotate(180);
 
-		startA += transDir * fRand(0,teams[0].layout_.fl_.range_ * 4);
+		startA += transDir * fRand(0,teams[0].layout_.fl_.range_ * 8);
 
 		for(size_t i = 0; i < teams[0].facilities_.size(); i++) {
 			teams[0].facilities_[i].loc_ = startA;
@@ -381,12 +381,12 @@ public:
 		}
 
 		axisDir.rotate(180);
-		startB += (axisDir * (teams[1].layout_.fl_.range_ * 10));
+		startB += (axisDir * fRand(teams[1].layout_.fl_.range_ * 5,teams[1].layout_.fl_.range_ * 10));
 		transDir = sideDirB;
 		if(iRand(0,1))
 			transDir.rotate(180);
 
-		startB += transDir * fRand(0,teams[1].layout_.fl_.range_ * 4);
+		startB += transDir * fRand(0,teams[1].layout_.fl_.range_ * 8);
 
 		for(size_t i = 0; i < teams[1].facilities_.size(); i++) {
 			teams[1].facilities_[i].loc_ = startB;

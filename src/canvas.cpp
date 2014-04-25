@@ -126,6 +126,7 @@ void Canvas::down() {
 }
 
 void Canvas::drawStar(Star& s) {
+#ifndef _NO_SDLGFX
 	double alpha = s.alpha;
 	double lastR = 0;
 	for(size_t i = 0; i < s.radius; i++) {
@@ -141,10 +142,12 @@ void Canvas::drawStar(Star& s) {
 			alpha /= 3;
 		alpha *= s.step;
 	}
+#endif
 }
 
 
 void Canvas::drawExplosion(Explosion& expl, Color c) {
+#ifndef _NO_SDLGFX
 	size_t lastR = 0, r = 0;
 	for(size_t i = expl.tick_; i > 0 ; --i) {
 	    if(scale_ < 0.013)
@@ -158,6 +161,7 @@ void Canvas::drawExplosion(Explosion& expl, Color c) {
 	    	circleRGBA(screen_, scaleX(expl.loc_.x_), scaleY(expl.loc_.y_), r, c.r, c.g, c.b, c.a);
 		lastR = r;
 	}
+#endif
 }
 
 void Canvas::drawSurface(SDL_Surface *s, SDL_Rect& srect, Coord x, Coord y) {
@@ -170,7 +174,9 @@ void Canvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
 }
 
 void Canvas::fillCircle(Vector2D loc, Coord radius, Color c) {
+#ifndef _NO_SDLGFX
 	filledCircleRGBA(screen_, scaleX(loc.x_), scaleY(loc.y_), round(radius * scale_), c.r, c.g, c.b, c.a);
+#endif
 }
 
 void Canvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c) {
@@ -237,15 +243,22 @@ void Canvas::drawShip(Ship& ship, Color c) {
 }
 
 void Canvas::drawFacility(Facility& facility, Color c) {
-		fillCircle(facility.loc_, facility.layout_.range_, c);
-		for(size_t i = 0; i < 3; ++i) {
-			Sint16 start = iRand(0,360);
-			Sint16 end = iRand(start,360);
-			pieRGBA(screen_, scaleX(facility.loc_.x_), scaleY(facility.loc_.y_), round(scale_ * (facility.layout_.range_ / 1.5 )), start, end, 0, 0, 255, 255);
-			start = iRand(0,360);
-			end = iRand(start,360);
-			pieRGBA(screen_, scaleX(facility.loc_.x_), scaleY(facility.loc_.y_), round(scale_ * (facility.layout_.range_ / 1.5 )), start, end, 255, 255, 0, 255);
-		}
+#ifndef _NO_SDLGFX
+	filledCircleRGBA(screen_, scaleX(facility.loc_.x_), scaleY(facility.loc_.y_), round(facility.layout_.range_ * scale_), c.r, c.g, c.b, 128);
+
+	for(size_t i = 0; i < 50; ++i) {
+		drawEllipse(facility.loc_, facility.layout_.range_ - i, facility.layout_.range_ -i, c);
+	}
+
+	for(size_t i = 0; i < 3; ++i) {
+		Sint16 start = iRand(0,360);
+		Sint16 end = iRand(start,360);
+		pieRGBA(screen_, scaleX(facility.loc_.x_), scaleY(facility.loc_.y_), round(scale_ * (facility.layout_.range_ / 1.5 )), start, end, 0, 0, 255, 255);
+		start = iRand(0,360);
+		end = iRand(start,360);
+		pieRGBA(screen_, scaleX(facility.loc_.x_), scaleY(facility.loc_.y_), round(scale_ * (facility.layout_.range_ / 1.5 )), start, end, 255, 255, 0, 255);
+	}
+#endif
 }
 
 void Canvas::drawProjectile(Projectile& pro, Color& c) {

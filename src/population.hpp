@@ -57,8 +57,8 @@ inline PopulationLayout make_default_population_layout() {
 			50.0,// radius_
 			1.0, // max_speed_
 			1.0, // max_rotation_
-			10000.0, // max_fuel_
-			10000.0, // start_fuel_
+			20000.0, // max_fuel_
+			20000.0, // start_fuel_
 			1.0, // fuel_rate_
 			1.0, // hardness_
 
@@ -71,7 +71,7 @@ inline PopulationLayout make_default_population_layout() {
 		},
 		//BrainLayout
 		{
-		    111, // inputs
+		    112, // inputs
 			5,  // outputs
 			5,  // layers
 			11, // neurons per hidden layer

@@ -51,11 +51,13 @@ void Renderer::render() {
 						if(isEnabled()) {
 							canvas.clear();
 							canvas.render(*field_);
-							Gui& gui = *Gui::getInstance();
-							OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
-							osd.update(*field_);
-							gui.logic();
-							gui.draw();
+							if(Gui::isInitalized()) {
+								Gui& gui = *Gui::getInstance();
+								OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
+								osd.update(*field_);
+								gui.logic();
+								gui.draw();
+							}
 							canvas.update();
 #ifndef _NO_VIDEOENC
 							VideoEncoder::getInstance()->encode(Canvas::getInstance()->getSurface());
@@ -65,11 +67,13 @@ void Renderer::render() {
 						} else if (!notifiedDisable) {
 							canvas.clear();
 							canvas.reset();
+							if(Gui::isInitalized()) {
 							Gui& gui = *Gui::getInstance();
-							OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
-							osd.update(*field_);
-							gui.logic();
-							gui.draw();
+								OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
+								osd.update(*field_);
+								gui.logic();
+								gui.draw();
+							}
 							canvas.update();
 							notifiedDisable = true;
 						}
