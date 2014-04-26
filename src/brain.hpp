@@ -23,20 +23,26 @@ struct BrainLayout  {
 #ifndef _NO_SERIALIZE
 	friend class boost::serialization::access;
 #endif
+	size_t numMetaInputs_;
+	size_t numMetaLayers_;
+	size_t numMetaNeuronsPerHidden_;
 	size_t numInputs_;
 	size_t numOutputs;
 	size_t numLayers_;
-	size_t neuronsPerHidden;
+	size_t numNeuronsPerHidden_;
 	size_t numBrains_;
 
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
-	  ar & numInputs_;
-	  ar & numOutputs;
-	  ar & numLayers_;
-	  ar & neuronsPerHidden;
-	  ar & numBrains_;
+		ar & numMetaInputs_;
+		ar & numMetaLayers_;
+		ar & numMetaNeuronsPerHidden_;
+		ar & numInputs_;
+		ar & numOutputs;
+		ar & numLayers_;
+		ar & numNeuronsPerHidden_;
+		ar & numBrains_;
 	}
 #endif
 };
@@ -57,6 +63,7 @@ public:
 	Tweight fthrust_ = 0;
 	Tweight bthrust_ = 0;
 	Tweight shoot_ = 0;
+	Tweight* metaInputs_ = NULL;
 	Tweight* inputs_ = NULL;
 
 	BasicBrain() {
@@ -64,13 +71,14 @@ public:
 
 	void initialize(BrainLayout layout, Tweight** weight = NULL) {
 		layout_ = layout;
+		metaInputs_ = NULL;
 		inputs_ = NULL;
 		makeNN();
 	    if(weight != NULL) {
 	    	for(size_t b = 0; b < layout_.numBrains_ + 1; ++b) {
-	    	for(size_t i = 0; i < size(b); ++i) {
-	    		weights(b)[i] = weight[b][i];
-	    	}
+				for(size_t i = 0; i < size(b); ++i) {
+					weights(b)[i] = weight[b][i];
+				}
 	    	}
 	    }
 	    initialized_ = true;
@@ -80,7 +88,7 @@ public:
 		return destroyed_;
 	}
 
-	BasicBrain(const BasicBrain& other) : inputs_(other.inputs_) {
+	BasicBrain(const BasicBrain& other) : metaInputs_(other.metaInputs_), inputs_(other.inputs_) {
 	};
 
 	virtual ~BasicBrain() {

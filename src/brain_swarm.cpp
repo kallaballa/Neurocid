@@ -27,6 +27,13 @@ void sortByAngularDistance(ScanObjectVector& sorted, const ScanObjectVector& sca
 void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	parentBrain_t::update(bfl, scan);
 
+	Ship& ship = *static_cast<Ship*>(scan.object_);
+	applyMeta(0, ((ship.fuel_ / ship.layout_.maxFuel_) * 2.0) -1.0);
+	applyMeta(1, ((ship.ammo_ / ship.layout_.maxAmmo_) * 2.0) -1.0);
+	applyMeta(2, ((ship.damage_ / ship.layout_.maxDamage_) * 2.0) -1.0);
+	applyMeta(3, ((ship.cool_down / ship.layout_.maxCooldown_) * 2.0) -1.0);
+//	applyMeta(9, ship.willShoot() ? 1 : -1);
+
 	ScanObjectVector friendObj;
 	ScanObjectVector enemyObj;
 	ScanObjectVector friendFacilityObj;
@@ -91,7 +98,6 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 		++inputCnt;
 	}*/
 
-	Ship& ship = *static_cast<Ship*>(scan.object_);
 	Vector2D vel = scan.normVel_;
 	Vector2D center = scan.normCenter_;
 	Coord angVel = ship.angVel_;
@@ -100,15 +106,11 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	else if(angVel < -10)
 		angVel = -10;
 
-	applyInput((inputCnt * 4), vel.x_);
-	applyInput((inputCnt * 4) + 1, vel.y_);
-	applyInput((inputCnt * 4) + 2, center.x_);
-	applyInput((inputCnt * 4) + 3, center.y_);
-	applyInput((inputCnt * 4) + 4, angVel / 10);
-	applyInput((inputCnt * 4) + 5, ((ship.fuel_ / ship.layout_.maxFuel_) * 2.0) -1.0);
-	applyInput((inputCnt * 4) + 6, ((ship.ammo_ / ship.layout_.maxAmmo_) * 2.0) -1.0);
-	applyInput((inputCnt * 4) + 7, ((ship.cool_down / ship.layout_.maxCooldown_) * 2.0) -1.0);
-//	applyInput((inputCnt * 4) + 6, ship.willShoot() ? 1 : -1);
+	applyInput(inputCnt * 4, vel.x_);
+	applyInput(inputCnt * 4 + 1, vel.y_);
+	applyInput(inputCnt * 4 + 2, center.x_);
+	applyInput(inputCnt * 4 + 3, center.y_);
+	applyInput(inputCnt * 4 + 4, angVel / 10);
 
 	for(size_t i = 0; i < layout_.numInputs_; ++i) {
 		assert(!std::isinf(inputs_[i]));

@@ -66,8 +66,8 @@ void Ship::calculateFitness(const BattleFieldLayout& bfl) {
 					Coord distPerfect = (distance / maxDistance);
 
 					// euclidian distance matters more then angular distance does.
-					Coord diffPerfect = (distPerfect * (angDistPerfect + 1.0)) / 2.0;
-
+					//Coord diffPerfect = (distPerfect * (angDistPerfect + 1.0)) / 2.0;
+					Coord diffPerfect = distPerfect;
 					assert(diffPerfect >= 0);
 					assert(diffPerfect <= 1.0);
 
@@ -152,7 +152,7 @@ void Ship::calculateFitness(const BattleFieldLayout& bfl) {
 		perfDesc_[4] = failRatio;
 		perfDesc_[5] = rechargeRatio;
 
-		fitness_ = (aimRatio / (failRatio + 1) + (hits_ * 3) * damageRatioInv * friendlyRatioInv);
+		fitness_ = (aimRatio / (failRatio + 1) + (hits_ * 3) * damageRatioInv * friendlyRatioInv) * (captured_ + 1);
 
 		if(dead_)
 			fitness_ /= 2.0;

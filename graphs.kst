@@ -12,7 +12,7 @@
         <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 4" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avghits" initialVNum="26" initialXNum="301"/>
         <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 5" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avgfriendly" initialVNum="27" initialXNum="313"/>
         <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 6" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avgcrash" initialVNum="28" initialXNum="325"/>
-        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 8" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avgbs" initialVNum="29" initialXNum="337"/>
+        <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 9" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avgbs" initialVNum="29" initialXNum="337"/>
         <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 11" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="bestfit" initialVNum="37" initialXNum="433"/>
         <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 12" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avgfit" initialVNum="38" initialXNum="445"/>
         <datavector file="/home/elchaschab/devel/Neurocid/timeseries.csv" fileRelative="devel/Neurocid/timeseries.csv" field="Column 13" start="0" count="-1" skip="-1" doAve="false" startUnits="" rangeUnits="" descriptiveNameIsManual="true" descriptiveName="avghits" initialVNum="39" initialXNum="457"/>
@@ -47,9 +47,9 @@
                 </pen>
                 <brush color="#ffffff" style="1"/>
                 <legend auto="true" title="" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="9.6" color="#000000" verticaldisplay="false" name="Legend">
-                    <position x="102.413678429983" y="94.3526665547755" z="500"/>
+                    <position x="92.6883050585176" y="94.3526665547755" z="500"/>
                     <rect x="0" y="0" width="949" height="30"/>
-                    <relativesize width="0.629310605481349" height="0.103443832266845" centerx="0.342117965594186" centery="0.330512238714068" posx="0.0274626628535113" posy="0.278790322580645" leftx="0.0274626628535113" lefty="0.38223415484749" rightx="0.656773268334861" righty="0.38223415484749" fixaspect="false" lockpostodata="false"/>
+                    <relativesize width="0.625164947612982" height="0.103443832266845" centerx="0.340045136660002" centery="0.330512238714068" posx="0.0274626628535113" posy="0.278790322580645" leftx="0.0274626628535113" lefty="0.38223415484749" rightx="0.652627610466494" righty="0.38223415484749" fixaspect="false" lockpostodata="false"/>
                     <transform m11="1" m12="0" m13="0" m21="0" m22="1" m23="0" m31="0" m32="0" m33="1"/>
                     <pen style="1" width="1" miterlimit="2" cap="16" joinStyle="64">
                         <brush color="#000000" style="1"/>
@@ -87,9 +87,9 @@
                 </pen>
                 <brush color="#ffffff" style="1"/>
                 <legend auto="true" title="" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="9.6" color="#000000" verticaldisplay="false" name="Legend">
-                    <position x="106.450823246559" y="56.0157366084868" z="500"/>
+                    <position x="96.7522214035336" y="56.0157366084868" z="500"/>
                     <rect x="0" y="0" width="929" height="30"/>
-                    <relativesize width="0.616048000518624" height="0.103443832266845" centerx="0.338163815956801" centery="0.198321607014412" posx="0.0301398156974896" posy="0.146599690880989" leftx="0.0301398156974896" lefty="0.250043523147834" rightx="0.646187816216113" righty="0.250043523147834" fixaspect="false" lockpostodata="false"/>
+                    <relativesize width="0.611989711625354" height="0.103443832266845" centerx="0.336134671510166" centery="0.198321607014412" posx="0.0301398156974896" posy="0.146599690880989" leftx="0.0301398156974896" lefty="0.250043523147834" rightx="0.642129527322843" righty="0.250043523147834" fixaspect="false" lockpostodata="false"/>
                     <transform m11="1" m12="0" m13="0" m21="0" m22="1" m23="0" m31="0" m32="0" m33="1"/>
                     <pen style="1" width="1" miterlimit="2" cap="16" joinStyle="64">
                         <brush color="#000000" style="1"/>
@@ -107,7 +107,7 @@
                 <plotaxis id="xaxis" visible="true" log="false" reversed="false" autobaseoffset="true" baseoffset="false" forceoffsetmin="false" interpret="false" interpretation="1" display="4" displayformatstring="hh:mm:ss.zzz" majortickmode="5" minortickcount="5" autominortickcount="true" drawmajorticks="true" drawminorticks="true" drawmajorgridlines="true" drawminorgridlines="false" drawmajorgridlinecolor="#a0a0a4" drawminorgridlinecolor="#a0a0a4" drawmajorgridlinestyle="2" drawminorgridlinestyle="2" drawmajorgridlinewidth="1" drawminorgridlinewidth="1" significantdigits="9" rotation="0" zoommode="2" timezonename="GMT" timezoneoffset="0">
                     <plotmarkers xaxis="true" linecolor="#000000" linestyle="1" linewidth="1" curvemode="0"/>
                 </plotaxis>
-                <plotaxis id="yaxis" visible="true" log="false" reversed="false" autobaseoffset="true" baseoffset="false" forceoffsetmin="false" interpret="false" interpretation="1" display="4" displayformatstring="hh:mm:ss.zzz" majortickmode="5" minortickcount="5" autominortickcount="true" drawmajorticks="true" drawminorticks="true" drawmajorgridlines="true" drawminorgridlines="false" drawmajorgridlinecolor="#a0a0a4" drawminorgridlinecolor="#a0a0a4" drawmajorgridlinestyle="2" drawminorgridlinestyle="2" drawmajorgridlinewidth="1" drawminorgridlinewidth="1" significantdigits="9" rotation="0" zoommode="2" timezonename="GMT" timezoneoffset="0">
+                <plotaxis id="yaxis" visible="true" log="false" reversed="false" autobaseoffset="true" baseoffset="false" forceoffsetmin="false" interpret="false" interpretation="1" display="4" displayformatstring="hh:mm:ss.zzz" majortickmode="5" minortickcount="5" autominortickcount="true" drawmajorticks="true" drawminorticks="true" drawmajorgridlines="true" drawminorgridlines="false" drawmajorgridlinecolor="#a0a0a4" drawminorgridlinecolor="#a0a0a4" drawmajorgridlinestyle="2" drawminorgridlinestyle="2" drawmajorgridlinewidth="1" drawminorgridlinewidth="1" significantdigits="9" rotation="0" zoommode="1" timezonename="GMT" timezoneoffset="0">
                     <plotmarkers xaxis="false" linecolor="#000000" linestyle="1" linewidth="1" curvemode="43567328"/>
                 </plotaxis>
                 <plotlabel id="leftlabel" visible="true" overridetext="" autolabel="true" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
@@ -115,7 +115,7 @@
                 <plotlabel id="toplabel" visible="true" overridetext="" autolabel="true" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
                 <plotlabel id="bottomlabel" visible="true" overridetext="" autolabel="true" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
                 <plotlabel id="numberlabel" visible="true" overridetext="" autolabel="true" font="Sans Serif,9,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
-                <projectionrect x="199.782095428471" y="-0.304375614254739" width="14.1669427495453" height="2.78550831670165"/>
+                <projectionrect x="11.7" y="-2.285" width="39" height="95.97"/>
             </plot>
         </view>
     </graphics>

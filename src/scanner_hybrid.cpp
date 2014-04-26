@@ -60,7 +60,8 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 
 		// Scan for enemies
 		findNearest(bspEnemies, t, ENEMY, t.scan_.objects_);
-		findInRange(bspEnemies, t, ENEMY, t.scan_.objects_, rangeOfSight);
+		findNearestN(bspEnemies, t, ENEMY, t.scan_.objects_, numFriends + numEnemies - t.scan_.objects_.size());
+
 		for(Vector2D ce : ctrEnemies) {
 			t.scan_.makeScanObject(ENEMY, ce, t.distance(ce), t.vel_);
 		}
@@ -222,11 +223,7 @@ void HybridScanner::scan(BattleField& field) {
 		findInRange(bspB_, f, objsB, f.layout_.range_);
 		signed long diff = objsA.size() - objsB.size();
 		if(diff >= 3) {
-			if(f.teamID_ != 0) {
-				for(Object* o: objsA) {
-					static_cast<Ship*>(o)->capture();
-				}
-			}
+			//no points for recapture;
 			f.teamID_ = 0;
 		} else if(diff <= -3) {
 			if(f.teamID_ != 1) {
@@ -262,11 +259,7 @@ void HybridScanner::scan(BattleField& field) {
 			}
 			f.teamID_ = 0;
 		} else if(diff <= -1) {
-			if(f.teamID_ != 1) {
-				for(Object* o: objsB) {
-					static_cast<Ship*>(o)->capture();
-				}
-			}
+			//no points for recapture;
 			f.teamID_ = 1;
 		}
 

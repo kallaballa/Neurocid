@@ -71,11 +71,14 @@ inline PopulationLayout make_default_population_layout() {
 		},
 		//BrainLayout
 		{
-		    112, // inputs
+			4,  // metaInputs
+			2,  // metaLayers
+			4,  // meta neurons per hidden layer
+		    109,// inputs
 			5,  // outputs
 			5,  // layers
 			11, // neurons per hidden layer
-			4   // num brains
+			4   // numBrains
 		},
 		//FacilityLayout
 		{

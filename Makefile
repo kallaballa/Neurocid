@@ -102,7 +102,7 @@ info: CXXFLAGS += -g3 -O0
 info: LDFLAGS += -Wl,--export-dynamic -rdynamic
 info: dirs
 
-debug: CXXFLAGS += -g3 -O0 -ffpe-trap=invalid,zero,overflow
+debug: CXXFLAGS += -g3 -O0
 debug: LDFLAGS += -Wl,--export-dynamic -rdynamic
 debug: dirs
 

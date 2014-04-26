@@ -32,6 +32,7 @@ public:
 	virtual ~BrainFann();
 
 	virtual void makeNN();
+	virtual void applyMeta(const size_t& i, const fann_type& value);
 	virtual void applyInput(const size_t& i, const fann_type& value);
 	virtual void destroy();
 	virtual void randomize();
