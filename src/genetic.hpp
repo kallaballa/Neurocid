@@ -24,13 +24,13 @@ struct GeneticLayout {
 
 inline GeneticLayout make_default_genetic_layout() {
 	return {
-			0.1, // mutationRate
+			0.05, // mutationRate
 			0.7, // crossoverRate
 			4,   // crossoverIterations
 			0.3, // maxPertubation
 			4,   // numElite
 			1,   // numEliteCopies
-			true// usePerfDesc_
+			false// usePerfDesc_
 	};
 }
 

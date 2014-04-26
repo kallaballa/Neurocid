@@ -1,11 +1,3 @@
-/*
- * Battlefield.cpp
- *
- *  Created on: Mar 1, 2014
- *      Author: elchaschab
- */
-
-
 #include "battlefield.hpp"
 #include "population.hpp"
 #include "gamestate.hpp"
