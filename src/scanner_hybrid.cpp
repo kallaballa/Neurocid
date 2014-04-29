@@ -178,9 +178,9 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 				Vector2D enemyLoc = result.first->loc_;
 				if(p->scan_.objects_.empty()) {
 					p->scan_.makeScanObject(ENEMY, enemyLoc, result.second, NO_VECTOR2D);
-				} else if(result.second < p->scan_.objects_[0].dis_){
+				} else if(result.second < p->scan_.objects_[0].dist_){
 					p->scan_.objects_[0].loc_ = enemyLoc;
-					p->scan_.objects_[0].dis_ = result.second;
+					p->scan_.objects_[0].dist_ = result.second;
 				}
 			} else {
 				p->scan_.makeScanObject(ENEMY, NO_VECTOR2D, NO_COORD, NO_VECTOR2D);
@@ -191,9 +191,9 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 				Vector2D friendLoc = result.first->loc_;
 				if(p->scan_.objects_.size() == 1) {
 					p->scan_.makeScanObject(FRIEND, friendLoc, result.second, NO_VECTOR2D);
-				} else if(result.second < p->scan_.objects_[0].dis_){
+				} else if(result.second < p->scan_.objects_[0].dist_){
 					p->scan_.objects_[1].loc_ = friendLoc;
-					p->scan_.objects_[1].dis_ = result.second;
+					p->scan_.objects_[1].dist_ = result.second;
 				}
 			} else {
 				p->scan_.makeScanObject(FRIEND, NO_VECTOR2D, NO_COORD, NO_VECTOR2D);
@@ -214,26 +214,34 @@ void HybridScanner::scan(BattleField& field) {
 	teamScan(teamA, teamB, centersA_, centersB_, bspA_, bspB_, bspFA_, bspFB_, bspPB_, field.layout_);
 	teamScan(teamB, teamA, centersB_, centersA_, bspB_, bspA_, bspFB_, bspFA_, bspPA_, field.layout_);
 
-
 	vector<Object*> objsA;
 	vector<Object*> objsB;
 
 	for(Facility& f : teamA.facilities_) {
 		findInRange(bspA_, f, objsA, f.layout_.range_);
 		findInRange(bspB_, f, objsB, f.layout_.range_);
-		signed long diff = objsA.size() - objsB.size();
-		if(diff >= 3) {
-			//no points for recapture;
-			f.teamID_ = 0;
-		} else if(diff <= -3) {
-			if(f.teamID_ != 1) {
-				for(Object* o: objsB) {
-					static_cast<Ship*>(o)->capture();
-				}
-			}
-			f.teamID_ = 1;
-		}
 
+		if(f.isCool()) {
+			signed long diff = objsA.size() - objsB.size();
+
+			if(diff >= 3) {
+				if(f.teamID_ != 0) {
+					for(Object* o: objsA) {
+						static_cast<Ship*>(o)->capture();
+					}
+					f.captured();
+				}
+				f.teamID_ = 0;
+			} else if(diff <= -3) {
+				if(f.teamID_ != 1) {
+					for(Object* o: objsB) {
+						static_cast<Ship*>(o)->capture();
+					}
+					f.captured();
+				}
+				f.teamID_ = 1;
+			}
+		}
 		if(f.teamID_ == 0) {
 			for(Object* o: objsA) {
 				static_cast<Ship*>(o)->recharge();
@@ -250,17 +258,26 @@ void HybridScanner::scan(BattleField& field) {
 	for(Facility& f : teamB.facilities_) {
 		findInRange(bspA_, f, objsA, f.layout_.range_);
 		findInRange(bspB_, f, objsB, f.layout_.range_);
-		signed long diff = objsA.size() - objsB.size();
-		if(diff >= 1) {
-			if(f.teamID_ != 0) {
-				for(Object* o: objsA) {
-					static_cast<Ship*>(o)->capture();
+
+		if(f.isCool()) {
+			signed long diff = objsA.size() - objsB.size();
+			if(diff >= 3) {
+				if(f.teamID_ != 0) {
+					for(Object* o: objsA) {
+						static_cast<Ship*>(o)->capture();
+					}
+					f.captured();
 				}
+				f.teamID_ = 0;
+			} else if(diff <= -3) {
+				if(f.teamID_ != 1) {
+					for(Object* o: objsB) {
+						static_cast<Ship*>(o)->capture();
+					}
+					f.captured();
+				}
+				f.teamID_ = 1;
 			}
-			f.teamID_ = 0;
-		} else if(diff <= -1) {
-			//no points for recapture;
-			f.teamID_ = 1;
 		}
 
 		if(f.teamID_ == 0) {

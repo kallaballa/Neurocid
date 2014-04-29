@@ -1,6 +1,7 @@
 #include "ship.hpp"
 #include "battlefield.hpp"
 #include "population.hpp"
+#include "../src/lua.hpp"
 #include <cstdlib>
 #include <iostream>
 #include "util.hpp"
@@ -26,159 +27,13 @@ void Ship::setBrain(Brain* b) {
 	brain_ = b;
 }
 
+static const Coord euler_constanct = std::exp(1.0);
+inline Coord sigmoid(const Coord& x) {
+	return (1 / (1 + pow(euler_constanct,-x)));
+}
+
 void Ship::calculateFitness(const BattleFieldLayout& bfl) {
-	Coord totalDiff = 0;
-	size_t ratedProjectiles = 0;
-	Coord maxDistance = hypot(bfl.width_,bfl.height_);
-
-	if (!layout_.disableProjectileFitness_) {
-		for (Projectile* p : projectiles_) {
-			if(p->scan_.objects_.empty()) {
-				++ratedProjectiles;
-				totalDiff += 1;
-				continue;
-			}
-
-			assert(p->scan_.objects_.size() == 2);
-			assert(p->scan_.objects_[0].type_ == ENEMY);
-			assert(p->scan_.objects_[1].type_ == FRIEND);
-
-			for(ScanObject& so : p->scan_.objects_) {
-				if(so.type_ == ScanObjectType::ENEMY) {
-					Coord angDistPerfect = 0;
-					Vector2D perfect = (so.loc_ - p->startLoc_).normalize();
-					Vector2D candidate = (p->loc_ - p->startLoc_).normalize();
-					Vector2D vdiff = candidate;
-
-					ASSERT_DIR(perfect);
-					ASSERT_DIR(candidate);
-
-					vdiff.rotate(perfect);
-					angDistPerfect = fabs(radFromDir(vdiff)) / M_PI;
-
-					assert(angDistPerfect >= 0.0);
-					assert(angDistPerfect <= 1.0);
-					Coord distance = so.dis_;
-					if(distance > maxDistance)
-						distance = maxDistance;
-
-					//(higher distance -> higher diff)
-					Coord distPerfect = (distance / maxDistance);
-
-					// euclidian distance matters more then angular distance does.
-					//Coord diffPerfect = (distPerfect * (angDistPerfect + 1.0)) / 2.0;
-					Coord diffPerfect = distPerfect;
-					assert(diffPerfect >= 0);
-					assert(diffPerfect <= 1.0);
-
-					if((so.loc_ - p->loc_).length() < (p->layout_.max_travel_ * 2))
-						diffPerfect /= 2.0;
-
-/*					diffPerfect /= ((p->layout_.max_travel_/5000)  / (((so.loc_ - p->startLoc_).length()/5000) + 1));
-					diffPerfect /= 100;
-
-					if(std::isinf(diffPerfect))
-						diffPerfect = 0;*/
-
-					assert(diffPerfect >= 0);
-					assert(diffPerfect <= 1.0);
-
-					totalDiff += diffPerfect;
-					++ratedProjectiles;
-				} else if(so.type_ == ScanObjectType::FRIEND) {
-					continue;
-					Coord distance = so.dis_;
-					if(distance > maxDistance)
-						distance = maxDistance;
-
-					//(higher distance -> higher diff)
-					Coord distWorst = (distance / maxDistance);
-
-					// euclidian distance matters more then angular distance does
-					// http://tinyurl.com/kyhbu7c
-					Coord diffWorst = 1.0 - distWorst;
-
-					assert(diffWorst >= 0);
-					assert(diffWorst <= 1);
-
-					//don't give an additional penalty for being in range because that's very likely in a swarm
-					totalDiff += diffWorst;
-					++ratedProjectiles;
-				}
-			}
-		}
-	}
-
-	assert(layout_.numPerfDesc == 6);
-	if(projectiles_.empty()) {
-		fitness_ = 0;
-		perfDesc_.reserve(layout_.numPerfDesc);
-		std::fill(perfDesc_.begin(), perfDesc_.end(), 0);
-	} else {
-		// calulate projectile/aim fitness
-		assert(ratedProjectiles > 0 || layout_.disableProjectileFitness_);
-		Coord aimRatio = 0;
-		if(!layout_.disableProjectileFitness_) {
-			aimRatio = (1.0 - (totalDiff / (ratedProjectiles)));
-			assert(aimRatio >= 0.0);
-			assert(aimRatio <= 1.0);
-			//scale the aimratio up to make the difference more clear in the genetic algorithm
-			//aimRatio *= 6;
-		}
-
-		// calculate actual hit/damage/friendly_fire score
-		Coord shots = projectiles_.size();
-		Coord failRatio = (failedShots_/shots);
-		Coord hitRatio = (Coord(hits_) / shots);
-		Coord rechargeRatio = (recharged_/layout_.maxFuel_);
-
-		//friendly fire may cancel hit ratio completely in the worst case.
-		Coord friendlyRatioInv = 1.0 - (Coord(friendlyFire_) / shots);
-
-		//damage may half hit ratio in the worst case
-		Coord damageRatioInv = 1.0 / ((Coord(damage_) / layout_.maxDamage_) + 1);
-		assert(hitRatio >= 0.0);
-		assert(hitRatio <= 1.0);
-		assert(damageRatioInv >= 0.5);
-		assert(damageRatioInv <= 1.0);
-		assert(friendlyRatioInv >= 0.0);
-		assert(friendlyRatioInv <= 1.0);
-
-		perfDesc_.reserve(layout_.numPerfDesc);
-		perfDesc_[0] = aimRatio;
-		perfDesc_[1] = hitRatio;
-		perfDesc_[2] = friendlyRatioInv;
-		perfDesc_[3] = damageRatioInv;
-		perfDesc_[4] = failRatio;
-		perfDesc_[5] = rechargeRatio;
-
-		fitness_ = (aimRatio / (failRatio + 1) + (hits_ * 3) * damageRatioInv * friendlyRatioInv) * (captured_ + 1);
-
-		if(dead_)
-			fitness_ /= 2.0;
-	}
-
-	/*
-	 * those that died of fuel depletion are fitter if the were close to a facility.
-	 * only has a noticeable effect on units that didn't score otherwise
-	 */
-	if(fitness_ == 0 && fuel_ <= 0) {
-		Coord minDist = NO_COORD;
-		for(const ScanObject& so : scan_.objects_) {
-			if(so.type_ == FRIEND_FACILITY) {
-				minDist = std::min(minDist, so.dis_);
-			}
-		}
-
-		if(minDist != NO_COORD) {
-			assert(minDist <= maxDistance);
-			fitness_ += 0.01 - ((minDist/maxDistance) / 100);
-		}
-	}
-
-	assert(!std::isnan(fitness_));
-	assert(!std::isinf(fitness_));	//
-	//std::cerr << "fitness:" << fitness_ << std::endl;
+	fitness_ = neurocid::lua::run_fitness_function(layout_.fitnessFunction_,*this);
 }
 
 void Ship::think(BattleFieldLayout& bfl) {

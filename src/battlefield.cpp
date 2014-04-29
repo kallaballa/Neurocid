@@ -54,6 +54,10 @@ void BattleField::move() {
 				spawned_.push_back(t.shoot());
 			}
 		}
+
+		for(Facility& f : team.facilities_) {
+			f.move(layout_);
+		}
 	}
 
 	physics_.update(spawned_);

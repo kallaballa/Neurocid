@@ -4,14 +4,11 @@ ifdef JAVASCRIPT
 TARGET := neurocid-bin.html
 endif
 
-SRCS  := neurocid.cpp eventloop.cpp generative_scenarios.cpp 
-
-ifndef JAVASCRIPT
-SRCS  += json_scenario.cpp json_spirit/json_spirit_reader.cpp
-endif
+SRCS  := neurocid.cpp eventloop.cpp generative_scenarios.cpp json_scenario.cpp
 
 #precompiled headers
 HEADERS := 
+
 GCH     := ${HEADERS:.h=.gch}
 OBJS    := ${SRCS:.cpp=.o} 
 DEPS    := ${SRCS:.cpp=.dep} 
@@ -26,6 +23,7 @@ all: release
 release: ${TARGET}
 debug: ${TARGET}
 info: ${TARGET}
+profile: ${TARGET}
 
 ${TARGET}: ${OBJS} 
 	${CXX} ${LDFLAGS} -o $@ $^ ${LIBS} 

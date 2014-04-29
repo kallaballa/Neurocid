@@ -1,7 +1,7 @@
 CXX      := g++
-CXXFLAGS := -fno-strict-aliasing -std=c++0x -pedantic -Wall -I../kmlocal/src/ -I../fann/src/include -I../box2d/ -I../guichan/include/ `pkg-config --cflags sdl SDL_image SDL_ttf` 
-LDFLAGS  := -L/opt/local/lib -L../kmlocal/src/ -L../fann/src/ -L../box2d/Box2D -L../guichan/ -L../libnoise/lib
-LIBS     := -lklocal -lm -lfann -lguichan -lguichan_sdl -lBox2D `pkg-config --libs sdl SDL_image SDL_ttf`
+CXXFLAGS := -fno-strict-aliasing -std=c++0x -pedantic -Wall -I../kmlocal/src/ -I../fann/src/include -I../box2d/ -I../guichan/include/ -I../LuaJIT-2.0.3/src/ `pkg-config --cflags sdl SDL_image SDL_ttf` 
+LDFLAGS  := -L/opt/local/lib -L../kmlocal/src/ -L../fann/src/ -L../box2d/Box2D -L../guichan/ -L../libnoise/lib -L../json_spirit/ -L../LuaJIT-2.0.3/src/
+LIBS     := -lklocal -lm -lfann -lguichan -lguichan_sdl -lBox2D -ljson_spirit -lluajit `pkg-config --libs sdl SDL_image SDL_ttf`
 .PHONY: all release debian-release info debug clean debian-clean distclean 
 NVCC     := /usr/local/cuda/bin/nvcc
 NVCC_HOST_CXX := g++-4.6
@@ -36,7 +36,6 @@ else
 CXXFLAGS += `pkg-config --cflags SDL_gfx`
 LIBS +=  `pkg-config --libs SDL_gfx`
 endif
-
 
 ifdef WITHOUT_EVENTLOOP
 CXXFLAGS += -D_NO_EVENTLOOP
@@ -86,7 +85,7 @@ endif
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Darwin)
- LDFLAGS += -L/opt/X11/lib/
+ LDFLAGS += -L/opt/X11/lib/ -pagezero_size 10000 -image_base 100000000
  CXXFLAGS += —stdlib=c++ 
 else
  CXXFLAGS += -march=native
@@ -105,6 +104,10 @@ info: dirs
 debug: CXXFLAGS += -g3 -O0
 debug: LDFLAGS += -Wl,--export-dynamic -rdynamic
 debug: dirs
+
+profile: CXXFLAGS += -g3 -O1
+profile: LDFLAGS += -Wl,--export-dynamic -rdynamic
+profile: dirs
 
 clean: dirs
 
@@ -132,6 +135,9 @@ debian-clean:
 
 install: ${TARGET}
 	mkdir -p ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
+	cp -r lua/ ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid/	
+	cp LuaJIT-2.0.3/src/libluajit.so*  ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid/libluajit-5.1.so.2
+	cp json_spirit/libjson_spirit.so* ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
 	cp kmlocal/src/libklocal.so* ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
 	cp fann/src/libfann.so* ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
 	cp guichan/libguichan*.so* ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid

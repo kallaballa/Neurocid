@@ -2,6 +2,7 @@
 #include "frontend.hpp"
 #include "eventloop.hpp"
 #include "generative_scenarios.hpp"
+#include "2d.hpp"
 
 #ifndef _NO_JSON
 #include "json_scenario.hpp"
@@ -123,7 +124,6 @@ int main(int argc, char** argv) {
     } else {
         teams[1] = nc::make_population(1, pl);
     }
-
 #ifndef _NO_THREADS
     std::thread gameThread([&]() {
 #endif

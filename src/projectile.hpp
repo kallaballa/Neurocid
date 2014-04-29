@@ -26,15 +26,15 @@ struct ProjectileLayout {
 	friend class boost::serialization::access;
 #endif
 
-	Coord max_speed_;
-	Coord max_travel_;
-	size_t radius_;
+	Coord maxSpeed_;
+	Coord maxTravel_;
+	Coord radius_;
 
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
-	  ar & max_speed_;
-	  ar & max_travel_;
+	  ar & maxSpeed_;
+	  ar & maxTravel_;
 	  ar & radius_;
 	}
 #endif

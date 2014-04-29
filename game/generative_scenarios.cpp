@@ -36,6 +36,11 @@ public:
 		teams[1].update(defenderTL);
 
 		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
+		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
+		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
+
+		teams[1].facilities_.push_back(Facility(1, teams[1].layout_.fl_, {0,0}));
+		teams[1].facilities_.push_back(Facility(1, teams[1].layout_.fl_, {0,0}));
 		teams[1].facilities_.push_back(Facility(1, teams[1].layout_.fl_, {0,0}));
 	}
 
@@ -313,6 +318,10 @@ public:
 		teams[1].update(defenderTL);
 		multiplyTeams(teams,5);
 		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
+		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
+		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
+		teams[1].facilities_.push_back(Facility(1, teams[1].layout_.fl_, {0,0}));
+		teams[1].facilities_.push_back(Facility(1, teams[1].layout_.fl_, {0,0}));
 		teams[1].facilities_.push_back(Facility(1, teams[1].layout_.fl_, {0,0}));
 	}
 

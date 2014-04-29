@@ -60,14 +60,15 @@ inline PopulationLayout make_default_population_layout() {
 			20000.0, // max_fuel_
 			20000.0, // start_fuel_
 			1.0, // fuel_rate_
-			1.0, // hardness_
+			0.7, // hardness_
 
 			20,// max_ammo_
 			0, // start_ammo_
 			5, // max_cooldown_
-			6, // max_damage_
+			3, // max_damage_
 			1, // crashes_per_damage_
-			6  // num_perf_desc_
+			6,  // num_perf_desc_
+			"fitness/amir" // fitnessFunction;
 		},
 		//BrainLayout
 		{
@@ -83,7 +84,8 @@ inline PopulationLayout make_default_population_layout() {
 		//FacilityLayout
 		{
 			300,
-			6000
+			6000,
+			500
 		}
 	};
 }

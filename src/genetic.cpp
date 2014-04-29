@@ -12,12 +12,12 @@ namespace neurocid {
 using std::set;
 
 GeneticPool::GeneticPool(GeneticLayout params) :
-		params_(params) {
+		layout_(params) {
 	initialized_ = true;
 }
 
 GeneticPool::GeneticPool() :
-		params_() {
+		layout_() {
 	initialized_ = false;
 }
 
@@ -32,16 +32,16 @@ void GeneticPool::mutate(Brain& brain) {
 		fann_type* weights = brain.weights(b);
 		for (size_t i = 0; i < brain.size(b); ++i) {
 			//do we perturb this weight?
-			if (fRand(0, 1) < params_.mutationRate) {
+			if (fRand(0, 1) < layout_.mutationRate) {
 				//add or subtract a small value to the weight
-				weights[i] += ((fRand(0, 1) - fRand(0, 1)) * params_.maxPertubation);
+				weights[i] += ((fRand(0, 1) - fRand(0, 1)) * layout_.maxPertubation);
 			}
 		}
 	}
 }
 
 /*
- * Returns a tank base on roulette wheel sampling
+ * Returns a ship base on roulette wheel sampling
  */
 Ship& GeneticPool::pickSpecimen(Population& pop) {
 	//generate a random number between 0 & total fitness count
@@ -52,6 +52,34 @@ Ship& GeneticPool::pickSpecimen(Population& pop) {
 
 	for (size_t i = 0; i < pop.size(); ++i) {
 		fitnessSoFar += pop[i].fitness_;
+
+		//if the fitness so far > random number return the tank at this point
+		if (fitnessSoFar >= slice) {
+			return pop[i];
+		}
+	}
+
+	assert(false);
+	return pop[0]; 	//surpress warning
+}
+
+/*
+ * Returns a ship base on roulette wheel sampling
+ */
+Ship* GeneticPool::pickSpecimen(vector<Ship*>& pop) {
+	//generate a random number between 0 & total fitness count
+	double totalFitness = 0;
+	for(Ship* s : pop) {
+		totalFitness = s->fitness_;
+	}
+
+	double slice = (double) (fRand(0, 1) * totalFitness);
+
+	//this will be set to the chosen tank go through the tanks adding up the fitness so far
+	double fitnessSoFar = 0;
+
+	for (size_t i = 0; i < pop.size(); ++i) {
+		fitnessSoFar += pop[i]->fitness_;
 
 		//if the fitness so far > random number return the tank at this point
 		if (fitnessSoFar >= slice) {
@@ -76,7 +104,7 @@ std::pair<Ship, Ship> GeneticPool::crossover(Ship &mum, Ship &dad, size_t iterat
 		fann_type* wBaby1 = baby1.brain_->weights(b);
 		fann_type* wBaby2 = baby2.brain_->weights(b);
 
-		if ((fRand(0,1) > params_.crossoverRate) || (mum == dad)) {
+		if ((fRand(0,1) > layout_.crossoverRate) || (mum == dad)) {
 			for (size_t i = 0; i  < mum.brain_->size(b); ++i ) {
 				wBaby1[i] = wMum[i];
 				wBaby2[i] = wDad[i];
@@ -159,7 +187,7 @@ void GeneticPool::calculateStatistics(Population& pop) {
 		pop.stats_.totalDamage_  += pop[i].damage_;
 		pop.stats_.totalRecharged_ += pop[i].recharged_;
 		pop.stats_.totalBrainSwitches_ += pop[i].brain_->brainSwitches();
-		std::cerr << i << ": " << pop[i].brain_->brainSwitches() << std::endl;
+
 		//update fittest if necessary
 		if (highestSoFar == 0 || pop[i].fitness_ > highestSoFar) {
 			highestSoFar = pop[i].fitness_;
@@ -235,15 +263,15 @@ Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl)
 	//fittest genomes. Make sure we add an EVEN number or the roulette
 	//wheel sampling will crash
 	// we don't dont copy elites if we use perf descriptors since that is already a form of elitism
-	if(params_.numElite_ < old_pop.size()){
-		if (!(params_.numEliteCopies_ * (params_.numElite_ % 2))) {
-			copyNBest(params_.numElite_, params_.numEliteCopies_, old_pop, new_pop);
+	if(layout_.numElite_ < old_pop.size()){
+		if (!(layout_.numEliteCopies_ * (layout_.numElite_ % 2))) {
+			copyNBest(layout_.numElite_, layout_.numEliteCopies_, old_pop, new_pop);
 		}
 	}
 
 	assert(old_pop.layout_.tl_.numPerfDesc == 6);
 	PerfDescBsp<6,Ship> pdb;
-	if(params_.usePerfDesc_) {
+	if(layout_.usePerfDesc_) {
 		for(Ship& t : old_pop) {
 			pdb.insert(&t);
 		}
@@ -255,24 +283,30 @@ Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl)
 
 		Ship& mum = pickSpecimen(old_pop);
 		Ship* dad;
-		if(params_.usePerfDesc_) {
-			Ship* closest = pdb.findClosestMate(&mum);
-			Coord range = closest->distance(mum) * 2;
+		if(layout_.usePerfDesc_) {
+			auto pair = pdb.findClosestMate(&mum);
+			Ship* closest = *pair.first;
+			Coord dist = pair.second;
+			Coord range = dist + (dist / 3);
+			if(dist < 0.1)
+				dist = 0.1;
+
 			vector<Ship*> result = pdb.findInRange(&mum, range);
 			if(result.empty()) {
 				dad = closest;
 			} else {
+				std::cerr << "dist/range/size: " << dist << "/" << range << ":" << result.size() <<  std::endl;
 				std::sort(result.begin(), result.end(), [&](const Ship* s1, const Ship* s2){
 					return s1->fitness_ < s2->fitness_;
 				});
 
-				dad = result.back();
+				dad = pickSpecimen(result);
 			}
 		} else
 			dad = &pickSpecimen(old_pop);
 
 		//create some offspring via crossover
-		std::pair<Ship, Ship> babies = crossover(mum, *dad, params_.crossoverIterations);
+		std::pair<Ship, Ship> babies = crossover(mum, *dad, layout_.crossoverIterations);
 
 		//now we mutate
 		mutate(*babies.first.brain_);

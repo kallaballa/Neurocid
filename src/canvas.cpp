@@ -146,16 +146,16 @@ void Canvas::drawStar(Star& s) {
 }
 
 
-void Canvas::drawExplosion(Explosion& expl, Color c) {
+void Canvas::drawExplosion(Explosion& expl) {
 #ifndef _NO_SDLGFX
 	size_t lastR = 0, r = 0;
-	for(size_t i = expl.tick_; i > 0 ; --i) {
+	for(size_t i = expl.tick_; i > 0; --i) {
 	    if(scale_ < 0.013)
-	    	r = round(i * i * 3 * scale_);
+	    	r = round(pow(i,2) * 3 * scale_);
 	    else
-	    	r = round(i * i * scale_);
+	    	r = round(pow(i,2) * scale_);
 
-	    c = c + Color(0,10,0);
+	    Color c = expl.color_ + Color(0,10,0);
 	    c.a = std::min(size_t(200 + (255 / (i + 1))), size_t(255));
 	    if(lastR != r)
 	    	circleRGBA(screen_, scaleX(expl.loc_.x_), scaleY(expl.loc_.y_), r, c.r, c.g, c.b, c.a);
@@ -322,7 +322,7 @@ void Canvas::drawGrid(BattleField& field) {
 		drawLine(0,y,field.layout_.width_,y, Theme::battleFieldGrid);
 	}
 
-	drawEllipse(Vector2D(field.layout_.width_/2, field.layout_.height_/2), 20, 20, Theme::battleFieldCenter);
+	drawEllipse(Vector2D(field.layout_.width_/2, field.layout_.height_/2), 200, 200, Theme::battleFieldCenter);
 }
 
 void Canvas::drawCenters(Scanner& scanner) {
@@ -355,14 +355,19 @@ void Canvas::render(BattleField& field) {
 				this->drawFacility(f, Theme::teamA);
 			else
 				this->drawFacility(f, Theme::teamB);
+
+			if(f.captured_)
+				explosions_.push_back({f.loc_, 30, 50, {255, 255, 0, 255}});
+
+			f.captured_ = false;
 		}
 
 		for(Ship& t : team) {
 			if(t.explode_)
-				explosions_.push_back({t.loc_, 20, {255,64,0,255}});
+				explosions_.push_back({t.loc_, 0, 20, {255,64,0,255}});
 
 			if(t.crashed_)
-				explosions_.push_back({t.loc_, 20, {64,128,255,128}});
+				explosions_.push_back({t.loc_, 0, 20, {64,128,255,128}});
 
 			else if(!t.dead_) {
 				if(t.teamID_ == 0 )
@@ -374,7 +379,7 @@ void Canvas::render(BattleField& field) {
 			t.crashed_ = false;
 			for(Projectile* p : t.projectiles_) {
 				if(p->explode_)
-					explosions_.push_back({p->loc_, 20, {255,64,0,255}});
+					explosions_.push_back({p->loc_, 0, 20, {255,64,0,255}});
 				else if(!p->dead_) {
 					if(t.teamID_ == 0)
 						this->drawProjectile(*p,Theme::projectileA);
@@ -392,7 +397,7 @@ void Canvas::render(BattleField& field) {
 		if(e.end())
 			it = explosions_.erase(it);
 		else {
-			drawExplosion(e,e.color_);
+			drawExplosion(e);
 			e.next();
 		}
 	}

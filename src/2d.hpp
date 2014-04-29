@@ -1,11 +1,3 @@
-/*
-
- * 2D.hpp
- *
- *  Created on: Mar 1, 2014
- *      Author: elchaschab
- */
-
 #ifndef TWD_HPP_
 #define TWD_HPP_
 
@@ -23,8 +15,6 @@
 namespace neurocid {
 typedef double Coord;
 
-#define NO_COORD std::numeric_limits<Coord>().max()
-#define NO_VECTOR2D Vector2D(NO_COORD, NO_COORD)
 #define ASSERT_LOC(V) assert(V.x_ != NO_COORD && V.y_ != NO_COORD);
 #define ASSERT_DIR(V) assert(V.x_ >= -1 && V.x_ <= 1 && V.y_ >= -1 && V.y_ <= 1);
 
@@ -200,11 +190,6 @@ inline Coord radFromDir(const Vector2D dir) {
 }
 
 inline Coord normRotation(const Coord rotation) {
-    //2 * pi = 0
-
-	// -pi .. +pi
-
-	//0 -> -pi
 	if(rotation >= 0)
 		return fmod(rotation + M_PI, 2 * M_PI) - M_PI;
 	else
@@ -215,6 +200,10 @@ inline std::ostream& operator<<(std::ostream& os, Vector2D v) {
 	os << '(' << v.x_ << ',' << v.y_ << ')';
 	return os;
 }
+
+#define NO_COORD std::numeric_limits<Coord>().max()
+#define NO_VECTOR2D Vector2D(NO_COORD, NO_COORD)
+
 }
 
 #endif /* TWD_HPP_ */

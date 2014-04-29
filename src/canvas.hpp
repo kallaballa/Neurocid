@@ -30,18 +30,14 @@ class Ship;
 class Facility;
 class Object;
 
-class Explosion {
-public:
-	size_t tick_ = 0;
-	size_t maxTick_;
+struct Explosion {
 	Vector2D loc_;
+	size_t tick_;
+	size_t maxTick_;
 	Color color_;
 
-	Explosion(const Vector2D& loc, const size_t& maxTick, const Color& c) : maxTick_(maxTick), loc_(loc), color_(c) {
-	}
-
 	size_t next() {
-		assert(!end());
+		assert(!this->end());
 		return ++tick_;
 	}
 
@@ -84,7 +80,7 @@ public:
 	void drawSurface(SDL_Surface *s, SDL_Rect& srect, Coord x, Coord y);
 	void drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c);
 	void fillCircle(Vector2D loc, Coord radius, Color c);
-	void drawExplosion(Explosion& expl, Color c);
+	void drawExplosion(Explosion& expl);
 	void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
 	void drawShip(Ship& tank, Color c);
 	void drawFacility(Facility& facility, Color c);

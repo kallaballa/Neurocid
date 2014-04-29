@@ -24,7 +24,7 @@ struct GeneticLayout {
 
 inline GeneticLayout make_default_genetic_layout() {
 	return {
-			0.05, // mutationRate
+			0.05,// mutationRate
 			0.7, // crossoverRate
 			4,   // crossoverIterations
 			0.3, // maxPertubation
@@ -43,11 +43,12 @@ private:
 	bool initialized_ = false;
 	void mutate(Brain& brain);
 	Ship& pickSpecimen(Population& pop);
+	Ship* pickSpecimen(vector<Ship*>& pop);
 	std::pair<Ship, Ship> crossover(Ship &mum, Ship &dad, size_t iterations);
 	void copyNBest(size_t n, const size_t numCopies, Population& in, Population& out);
 	void calculateStatistics(Population& pop);
 public:
-	GeneticLayout params_;
+	GeneticLayout layout_;
 	GeneticPool(GeneticLayout params);
 	GeneticPool();
 

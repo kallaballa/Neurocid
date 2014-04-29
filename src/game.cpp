@@ -80,28 +80,17 @@ void Game::fight(bool render) {
 
 void Game::score() {
 	assert(teams_.size() == 2);
-/*	size_t collisions = (teams_[0].stats_.totalHits_
-
-			+ teams_[0].stats_.totalFriendlyFire_
-			+ teams_[1].stats_.totalHits_
-			+ teams_[1].stats_.totalFriendlyFire_
-	);
-
-	size_t damage = (teams_[0].stats_.totalDamage_+ teams_[1].stats_.totalDamage_);
-
-	assert(collisions == damage);*/
-	vector<size_t> dead(2,0);
+	vector<size_t> ownedFacilites(2,0);
 
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		Population& team = teams_[i];
-		for(Ship& t : team) {
-			if(t.dead_)
-				++dead[i];
+		for(Facility& f : team.facilities_) {
+			++ownedFacilites[f.teamID_];
 		}
 	}
 
-	if(dead[0] != dead[1]) {
-		if(dead[0] < dead[1]) {
+	if(ownedFacilites[0] != ownedFacilites[1]) {
+		if(ownedFacilites[0] > ownedFacilites[1]) {
 			teams_[0].score_++;
 			teams_[0].winner_=true;
 		} else {
@@ -119,13 +108,43 @@ void Game::mate() {
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		newTeams_.push_back(pools_[i].epoch(teams_[i],scenario_->bfl_));
 	}
-}
 
+	/*
+	// copy some from winner to loser
+	// FIXME: disable in play mode
+	if(		   newTeams_[0].size() > pools_[0].layout_.numElite_
+			&& newTeams_[0].size() > pools_[1].layout_.numElite_
+			&& newTeams_[1].size() > pools_[0].layout_.numElite_
+			&& newTeams_[1].size() > pools_[1].layout_.numElite_
+	) {
+		if(teams_[0].winner_) {
+			for(size_t i = 0; i < pools_[0].layout_.numElite_; ++i) {
+				if(newTeams_[0][i].layout_.isDummy_)
+					continue;
+				size_t j = newTeams_[1].size() - i - 1;
+				newTeams_[1][j].brain_->destroy();
+				newTeams_[1][j] = newTeams_[0][i].clone();
+				newTeams_[1][j].teamID_ = 1;
+			}
+		} else if(teams_[1].winner_) {
+			for(size_t i = 0; i < pools_[1].layout_.numElite_; ++i) {
+				if(newTeams_[1][i].layout_.isDummy_)
+					continue;
+				size_t j = newTeams_[0].size() - i - 1;
+				newTeams_[0][j].brain_->destroy();
+				newTeams_[0][j] = newTeams_[1][i].clone();
+				newTeams_[0][j].teamID_ = 0;
+			}
+		}
+	}
+	*/
+}
 
 void Game::cleanup() {
 	for(Population& p : teams_) {
 		for(Facility& f : p.facilities_) {
 			f.teamID_ = p[0].teamID_;
+			f.reset();
 		}
 
 		for(Ship& t : p) {
@@ -137,6 +156,7 @@ void Game::cleanup() {
 	for(Population& p : newTeams_) {
 		for(Facility& f : p.facilities_) {
 			f.teamID_ = p[0].teamID_;
+			f.reset();
 		}
 
 		for(Ship& t : p) {
@@ -169,12 +189,12 @@ vector<Population> Game::play(bool render) {
 			fight(render);
 		});
 
-		tt.execute("game", "mate", [&]() {
-			mate();
-		});
-
 		tt.execute("game", "score", [&]() {
 			score();
+		});
+
+		tt.execute("game", "mate", [&]() {
+			mate();
 		});
 
 		tt.execute("game", "print", [&]() {

@@ -29,20 +29,18 @@ public:
 template <size_t TnumDesc, typename Tunit> class PerfDescBsp : public KDTree::KDTree<TnumDesc, Tunit*, std::pointer_to_binary_function<const Tunit*, const int&, Coord>> {
 public:
 	typedef std::vector<PerfDescBsp*> NodeVector;
+	typedef KDTree::KDTree<TnumDesc, Tunit*, std::pointer_to_binary_function<const Tunit*, const int&, Coord>> Base;
 
 	PerfDescBsp() : KDTree::KDTree<TnumDesc, Tunit*, std::pointer_to_binary_function<const Tunit*, const int&, Coord>>(std::ptr_fun(perfDescComponent<Tunit>)) {
 	}
 
-	Tunit* findClosestMate(Tunit* t) {
+	std::pair<typename Base::const_iterator, typename Base::distance_type> findClosestMate(Tunit* t) {
 		auto result = this->find_nearest_if(t, std::numeric_limits<Coord>().max(), [&](Tunit* candidate) {
 			return candidate != t;
 		});
 		assert(t != (*result.first));
 
-		if(result.second == std::numeric_limits<Coord>().max())
-			return t; //there is no one else
-		else
-			return (*result.first);
+		return result;
 	}
 
 	std::vector<Tunit*> findInRange(Tunit* t, Coord range) {

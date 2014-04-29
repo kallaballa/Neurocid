@@ -358,11 +358,11 @@ void Physics::step() {
 				assert(o->rotation_ <= M_PI);
 			} else if(o->type() == PROJECTILE) {
 				Projectile* p = static_cast<Projectile*>(o);
-				if((p->loc_ - p->startLoc_).length() > p->layout_.max_travel_) {
+				if((p->loc_ - p->startLoc_).length() > p->layout_.maxTravel_) {
 					p->dead_ = true;
 					deadBodies_.push_back(body);
 				} else {
-					Vector2D force = p->getDirection() * (p->layout_.max_speed_ * 10000);
+					Vector2D force = p->getDirection() * (p->layout_.maxSpeed_ * 10000);
 					body->SetAwake(true);
 					body->SetLinearVelocity(b2Vec2(force.x_, force.y_));
 				}

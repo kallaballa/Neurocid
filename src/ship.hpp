@@ -46,6 +46,8 @@ struct ShipLayout {
 	size_t crashesPerDamage_;
 	size_t numPerfDesc;
 
+	string fitnessFunction_;
+
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
@@ -70,7 +72,9 @@ struct ShipLayout {
 	  ar & maxDamage_;
 	  ar & crashesPerDamage_;
 	  ar & numPerfDesc;
+	  ar & fitnessFunction_;
 	}
+
 #endif
 };
 

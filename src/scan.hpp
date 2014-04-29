@@ -45,7 +45,7 @@ class ScanObject {
 public:
 	ScanObjectType type_;
 	Vector2D loc_;
-	Coord dis_;
+	Coord dist_;
 
 	Vector2D dir_ = NO_VECTOR2D;
 	Coord	 angDist_ = NO_COORD;
@@ -54,14 +54,14 @@ public:
 	ScanObject(const ScanObjectType& type, const Vector2D& loc, const Coord& dis, const Vector2D& vel) :
 		type_(type),
 		loc_(loc),
-		dis_(dis),
+		dist_(dis),
 		vel_(vel){
 	}
 
 	ScanObject() :
 		type_(INVALID),
 		loc_(NO_VECTOR2D),
-		dis_(NO_COORD),
+		dist_(NO_COORD),
 		vel_(NO_VECTOR2D){
 	}
 

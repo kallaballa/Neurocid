@@ -28,11 +28,17 @@ void BspScanner::buildBsps(BattleField& field) {
 	Population& teamB = field.teams_[1];
 
 	for(Facility& f : teamA.facilities_) {
-		bspFA_.insert(&f);
+		if(f.teamID_ == 0)
+			bspFA_.insert(&f);
+		else
+			bspFB_.insert(&f);
 	}
 
 	for(Facility& f : teamB.facilities_) {
-		bspFB_.insert(&f);
+		if(f.teamID_ == 0)
+			bspFA_.insert(&f);
+		else
+			bspFB_.insert(&f);
 	}
 
 	for (size_t i = 0; i < teamA.size(); ++i) {

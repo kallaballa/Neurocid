@@ -19,7 +19,7 @@ namespace neurocid {
 			angDist_ = -dir_.y_;
 
 		scale(vel_, velDist, std::max(bfl.width_,bfl.height_));
-		scale(dir_, dis_, std::max(bfl.width_,bfl.height_));
+		scale(dir_, dist_, std::max(bfl.width_,bfl.height_));
 	}
 
 	Scan::Scan(Object* object) : object_(object) {
