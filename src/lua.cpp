@@ -22,8 +22,6 @@ class ScriptLoader {
 	map<string, int> refMap_;
 public:
 	ScriptLoader() {
-		int status;
-		int result;
 		L_ = luaL_newstate();
 		luaL_openlibs(L_);
 

@@ -9,6 +9,18 @@
 
 namespace neurocid {
 
+GeneticLayout make_default_genetic_layout() {
+	return {
+			0.05,// mutationRate
+			0.7, // crossoverRate
+			4,   // crossoverIterations
+			0.3, // maxPertubation
+			4,   // numElite
+			1,   // numEliteCopies
+			false// usePerfDesc_
+	};
+}
+
 using std::set;
 
 GeneticPool::GeneticPool(GeneticLayout params) :
