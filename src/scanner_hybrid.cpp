@@ -227,7 +227,7 @@ void HybridScanner::scan(BattleField& field) {
 			if(diff >= 3) {
 				if(f.teamID_ != 0) {
 					for(Object* o: objsA) {
-						static_cast<Ship*>(o)->capture();
+						static_cast<Ship*>(o)->captured();
 					}
 					f.captured();
 				}
@@ -235,7 +235,7 @@ void HybridScanner::scan(BattleField& field) {
 			} else if(diff <= -3) {
 				if(f.teamID_ != 1) {
 					for(Object* o: objsB) {
-						static_cast<Ship*>(o)->capture();
+						static_cast<Ship*>(o)->captured();
 					}
 					f.captured();
 				}
@@ -244,11 +244,11 @@ void HybridScanner::scan(BattleField& field) {
 		}
 		if(f.teamID_ == 0) {
 			for(Object* o: objsA) {
-				static_cast<Ship*>(o)->recharge();
+				static_cast<Ship*>(o)->recharged();
 			}
 		} else {
 			for(Object* o: objsB) {
-				static_cast<Ship*>(o)->recharge();
+				static_cast<Ship*>(o)->recharged();
 			}
 		}
 		objsA.clear();
@@ -264,7 +264,7 @@ void HybridScanner::scan(BattleField& field) {
 			if(diff >= 3) {
 				if(f.teamID_ != 0) {
 					for(Object* o: objsA) {
-						static_cast<Ship*>(o)->capture();
+						static_cast<Ship*>(o)->captured();
 					}
 					f.captured();
 				}
@@ -272,7 +272,7 @@ void HybridScanner::scan(BattleField& field) {
 			} else if(diff <= -3) {
 				if(f.teamID_ != 1) {
 					for(Object* o: objsB) {
-						static_cast<Ship*>(o)->capture();
+						static_cast<Ship*>(o)->captured();
 					}
 					f.captured();
 				}
@@ -282,11 +282,11 @@ void HybridScanner::scan(BattleField& field) {
 
 		if(f.teamID_ == 0) {
 			for(Object* o: objsA) {
-				static_cast<Ship*>(o)->recharge();
+				static_cast<Ship*>(o)->recharged();
 			}
 		} else {
 			for(Object* o: objsB) {
-				static_cast<Ship*>(o)->recharge();
+				static_cast<Ship*>(o)->recharged();
 			}
 		}
 		objsA.clear();

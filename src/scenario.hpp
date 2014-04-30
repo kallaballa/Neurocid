@@ -15,7 +15,7 @@ using std::vector;
 class Scenario {
 public:
 	BattleFieldLayout bfl_;
-	SpacerLayout gl_;
+	PlacerLayout sl_;
 	PhysicsLayout phl_;
 	ScannerLayout scl_;
 
@@ -24,9 +24,11 @@ public:
 		bfl_.height_ = 600000;
 		bfl_.iterations_ = 1500;
 
-		gl_.center_ = {150000,150000};
-		gl_.distance_ = 10000;
-		gl_.spacing_ = 100;
+		sl_.center_ = {150000,150000};
+		sl_.distance_ = 10000;
+		sl_.spacing_ = 100;
+		sl_.rotation_ = 0;
+		sl_.placer_ = "placer/test";
 
 		phl_.gravity_ = {0,0};
 		phl_.timeStep_ = 1.0f/30.0f;
@@ -43,12 +45,12 @@ public:
 		scl_.numProjectiles_ = 10;
 	}
 
+	virtual ~Scenario(){
+	};
+
 	virtual void configureTeams(vector<Population>& teams) {};
-
 	virtual void configurePools(vector<GeneticPool>& pools) {};
-	virtual Placer* createPlacer() = 0;
 };
-
 
 } /* namespace neurocid */
 

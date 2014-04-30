@@ -99,7 +99,7 @@ Ship make_ship(js::Object& obj, size_t teamID, PopulationLayout pl) {
 	s.layout_.maxAmmo_ = get_size_t(obj, "ShipMaxAmmo");
 	s.layout_.maxDamage_ = get_size_t(obj, "ShipMaxDamage");
 	s.layout_.crashesPerDamage_ = get_size_t(obj, "ShipCrashesPerDamage");
-	s.layout_.numPerfDesc = get_size_t(obj, "ShipNumPerfDesc");
+	s.layout_.numPerfDesc_ = get_size_t(obj, "ShipNumPerfDesc");
 	return s;
 }
 
@@ -167,10 +167,8 @@ void JsonScenario::configureTeams(vector<Population>& teams) {
 	for(size_t i = 0; i < teams_[1].size(); ++i) {
 		teams[1][i].layout_ = teams_[1][i].layout_;
 	}
-}
 
-Placer* JsonScenario::createPlacer() {
-	return new JsonPlacer(teams_);
+	JsonPlacer(teams_).place(teams);
 }
 
 }

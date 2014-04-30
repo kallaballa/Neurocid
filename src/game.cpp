@@ -1,15 +1,9 @@
-/*
- * game.cpp
- *
- *  Created on: Mar 7, 2014
- *      Author: elchaschab
- */
-
 #include "game.hpp"
 #include "gamestate.hpp"
 #include "renderer.hpp"
 #include "physics.hpp"
 #include "time_tracker.hpp"
+#include "./lua.hpp"
 #include <algorithm>
 #include <chrono>
 #include <thread>
@@ -18,14 +12,12 @@ namespace neurocid {
 
 Game::Game(Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools) :
 		scenario_(scenario),
-		placer_(scenario->createPlacer()),
 		teams_(teams),
 		newTeams_(teams.size()),
 		pools_(pools) {
 }
 
 Game::~Game() {
-	delete placer_;
 }
 
 void Game::prepare() {
@@ -40,7 +32,7 @@ void Game::prepare() {
 }
 
 void Game::place() {
-	placer_->place(teams_);
+	lua::run_placer(scenario_->sl_.placer_, teams_, scenario_->sl_, 0);
 }
 
 void Game::fight(bool render) {

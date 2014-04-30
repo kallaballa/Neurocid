@@ -32,13 +32,13 @@ void adjust_BattleFieldLayout(js::Object& obj, BattleFieldLayout& bfl);
 void adjust_ScannerLayout(js::Object& obj, ScannerLayout& scl);
 Ship make_ship(js::Object& obj, size_t teamID, PopulationLayout pl);
 
-class JsonPlacer : public Placer {
+class JsonPlacer {
 	std::vector<Population>& teams_;
 public:
 	JsonPlacer(std::vector<Population>& teams) : teams_(teams) {
 	}
 
-	virtual void place(vector<Population>& teams) override {
+	void place(vector<Population>& teams) {
 		assert(teams_[0].size() == teams[0].size());
 		assert(teams_[1].size() == teams[1].size());
 		for(size_t i = 0; i < teams_[0].size(); ++i) {
@@ -61,7 +61,6 @@ public:
 	JsonScenario(const string& filename);
 	virtual ~JsonScenario();
 	virtual void configureTeams(vector<Population>& teams) override;
-	virtual Placer* createPlacer() override;
 };
 
 }

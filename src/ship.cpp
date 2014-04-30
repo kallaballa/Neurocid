@@ -119,9 +119,12 @@ void Ship::impact(Projectile& p) {
 	} else {
 		p.owner_->friendlyFire_++;
 	}
+
+	if(dead_ && p.owner_->teamID_ != teamID_)
+		p.owner_->killed();
 }
 
-void Ship::recharge() {
+void Ship::recharged() {
 	Coord amount = (layout_.maxFuel_ - fuel_);
 	assert(amount >= 0);
 	recharged_ += amount;
@@ -129,8 +132,12 @@ void Ship::recharge() {
 	ammo_ = layout_.maxAmmo_;
 }
 
-void Ship::capture() {
+void Ship::captured() {
 	++captured_;
+}
+
+void Ship::killed() {
+	++kills_;
 }
 
 Ship Ship::makeChild() const {
@@ -186,6 +193,7 @@ void Ship::resetScore() {
 	recharged_ = 0;
 	failedShots_ = 0;
 	captured_ = 0;
+	kills_ = 0;
 }
 
 void Ship::update(ShipLayout tl) {

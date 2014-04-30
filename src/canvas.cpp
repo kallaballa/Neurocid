@@ -322,7 +322,7 @@ void Canvas::drawGrid(BattleField& field) {
 		drawLine(0,y,field.layout_.width_,y, Theme::battleFieldGrid);
 	}
 
-	drawEllipse(Vector2D(field.layout_.width_/2, field.layout_.height_/2), 200, 200, Theme::battleFieldCenter);
+	drawEllipse(Vector2D(field.layout_.width_/2, field.layout_.height_/2), 2000, 2000, Theme::battleFieldCenter);
 }
 
 void Canvas::drawCenters(Scanner& scanner) {

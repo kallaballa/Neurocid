@@ -7,7 +7,16 @@
 
 #include "lua.hpp"
 #include "util.hpp"
+#include "placer.hpp"
+#include "population.hpp"
 #include <map>
+
+extern "C" {
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+}
+
 
 namespace neurocid {
 
@@ -64,6 +73,258 @@ public:
 		return L_;
 	}
 
+	void make_field(const string& name, double d) {
+		lua_pushnumber(L_, d);
+		lua_setfield(L_, -2, name.c_str());
+	}
+
+	void make_field(const string& name, size_t s) {
+		lua_pushinteger(L_, s);
+		lua_setfield(L_, -2, name.c_str());
+	}
+
+	void make_field(const string& name, int b) {
+		lua_pushinteger(L_, b);
+		lua_setfield(L_, -2, name.c_str());
+	}
+
+	void make_field(const string& name, bool b) {
+		lua_pushboolean(L_, b);
+		lua_setfield(L_, -2, name.c_str());
+	}
+
+	void make_vector_2d(const string& name, const Vector2D& v) {
+	    lua_newtable(L_);
+	    make_field("x", v.x_);
+	    make_field("y", v.y_);
+		lua_setfield(L_, -2, name.c_str());
+	}
+
+	void make_projectile_layout(const ProjectileLayout& pl) {
+		lua_newtable(L_);
+	    make_field("maxSpeed", pl.maxSpeed_);
+		make_field("maxTravel", pl.maxTravel_);
+		make_field("radius", pl.radius_);
+		lua_setfield(L_, -2, "layout");
+	}
+
+	void make_projectile(const Projectile& p, const size_t i) {
+		lua_newtable(L_);
+	    make_vector_2d("loc", p.loc_);
+	    make_vector_2d("startLoc", p.startLoc_);
+
+	    make_projectile_layout(p.layout_);
+	    make_scan(p.scan_);
+
+	    lua_pushinteger(L_, i);
+		lua_insert(L_, -2);
+		lua_settable(L_, -3);
+	}
+
+	void make_ship_layout(const ShipLayout& sl) {
+	    lua_newtable(L_);
+	    make_field("canMove", sl.canMove_);
+	    make_field("canRotate", sl.canRotate_);
+	    make_field("canShoot", sl.canShoot_);
+	    make_field("isDummy", sl.isDummy_);
+		make_field("disableProjectileFitness", sl.disableProjectileFitness_);
+	    make_field("fuelRate", sl.fuelRate_);
+	    make_field("hardness", sl.hardness_);
+	    make_field("maxAmmo", sl.maxAmmo_);
+	    make_field("maxCooldown", sl.maxCooldown_);
+		make_field("maxDamage", sl.maxDamage_);
+		make_field("maxFuel", sl.maxFuel_);
+	    make_field("maxRotation", sl.maxRotation_);
+	    make_field("maxSpeed", sl.maxSpeed_);
+	    make_field("numPerfDesc", sl.numPerfDesc_);
+		make_field("radius", sl.radius_);
+	    make_field("startAmmo", sl.startAmmo_);
+	    make_field("startFuel", sl.startFuel_);
+	    lua_setfield(L_, -2, "layout");
+	}
+
+	void make_scan_object(const ScanObject& so, const size_t& i) {
+	    lua_newtable(L_);
+		make_vector_2d("dir", so.dir_);
+		make_vector_2d("loc", so.loc_);
+		make_vector_2d("vel", so.vel_);
+
+		make_field("angDist", so.angDist_);
+		make_field("dist", so.dist_);
+		make_field("type", so.type_);
+
+		lua_pushinteger(L_, i);
+		lua_insert(L_, -2);
+		lua_settable(L_, -3);
+	}
+
+	void make_scan(const Scan& scan) {
+	    lua_newtable(L_);
+	    make_vector_2d("normCenter", scan.normCenter_);
+	    make_vector_2d("normDir", scan.normDir_);
+	    make_vector_2d("normVel", scan.normVel_);
+
+	    lua_newtable(L_);
+	    size_t soi = 0;
+	    for(const ScanObject& so : scan.objects_) {
+			make_scan_object(so, ++soi);
+	    }
+
+	    lua_setfield(L_, -2, "objects");
+	    lua_setfield(L_, -2, "scan");
+	}
+
+	void make_ship_fields(const Ship& ship) {
+	    lua_newtable(L_);
+
+	    make_vector_2d("loc", ship.loc_);
+	    make_field("pointer", &ship);
+	    make_field("failedShots", ship.failedShots_);
+	    make_field("hits", ship.hits_);
+	    make_field("recharged", ship.recharged_);
+	    make_field("fuel", ship.fuel_);
+		make_field("friendlyFire", ship.friendlyFire_);
+	    make_field("damage", ship.damage_);
+	    make_field("dead", ship.dead_);
+	    make_field("captured", ship.captured_);
+	    make_field("kills", ship.kills_);
+
+	    make_ship_layout(ship.layout_);
+		make_scan(ship.scan_);
+
+		lua_newtable(L_);
+	    size_t pi = 0;
+	    for(const Projectile* p : ship.projectiles_) {
+			make_projectile(*p, ++pi);
+	    }
+	}
+
+	void make_ship(const Ship& ship) {
+		make_ship_fields(ship);
+	    lua_setfield(L_, -2, "projectiles");
+	    lua_setfield(L_, -2, "ship");
+	}
+
+	void make_ship(const Ship& ship, const size_t& i) {
+		make_ship_fields(ship);
+	    lua_setfield(L_, -2, "projectiles");
+		lua_pushinteger(L_, i);
+		lua_insert(L_, -2);
+		lua_settable(L_, -3);
+	}
+
+
+	void make_facility_layout(const FacilityLayout& fl) {
+		lua_newtable(L_);
+	    make_field("maxCooldown", fl.maxCooldown_);
+		make_field("radius", fl.radius_);
+		make_field("range", fl.range_);
+		lua_setfield(L_, -2, "layout");
+	}
+
+	void make_facility(const Facility& f, const size_t i) {
+		lua_newtable(L_);
+
+		make_facility_layout(f.layout_);
+		make_vector_2d("loc", f.loc_);
+
+	    lua_pushinteger(L_, i);
+		lua_insert(L_, -2);
+		lua_settable(L_, -3);
+	}
+
+	void make_population(const string& name, const Population& team) {
+		lua_newtable(L_);
+
+		lua_newtable(L_);
+		size_t si = 0;
+	    for(const Ship& ship : team) {
+			make_ship(ship, ++si);
+	    }
+	    lua_setfield(L_, -2, "ships");
+
+	    lua_newtable(L_);
+		size_t fi = 0;
+		for(const Facility& f : team.facilities_) {
+			make_facility(f, ++fi);
+		}
+	    lua_setfield(L_, -2, "facilities");
+
+	    lua_setfield(L_, -2, name.c_str());
+	}
+
+	void make_spacer_layout(const PlacerLayout& sl) {
+		lua_newtable(L_);
+	    make_vector_2d("center", sl.center_);
+		make_field("distance", sl.distance_);
+		make_field("spacing", sl.spacing_);
+		make_field("rotation", sl.rotation_);
+
+		lua_setfield(L_, -2, "sl");
+	}
+
+	void copy_locations(const string& name, Population& team) {
+		luaL_checktype(L_, -1, LUA_TTABLE);
+		lua_pushstring(L_, name.c_str());
+		lua_gettable(L_, -2);
+		luaL_checktype(L_, -1, LUA_TTABLE);
+
+		lua_pushstring(L_, "ships");
+		lua_gettable(L_, -2);
+		luaL_checktype(L_, -1, LUA_TTABLE);
+
+		size_t s = lua_objlen(L_, -1);
+
+		assert(s == team.size());
+
+		for(size_t i = 1; i <= s; ++i) {
+			lua_rawgeti(L_, -1, i);
+			luaL_checktype(L_, -1, LUA_TTABLE);
+
+			lua_pushstring(L_, "loc");
+			lua_gettable(L_, -2);
+
+			luaL_checktype(L_, -1, LUA_TTABLE);
+
+			lua_getfield(L_, -1, "x");
+			team[i-1].loc_.x_ = lua_tonumber(L_, -1);
+			lua_pop(L_, 1);
+
+			lua_getfield(L_, -1, "y");
+			team[i-1].loc_.y_ = lua_tonumber(L_, -1);
+			lua_pop(L_, 3);
+		}
+
+		lua_pop(L_, 1);
+
+		lua_pushstring(L_, "facilities");
+		lua_gettable(L_, -2);
+		luaL_checktype(L_, -1, LUA_TTABLE);
+
+		s = lua_objlen(L_, -1);
+
+		assert(s == team.facilities_.size());
+
+		for(size_t i = 1; i <= s; ++i) {
+			lua_rawgeti(L_, -1, i);
+			luaL_checktype(L_, -1, LUA_TTABLE);
+
+			lua_pushstring(L_, "loc");
+			lua_gettable(L_, -2);
+
+			luaL_checktype(L_, -1, LUA_TTABLE);
+
+			lua_getfield(L_, -1, "x");
+			team.facilities_[i-1].loc_.x_ = lua_tonumber(L_, -1);
+			lua_pop(L_, 1);
+
+			lua_getfield(L_, -1, "y");
+			team.facilities_[i-1].loc_.y_ = lua_tonumber(L_, -1);
+			lua_pop(L_, 3);
+		}
+		lua_pop(L_, 2);
+	}
+
 	static ScriptLoader* getInstance() {
 		if(instance_ == NULL)
 			instance_ = new ScriptLoader();
@@ -74,183 +335,13 @@ public:
 
 ScriptLoader* ScriptLoader::instance_ = NULL;
 
-void make_vector_2d(lua_State* L, const string& name, const Vector2D& v) {
-    lua_newtable(L);
-	lua_pushnumber(L, v.x_);
-	lua_setfield(L, -2, "x");
-	lua_pushnumber(L, v.y_);
-	lua_setfield(L, -2, "y");
-	lua_setfield(L, -2, name.c_str());
-}
-
-void make_projectile_layout(lua_State* L, const ProjectileLayout& pl) {
-	lua_newtable(L);
-	lua_pushnumber(L, pl.maxSpeed_);
-	lua_setfield(L, -2, "maxSpeed");
-	lua_pushnumber(L, pl.maxTravel_);
-	lua_setfield(L, -2, "maxTravel");
-	lua_pushnumber(L, pl.radius_);
-	lua_setfield(L, -2, "radius");
-	lua_setfield(L, -2, "layout");
-}
-
-inline void make_projectile(lua_State *L, const Projectile& p, const size_t i) {
-	lua_newtable(L);
-    make_vector_2d(L, "loc", p.loc_);
-    make_vector_2d(L, "startLoc", p.startLoc_);
-
-    make_projectile_layout(L, p.layout_);
-    make_scan(L, p.scan_);
-
-    lua_pushinteger(L, i);
-	lua_insert(L, -2);
-	lua_settable(L, -3);
-}
-
-void make_ship_layout(lua_State *L, const ShipLayout& sl) {
-    lua_newtable(L);
-
-    lua_pushboolean(L, sl.canMove_);
-	lua_setfield(L, -2, "canMove");
-
-    lua_pushboolean(L, sl.canRotate_);
-	lua_setfield(L, -2, "canRotate");
-
-    lua_pushboolean(L, sl.canShoot_);
-	lua_setfield(L, -2, "canShoot");
-
-    lua_pushboolean(L, sl.isDummy_);
-	lua_setfield(L, -2, "isDummy");
-
-	lua_pushboolean(L, sl.disableProjectileFitness_);
-	lua_setfield(L, -2, "disableProjectileFitness");
-
-    lua_pushnumber(L, sl.fuelRate_);
-	lua_setfield(L, -2, "fuelRate");
-
-    lua_pushnumber(L, sl.hardness_);
-	lua_setfield(L, -2, "hardness");
-
-    lua_pushinteger(L, sl.maxAmmo_);
-	lua_setfield(L, -2, "maxAmmo");
-
-    lua_pushinteger(L, sl.maxCooldown_);
-	lua_setfield(L, -2, "maxCooldown");
-
-	lua_pushinteger(L, sl.maxDamage_);
-	lua_setfield(L, -2, "maxDamage");
-
-	lua_pushnumber(L, sl.maxFuel_);
-	lua_setfield(L, -2, "maxFuel");
-
-    lua_pushnumber(L, sl.maxRotation_);
-	lua_setfield(L, -2, "maxRotation");
-
-    lua_pushnumber(L, sl.maxSpeed_);
-	lua_setfield(L, -2, "maxSpeed");
-
-    lua_pushinteger(L, sl.numPerfDesc);
-	lua_setfield(L, -2, "numPerfDesc");
-
-	lua_pushnumber(L, sl.radius_);
-	lua_setfield(L, -2, "radius");
-
-    lua_pushinteger(L, sl.startAmmo_);
-	lua_setfield(L, -2, "startAmmo");
-
-    lua_pushnumber(L, sl.startFuel_);
-	lua_setfield(L, -2, "startFuel");
-
-    lua_setfield(L, -2, "layout");
-}
-
-void make_scan_object(lua_State *L, const ScanObject& so, const size_t& i) {
-    lua_newtable(L);
-	make_vector_2d(L, "dir", so.dir_);
-	make_vector_2d(L, "loc", so.loc_);
-	make_vector_2d(L, "vel", so.vel_);
-
-	lua_pushinteger(L, so.angDist_);
-	lua_setfield(L, -2, "angDist");
-
-	lua_pushinteger(L, so.dist_);
-	lua_setfield(L, -2, "dist");
-
-	lua_pushinteger(L, so.type_);
-	lua_setfield(L, -2, "type");
-
-	lua_pushinteger(L, i);
-	lua_insert(L, -2);
-	lua_settable(L, -3);
-}
-
-void make_scan(lua_State *L, const Scan& scan) {
-    lua_newtable(L);
-    make_vector_2d(L, "normCenter", scan.normCenter_);
-    make_vector_2d(L, "normDir", scan.normDir_);
-    make_vector_2d(L, "normVel", scan.normVel_);
-
-    lua_newtable(L);
-    size_t soi = 0;
-    for(const ScanObject& so : scan.objects_) {
-		make_scan_object(L, so, ++soi);
-    }
-
-    lua_setfield(L, -2, "objects");
-    lua_setfield(L, -2, "scan");
-}
-
-void make_ship(lua_State *L, const Ship& ship) {
-    lua_newtable(L);
-
-    make_vector_2d(L, "loc", ship.loc_);
-
-    lua_pushnumber(L, ship.failedShots_);
-	lua_setfield(L, -2, "failedShots");
-
-    lua_pushnumber(L, ship.hits_);
-	lua_setfield(L, -2, "hits");
-
-    lua_pushnumber(L, ship.recharged_);
-	lua_setfield(L, -2, "recharged");
-
-    lua_pushnumber(L, ship.fuel_);
-	lua_setfield(L, -2, "fuel");
-
-	lua_pushnumber(L, ship.friendlyFire_);
-	lua_setfield(L, -2, "friendlyFire");
-
-    lua_pushnumber(L, ship.damage_);
-	lua_setfield(L, -2, "damage");
-
-    lua_pushboolean(L, ship.dead_);
-	lua_setfield(L, -2, "dead");
-
-    make_ship_layout(L, ship.layout_);
-	make_scan(L, ship.scan_);
-
-   lua_newtable(L);
-    size_t pi = 0;
-    for(const Projectile* p : ship.projectiles_) {
-		make_projectile(L, *p, ++pi);
-    }
-    lua_setfield(L, -2, "projectiles");
-
-    lua_setfield(L, -2, "ship");
-}
-
 double run_fitness_function(const string& name, const Ship& ship) {
+	ScriptLoader* loader = ScriptLoader::getInstance();
+	lua_State* L = loader->load(name);
 
-	lua_State* L = ScriptLoader::getInstance()->load(name);
-
-	/*
-	 * Ok, now here we go: We pass data to the lua script on the stack.
-	 * That is, we first have to prepare Lua's virtual stack the way we
-	 * want the script to receive it, then ask Lua to run it.
-	 */
 	lua_newtable(L); /* neurocid table */
-	make_ship(L, ship);
-	lua_setglobal(L, "neurocid"); /* set bottom table as global variable t */
+	loader->make_ship(ship);
+	lua_setglobal(L, "nc");
 
 	/* Ask Lua to run our little script */
 	int result = lua_pcall(L, 0, LUA_MULTRET, 0);
@@ -261,11 +352,32 @@ double run_fitness_function(const string& name, const Ship& ship) {
 
 	/* Get the returned value at the top of the stack (index -1) */
 	double fitness = lua_tonumber(L, -1);
-	lua_pop(L, 1); /* Take the returned value out of the stack */
-
+	lua_pop(L, 1);
 	return fitness;
 }
 
+void run_placer(const string& name, vector<Population>& teams, const PlacerLayout& sl, const size_t& tick) {
+	ScriptLoader* loader = ScriptLoader::getInstance();
+	lua_State* L = loader->load(name);
+
+	lua_newtable(L); /* neurocid table */
+	loader->make_field("tick", tick);
+	loader->make_spacer_layout(sl);
+	loader->make_population("teamA", teams[0]);
+	loader->make_population("teamB", teams[1]);
+ 	lua_setglobal(L, "nc");
+
+	/* Ask Lua to run our little script */
+	int result = lua_pcall(L, 0, LUA_MULTRET, 0);
+	if (result) {
+		fprintf(stderr, "Failed to run script: %s\n", lua_tostring(L, -1));
+		exit(1);
+	}
+
+	loader->copy_locations("teamA", teams[0]);
+	loader->copy_locations("teamB", teams[1]);
+	lua_pop(L, 1);
+}
 }
 
 } /* namespace neurocid */

@@ -281,7 +281,7 @@ Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl)
 		}
 	}
 
-	assert(old_pop.layout_.tl_.numPerfDesc == 6);
+	assert(old_pop.layout_.tl_.numPerfDesc_ == 6);
 	PerfDescBsp<6,Ship> pdb;
 	if(layout_.usePerfDesc_) {
 		for(Ship& t : old_pop) {

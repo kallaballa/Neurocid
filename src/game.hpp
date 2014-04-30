@@ -1,10 +1,3 @@
-/*
- * game.hpp
- *
- *  Created on: Mar 7, 2014
- *      Author: elchaschab
- */
-
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
@@ -32,7 +25,6 @@ private:
 	void print();
 	void prepare();
 	Scenario* scenario_;
-	Placer* placer_;
 public:
 	vector<Population>& teams_;
 	vector<Population> newTeams_;

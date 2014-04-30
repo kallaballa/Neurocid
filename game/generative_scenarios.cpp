@@ -14,9 +14,9 @@ public:
 		bfl_.height_ = 600000;
 		bfl_.iterations_ = 5000;
 
-		gl_.center_ = {300000,300000};
-		gl_.distance_ = 20000;
-		gl_.spacing_ = 400;
+		sl_.center_ = {300000,300000};
+		sl_.distance_ = 20000;
+		sl_.spacing_ = 400;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -36,23 +36,19 @@ public:
 		teams[1].update(defenderTL);
 
 		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
-		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
-		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
+//		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
+//		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
 
+//		teams[1].facilities_.push_back(Facility(1, teams[1].layout_.fl_, {0,0}));
+//		teams[1].facilities_.push_back(Facility(1, teams[1].layout_.fl_, {0,0}));
 		teams[1].facilities_.push_back(Facility(1, teams[1].layout_.fl_, {0,0}));
-		teams[1].facilities_.push_back(Facility(1, teams[1].layout_.fl_, {0,0}));
-		teams[1].facilities_.push_back(Facility(1, teams[1].layout_.fl_, {0,0}));
-	}
-
-	virtual Placer* createPlacer() {
-		return new FuzzyOppositePlacer<IterRot, RandomFacer, Spacer>({0,0}, {}, {Scenario::gl_});
 	}
 };
 
 class SymmetricLinesNoMove : public SymmetricLines {
 public:
 	SymmetricLinesNoMove() : SymmetricLines() {
-		gl_.distance_ = 2000;
+		sl_.distance_ = 2000;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -72,7 +68,7 @@ public:
 class SymmetricLinesAttackerMove : public SymmetricLines {
 public:
 	SymmetricLinesAttackerMove() : SymmetricLines() {
-		gl_.distance_ = 15000;
+		sl_.distance_ = 15000;
 		bfl_.iterations_ = 4000;
 	}
 
@@ -96,7 +92,7 @@ class SymmetricLinesAttackerMoveLong : public SymmetricLinesAttackerMove {
 public:
 	SymmetricLinesAttackerMoveLong() : SymmetricLinesAttackerMove() {
 		bfl_.iterations_ = 15000;
-		gl_.distance_ = 120000;
+		sl_.distance_ = 120000;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -114,68 +110,13 @@ public:
 	}
 };
 
-class SymmetricLinesAttackerMoveFacingInward: public SymmetricLinesAttackerMove {
-public:
-	SymmetricLinesAttackerMoveFacingInward() : SymmetricLinesAttackerMove() {
-	}
-
-	virtual Placer* createPlacer() {
-		return new FuzzyOppositePlacer<IterRot, OppositeFacer, Spacer>({0,0}, {M_PI}, {Scenario::gl_});
-	}
-};
-
-class SymmetricLinesFacingInward : public SymmetricLines {
-public:
-	SymmetricLinesFacingInward() : SymmetricLines() {
-	}
-
-	virtual void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
-		SymmetricLines::configureTeams(teams);
-		ShipLayout attackerTL = teams[0][0].layout_;
-		teams[0].update(attackerTL);
-
-		ShipLayout defenderTL = teams[1][0].layout_;
-		defenderTL.isDummy_ = true;
-		defenderTL.maxDamage_ = 100;
-		teams[1].update(defenderTL);
-	}
-
-	virtual Placer* createPlacer() {
-		return new FuzzyOppositePlacer<IterRot, OppositeFacer, Spacer>({0, M_PI}, {M_PI}, {Scenario::gl_});
-	}
-};
-
-class SymmetricLinesFacingOutward : public SymmetricLinesFacingInward {
-public:
-	SymmetricLinesFacingOutward() : SymmetricLinesFacingInward() {
-	}
-
-	virtual Placer* createPlacer() {
-		return new OppositePlacer<IterRot, OppositeFacer, Spacer>({0, M_PI}, {0}, {Scenario::gl_});
-	}
-};
-
-class SymmetricLinesFacingOutwardFar : public SymmetricLinesFacingOutward {
-public:
-	SymmetricLinesFacingOutwardFar() : SymmetricLinesFacingOutward() {
-		gl_.distance_ = 20000;
-	}
-};
-
-class SymmetricLinesFacingInwardFar : public SymmetricLinesFacingInward {
-public:
-	SymmetricLinesFacingInwardFar() : SymmetricLinesFacingInward() {
-		gl_.distance_ = 20000;
-	}
-};
 
 class SymmetricLinesNoMoveShort : public SymmetricLines {
 public:
 	SymmetricLinesNoMoveShort() : SymmetricLines() {
 		bfl_.iterations_ = 300;
-		gl_.spacing_ = 400;
-		gl_.distance_ = 6000;
+		sl_.spacing_ = 400;
+		sl_.distance_ = 6000;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -193,50 +134,12 @@ public:
 	}
 };
 
-class SymmetricLinesNoMoveTwoRows : public SymmetricLines {
-public:
-	SymmetricLinesNoMoveTwoRows() : SymmetricLines() {
-	}
-
-	virtual Placer* createPlacer() {
-		return new OppositePlacerTwoRows<IterRot, RandomFacer, Spacer>({0,0}, {}, {Scenario::gl_});
-	}
-
-	virtual void configureTeams(vector<Population>& teams) {
-		SymmetricLines::configureTeams(teams);
-
-		ShipLayout attackerTL = teams[0][0].layout_;
-		attackerTL.canMove_ = false;
-		teams[0].update(attackerTL);
-
-		ShipLayout defenderTL = teams[1][0].layout_;
-		defenderTL.isDummy_ = true;
-		defenderTL.maxDamage_ = 100;
-		teams[1].update(defenderTL);
-	}
-};
-
-class SymmetricLinesAttackerMoveTwoRows : public SymmetricLinesNoMoveTwoRows {
-public:
-	SymmetricLinesAttackerMoveTwoRows() : SymmetricLinesNoMoveTwoRows() {
-	}
-
-	virtual void configureTeams(vector<Population>& teams) {
-		SymmetricLinesNoMoveTwoRows::configureTeams(teams);
-
-		ShipLayout attackerTL = teams[0][0].layout_;
-		attackerTL.canMove_ = true;
-		teams[0].update(attackerTL);
-	}
-};
-
-
 class SymmetricLinesFar : public SymmetricLines {
 public:
 	SymmetricLinesFar() : SymmetricLines() {
 		bfl_.iterations_ = 2500;
-		gl_.distance_ = 80000;
-		gl_.spacing_ = 400;
+		sl_.distance_ = 80000;
+		sl_.spacing_ = 400;
 	}
 };
 
@@ -244,7 +147,7 @@ class SymmetricLinesFarLong : public SymmetricLinesFar {
 public:
 	SymmetricLinesFarLong() : SymmetricLinesFar() {
 		bfl_.iterations_ = 15000;
-		gl_.distance_ = 120000;
+		sl_.distance_ = 120000;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -274,32 +177,15 @@ public:
 	}
 };
 
-class SymmetricLinesAttackerMoveFarFacingInward : public SymmetricLinesAttackerMoveFar {
-public:
-	SymmetricLinesAttackerMoveFarFacingInward() : SymmetricLinesAttackerMoveFar() {
-	}
-
-	virtual void configureTeams(vector<Population>& teams) {
-		SymmetricLinesAttackerMoveFar::configureTeams(teams);
-
-		ShipLayout attackerTL = teams[0][0].layout_;
-		teams[0].update(attackerTL);
-	}
-
-	virtual Placer* createPlacer() {
-		return new FuzzyOppositePlacer<IterRot, OppositeFacer, Spacer>({0,0}, {M_PI}, {Scenario::gl_});
-	}
-};
-
 class SymmetricLinesHuge : public SymmetricLines {
 public:
 	SymmetricLinesHuge() : SymmetricLines() {
 		bfl_.width_ = 600000;
 		bfl_.height_ = 600000;
 		bfl_.iterations_ = 10000;
-		gl_.center_ = {300000,300000};
-		gl_.distance_ = 200000;
-		gl_.spacing_ = 1000;
+		sl_.center_ = {300000,300000};
+		sl_.distance_ = 200000;
+		sl_.spacing_ = 1000;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -336,9 +222,9 @@ public:
 		bfl_.width_ = 600000;
 		bfl_.height_ = 600000;
 
-		gl_.center_ = {300000,300000};
-		gl_.distance_ = 10000;
-		gl_.spacing_ = 400;
+		sl_.center_ = {300000,300000};
+		sl_.distance_ = 10000;
+		sl_.spacing_ = 400;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -367,18 +253,14 @@ public:
 		assert(pools.size() == 2);
 		pools[1] = GeneticPool(); //dummy pool;
 	}
-
-	virtual Placer* createPlacer() {
-		return new FuzzyOppositePlacer<IterRot, RandomFacer, Spacer>({0,0}, {}, {Scenario::gl_});
-	}
 };
 
 class AimOnOneNoMove : public AimOnOne {
 public:
 	AimOnOneNoMove() : AimOnOne() {
 		bfl_.iterations_ = 150;
-		gl_.distance_ = 6000;
-		gl_.spacing_ = 400;
+		sl_.distance_ = 6000;
+		sl_.spacing_ = 400;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -398,9 +280,9 @@ public:
 		bfl_.width_ = 600000;
 		bfl_.height_ = 600000;
 		bfl_.iterations_ = 3500;
-		gl_.center_ = {300000,300000};
-		gl_.distance_ = 100000;
-		gl_.spacing_ = 1000;
+		sl_.center_ = {300000,300000};
+		sl_.distance_ = 100000;
+		sl_.spacing_ = 1000;
 	}
 
 	void configureTeams(vector<Population>& teams) {
@@ -418,10 +300,6 @@ public:
 
 	virtual void configurePools(vector<GeneticPool>& pools) {
 	};
-
-	Placer* createPlacer() {
-		return new CrossPlacerTwoRows<IterRot, RandomFacer, Spacer>({0,0}, {}, {Scenario::gl_});
-	}
 };
 
 void multiplyTeams(vector<Population>& teams, size_t n) {
@@ -452,35 +330,15 @@ Scenario* get_declarative_scenario(const string& name) {
 void load_delarative_scenarios() {
 	registerScenario("AimOnOneNoMove", new AimOnOneNoMove());
 	registerScenario("AimOnOne", new AimOnOne());
-	registerScenario("SymmetricLinesNoMoveTwoRows",
-			new SymmetricLinesNoMoveTwoRows());
-	registerScenario("SymmetricLinesAttackerMoveTwoRows",
-			new SymmetricLinesAttackerMoveTwoRows());
 	registerScenario("SymmetricLines", new SymmetricLines());
-	registerScenario("SymmetricLinesAttackerMove",
-			new SymmetricLinesAttackerMove());
-	registerScenario("SymmetricLinesAttackerMoveLong",
-			new SymmetricLinesAttackerMoveLong());
+	registerScenario("SymmetricLinesAttackerMove", new SymmetricLinesAttackerMove());
+	registerScenario("SymmetricLinesAttackerMoveLong",new SymmetricLinesAttackerMoveLong());
 	registerScenario("SymmetricLinesNoMove", new SymmetricLinesNoMove());
 	registerScenario("SymmetricLinesFar", new SymmetricLinesFar());
 	registerScenario("SymmetricLinesFarLong", new SymmetricLinesFarLong());
-	registerScenario("SymmetricLinesAttackerMoveFar",
-			new SymmetricLinesAttackerMoveFar());
-	registerScenario("SymmetricLinesNoMoveShort",
-			new SymmetricLinesNoMoveShort());
+	registerScenario("SymmetricLinesAttackerMoveFar", new SymmetricLinesAttackerMoveFar());
+	registerScenario("SymmetricLinesNoMoveShort", new SymmetricLinesNoMoveShort());
 	registerScenario("SymmetricLinesHuge", new SymmetricLinesHuge());
-	registerScenario("SymmetricLinesFacingInward",
-			new SymmetricLinesFacingInward());
-	registerScenario("SymmetricLinesFacingInwardFar",
-			new SymmetricLinesFacingInwardFar());
-	registerScenario("SymmetricLinesFacingOutward",
-			new SymmetricLinesFacingOutward());
-	registerScenario("SymmetricLinesFacingOutwardFar",
-			new SymmetricLinesFacingOutwardFar());
-	registerScenario("SymmetricLinesAttackerMoveFarFacingInward",
-			new SymmetricLinesAttackerMoveFarFacingInward());
-	registerScenario("SymmetricLinesAttackerMoveFacingInward",
-			new SymmetricLinesAttackerMoveFacingInward());
 	registerScenario("CrossHuge", new CrossHuge());
 }
 

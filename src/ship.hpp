@@ -44,7 +44,7 @@ struct ShipLayout {
 	size_t maxCooldown_;
 	size_t maxDamage_;
 	size_t crashesPerDamage_;
-	size_t numPerfDesc;
+	size_t numPerfDesc_;
 
 	string fitnessFunction_;
 
@@ -71,7 +71,7 @@ struct ShipLayout {
 	  ar & maxCooldown_;
 	  ar & maxDamage_;
 	  ar & crashesPerDamage_;
-	  ar & numPerfDesc;
+	  ar & numPerfDesc_;
 	  ar & fitnessFunction_;
 	}
 
@@ -109,6 +109,7 @@ public:
 	size_t damage_= 0;
 	size_t failedShots_ = 0;
 	size_t captured_ = 0;
+	size_t kills_ = 0;
 
 	Coord fuel_ = 0;
 	Coord recharged_ = 0 ;
@@ -145,8 +146,9 @@ public:
 	void crash();
 	void impact(Ship& t);
 	void impact(Projectile& p);
-	void recharge();
-	void capture();
+	void recharged();
+	void captured();
+	void killed();
 
 	void calculateFitness(const BattleFieldLayout& bfl);
 	void resetGameState();
