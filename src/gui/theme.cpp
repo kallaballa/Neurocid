@@ -19,8 +19,8 @@ Color Theme::enginesB = {255,0,0,255};
 
 Color Theme::explosion = {255,0,0,255};
 
-Color Theme::battleFieldCenter = {127,0,0,255};
-Color Theme::battleFieldBorder = {127,0,0,255};
+Color Theme::battleFieldCenter = {100,100,243,255};
+Color Theme::battleFieldBorder = {100,100,243,255};
 Color Theme::battleFieldGrid = {32,32,32,255};
 
 Color Theme::osdWidgetBg = {100,100,243,150};

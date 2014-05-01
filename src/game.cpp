@@ -32,7 +32,7 @@ void Game::prepare() {
 }
 
 void Game::place() {
-	lua::run_placer(scenario_->sl_.placer_, teams_, scenario_->sl_, 0);
+	lua::run_placer(scenario_->pl_.placer_, teams_, scenario_->pl_, 0);
 }
 
 void Game::fight(bool render) {

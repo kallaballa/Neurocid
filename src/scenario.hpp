@@ -15,7 +15,7 @@ using std::vector;
 class Scenario {
 public:
 	BattleFieldLayout bfl_;
-	PlacerLayout sl_;
+	PlacerLayout pl_;
 	PhysicsLayout phl_;
 	ScannerLayout scl_;
 
@@ -24,11 +24,11 @@ public:
 		bfl_.height_ = 600000;
 		bfl_.iterations_ = 1500;
 
-		sl_.center_ = {150000,150000};
-		sl_.distance_ = 10000;
-		sl_.spacing_ = 100;
-		sl_.rotation_ = 0;
-		sl_.placer_ = "placer/test";
+		pl_.center_ = {150000,150000};
+		pl_.distance_ = 10000;
+		pl_.spacing_ = 100;
+		pl_.rotation_ = 0;
+		pl_.placer_ = "placer/opposite";
 
 		phl_.gravity_ = {0,0};
 		phl_.timeStep_ = 1.0f/30.0f;

@@ -24,10 +24,17 @@ BattleField::BattleField(Scenario* scenario, vector<Population>& teams) :
 
 void BattleField::scan() {
 	scanner_.scan(*this);
+	for(size_t i = 0; i < teams_.size(); ++i) {
+		Population& team = teams_[i];
+
+		size_t s = team.size();
+		for(size_t j = 0; j < s; ++j) {
+				team[j].log();
+		}
+	}
 }
 
 void BattleField::think() {
-	#pragma omp parallel for
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		Population& team = teams_[i];
 
@@ -68,6 +75,9 @@ void BattleField::cleanup() {
 }
 
 void BattleField::step() {
+	if(teams_[0].isDead() || teams_[1].isDead())
+		return;
+
 	TimeTracker& tt = *TimeTracker::getInstance();
 	tt.execute("battlefield", "scan", [&](){
 		scan();

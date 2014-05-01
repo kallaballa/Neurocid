@@ -9,6 +9,7 @@
 #include "util.hpp"
 #include "placer.hpp"
 #include "population.hpp"
+#include "history.hpp"
 #include <map>
 
 extern "C" {
@@ -143,6 +144,13 @@ public:
 	    lua_setfield(L_, -2, "layout");
 	}
 
+	void make_history(const History& h) {
+	    lua_newtable(L_);
+	    make_vector_2d("avgLoc", h.avgLoc_);
+	    make_vector_2d("avgVel", h.avgVel_);
+	    lua_setfield(L_, -2, "history");
+	}
+
 	void make_scan_object(const ScanObject& so, const size_t& i) {
 	    lua_newtable(L_);
 		make_vector_2d("dir", so.dir_);
@@ -178,7 +186,7 @@ public:
 	    lua_newtable(L_);
 
 	    make_vector_2d("loc", ship.loc_);
-	    make_field("pointer", &ship);
+	    make_vector_2d("vel", ship.vel_);
 	    make_field("failedShots", ship.failedShots_);
 	    make_field("hits", ship.hits_);
 	    make_field("recharged", ship.recharged_);
@@ -190,7 +198,8 @@ public:
 	    make_field("kills", ship.kills_);
 
 	    make_ship_layout(ship.layout_);
-		make_scan(ship.scan_);
+	    make_history(ship.history_);
+	    make_scan(ship.scan_);
 
 		lua_newtable(L_);
 	    size_t pi = 0;
@@ -280,6 +289,12 @@ public:
 		for(size_t i = 1; i <= s; ++i) {
 			lua_rawgeti(L_, -1, i);
 			luaL_checktype(L_, -1, LUA_TTABLE);
+
+			lua_getfield(L_, -1, "rotation");
+			team[i-1].rotation_ = lua_tonumber(L_, -1);
+			assert(team[i-1].rotation_ <= M_PI);
+			assert(team[i-1].rotation_ >= -M_PI);
+			lua_pop(L_, 1);
 
 			lua_pushstring(L_, "loc");
 			lua_gettable(L_, -2);

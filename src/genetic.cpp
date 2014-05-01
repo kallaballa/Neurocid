@@ -56,14 +56,18 @@ void GeneticPool::mutate(Brain& brain) {
  * Returns a ship base on roulette wheel sampling
  */
 Ship& GeneticPool::pickSpecimen(Population& pop) {
-	//generate a random number between 0 & total fitness count
-	double slice = (double) (fRand(0, 1) * pop.stats_.totalFitness_);
-
 	//this will be set to the chosen tank go through the tanks adding up the fitness so far
-	double fitnessSoFar = 0;
-
+	double minFitness = 99999999999;
 	for (size_t i = 0; i < pop.size(); ++i) {
-		fitnessSoFar += pop[i].fitness_;
+		minFitness = std::min(minFitness, pop[i].fitness_);
+	}
+
+	//generate a random number between 0 & total fitness count
+	double slice = (double) fRand(0, pop.stats_.totalFitness_ - (minFitness * pop.size()));
+
+	double fitnessSoFar = 0;
+	for (size_t i = 0; i < pop.size(); ++i) {
+		fitnessSoFar += (pop[i].fitness_ - minFitness);
 
 		//if the fitness so far > random number return the tank at this point
 		if (fitnessSoFar >= slice) {
@@ -79,6 +83,8 @@ Ship& GeneticPool::pickSpecimen(Population& pop) {
  * Returns a ship base on roulette wheel sampling
  */
 Ship* GeneticPool::pickSpecimen(vector<Ship*>& pop) {
+	//FIXME reevaluate
+	assert(false);
 	//generate a random number between 0 & total fitness count
 	double totalFitness = 0;
 	for(Ship* s : pop) {

@@ -25,6 +25,7 @@ namespace json {
 size_t get_size_t(js::Object& obj, const string& name);
 bool get_bool(js::Object& obj, const string& name);
 double get_double(js::Object& obj, const string& name);
+string get_string(js::Object& obj, const string& name);
 Vector2D get_vector2d(js::Object& obj, const string& name);
 js::Object get_object(js::Object& obj, const string& name);
 void adjust_PhysicsLayout(js::Object& obj, PhysicsLayout& phl);

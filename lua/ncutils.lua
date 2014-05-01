@@ -26,4 +26,7 @@ function sigmoid(x)
   return (1 / (1 + math.pow(euler_constanct,-x)));
 end
 
-
+function fRand(min, max)
+  assert(max > min);
+  return min + (math.random() * (max - min));
+end

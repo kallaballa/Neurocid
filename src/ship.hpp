@@ -9,6 +9,7 @@
 #include <iostream>
 #include "brain_swarm.hpp"
 #include "scan.hpp"
+#include "history.hpp"
 #ifndef _NO_SERIALIZE
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
@@ -94,6 +95,7 @@ public:
 	ShipLayout layout_;
 	Brain* brain_;
 	Scan scan_;
+	History history_;
 
 	Coord flthrust_ = 0;
 	Coord frthrust_ = 0;
@@ -150,6 +152,7 @@ public:
 	void captured();
 	void killed();
 
+	void log();
 	void calculateFitness(const BattleFieldLayout& bfl);
 	void resetGameState();
 	void resetScore();

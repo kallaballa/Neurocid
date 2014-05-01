@@ -315,10 +315,10 @@ void Canvas::drawBorder(BattleField& field) {
 }
 
 void Canvas::drawGrid(BattleField& field) {
-	for(Coord x = 0; x < field.layout_.width_; x+=5000) {
+	for(Coord x = 0; x < field.layout_.width_; x+=15000) {
 		drawLine(x,0,x, field.layout_.height_, Theme::battleFieldGrid);
 	}
-	for(Coord y = 0; y < field.layout_.height_; y+=5000) {
+	for(Coord y = 0; y < field.layout_.height_; y+=15000) {
 		drawLine(0,y,field.layout_.width_,y, Theme::battleFieldGrid);
 	}
 
@@ -343,10 +343,10 @@ void Canvas::render(BattleField& field) {
 		viewPort_ = findBounds(field);
 	calculateScale();
 
-	drawBorder(field);
-
 	if(drawGrid_)
 		drawGrid(field);
+
+	drawBorder(field);
 
 	size_t teamCnt = 0;
 	for(Population& team : field.teams_) {

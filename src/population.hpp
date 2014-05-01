@@ -133,6 +133,10 @@ public:
 		return cnt;
 	}
 
+	bool isDead() {
+		return countDead() == size();
+	}
+
 	Population& operator=(const Population& other) {
 		layout_ = other.layout_;
 		score_ = other.score_;

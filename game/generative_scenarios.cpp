@@ -14,9 +14,9 @@ public:
 		bfl_.height_ = 600000;
 		bfl_.iterations_ = 5000;
 
-		sl_.center_ = {300000,300000};
-		sl_.distance_ = 20000;
-		sl_.spacing_ = 400;
+		pl_.center_ = {300000,300000};
+		pl_.distance_ = 20000;
+		pl_.spacing_ = 400;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -48,7 +48,7 @@ public:
 class SymmetricLinesNoMove : public SymmetricLines {
 public:
 	SymmetricLinesNoMove() : SymmetricLines() {
-		sl_.distance_ = 2000;
+		pl_.distance_ = 2000;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -68,7 +68,7 @@ public:
 class SymmetricLinesAttackerMove : public SymmetricLines {
 public:
 	SymmetricLinesAttackerMove() : SymmetricLines() {
-		sl_.distance_ = 15000;
+		pl_.distance_ = 15000;
 		bfl_.iterations_ = 4000;
 	}
 
@@ -92,7 +92,7 @@ class SymmetricLinesAttackerMoveLong : public SymmetricLinesAttackerMove {
 public:
 	SymmetricLinesAttackerMoveLong() : SymmetricLinesAttackerMove() {
 		bfl_.iterations_ = 15000;
-		sl_.distance_ = 120000;
+		pl_.distance_ = 120000;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -115,8 +115,8 @@ class SymmetricLinesNoMoveShort : public SymmetricLines {
 public:
 	SymmetricLinesNoMoveShort() : SymmetricLines() {
 		bfl_.iterations_ = 300;
-		sl_.spacing_ = 400;
-		sl_.distance_ = 6000;
+		pl_.spacing_ = 400;
+		pl_.distance_ = 6000;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -138,8 +138,8 @@ class SymmetricLinesFar : public SymmetricLines {
 public:
 	SymmetricLinesFar() : SymmetricLines() {
 		bfl_.iterations_ = 2500;
-		sl_.distance_ = 80000;
-		sl_.spacing_ = 400;
+		pl_.distance_ = 80000;
+		pl_.spacing_ = 400;
 	}
 };
 
@@ -147,7 +147,7 @@ class SymmetricLinesFarLong : public SymmetricLinesFar {
 public:
 	SymmetricLinesFarLong() : SymmetricLinesFar() {
 		bfl_.iterations_ = 15000;
-		sl_.distance_ = 120000;
+		pl_.distance_ = 120000;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -182,10 +182,10 @@ public:
 	SymmetricLinesHuge() : SymmetricLines() {
 		bfl_.width_ = 600000;
 		bfl_.height_ = 600000;
-		bfl_.iterations_ = 10000;
-		sl_.center_ = {300000,300000};
-		sl_.distance_ = 200000;
-		sl_.spacing_ = 1000;
+		bfl_.iterations_ = 50000;
+		pl_.center_ = {300000,300000};
+		pl_.distance_ = 200000;
+		pl_.spacing_ = 1000;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -222,9 +222,9 @@ public:
 		bfl_.width_ = 600000;
 		bfl_.height_ = 600000;
 
-		sl_.center_ = {300000,300000};
-		sl_.distance_ = 10000;
-		sl_.spacing_ = 400;
+		pl_.center_ = {300000,300000};
+		pl_.distance_ = 10000;
+		pl_.spacing_ = 400;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -259,8 +259,8 @@ class AimOnOneNoMove : public AimOnOne {
 public:
 	AimOnOneNoMove() : AimOnOne() {
 		bfl_.iterations_ = 150;
-		sl_.distance_ = 6000;
-		sl_.spacing_ = 400;
+		pl_.distance_ = 6000;
+		pl_.spacing_ = 400;
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
@@ -280,9 +280,9 @@ public:
 		bfl_.width_ = 600000;
 		bfl_.height_ = 600000;
 		bfl_.iterations_ = 3500;
-		sl_.center_ = {300000,300000};
-		sl_.distance_ = 100000;
-		sl_.spacing_ = 1000;
+		pl_.center_ = {300000,300000};
+		pl_.distance_ = 100000;
+		pl_.spacing_ = 1000;
 	}
 
 	void configureTeams(vector<Population>& teams) {

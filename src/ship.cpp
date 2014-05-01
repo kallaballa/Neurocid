@@ -18,6 +18,7 @@ Ship::Ship(size_t teamID, ShipLayout tl, Brain* brain) :
 		layout_(tl),
 		brain_(brain),
 		scan_(this),
+		history_(),
 		ammo_(tl.startAmmo_){
 	resetGameState();
 }
@@ -32,7 +33,13 @@ inline Coord sigmoid(const Coord& x) {
 	return (1 / (1 + pow(euler_constanct,-x)));
 }
 
+void Ship::log() {
+	if(!dead_)
+		history_.update(*this);
+}
+
 void Ship::calculateFitness(const BattleFieldLayout& bfl) {
+	history_.calculate();
 	fitness_ = neurocid::lua::run_fitness_function(layout_.fitnessFunction_,*this);
 }
 
