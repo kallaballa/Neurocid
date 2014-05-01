@@ -34,7 +34,7 @@ PopulationLayout make_default_population_layout() {
 			3, // max_damage_
 			1, // crashes_per_damage_
 			6,  // num_perf_desc_
-			"fitness/goto" // fitnessFunction;
+			"fitness/amir" // fitnessFunction;
 		},
 		//BrainLayout
 		{
