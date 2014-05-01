@@ -10,6 +10,7 @@
 #include "placer.hpp"
 #include "population.hpp"
 #include "history.hpp"
+#include "battlefieldlayout.hpp"
 #include <map>
 
 extern "C" {
@@ -272,6 +273,15 @@ public:
 		lua_setfield(L_, -2, "sl");
 	}
 
+	void make_battlefield_layout(const BattleFieldLayout& bfl) {
+		lua_newtable(L_);
+		make_field("width", bfl.width_);
+		make_field("height", bfl.height_);
+		make_field("iterations", bfl.iterations_);
+		lua_setfield(L_, -2, "bfl");
+	}
+
+
 	void copy_locations(const string& name, Population& team) {
 		luaL_checktype(L_, -1, LUA_TTABLE);
 		lua_pushstring(L_, name.c_str());
@@ -350,11 +360,12 @@ public:
 
 ScriptLoader* ScriptLoader::instance_ = NULL;
 
-double run_fitness_function(const string& name, const Ship& ship) {
+double run_fitness_function(const string& name, const Ship& ship, const BattleFieldLayout& bfl) {
 	ScriptLoader* loader = ScriptLoader::getInstance();
 	lua_State* L = loader->load(name);
 
 	lua_newtable(L); /* neurocid table */
+	loader->make_battlefield_layout(bfl);
 	loader->make_ship(ship);
 	lua_setglobal(L, "nc");
 

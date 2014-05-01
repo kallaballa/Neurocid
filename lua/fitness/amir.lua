@@ -3,9 +3,11 @@ require "ncutils"
 
 -- tprint(nc.ship, 2)
 
+local width = nc.bfl.width;
+local height = nc.bfl.height;
 local totalDiff = 0.0;
 local ratedProjectiles = 0;
-maxDistance = math.sqrt(math.pow(600000,2),math.pow(600000,2))
+local maxDistance = math.sqrt(math.pow(width,2),math.pow(height,2))
 local ship = nc.ship;
 local layout = nc.ship.layout;
 local projectiles = nc.ship.projectiles;

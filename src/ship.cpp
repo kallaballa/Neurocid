@@ -40,7 +40,7 @@ void Ship::log() {
 
 void Ship::calculateFitness(const BattleFieldLayout& bfl) {
 	history_.calculate();
-	fitness_ = neurocid::lua::run_fitness_function(layout_.fitnessFunction_,*this);
+	fitness_ = neurocid::lua::run_fitness_function(layout_.fitnessFunction_,*this, bfl);
 }
 
 void Ship::think(BattleFieldLayout& bfl) {

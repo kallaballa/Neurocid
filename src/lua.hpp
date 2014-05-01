@@ -17,9 +17,10 @@ namespace neurocid {
 
 using std::string;
 struct PlacerLayout;
+struct BattleFieldLayout;
 
 namespace lua {
-double run_fitness_function(const string& script, const Ship& ship);
+double run_fitness_function(const string& script, const Ship& ship, const BattleFieldLayout& bfl);
 void run_placer(const string& name, vector<Population>& teams, const PlacerLayout& sl, const size_t& tick);
 }
 } /* namespace neurocid */
