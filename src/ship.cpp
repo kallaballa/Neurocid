@@ -164,7 +164,7 @@ Ship Ship::clone() const {
 	child.setBrain(fresh);
 
 	//copy brain
-	for(size_t b = 0; b < brain_->layout_.numBrains_ + 1; ++b) {
+	for(size_t b = 0; b < brain_->numNetworks(); ++b) {
 		for(size_t i = 0; i < brain_->size(b); ++i) {
 			child.brain_->weights(b)[i] = brain_->weights(b)[i];
 		}

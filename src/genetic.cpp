@@ -40,7 +40,7 @@ void GeneticPool::mutate(Brain& brain) {
 	//traverse the chromosome and mutate each weight dependent
 	//on the mutation rate
 
-	for(size_t b = 0; b < brain.layout_.numBrains_ + 1; ++b) {
+	for(size_t b = 0; b < brain.numNetworks(); ++b) {
 		fann_type* weights = brain.weights(b);
 		for (size_t i = 0; i < brain.size(b); ++i) {
 			//do we perturb this weight?
@@ -116,7 +116,7 @@ std::pair<Ship, Ship> GeneticPool::crossover(Ship &mum, Ship &dad, size_t iterat
 	Ship baby1 = mum.makeChild();
 	Ship baby2 = mum.makeChild();
 
-	for(size_t b = 0; b < mum.brain_->layout_.numBrains_ + 1; ++b) {
+	for(size_t b = 0; b < mum.brain_->numNetworks(); ++b) {
 		fann_type* wMum = mum.brain_->weights(b);
 		fann_type* wDad = dad.brain_->weights(b);
 		fann_type* wBaby1 = baby1.brain_->weights(b);

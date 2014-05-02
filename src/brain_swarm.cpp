@@ -47,57 +47,43 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 	assert(enemyObj.size() + friendObj.size() + friendFacilityObj.size() + enemyFacilityObj.size() == scan.objects_.size());
 
-	size_t inputCnt = 0;
+	size_t vectorCnt = 0;
 	for (ScanObject& so : friendObj) {
 		if (so.dir_ != NO_VECTOR2D) {
-			applyInput(inputCnt * 4, so.dir_.x_);
-			applyInput(inputCnt * 4 + 1, so.dir_.y_);
-			applyInput(inputCnt * 4 + 2, so.vel_.x_);
-			applyInput(inputCnt * 4 + 3, so.vel_.y_);
+			feedEye(0, vectorCnt * 2, so.dir_);
+			feedEye(0, vectorCnt * 2 + 1, so.vel_);
 		}
-		++inputCnt;
+		++vectorCnt;
 	}
 
+	vectorCnt = 0;
 	for (ScanObject& so : friendFacilityObj) {
 		if (so.dir_ != NO_VECTOR2D) {
-			applyInput(inputCnt * 4, so.dir_.x_);
-			applyInput(inputCnt * 4 + 1, so.dir_.y_);
-			applyInput(inputCnt * 4 + 2, so.vel_.x_);
-			applyInput(inputCnt * 4 + 3, so.vel_.y_);
+			feedEye(1, vectorCnt * 2, so.dir_);
+			feedEye(1, vectorCnt * 2 + 1, so.vel_);
 		}
-		++inputCnt;
+		++vectorCnt;
 	}
 
+	vectorCnt = 0;
 	for (ScanObject& so : enemyObj) {
 		if (so.dir_ != NO_VECTOR2D) {
-			applyInput(inputCnt * 4, so.dir_.x_);
-			applyInput(inputCnt * 4 + 1, so.dir_.y_);
-			applyInput(inputCnt * 4 + 2, so.vel_.x_);
-			applyInput(inputCnt * 4 + 3, so.vel_.y_);
+			feedEye(2, vectorCnt * 2, so.dir_);
+			feedEye(2, vectorCnt * 2 + 1, so.vel_);
 		}
-		++inputCnt;
+		++vectorCnt;
 	}
 
+	vectorCnt = 0;
 	for (ScanObject& so : enemyFacilityObj) {
 		if (so.dir_ != NO_VECTOR2D) {
-			applyInput(inputCnt * 4, so.dir_.x_);
-			applyInput(inputCnt * 4 + 1, so.dir_.y_);
-			applyInput(inputCnt * 4 + 2, so.vel_.x_);
-			applyInput(inputCnt * 4 + 3, so.vel_.y_);
+			feedEye(3, vectorCnt * 2, so.dir_);
+			feedEye(3, vectorCnt * 2 + 1, so.vel_);
 		}
-		++inputCnt;
+		++vectorCnt;
 	}
 
-	/*for (ScanObject& so : projectileObj) {
-		if (so.dir_ != NO_VECTOR2D) {
-			applyInput(inputCnt * 4, so.dir_.x_);
-			applyInput(inputCnt * 4 + 1, so.dir_.y_);
-			applyInput(inputCnt * 4 + 2, so.vel_.x_);
-			applyInput(inputCnt * 4 + 3, so.vel_.y_);
-		}
-		++inputCnt;
-	}*/
-
+/*
 	Vector2D vel = scan.normVel_;
 	Vector2D center = scan.normCenter_;
 	Coord angVel = ship.angVel_;
@@ -111,13 +97,12 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	applyInput(inputCnt * 4 + 2, center.x_);
 	applyInput(inputCnt * 4 + 3, center.y_);
 	applyInput(inputCnt * 4 + 4, angVel / 10);
+*/
 
-	for(size_t i = 0; i < layout_.numInputs_; ++i) {
-		assert(!std::isinf(inputs_[i]));
-		assert(!std::isnan(inputs_[i]));
-		assert(inputs_[i] != std::numeric_limits<fann_type>().max());
+	for(size_t i = 0; i < layout_.numVectorsPerEye_ * 2 * layout_.numEyes_; ++i) {
+		assert(!std::isinf(eyeInputs_[i]));
+		assert(!std::isnan(eyeInputs_[i]));
+		assert(eyeInputs_[i] != std::numeric_limits<fann_type>().max());
 	}
-
-	//	std::cerr << "output:\t" << lthrust_ << "\t" << rthrust_ << "\t" << shoot_ << std::endl;
 }
 } /* namespace neurocid */
