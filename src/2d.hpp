@@ -15,7 +15,6 @@
 namespace neurocid {
 typedef double Coord;
 
-#define ASSERT_FLOAT(F) assert(!std::isnan(F) && !std::isinf(F));
 #define ASSERT_LOC(V) assert(V.x_ != NO_COORD && V.y_ != NO_COORD);
 #define ASSERT_DIR(V) assert(V.x_ >= -1 && V.x_ <= 1 && V.y_ >= -1 && V.y_ <= 1);
 

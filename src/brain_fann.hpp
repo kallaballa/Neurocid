@@ -33,7 +33,7 @@ public:
 
 	virtual void makeNN();
 	virtual void applyMeta(const size_t& i, const fann_type& value);
-	virtual void feedEye(const size_t eyeIndex, const size_t vIndex, Vector2D& v);
+	virtual void applyInput(const size_t& i, const fann_type& value);
 	virtual void destroy();
 	virtual void randomize();
 	virtual void reset();

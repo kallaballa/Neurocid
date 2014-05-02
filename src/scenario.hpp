@@ -40,8 +40,8 @@ public:
 		scl_.numClusters_ = 3;
 		scl_.numFriends_ = 10;
 		scl_.numEnemies_ = 10;
-		scl_.numFriendFacilities_ = 10;
-		scl_.numEnemyFacilities_ = 10;
+		scl_.numFriendFacilities_ = 3;
+		scl_.numEnemyFacilities_ = 3;
 		scl_.numProjectiles_ = 10;
 	}
 

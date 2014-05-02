@@ -26,12 +26,7 @@ struct BrainLayout  {
 	size_t numMetaInputs_;
 	size_t numMetaLayers_;
 	size_t numMetaNeuronsPerHidden_;
-
-	size_t numEyes_;
-	size_t numVectorsPerEye_;
-	size_t numEyeLayers_;
-	size_t numEyeNeuronsPerHidden_;
-
+	size_t numInputs_;
 	size_t numOutputs;
 	size_t numLayers_;
 	size_t numNeuronsPerHidden_;
@@ -43,12 +38,7 @@ struct BrainLayout  {
 		ar & numMetaInputs_;
 		ar & numMetaLayers_;
 		ar & numMetaNeuronsPerHidden_;
-
-		ar & numEyes_;
-		ar & numVectorsPerEye_;
-		ar & numEyeLayers_;
-		ar & numEyeNeuronsPerHidden_;
-
+		ar & numInputs_;
 		ar & numOutputs;
 		ar & numLayers_;
 		ar & numNeuronsPerHidden_;
@@ -74,7 +64,7 @@ public:
 	Tweight bthrust_ = 0;
 	Tweight shoot_ = 0;
 	Tweight* metaInputs_ = NULL;
-	Tweight* eyeInputs_ = NULL;
+	Tweight* inputs_ = NULL;
 
 	BasicBrain() {
 	}
@@ -82,10 +72,10 @@ public:
 	void initialize(BrainLayout layout, Tweight** weight = NULL) {
 		layout_ = layout;
 		metaInputs_ = NULL;
-		eyeInputs_ = NULL;
+		inputs_ = NULL;
 		makeNN();
 	    if(weight != NULL) {
-	    	for(size_t b = 0; b < numNetworks(); ++b) {
+	    	for(size_t b = 0; b < layout_.numBrains_ + 1; ++b) {
 				for(size_t i = 0; i < size(b); ++i) {
 					weights(b)[i] = weight[b][i];
 				}
@@ -98,17 +88,14 @@ public:
 		return destroyed_;
 	}
 
-	BasicBrain(const BasicBrain& other) : metaInputs_(other.metaInputs_), eyeInputs_(other.eyeInputs_) {
+	BasicBrain(const BasicBrain& other) : metaInputs_(other.metaInputs_), inputs_(other.inputs_) {
 	};
 
 	virtual ~BasicBrain() {
 	};
 
-	size_t numNetworks() {
-		return layout_.numEyes_ + layout_.numBrains_ + 1;
-	}
 	virtual void makeNN() = 0;
-	virtual void feedEye(const size_t eyeIndex, const size_t vIndex, Vector2D& v) = 0;
+	virtual void applyInput(const size_t& i, const fann_type& value) = 0;
 	virtual void destroy() = 0;
 	virtual void randomize() = 0;
 	virtual void reset() = 0;
@@ -121,7 +108,7 @@ public:
 	  if(!initialized_)
 		  makeNN();
 
-		for(size_t b = 0; b < numNetworks(); ++b)
+		for(size_t b = 0; b < layout_.numBrains_ + 1; ++b)
 			ar & boost::serialization::make_array(weights(b), size(b));
 	}
 #endif
