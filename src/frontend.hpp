@@ -11,9 +11,10 @@ namespace neurocid {
 
 class BattleFieldLayout;
 class Gui;
+class Canvas;
 
 void init(Coord width, Coord height, size_t frameRate);
-SDL_Surface* init_canvas(BattleFieldLayout& bfl);
+void init_canvas(Canvas* canvas);
 void init_gui(Gui* gui);
 void quit();
 

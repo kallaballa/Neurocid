@@ -77,11 +77,6 @@ else
 LIBS += -lboost_system -lboost_program_options
 endif
 
-ifdef WITHOUT_ASSERT
-CXXFLAGS += -DNDEBUG
-LIBS     += -DNDEBUG
-endif
-
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Darwin)
@@ -101,13 +96,17 @@ info: CXXFLAGS += -g3 -O0
 info: LDFLAGS += -Wl,--export-dynamic -rdynamic
 info: dirs
 
-debug: CXXFLAGS += -g3 -O0
+debug: CXXFLAGS += -g3 -O0 -rdynamic
 debug: LDFLAGS += -Wl,--export-dynamic -rdynamic
 debug: dirs
 
 profile: CXXFLAGS += -g3 -O1
 profile: LDFLAGS += -Wl,--export-dynamic -rdynamic
 profile: dirs
+
+hardcore: CXXFLAGS += -g0 -Ofast -DNDEBUG
+hardcore: LDFLAGS += -s
+hardcore: dirs
 
 clean: dirs
 

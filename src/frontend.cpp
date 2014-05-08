@@ -25,12 +25,8 @@ void init(Coord width, Coord height, size_t frameRate) {
 }
 
 //uses opts and initializes the canvas
-SDL_Surface* init_canvas(BattleFieldLayout& bfl) {
-	Canvas::init(bfl);
-	Canvas& canvas = *Canvas::getInstance();
-	canvas.enableDrawGrid(false);
-	canvas.enableDrawEngines(false);
-	return canvas.getSurface();
+void init_canvas(Canvas* canvas) {
+	Canvas::init(canvas);
 }
 
 void init_gui(Gui* gui) {

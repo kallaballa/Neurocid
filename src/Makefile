@@ -1,6 +1,6 @@
 TARGET  := libneurocid.so
 
-SRCS    := brain_swarm.cpp brain_fann.cpp battlefield.cpp canvas.cpp ship.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner_bsp.cpp scanner_cluster.cpp time_tracker.cpp scanner_hybrid.cpp scan.cpp video_encoder.cpp ../guichan/src/contrib/sdl/sdltruetypefont.cpp background.cpp frontend.cpp lua.cpp population.cpp history.cpp error.cpp theme.cpp gui.cpp
+SRCS    := brain_swarm.cpp brain_fann.cpp battlefield.cpp ship.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner_bsp.cpp scanner_cluster.cpp time_tracker.cpp scanner_hybrid.cpp scan.cpp video_encoder.cpp ../guichan/src/contrib/sdl/sdltruetypefont.cpp frontend.cpp lua.cpp population.cpp history.cpp error.cpp theme.cpp gui.cpp canvas.cpp
 ifdef TANKWAR_GPU
 SRCS += KMeans.cpp
 endif

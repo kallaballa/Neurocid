@@ -8,7 +8,7 @@
 #include "background.hpp"
 #include "battlefieldlayout.hpp"
 #include "util.hpp"
-#include "canvas.hpp"
+#include "sdlcanvas.hpp"
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_gfxPrimitives.h>
 #include <SDL/SDL.h>
@@ -16,7 +16,7 @@
 namespace neurocid {
 
 
-Background::Background(Canvas* canvas) :
+Background::Background(SDLCanvas* canvas) :
 		canvas_(canvas) {
 }
 

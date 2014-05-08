@@ -4,7 +4,7 @@ ifdef JAVASCRIPT
 TARGET := neurocid-bin.html
 endif
 
-SRCS  := neurocid.cpp eventloop.cpp generative_scenarios.cpp json_scenario.cpp gui/guichangui.cpp gui/help.cpp gui/osd.cpp gui/widgets.cpp ../guichan/src/contrib/sdl/sdltruetypefont.cpp
+SRCS  := neurocid.cpp eventloop.cpp generative_scenarios.cpp json_scenario.cpp gui/guichangui.cpp gui/help.cpp gui/osd.cpp gui/widgets.cpp ../guichan/src/contrib/sdl/sdltruetypefont.cpp sdlcanvas.cpp background.cpp
 
 #precompiled headers
 HEADERS := 

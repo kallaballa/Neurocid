@@ -1,118 +1,45 @@
 #ifndef CANVAS_H_
 #define CANVAS_H_
 
-#include "options.hpp"
-#include "projectile.hpp"
-#include "background.hpp"
-
-#include <algorithm>
-#include <SDL/SDL.h>
-#include <SDL/SDL_gfxPrimitives.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_ttf.h>
-#include <guichan.hpp>
-#include <guichan/sdl.hpp>
 #include "2d.hpp"
-#include <string>
-#include <cassert>
-#include <map>
-#include <list>
+#include "SDL/SDL.h"
 
 namespace neurocid {
 using std::string;
-using std::map;
-using std::list;
-
-typedef gcn::Color Color;
 
 class BattleField;
-class Ship;
-class Facility;
-class Object;
-
-struct Explosion {
-	Vector2D loc_;
-	size_t tick_;
-	size_t maxTick_;
-	Color color_;
-
-	size_t next() {
-		assert(!this->end());
-		return ++tick_;
-	}
-
-	bool end() {
-		return tick_ >= maxTick_;
-	}
-};
 
 class Canvas {
 private:
 	static Canvas* instance_;
-	Canvas(Coord width, Coord height, BattleFieldLayout& bfl);
-	~Canvas();
-
-	struct SDL_Surface *screen_;
-	bool drawEngines_;
-	bool drawCenters_;
-	bool drawGrid_;
-	bool drawProjectiles_;
-	bool drawElite_;
-
-	Coord width_;
-	Coord height_;
-	Coord scale_;
-	Coord zoom_;
-	Rect viewPort_;
-	Background background_;
-	list<Explosion> explosions_;
-
-	void calculateScale();
-	Sint16 scaleX(const Coord& c, const Coord& scale);
-	Sint16 scaleY(const Coord& c, const Coord& scale);
-	Sint16 scaleX(const Coord& c);
-	Sint16 scaleY(const Coord& c);
-	Rect findBounds(BattleField& field);
+	bool drawCenters_ = false;
+	bool drawEngines_ = false;
+	bool drawGrid_ = false;
+	bool drawProjectiles_ = true;
+	bool drawElite_ = false;
 public:
-	void drawBorder(BattleField& field);
-	void drawGrid(BattleField& field);
-	void drawStar(Star& s);
-	void drawSurface(SDL_Surface *s, SDL_Rect& srect, Coord x, Coord y);
-	void drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c);
-	void fillCircle(Vector2D loc, Coord radius, Color c);
-	void drawExplosion(Explosion& expl);
-	void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c);
-	void drawShip(Ship& tank, Color c);
-	void drawFacility(Facility& facility, Color c);
-	void drawProjectile(Projectile& pro, Color& c);
-	void drawCenters(Scanner& scanner);
-	void zoomIn();
-	void zoomOut();
-	void left();
-	void right();
-	void up();
-	void down();
-	void update();
-	void clear();
-	void render(BattleField& fiseld);
-	void reset();
+	Canvas() {};
+	virtual ~Canvas() {};
 
-	SDL_Surface* getSurface() const {
-		return screen_;
-	}
+	virtual void zoomIn() = 0;
+	virtual void zoomOut() = 0;
+	virtual void left() = 0;
+	virtual void right() = 0;
+	virtual void up() = 0;
+	virtual void down() = 0;
 
-	Coord width() const {
-		return width_;
-	}
+	virtual void update() = 0;
+	virtual void clear() = 0;
+	virtual void render(BattleField& field) = 0;
+	virtual void reset() = 0;
 
-	Coord height() const {
-		return height_;
-	}
+	virtual Coord width() const = 0;
+	virtual Coord height() const = 0;
+	virtual SDL_Surface* getSurface() const = 0;
 
-	static void init(BattleFieldLayout& bfl) {
+	static void init(Canvas* canvas) {
 		assert(instance_ == NULL);
-		instance_ = new Canvas(Options::getInstance()->WINDOW_WIDTH,
-				Options::getInstance()->WINDOW_HEIGHT, bfl);
+		instance_ = canvas;
 	}
 
 	static Canvas* getInstance() {

@@ -5,6 +5,7 @@
 #include "2d.hpp"
 #include "error.hpp"
 #include "gui/guichangui.hpp"
+#include "sdlcanvas.hpp"
 
 #ifndef _NO_JSON
 #include "json_scenario.hpp"
@@ -99,10 +100,12 @@ int main(int argc, char** argv) {
     }
     CHECK_MSG(scenario != NULL, "Unable to load a Scenario");
 
+    nc::SDLCanvas* sdlc = new nc::SDLCanvas(width,height,scenario->bfl_);
+    nc::GuiChanGui* gui = new nc::GuiChanGui(sdlc->getSurface());
+
     //initialize all subsystems - core, canvas, gui
     nc::init(width,height,frameRate);
-    SDL_Surface* surface = nc::init_canvas(scenario->bfl_);
-    nc::GuiChanGui* gui = new nc::GuiChanGui(surface);
+    nc::init_canvas(sdlc);
     nc::init_gui(gui);
 
     //get default layouts
