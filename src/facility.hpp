@@ -12,12 +12,10 @@ struct FacilityLayout {
 	friend class boost::serialization::access;
 #endif
 	size_t radius_;
-	size_t range_;
 	size_t maxCooldown_;
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
-	  ar & range_;
 	  ar & radius_;
 	  ar & maxCooldown_;
 	}

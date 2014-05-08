@@ -9,11 +9,11 @@
 #include "population.hpp"
 #include "battlefield.hpp"
 #include "bsp.hpp"
+#include "error.hpp"
 
 namespace neurocid {
 
 void BspScanner::buildBsps(BattleField& field) {
-	assert(field.teams_.size() == 2);
 	bspA_.clear();
 	bspB_.clear();
 
@@ -82,11 +82,11 @@ void BspScanner::findInRange(ObjectBsp& bsp, Object& from, ScanObjectType type, 
 
 
 bool BspScanner::findNearest(ObjectBsp& bsp, Object& from, ScanObjectType type, ScanObjectVector& result) {
-	assert(!from.dead_);
+	CHECK(!from.dead_);
 	auto p = bsp.find_nearest_if(&from, std::numeric_limits<Coord>().max(), [&](Object* candidate) {
 		return candidate != &from;
 	});
-	assert(&from != (*p.first));
+	CHECK(&from != (*p.first));
 
 	if(p.second != std::numeric_limits<Coord>().max()) {
 		Object* obj = static_cast<Object*>(*p.first);
@@ -99,7 +99,7 @@ bool BspScanner::findNearest(ObjectBsp& bsp, Object& from, ScanObjectType type, 
 }
 
 size_t BspScanner::findNearestN(ObjectBsp& bsp, Object& from, ScanObjectType type, ScanObjectVector& result, size_t num) {
-	assert(!from.dead_);
+	CHECK(!from.dead_);
 	size_t cnt = 0;
 	auto p = bsp.find_nearest_if(&from, std::numeric_limits<Coord>().max(), [&](Object* candidate) {
 		if(candidate != &from)
@@ -111,13 +111,13 @@ size_t BspScanner::findNearestN(ObjectBsp& bsp, Object& from, ScanObjectType typ
 		result.push_back(ScanObject{type,obj->loc_,from.distance(*candidate), obj->vel_});
 		return (cnt == num);
 	});
-	assert(&from != (*p.first));
+	CHECK(&from != (*p.first));
 
 	return cnt;
 }
 
 std::pair<Object*,Coord> BspScanner::findNearest(ObjectBsp& bsp, Object& from) {
-	assert(!from.dead_);
+	CHECK(!from.dead_);
 	vector<Object*> found;
 	auto result = bsp.find_nearest(&from, std::numeric_limits<Coord>().max());
 	return {*result.first, result.second};

@@ -32,6 +32,8 @@ void Game::prepare() {
 }
 
 void Game::place() {
+/*	scenario_->configureTeams(teams_);
+	scenario_->configurePools(pools_); */
 	lua::run_placer(scenario_->pl_.placer_, teams_, scenario_->pl_, 0);
 }
 
@@ -71,7 +73,6 @@ void Game::fight(bool render) {
 }
 
 void Game::score() {
-	assert(teams_.size() == 2);
 	vector<size_t> ownedFacilites(2,0);
 
 	for(size_t i = 0; i < teams_.size(); ++i) {

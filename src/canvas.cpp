@@ -1,14 +1,12 @@
 
 #include "canvas.hpp"
-#include "gui/gui.hpp"
-#include "gui/osd.hpp"
 #include "ship.hpp"
 #include "facility.hpp"
 #include "projectile.hpp"
 #include "battlefield.hpp"
 #include "population.hpp"
 #include "time_tracker.hpp"
-#include "gui/theme.hpp"
+#include "theme.hpp"
 
 #include <sstream>
 #include <thread>
@@ -151,7 +149,7 @@ void Canvas::drawExplosion(Explosion& expl) {
 	size_t lastR = 0, r = 0;
 	for(size_t i = expl.tick_; i > 0; --i) {
 	    if(scale_ < 0.013)
-	    	r = round(pow(i,2) * 3 * scale_);
+	    	r = round(pow(i,2) * 6 * scale_);
 	    else
 	    	r = round(pow(i,2) * scale_);
 
@@ -244,19 +242,19 @@ void Canvas::drawShip(Ship& ship, Color c) {
 
 void Canvas::drawFacility(Facility& facility, Color c) {
 #ifndef _NO_SDLGFX
-	filledCircleRGBA(screen_, scaleX(facility.loc_.x_), scaleY(facility.loc_.y_), round(facility.layout_.range_ * scale_), c.r, c.g, c.b, 128);
+	filledCircleRGBA(screen_, scaleX(facility.loc_.x_), scaleY(facility.loc_.y_), round(facility.layout_.radius_ * scale_), c.r, c.g, c.b, 128);
 
 	for(size_t i = 0; i < 50; ++i) {
-		drawEllipse(facility.loc_, facility.layout_.range_ - i, facility.layout_.range_ -i, c);
+		drawEllipse(facility.loc_, facility.layout_.radius_ - i, facility.layout_.radius_ -i, c);
 	}
 
 	for(size_t i = 0; i < 3; ++i) {
 		Sint16 start = iRand(0,360);
 		Sint16 end = iRand(start,360);
-		pieRGBA(screen_, scaleX(facility.loc_.x_), scaleY(facility.loc_.y_), round(scale_ * (facility.layout_.range_ / 1.5 )), start, end, 0, 0, 255, 255);
+		pieRGBA(screen_, scaleX(facility.loc_.x_), scaleY(facility.loc_.y_), round(scale_ * (facility.layout_.radius_ / 1.5 )), start, end, 0, 0, 255, 255);
 		start = iRand(0,360);
 		end = iRand(start,360);
-		pieRGBA(screen_, scaleX(facility.loc_.x_), scaleY(facility.loc_.y_), round(scale_ * (facility.layout_.range_ / 1.5 )), start, end, 255, 255, 0, 255);
+		pieRGBA(screen_, scaleX(facility.loc_.x_), scaleY(facility.loc_.y_), round(scale_ * (facility.layout_.radius_ / 1.5 )), start, end, 255, 255, 0, 255);
 	}
 #endif
 }
@@ -266,8 +264,12 @@ void Canvas::drawProjectile(Projectile& pro, Color& c) {
 		return;
 
 	Vector2D trail = pro.loc_;
-	trail += pro.getDirection() * -500;
-	drawLine(trail.x_,trail.y_, pro.loc_.x_, pro.loc_.y_, c);
+    if(scale_ < 0.013)
+    	trail += pro.getDirection() * -1500;
+    else
+    	trail += pro.getDirection() * -500;
+
+    drawLine(trail.x_,trail.y_, pro.loc_.x_, pro.loc_.y_, c);
 }
 
 void Canvas::clear() {
@@ -338,7 +340,6 @@ void Canvas::drawCenters(Scanner& scanner) {
 }
 
 void Canvas::render(BattleField& field) {
-	assert(field.teams_.size() == 2);
 	if(zoom_ == 1)
 		viewPort_ = findBounds(field);
 	calculateScale();

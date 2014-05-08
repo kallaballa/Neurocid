@@ -10,6 +10,7 @@
 #include "ship.hpp"
 #include "projectile.hpp"
 #include "population.hpp"
+#include "error.hpp"
 
 namespace neurocid {
 using std::vector;
@@ -165,7 +166,7 @@ b2Body* Physics::makeShipBody(Ship& t) {
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(toMeters(t.loc_.x_), toMeters(t.loc_.y_));
 
-    assert(t.rotation_ <= M_PI);
+    CHECK(t.rotation_ <= M_PI);
     bodyDef.angle = t.rotation_;
     bodyDef.userData = static_cast<Object*>(&t);
     bodyDef.allowSleep = true;
@@ -202,7 +203,7 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
 	b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(toMeters(p.loc_.x_), toMeters(p.loc_.y_));
-    assert(p.rotation_ <= M_PI);
+    CHECK(p.rotation_ <= M_PI);
     bodyDef.angle = p.rotation_;
     bodyDef.allowSleep = true;
     bodyDef.awake = true;
@@ -355,7 +356,7 @@ void Physics::step() {
 				    body->SetLinearVelocity( maxSpeed * vel);
 				}
 
-				assert(o->rotation_ <= M_PI);
+				CHECK(o->rotation_ <= M_PI);
 			} else if(o->type() == PROJECTILE) {
 				Projectile* p = static_cast<Projectile*>(o);
 				if((p->loc_ - p->startLoc_).length() > p->layout_.maxTravel_) {
@@ -386,12 +387,12 @@ void Physics::step() {
 			Coord angVel = body->GetAngularVelocity();
 			obj->vel_.x_ = vel.x;
 			obj->vel_.y_ = vel.y;
-			assert(!std::isnan(angVel));
+			CHECK(!std::isnan(angVel));
 			obj->angVel_ = angVel;
 			obj->loc_.x_ = toCoord(pos.x);
 			obj->loc_.y_ = toCoord(pos.y);
 			obj->rotation_ = normRotation(body->GetAngle());
-			assert(obj->rotation_ <= M_PI);
+			CHECK(obj->rotation_ <= M_PI);
 		}
 	}
 }

@@ -10,9 +10,7 @@
 #include "gamestate.hpp"
 #include "canvas.hpp"
 #include "renderer.hpp"
-#include "gui/gui.hpp"
-#include "gui/osd.hpp"
-#include "gui/help.hpp"
+#include "gui.hpp"
 
 #include <thread>
 #include <SDL/SDL.h>
@@ -57,8 +55,6 @@ void EventLoop::process() {
 	Canvas& canvas = *Canvas::getInstance();
 	Renderer& renderer = *Renderer::getInstance();
 	Gui& gui = *Gui::getInstance();
-	OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
-	HelpScreen& help = *HelpScreen::getInstance();
 
 	SDL_Event event;
 
@@ -68,7 +64,7 @@ void EventLoop::process() {
 			if (event.key.keysym.sym == SDLKey::SDLK_ESCAPE) {
 				std::cerr << "Quitting" << std::endl;
 				gameState.stop();
-			} else if (!help.isOpen() && (event.key.keysym.mod == KMOD_LALT || event.key.keysym.mod == KMOD_RALT)) {
+			} else if ((event.key.keysym.mod == KMOD_LALT || event.key.keysym.mod == KMOD_RALT)) {
 				if (event.key.keysym.sym == SDLKey::SDLK_SPACE) {
 					if (renderer.isEnabled()) {
 						if (gameState.isSlow()) {
@@ -87,18 +83,6 @@ void EventLoop::process() {
 						gameState.resume();
 					else
 						gameState.pause();
-				} else if (event.key.keysym.sym == SDLKey::SDLK_t) {
-					if (osd.isOsdTrackerVisible()) {
-						osd.showOsdTracker(false);
-					} else {
-						osd.showOsdTracker(true);
-					}
-				} else if (event.key.keysym.sym == SDLKey::SDLK_s) {
-					if (osd.isOsdStatisticsVisible()) {
-						osd.showOsdStatistics(false);
-					} else {
-						osd.showOsdStatistics(true);
-					}
 				} else if (event.key.keysym.sym == SDLKey::SDLK_c) {
 					if (canvas.isDrawCentersEnabled())
 						canvas.enableDrawCenters(false);

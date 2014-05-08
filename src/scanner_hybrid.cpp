@@ -10,6 +10,7 @@
 #include "battlefield.hpp"
 #include "bsp.hpp"
 #include "util.hpp"
+#include "error.hpp"
 
 #ifdef _GPU_KMEANS
 #include "../src/KMeans.hpp"
@@ -56,7 +57,7 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 			}
 		}
 
-		assert(t.scan_.objects_.size() == numFriends);
+		CHECK(t.scan_.objects_.size() == numFriends);
 
 		// Scan for enemies
 		findNearest(bspEnemies, t, ENEMY, t.scan_.objects_);
@@ -83,7 +84,7 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 			}
 		}
 
-		assert(t.scan_.objects_.size() == (numFriends + numEnemies));
+		CHECK(t.scan_.objects_.size() == (numFriends + numEnemies));
 
 		size_t startNum = (numFriends + numEnemies);
 		size_t targetNum = (numFriends + numEnemies + numFriendFacilities);
@@ -101,14 +102,14 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 			size_t s = t.scan_.objects_.size();
 			for(size_t i = startNum; i < s; ++i) {
 				ScanObject& so = t.scan_.objects_[i];
-				assert(so.type_ == FRIEND_FACILITY);
+				CHECK(so.type_ == FRIEND_FACILITY);
 				t.scan_.objects_.push_back(so);
 				if(t.scan_.objects_.size() == targetNum)
 					break;
 			}
 		}
 
-		assert(t.scan_.objects_.size() == targetNum);
+		CHECK(t.scan_.objects_.size() == targetNum);
 
 		startNum = (numFriends + numEnemies + numFriendFacilities);
 		targetNum = (numFriends + numEnemies + numFriendFacilities + numEnemyFacilities);
@@ -126,14 +127,14 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 			size_t s = t.scan_.objects_.size();
 			for(size_t i = startNum; i < s; ++i) {
 				ScanObject& so = t.scan_.objects_[i];
-				assert(so.type_ == ENEMY_FACILITY);
+				CHECK(so.type_ == ENEMY_FACILITY);
 				t.scan_.objects_.push_back(so);
 				if(t.scan_.objects_.size() == targetNum)
 					break;
 			}
 		}
 
-		assert(t.scan_.objects_.size() == targetNum);
+		CHECK(t.scan_.objects_.size() == targetNum);
 
 		/*
 		// Scan for projectiles
@@ -155,14 +156,14 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 			size_t s = t.scan_.objects_.size();
 			for(size_t i = startNum; i < s; ++i) {
 				ScanObject& so = t.scan_.objects_[i];
-				assert(so.type_ == PROJECTILE_);
+				CHECK(so.type_ == PROJECTILE_);
 				t.scan_.objects_.push_back(so);
 				if(t.scan_.objects_.size() == targetNum)
 					break;
 			}
 		}
 
-		assert(t.scan_.objects_.size() == targetNum);
+		CHECK(t.scan_.objects_.size() == targetNum);
 */
 		//Scan for near misses
 		for(Projectile* p : t.projectiles_) {
@@ -172,7 +173,7 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 			p->scan_ = Scan(p);
 
 			auto result = findNearest(bspEnemies, *p);
-			assert(p->scan_.objects_.empty() || p->scan_.objects_.size() == 2);
+			CHECK(p->scan_.objects_.empty() || p->scan_.objects_.size() == 2);
 
 			if(result.first != NULL && result.second != NO_COORD) {
 				Vector2D enemyLoc = result.first->loc_;
@@ -207,7 +208,7 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 }
 
 void HybridScanner::scan(BattleField& field) {
-	assert(field.teams_.size() == 2);
+	CHECK(field.teams_.size() == 2);
 	prepare(field);
 	Population& teamA = field.teams_[0];
 	Population& teamB = field.teams_[1];
@@ -218,8 +219,8 @@ void HybridScanner::scan(BattleField& field) {
 	vector<Object*> objsB;
 
 	for(Facility& f : teamA.facilities_) {
-		findInRange(bspA_, f, objsA, f.layout_.range_);
-		findInRange(bspB_, f, objsB, f.layout_.range_);
+		findInRange(bspA_, f, objsA, f.layout_.radius_);
+		findInRange(bspB_, f, objsB, f.layout_.radius_);
 
 		if(f.isCool()) {
 			signed long diff = objsA.size() - objsB.size();
@@ -256,8 +257,8 @@ void HybridScanner::scan(BattleField& field) {
 	}
 
 	for(Facility& f : teamB.facilities_) {
-		findInRange(bspA_, f, objsA, f.layout_.range_);
-		findInRange(bspB_, f, objsB, f.layout_.range_);
+		findInRange(bspA_, f, objsA, f.layout_.radius_);
+		findInRange(bspB_, f, objsB, f.layout_.radius_);
 
 		if(f.isCool()) {
 			signed long diff = objsA.size() - objsB.size();

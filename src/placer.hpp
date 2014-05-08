@@ -20,6 +20,7 @@ struct PlacerLayout {
 	Coord spacing_;
 	Coord rotation_;
 	string placer_;
+	Coord fuzz_;
 };
 
 } /* namespace neurocid */

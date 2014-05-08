@@ -8,6 +8,7 @@
 #ifndef FORM_HPP_
 #define FORM_HPP_
 
+#include "screen.hpp"
 #include <map>
 #include <string>
 #include <mutex>
@@ -20,7 +21,7 @@ namespace neurocid {
 using std::string;
 using std::map;
 using std::mutex;
-class Form {
+class Form : public Screen {
 public:
 	enum Type {
 		STRING,

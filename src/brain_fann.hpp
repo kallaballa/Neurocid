@@ -6,14 +6,41 @@
 #include <memory>
 #include <assert.h>
 #include <vector>
+#include <deque>
 #include "scan.hpp"
 #include "brain.hpp"
 #include "battlefieldlayout.hpp"
+
+#ifndef _NO_SERIALIZE
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/deque.hpp>
+#endif
 
 namespace neurocid {
 
 class Ship;
 class Population;
+
+using std::deque;
+
+struct BrainStatistics {
+	deque<size_t> switches_;
+	size_t numGameSwitches_ = 0;
+
+	void recordBrainSwitch(size_t index) {
+		numGameSwitches_ = 0;
+		switches_.push_back(index);
+		if(switches_.size() > 10000)
+			switches_.pop_front();
+	}
+#ifndef _NO_SERIALIZE
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version) {
+		ar & switches_;
+	}
+#endif
+};
 
 class BrainFann : public BasicBrain<fann_type> {
 #ifdef _CHECK_BRAIN_ALLOC
@@ -22,10 +49,11 @@ class BrainFann : public BasicBrain<fann_type> {
 #endif
 	fann **nn_;
 	size_t lastBrain_;
-	size_t brainSwitches_;
 public:
+	BrainStatistics brainStats_;
+
 	typedef fann_type value_type;
-	BrainFann() : BasicBrain<fann_type>(), nn_(NULL), lastBrain_(0), brainSwitches_(0) {
+	BrainFann() : BasicBrain<fann_type>(), nn_(NULL), lastBrain_(0), brainStats_() {
 	}
 
 	BrainFann(const BrainFann& other);
@@ -44,9 +72,6 @@ public:
 	virtual bool operator!=(BrainFann& other);
 	virtual void update(const BattleFieldLayout& bfl, const Scan& scan);
 	void run();
-	size_t brainSwitches() {
-		return brainSwitches_;
-	}
 };
 
 } /* namespace neurocid */

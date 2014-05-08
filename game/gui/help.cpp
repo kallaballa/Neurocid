@@ -1,14 +1,11 @@
 #include "help.hpp"
 #include "theme.hpp"
 #include "form.hpp"
-#include "../options.hpp"
+#include "options.hpp"
 
 namespace neurocid {
 
-HelpScreen* HelpScreen::instance_ = NULL;
-
-
-HelpScreen::HelpScreen() : NeurocidWidget<gcn::Window>(), Form(), gcn::ActionListener() {
+HelpScreen::HelpScreen() : Form() {
 	setOpaque(false);
 	int fs = 0;
 	setFrameSize(fs);
@@ -53,6 +50,9 @@ HelpScreen::HelpScreen() : NeurocidWidget<gcn::Window>(), Form(), gcn::ActionLis
 
 void HelpScreen::open() {
 	setVisible(true);
+}
+
+void HelpScreen::update(BattleField& field) {
 }
 
 void HelpScreen::action(const gcn::ActionEvent& event) {

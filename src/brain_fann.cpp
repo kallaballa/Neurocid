@@ -1,8 +1,8 @@
 #include "brain_fann.hpp"
 #include "battlefield.hpp"
+#include "error.hpp"
 #include <fann.h>
 #include <iostream>
-#include <assert.h>
 #include <limits>
 #include <cmath>
 
@@ -13,28 +13,28 @@ std::map<fann**, size_t> BrainFann::nnAllocs_;
 size_t BrainFann::nnAllocCnt_ = 0;
 #endif
 
-BrainFann::BrainFann(const BrainFann& other): BasicBrain<fann_type>(other), nn_(other.nn_), lastBrain_(other.lastBrain_), brainSwitches_(other.brainSwitches_)  {
+BrainFann::BrainFann(const BrainFann& other): BasicBrain<fann_type>(other), nn_(other.nn_), lastBrain_(other.lastBrain_), brainStats_(other.brainStats_)  {
 }
 
 BrainFann::~BrainFann() {
 }
 
 void BrainFann::applyMeta(const size_t& i, const fann_type& value) {
-	assert(i < layout_.numMetaInputs_);
+	CHECK(i < layout_.numMetaInputs_);
 	metaInputs_[i] = value;
-	assert(!std::isnan(metaInputs_[i]) && !std::isinf(metaInputs_[i]) && metaInputs_[i] >= -1 && metaInputs_[i] <= 1);
+	CHECK(!std::isnan(metaInputs_[i]) && !std::isinf(metaInputs_[i]) && metaInputs_[i] >= -1 && metaInputs_[i] <= 1);
 }
 
 void BrainFann::applyInput(const size_t& i, const fann_type& value) {
-	assert(i < layout_.numInputs_);
+	CHECK(i < layout_.numInputs_);
 	inputs_[i] = value;
-	assert(!std::isnan(inputs_[i]) && !std::isinf(inputs_[i]) && inputs_[i] >= -1 && inputs_[i] <= 1);
+	CHECK(!std::isnan(inputs_[i]) && !std::isinf(inputs_[i]) && inputs_[i] >= -1 && inputs_[i] <= 1);
 }
 
 void BrainFann::makeNN() {
-	assert(layout_.numLayers_ >= 3);
-	assert(layout_.numLayers_ < 20);
-	assert(layout_.numBrains_ >= 1);
+	CHECK(layout_.numLayers_ >= 3);
+	CHECK(layout_.numLayers_ < 20);
+	CHECK(layout_.numBrains_ >= 1);
 	unsigned int* layerArray = new unsigned int[std::max(layout_.numLayers_, layout_.numMetaLayers_)];
 
 	// create meta brain
@@ -78,11 +78,11 @@ void BrainFann::makeNN() {
 }
 
 void BrainFann::destroy() {
-	assert(!destroyed_);
-	assert(nn_ != NULL);
+	CHECK(!destroyed_);
+	CHECK(nn_ != NULL);
 #ifdef _CHECK_BRAIN_ALLOC
 	auto it = nnAllocs_.find(nn_);
-	assert(it != nnAllocs_.end());
+	CHECK(it != nnAllocs_.end());
 	std::cerr << "free: " << (*it).second << std::endl;
 	nnAllocs_.erase(it);
 #endif
@@ -100,9 +100,9 @@ void BrainFann::destroy() {
 
 void BrainFann::reset() {
 	lastBrain_ = 0;
-	brainSwitches_ = 0;
-	assert(metaInputs_ != NULL);
-	assert(inputs_ != NULL);
+	brainStats_.numGameSwitches_ = 0;
+	CHECK(metaInputs_ != NULL);
+	CHECK(inputs_ != NULL);
 
 	std::fill_n(metaInputs_, layout_.numMetaInputs_, std::numeric_limits<fann_type>().max());
 	std::fill_n(inputs_, layout_.numInputs_, std::numeric_limits<fann_type>().max());
@@ -122,10 +122,10 @@ fann_type* BrainFann::weights(const size_t& bi) {
 }
 
 bool BrainFann::operator==(BrainFann& other) {
-	assert(other.layout_.numBrains_ == this->layout_.numBrains_);
+	CHECK(other.layout_.numBrains_ == this->layout_.numBrains_);
 
 	for(size_t i = 0; i < layout_.numBrains_ + 1; ++i) {
-		assert(other.size(i) == this->size(i));
+		CHECK(other.size(i) == this->size(i));
 		for(size_t j = 0; j < this->size(i); ++j){
 			if(this->weights(i)[j] != other.weights(i)[j])
 				return false;
@@ -139,18 +139,18 @@ bool BrainFann::operator!=(BrainFann& other) {
 }
 
 void BrainFann::update(const BattleFieldLayout& bfl, const Scan& scan) {
-	assert(nn_ != NULL);
-	assert(metaInputs_ != NULL);
-	assert(inputs_ != NULL);
-	assert(!destroyed_);
-	assert(layout_.numInputs_ == (scan.objects_.size() * 4) + 5);
+	CHECK(nn_ != NULL);
+	CHECK(metaInputs_ != NULL);
+	CHECK(inputs_ != NULL);
+	CHECK(!destroyed_);
+	CHECK(layout_.numInputs_ == (scan.objects_.size() * 4) + 5);
 
-	assert(layout_.numMetaInputs_ == fann_get_num_input(nn_[0]));
-	assert(layout_.numBrains_ == fann_get_num_output(nn_[0]));
+	CHECK(layout_.numMetaInputs_ == fann_get_num_input(nn_[0]));
+	CHECK(layout_.numBrains_ == fann_get_num_output(nn_[0]));
 
 	for(size_t i = 1; i < layout_.numBrains_ + 1; ++i) {
-		assert(layout_.numInputs_ == fann_get_num_input(nn_[i]));
-		assert(layout_.numOutputs == fann_get_num_output(nn_[i]));
+		CHECK(layout_.numInputs_ == fann_get_num_input(nn_[i]));
+		CHECK(layout_.numOutputs == fann_get_num_output(nn_[i]));
 	}
 }
 
@@ -166,7 +166,7 @@ void BrainFann::run() {
 	}
 
 	if(selected != lastBrain_)
-		++brainSwitches_;
+		brainStats_.recordBrainSwitch(selected);
 
 	lastBrain_ = selected;
 	outputs = fann_run(nn_[selected], inputs_);
@@ -176,7 +176,7 @@ void BrainFann::run() {
 	bthrust_ = outputs[3];
 	shoot_ = outputs[4];
 
-	assert(!std::isnan(bthrust_) && !std::isnan(fthrust_) && !std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(shoot_));
-	assert(!std::isinf(bthrust_) && !std::isinf(fthrust_) && !std::isinf(lthrust_) && !std::isinf(rthrust_) && !std::isinf(shoot_));
+	CHECK(!std::isnan(bthrust_) && !std::isnan(fthrust_) && !std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(shoot_));
+	CHECK(!std::isinf(bthrust_) && !std::isinf(fthrust_) && !std::isinf(lthrust_) && !std::isinf(rthrust_) && !std::isinf(shoot_));
 }
 } /* namespace neurocid */

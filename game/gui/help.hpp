@@ -10,27 +10,23 @@ namespace neurocid {
 
 using std::string;
 
-class BattleField;
-
-class HelpScreen : public NeurocidWidget<gcn::Window>, public Form, gcn::ActionListener {
+class HelpScreen : public Form {
 	OsdWidget* helpText_;
 	Button* closeButton_;
-
-	static HelpScreen* instance_;
-	HelpScreen();
 public:
-	static HelpScreen* getInstance() {
-		if(instance_ == NULL)
-		instance_ = new HelpScreen();
-		return instance_;
-	}
+	HelpScreen();
 
 	~HelpScreen() {
 		delete helpText_;
 	}
 
+	virtual void update(BattleField& field);
 	virtual void open();
 	virtual void action(const gcn::ActionEvent& event);
+
+	virtual bool isForm() override {
+		return true;
+	}
 };
 } /* namespace neurocid */
 

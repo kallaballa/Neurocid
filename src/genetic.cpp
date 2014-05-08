@@ -2,9 +2,9 @@
 #include "fann.h"
 #include "util.hpp"
 #include "battlefieldlayout.hpp"
+#include "error.hpp"
 #include <algorithm>
 #include <iostream>
-#include <assert.h>
 #include <set>
 
 namespace neurocid {
@@ -75,7 +75,7 @@ Ship& GeneticPool::pickSpecimen(Population& pop) {
 		}
 	}
 
-	assert(false);
+	CHECK(false);
 	return pop[0]; 	//surpress warning
 }
 
@@ -84,7 +84,7 @@ Ship& GeneticPool::pickSpecimen(Population& pop) {
  */
 Ship* GeneticPool::pickSpecimen(vector<Ship*>& pop) {
 	//FIXME reevaluate
-	assert(false);
+	CHECK(false);
 	//generate a random number between 0 & total fitness count
 	double totalFitness = 0;
 	for(Ship* s : pop) {
@@ -105,7 +105,7 @@ Ship* GeneticPool::pickSpecimen(vector<Ship*>& pop) {
 		}
 	}
 
-	assert(false);
+	CHECK(false);
 	return pop[0]; 	//surpress warning
 }
 
@@ -204,7 +204,7 @@ void GeneticPool::calculateStatistics(Population& pop) {
 		pop.stats_.totalHits_  += pop[i].hits_;
 		pop.stats_.totalDamage_  += pop[i].damage_;
 		pop.stats_.totalRecharged_ += pop[i].recharged_;
-		pop.stats_.totalBrainSwitches_ += pop[i].brain_->brainSwitches();
+		pop.stats_.totalBrainSwitches_ += pop[i].brain_->brainStats_.numGameSwitches_;
 
 		//update fittest if necessary
 		if (highestSoFar == 0 || pop[i].fitness_ > highestSoFar) {
@@ -222,7 +222,7 @@ void GeneticPool::calculateStatistics(Population& pop) {
 		pop.stats_.totalFitness_ += pop[i].fitness_;
 	}
 
-	assert(pop.stats_.bestFitness_ != std::numeric_limits<double>().max());
+	CHECK(pop.stats_.bestFitness_ != std::numeric_limits<double>().max());
 
 	pop.stats_.score_ = pop.stats_.totalHits_ - pop.stats_.totalDamage_;
 	pop.stats_.averageFitness_ = pop.stats_.totalFitness_ / size;
@@ -287,7 +287,7 @@ Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl)
 		}
 	}
 
-	assert(old_pop.layout_.tl_.numPerfDesc_ == 6);
+	CHECK(old_pop.layout_.tl_.numPerfDesc_ == 6);
 	PerfDescBsp<6,Ship> pdb;
 	if(layout_.usePerfDesc_) {
 		for(Ship& t : old_pop) {
@@ -335,7 +335,7 @@ Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl)
 		if(new_pop.size() < old_pop.size())
 			new_pop.push_back(babies.second);
 	}
-	assert(new_pop.size() == old_pop.size());
+	CHECK(new_pop.size() == old_pop.size());
 	old_pop.stats_.generationCnt_++;
 	new_pop.stats_ = old_pop.stats_;
 	return new_pop;

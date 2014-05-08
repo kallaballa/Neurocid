@@ -1,9 +1,9 @@
 #include "brain.hpp"
 #include "battlefield.hpp"
+#include "error.hpp"
 #include "util.hpp"
 #include <fann.h>
 #include <iostream>
-#include <assert.h>
 #include <limits>
 #include <cmath>
 #include <map>
@@ -45,7 +45,7 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	sortByAngularDistance(friendFacilityObj, scan.objects_, FRIEND_FACILITY);
 	sortByAngularDistance(enemyFacilityObj, scan.objects_, ENEMY_FACILITY);
 
-	assert(enemyObj.size() + friendObj.size() + friendFacilityObj.size() + enemyFacilityObj.size() == scan.objects_.size());
+	CHECK(enemyObj.size() + friendObj.size() + friendFacilityObj.size() + enemyFacilityObj.size() == scan.objects_.size());
 
 	size_t inputCnt = 0;
 	for (ScanObject& so : friendObj) {
@@ -113,9 +113,9 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	applyInput(inputCnt * 4 + 4, angVel / 10);
 
 	for(size_t i = 0; i < layout_.numInputs_; ++i) {
-		assert(!std::isinf(inputs_[i]));
-		assert(!std::isnan(inputs_[i]));
-		assert(inputs_[i] != std::numeric_limits<fann_type>().max());
+		CHECK(!std::isinf(inputs_[i]));
+		CHECK(!std::isnan(inputs_[i]));
+		CHECK(inputs_[i] != std::numeric_limits<fann_type>().max());
 	}
 
 	//	std::cerr << "output:\t" << lthrust_ << "\t" << rthrust_ << "\t" << shoot_ << std::endl;

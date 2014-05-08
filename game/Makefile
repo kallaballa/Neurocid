@@ -4,7 +4,7 @@ ifdef JAVASCRIPT
 TARGET := neurocid-bin.html
 endif
 
-SRCS  := neurocid.cpp eventloop.cpp generative_scenarios.cpp json_scenario.cpp
+SRCS  := neurocid.cpp eventloop.cpp generative_scenarios.cpp json_scenario.cpp gui/guichangui.cpp gui/help.cpp gui/osd.cpp gui/widgets.cpp ../guichan/src/contrib/sdl/sdltruetypefont.cpp
 
 #precompiled headers
 HEADERS := 
@@ -13,7 +13,7 @@ GCH     := ${HEADERS:.h=.gch}
 OBJS    := ${SRCS:.cpp=.o} 
 DEPS    := ${SRCS:.cpp=.dep} 
 
-CXXFLAGS += -I../ -I../src/ 
+CXXFLAGS += -I../ -I../src/
 LDFLAGS += -L../src/
 LIBS    += -lneurocid
 
@@ -24,6 +24,7 @@ release: ${TARGET}
 debug: ${TARGET}
 info: ${TARGET}
 profile: ${TARGET}
+hardcore: ${TARGET}
 
 ${TARGET}: ${OBJS} 
 	${CXX} ${LDFLAGS} -o $@ $^ ${LIBS} 

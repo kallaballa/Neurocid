@@ -62,10 +62,9 @@ if not layout.disableProjectileFitness then
 	end
 end
 
-if shots == 0 then
+if shots == 0 or ratedProjectiles == 0 then
   fitness = 0;
 else
-  assert(ratedProjectiles > 0 or layout.disableProjectilesFitness);
   local aimRatio = 0.0
   if not layout.disableProjectilesFitness then
 		aimRatio = (1.0 - (totalDiff / ratedProjectiles));

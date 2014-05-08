@@ -6,6 +6,7 @@
  */
 
 #include "json_scenario.hpp"
+#include "error.hpp"
 
 namespace neurocid {
 
@@ -59,7 +60,7 @@ Vector2D get_vector2d(js::Object& obj, const string& name) {
 	  for(js::Pair& p : obj) {
 		  if(p.name_ == name) {
 			  js::Array& arr = p.value_.get_array();
-			  assert(arr.size() == 2);
+			  CHECK_MSG(arr.size() == 2, "Invalid json structure");
 			  return Vector2D(arr[0].get_real(), arr[1].get_real());
 		  }
 	  }
@@ -100,18 +101,22 @@ Ship make_ship(js::Object& obj, size_t teamID, PopulationLayout pl) {
 	s.layout_.canRotate_ = get_bool(obj, "canRotate");
 	s.layout_.canMove_ = get_bool(obj, "canMove");
 	s.layout_.disableProjectileFitness_ = get_bool(obj, "disableProjectileFitness");
-	s.layout_.radius_ = get_double(obj, "range");
+
+	s.layout_.radius_ = get_double(obj, "radius");
 	s.layout_.maxSpeed_ = get_double(obj, "maxSpeed");
 	s.layout_.maxRotation_ = get_double(obj, "maxRotation");
 	s.layout_.maxFuel_ = get_double(obj, "maxFuel");
+	s.layout_.startFuel_ = get_double(obj, "startFuel");
 	s.layout_.fuelRate_ = get_double(obj, "fuelRate");
-	s.layout_.maxCooldown_ = get_size_t(obj, "maxCooldown");
+	s.layout_.hardness_ = get_double(obj, "hardness");
+
 	s.layout_.maxAmmo_ = get_size_t(obj, "maxAmmo");
+	s.layout_.startAmmo_ = get_size_t(obj, "startAmmo");
+	s.layout_.maxCooldown_ = get_size_t(obj, "maxCooldown");
 	s.layout_.maxDamage_ = get_size_t(obj, "maxDamage");
 	s.layout_.crashesPerDamage_ = get_size_t(obj, "crashesPerDamage");
 	s.layout_.numPerfDesc_ = get_size_t(obj, "numPerfDesc");
 	s.layout_.fitnessFunction_ = get_string(obj, "fitnessFunction");
-	s.layout_.hardness_ = get_double(obj, "hardness");
 
 	return s;
 }
@@ -122,7 +127,6 @@ Facility make_facility(js::Object& obj, size_t teamID, FacilityLayout fl) {
 	f.rotation_ = normRotation(get_double(obj, "rotation"));
 	f.layout_.maxCooldown_ = get_size_t(obj, "maxCooldown");
 	f.layout_.radius_ = get_size_t(obj, "radius");
-	f.layout_.range_ = get_size_t(obj, "range");
 
 	return f;
 }
@@ -157,6 +161,7 @@ void adjust_PlacerLayout(js::Object& obj, PlacerLayout& pl) {
 	pl.placer_ = get_string(obj, "placer");
 	pl.rotation_ = get_double(obj, "rotation");
 	pl.spacing_ = get_double(obj, "spacing");
+	pl.fuzz_ = get_double(obj, "fuzz");
 }
 
 JsonScenario::JsonScenario(const string& filename) :
@@ -180,7 +185,7 @@ JsonScenario::JsonScenario(const string& filename) :
 	adjust_BattleFieldLayout(bflObj, bfl_);
 	adjust_PhysicsLayout(phlObj, phl_);
 	adjust_ScannerLayout(sclObj, scl_);
-	adjust_PlacerLayout(sclObj, pl_);
+	adjust_PlacerLayout(plObj, pl_);
 
 	for (js::Value& v : teamAObj) {
 		teams_[0].push_back(make_ship(v.get_obj(), 0, pl));
@@ -192,10 +197,12 @@ JsonScenario::JsonScenario(const string& filename) :
 
 	for (js::Value& v : facAObj) {
 		teams_[0].facilities_.push_back(make_facility(v.get_obj(), 0, pl.fl_));
+		std::cerr << "facilityA" << std::endl;
 	}
 
 	for (js::Value& v : facBObj) {
 		teams_[1].facilities_.push_back(make_facility(v.get_obj(), 1, pl.fl_));
+		std::cerr << "facilityB" << std::endl;
 	}
 
 	pools_ = make_pools(2, gl);
@@ -207,8 +214,10 @@ JsonScenario::~JsonScenario() {
 void JsonScenario::configureTeams(vector<Population>& teams) {
 	scale_population(teams[0], teams_[0].size());
 	scale_population(teams[1], teams_[1].size());
-	assert(teams_[0].size() == teams[0].size());
-	assert(teams_[1].size() == teams[1].size());
+
+	teams[0].facilities_ = teams_[0].facilities_;
+	teams[1].facilities_ = teams_[1].facilities_;
+
 	for(size_t i = 0; i < teams_[0].size(); ++i) {
 		teams[0][i].layout_ = teams_[0][i].layout_;
 	}

@@ -1,7 +1,7 @@
 #ifndef _NO_VIDEOENC
 
 #include "video_encoder.hpp"
-#include <cassert>
+#include "error.hpp"
 #include <cmath>
 #include <iostream>
 
@@ -46,12 +46,12 @@ VideoEncoder::~VideoEncoder() {
 }
 
 void VideoEncoder::init(size_t width, size_t height, size_t fps, const char* filename, enum AVCodecID codec_id) {
-	assert(codec_ == NULL);
-    assert(context_ == NULL);
-    assert(frameIndex_ == 0);
-    assert(gotOutput_ == 0);
-    assert(file_ == NULL);
-    assert(yuvFrame_ == NULL);
+	CHECK(codec_ == NULL);
+	CHECK(context_ == NULL);
+	CHECK(frameIndex_ == 0);
+	CHECK(gotOutput_ == 0);
+	CHECK(file_ == NULL);
+	CHECK(yuvFrame_ == NULL);
 
     /* find the mpeg1 video encoder */
     codec_ = avcodec_find_encoder(codec_id);
@@ -174,11 +174,6 @@ Uint32 getpixel(SDL_Surface *surface, int x, int y)
 void VideoEncoder::encode(SDL_Surface *surface) {
 	if(!initialzed_)
 		return;
-	assert(codec_ != NULL);
-    assert(context_ != NULL);
-    assert(file_ != NULL);
-    assert(yuvFrame_ != NULL);
-    assert(rgbFrame_ != NULL);
 
     SDL_PixelFormat* fmt = surface->format;
     Uint8 r;
@@ -224,11 +219,6 @@ void VideoEncoder::encode(SDL_Surface *surface) {
 void VideoEncoder::close() {
 	if(!initialzed_)
 		return;
-	assert(codec_ != NULL);
-    assert(context_ != NULL);
-    assert(file_ != NULL);
-    assert(yuvFrame_ != NULL);
-    assert(rgbFrame_ != NULL);
 
     uint8_t endcode[] = { 0, 0, 1, 0xb7 };
     int ret;

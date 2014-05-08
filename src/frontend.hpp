@@ -5,14 +5,16 @@
 #include "population.hpp"
 #include "scenario.hpp"
 
+struct SDL_Surface;
+
 namespace neurocid {
 
 class BattleFieldLayout;
+class Gui;
 
-void init_full(Coord width, Coord height, size_t frameRate, BattleFieldLayout& layout);
 void init(Coord width, Coord height, size_t frameRate);
-void init_canvas(BattleFieldLayout& bfl);
-void init_gui();
+SDL_Surface* init_canvas(BattleFieldLayout& bfl);
+void init_gui(Gui* gui);
 void quit();
 
 void render();

@@ -10,6 +10,7 @@
 #include "battlefield.hpp"
 #include "bsp.hpp"
 #include "util.hpp"
+#include "error.hpp"
 
 #ifdef _GPU_KMEANS
 #include "../src/KMeans.hpp"
@@ -30,15 +31,12 @@ pair<Vector2D, Coord> ClusterScanner::findNearestCenter(const vector<Vector2D>& 
 		}
 	}
 
-//	assert(nearest != NO_VECTOR2D);
-//	assert(distance != NO_COORD);
-
 	return {nearest,distance};
 }
 
 void ClusterScanner::scanClusterCenters(Population& team, vector<Vector2D>& result, size_t numCenters) {
     size_t teamSize = team.size();
-    assert(teamSize != 0);
+    CHECK(teamSize != 0);
     if(teamSize < numCenters) {
 	    	size_t n = 0;
 	    	while(n < numCenters) {
@@ -106,8 +104,8 @@ void ClusterScanner::scanClusterCenters(Population& team, vector<Vector2D>& resu
 		KMeans km;
 		km.SetSeed(time(0));
         DeviceMatrix<float> dCenters = km.Execute(dData, numCenters);
-		assert(dCenters.Rows() == numCenters);
-		assert(dCenters.Elements() == (numCenters * 2));
+		CHECK(dCenters.Rows() == numCenters);
+		CHECK(dCenters.Elements() == (numCenters * 2));
 		HostMatrix<float> centers(dCenters);
 
 		float *pc = centers.Pointer();
@@ -118,22 +116,22 @@ void ClusterScanner::scanClusterCenters(Population& team, vector<Vector2D>& resu
 #endif
 	}
 
-	assert(result.size() == numCenters);
+	CHECK(result.size() == numCenters);
 }
 
 void ClusterScanner::prepare(BattleField& field) {
-	assert(field.teams_.size() == 2);
+	CHECK(field.teams_.size() == 2);
 	Population& teamA = field.teams_[0];
 	Population& teamB = field.teams_[1];
 
 	if(!layout_.disableClusterCenters_) {
-		assert(layout_.numClusters_ > 0);
+		CHECK(layout_.numClusters_ > 0);
 		centersA_.clear();
 		centersB_.clear();
 		scanClusterCenters(teamA, centersA_, layout_.numClusters_);
 		scanClusterCenters(teamB, centersB_, layout_.numClusters_);
-		assert(centersA_.size() == layout_.numClusters_);
-		assert(centersB_.size() == layout_.numClusters_);
+		CHECK(centersA_.size() == layout_.numClusters_);
+		CHECK(centersB_.size() == layout_.numClusters_);
 	}
 }
 

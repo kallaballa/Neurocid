@@ -2,10 +2,10 @@
 #include "battlefield.hpp"
 #include "population.hpp"
 #include "../src/lua.hpp"
+#include "error.hpp"
 #include <cstdlib>
 #include <iostream>
 #include "util.hpp"
-#include <assert.h>
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <limits>
@@ -24,7 +24,7 @@ Ship::Ship(size_t teamID, ShipLayout tl, Brain* brain) :
 }
 
 void Ship::setBrain(Brain* b) {
-	assert(brain_ == NULL);
+	CHECK(brain_ == NULL);
 	brain_ = b;
 }
 
@@ -47,7 +47,7 @@ void Ship::think(BattleFieldLayout& bfl) {
 	if(layout_.isDummy_)
 		return;
 
-	assert(brain_ != NULL);
+	CHECK(brain_ != NULL);
 	brain_->update(bfl, this->scan_);
 	brain_->run();
 }
@@ -56,7 +56,7 @@ void Ship::move(BattleFieldLayout& bfl) {
 	if(layout_.isDummy_)
 		return;
 
-	assert(brain_ != NULL);
+	CHECK(brain_ != NULL);
 	//assign the outputs
 	flthrust_ = brain_->lthrust_;
 	frthrust_ = brain_->rthrust_;
@@ -133,7 +133,7 @@ void Ship::impact(Projectile& p) {
 
 void Ship::recharged() {
 	Coord amount = (layout_.maxFuel_ - fuel_);
-	assert(amount >= 0);
+	CHECK(amount >= 0);
 	recharged_ += amount;
 	fuel_ = layout_.maxFuel_;
 	ammo_ = layout_.maxAmmo_;
@@ -148,7 +148,7 @@ void Ship::killed() {
 }
 
 Ship Ship::makeChild() const {
-	assert(brain_ != NULL);
+	CHECK(brain_ != NULL);
 	Ship child(teamID_, layout_);
 	Brain* fresh  = new Brain();
 	fresh->initialize(brain_->layout_);
@@ -157,7 +157,7 @@ Ship Ship::makeChild() const {
 }
 
 Ship Ship::clone() const {
-	assert(brain_ != NULL);
+	CHECK(brain_ != NULL);
 	Ship child(teamID_, layout_);
 	Brain* fresh  = new Brain();
 	fresh->initialize(brain_->layout_);
@@ -225,8 +225,8 @@ bool Ship::willShoot() {
 }
 
 Projectile* Ship::shoot() {
-	assert(cool_down == 0);
-	assert(ammo_ > 0);
+	CHECK(cool_down == 0);
+	CHECK(ammo_ > 0);
 	--ammo_;
 
 	cool_down = layout_.maxCooldown_;

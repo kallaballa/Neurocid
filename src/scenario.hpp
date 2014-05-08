@@ -28,6 +28,7 @@ public:
 		pl_.distance_ = 10000;
 		pl_.spacing_ = 100;
 		pl_.rotation_ = 0;
+		pl_.fuzz_ = 4;
 		pl_.placer_ = "placer/opposite";
 
 		phl_.gravity_ = {0,0};

@@ -12,8 +12,7 @@
 #include "gamestate.hpp"
 #include "canvas.hpp"
 #include "time_tracker.hpp"
-#include "gui/gui.hpp"
-#include "gui/osd.hpp"
+#include "gui.hpp"
 #include <thread>
 #include <chrono>
 #include <stddef.h>
@@ -53,8 +52,7 @@ void Renderer::render() {
 							canvas.render(*field_);
 							if(Gui::isInitalized()) {
 								Gui& gui = *Gui::getInstance();
-								OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
-								osd.update(*field_);
+								gui.update(*field_);
 								gui.logic();
 								gui.draw();
 							}
@@ -69,8 +67,7 @@ void Renderer::render() {
 							canvas.reset();
 							if(Gui::isInitalized()) {
 							Gui& gui = *Gui::getInstance();
-								OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
-								osd.update(*field_);
+								gui.update(*field_);
 								gui.logic();
 								gui.draw();
 							}

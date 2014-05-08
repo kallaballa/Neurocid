@@ -11,6 +11,7 @@
 #include "population.hpp"
 #include "history.hpp"
 #include "battlefieldlayout.hpp"
+#include "error.hpp"
 #include <map>
 
 extern "C" {
@@ -18,7 +19,6 @@ extern "C" {
 #include <lualib.h>
 #include <lauxlib.h>
 }
-
 
 namespace neurocid {
 
@@ -228,7 +228,6 @@ public:
 		lua_newtable(L_);
 	    make_field("maxCooldown", fl.maxCooldown_);
 		make_field("radius", fl.radius_);
-		make_field("range", fl.range_);
 		lua_setfield(L_, -2, "layout");
 	}
 
@@ -263,14 +262,15 @@ public:
 	    lua_setfield(L_, -2, name.c_str());
 	}
 
-	void make_spacer_layout(const PlacerLayout& sl) {
+	void make_placer_layout(const PlacerLayout& pl) {
 		lua_newtable(L_);
-	    make_vector_2d("center", sl.center_);
-		make_field("distance", sl.distance_);
-		make_field("spacing", sl.spacing_);
-		make_field("rotation", sl.rotation_);
+	    make_vector_2d("center", pl.center_);
+		make_field("distance", pl.distance_);
+		make_field("spacing", pl.spacing_);
+		make_field("rotation", pl.rotation_);
+		make_field("fuzz", pl.fuzz_);
 
-		lua_setfield(L_, -2, "sl");
+		lua_setfield(L_, -2, "pl");
 	}
 
 	void make_battlefield_layout(const BattleFieldLayout& bfl) {
@@ -294,7 +294,7 @@ public:
 
 		size_t s = lua_objlen(L_, -1);
 
-		assert(s == team.size());
+		CHECK_MSG(s == team.size(), "Only loc and rotation of ships and facilities may be changed");
 
 		for(size_t i = 1; i <= s; ++i) {
 			lua_rawgeti(L_, -1, i);
@@ -302,8 +302,7 @@ public:
 
 			lua_getfield(L_, -1, "rotation");
 			team[i-1].rotation_ = lua_tonumber(L_, -1);
-			assert(team[i-1].rotation_ <= M_PI);
-			assert(team[i-1].rotation_ >= -M_PI);
+			CHECK_MSG(team[i-1].rotation_ <= M_PI && team[i-1].rotation_ >= -M_PI, "You need to normalize rotations to -pi and pi");
 			lua_pop(L_, 1);
 
 			lua_pushstring(L_, "loc");
@@ -328,7 +327,7 @@ public:
 
 		s = lua_objlen(L_, -1);
 
-		assert(s == team.facilities_.size());
+		CHECK_MSG(s == team.facilities_.size(), "Only loc and rotation of ships and facilities may be changed");
 
 		for(size_t i = 1; i <= s; ++i) {
 			lua_rawgeti(L_, -1, i);
@@ -372,7 +371,7 @@ double run_fitness_function(const string& name, const Ship& ship, const BattleFi
 	/* Ask Lua to run our little script */
 	int result = lua_pcall(L, 0, LUA_MULTRET, 0);
 	if (result) {
-		fprintf(stderr, "Failed to run script: %s\n", lua_tostring(L, -1));
+		fprintf(stderr, "Failed to run script (%s): %s\n", name.c_str(), lua_tostring(L, -1));
 		exit(1);
 	}
 
@@ -382,13 +381,13 @@ double run_fitness_function(const string& name, const Ship& ship, const BattleFi
 	return fitness;
 }
 
-void run_placer(const string& name, vector<Population>& teams, const PlacerLayout& sl, const size_t& tick) {
+void run_placer(const string& name, vector<Population>& teams, const PlacerLayout& pl, const size_t& tick) {
 	ScriptLoader* loader = ScriptLoader::getInstance();
 	lua_State* L = loader->load(name);
 
 	lua_newtable(L); /* neurocid table */
 	loader->make_field("tick", tick);
-	loader->make_spacer_layout(sl);
+	loader->make_placer_layout(pl);
 	loader->make_population("teamA", teams[0]);
 	loader->make_population("teamB", teams[1]);
  	lua_setglobal(L, "nc");
@@ -396,7 +395,7 @@ void run_placer(const string& name, vector<Population>& teams, const PlacerLayou
 	/* Ask Lua to run our little script */
 	int result = lua_pcall(L, 0, LUA_MULTRET, 0);
 	if (result) {
-		fprintf(stderr, "Failed to run script: %s\n", lua_tostring(L, -1));
+		fprintf(stderr, "Failed to run script (%s): %s\n", name.c_str(), lua_tostring(L, -1));
 		exit(1);
 	}
 

@@ -1,4 +1,5 @@
 #include "generative_scenarios.hpp"
+#include "error.hpp"
 #include <map>
 
 namespace neurocid {
@@ -20,7 +21,6 @@ public:
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.isDummy_ = false;
 		attackerTL.canMove_ = true;
@@ -52,8 +52,6 @@ public:
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
-
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.canMove_ = false;
 		teams[0].update(attackerTL);
@@ -73,7 +71,6 @@ public:
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
 		SymmetricLines::configureTeams(teams);
 
 		ShipLayout attackerTL = teams[0][0].layout_;
@@ -96,7 +93,6 @@ public:
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
 		SymmetricLinesAttackerMove::configureTeams(teams);
 
 		ShipLayout attackerTL = teams[0][0].layout_;
@@ -228,8 +224,6 @@ public:
 	}
 
 	virtual void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
-
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.isDummy_ = false;
 		attackerTL.canMove_ = true;
@@ -250,7 +244,6 @@ public:
 	}
 
 	virtual void configurePools(vector<GeneticPool>& pools) {
-		assert(pools.size() == 2);
 		pools[1] = GeneticPool(); //dummy pool;
 	}
 };
@@ -286,8 +279,6 @@ public:
 	}
 
 	void configureTeams(vector<Population>& teams) {
-		assert(teams.size() == 2);
-
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.maxCooldown_ = 5;
 		teams[0].update(attackerTL);
@@ -344,7 +335,9 @@ void load_delarative_scenarios() {
 
 void registerScenario(const string& name, Scenario* s) {
 	auto it = registeredScenarios.find(name);
-	assert(it == registeredScenarios.end());
+	if(it != registeredScenarios.end()) {
+		error("Attempt to register an existing scenario.");
+	}
 	registeredScenarios[name] = s;
 }
 

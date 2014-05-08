@@ -2,6 +2,7 @@
 #define OSD_HPP_
 
 #include "gui.hpp"
+#include "screen.hpp"
 #include "widgets.hpp"
 #include <string>
 
@@ -9,33 +10,19 @@ namespace neurocid {
 
 using std::string;
 
-class BattleField;
-
-class OsdScreenWidget : public Container, gcn::ActionListener {
+class OsdScreenWidget : public Screen {
 	OsdWidget* osdStatistics_;
 	OsdWidget* osdTracker_;
 	OsdWidget* osdStatus_;
 	OsdWidget* osdDeadA_;
 	OsdWidget* osdDeadB_;
 
-	Container* scoreContainer;
 	OsdWidget* osdScoreA_;
 	OsdWidget* osdScoreB_;
 
 	Button* helpButton_;
-
-	static OsdScreenWidget* instance_;
-	OsdScreenWidget(Sint16 width, Sint16 height);
 public:
-	static void init(Sint16 width, Sint16 height) {
-		assert(instance_ == NULL);
-		instance_ = new OsdScreenWidget(width, height);
-	}
-
-	static OsdScreenWidget* getInstance() {
-		assert(instance_ != NULL);
-		return instance_;
-	}
+	OsdScreenWidget();
 
 	~OsdScreenWidget() {
 		delete osdStatistics_;
@@ -43,7 +30,7 @@ public:
 		delete osdStatus_;
 	}
 
-	void update(BattleField& field);
+	void update(BattleField& field) override;
 
 	void showOsdStatistics(bool s) {
 		osdStatistics_->setVisible(s);
@@ -70,6 +57,10 @@ public:
 	}
 
 	virtual void action(const gcn::ActionEvent& event);
+
+	virtual bool isForm() override {
+		return false;
+	}
 };
 
 

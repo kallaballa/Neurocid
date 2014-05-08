@@ -6,9 +6,8 @@
 #include "renderer.hpp"
 #include "game.hpp"
 #include "scenario.hpp"
-#include "gui/gui.hpp"
+#include "gui.hpp"
 #include "video_encoder.hpp"
-#include "gui/osd.hpp"
 #include "battlefieldlayout.hpp"
 
 namespace neurocid {
@@ -26,27 +25,17 @@ void init(Coord width, Coord height, size_t frameRate) {
 }
 
 //uses opts and initializes the canvas
-void init_canvas(BattleFieldLayout& bfl) {
+SDL_Surface* init_canvas(BattleFieldLayout& bfl) {
 	Canvas::init(bfl);
 	Canvas& canvas = *Canvas::getInstance();
 	canvas.enableDrawGrid(false);
 	canvas.enableDrawEngines(false);
+	return canvas.getSurface();
 }
 
-void init_gui() {
-	Canvas& canvas = *Canvas::getInstance();
+void init_gui(Gui* gui) {
 	// initialize osd overlay
-	Gui::init(canvas.getSurface());
-	OsdScreenWidget::init(canvas.width(), canvas.height());
-	Gui& gui = *Gui::getInstance();
-	OsdScreenWidget& osd = *OsdScreenWidget::getInstance();
-	gui.setScreen(&osd);
-}
-
-void init_full(Coord width, Coord height, size_t frameRate, BattleFieldLayout& bfl) {
-	init(width, height, frameRate);
-	init_canvas(bfl);
-	init_gui();
+	Gui::init(gui);
 }
 
 void quit() {

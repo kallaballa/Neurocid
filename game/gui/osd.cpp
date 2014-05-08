@@ -1,18 +1,20 @@
 #include "osd.hpp"
 #include "theme.hpp"
 #include "help.hpp"
-#include "../time_tracker.hpp"
-#include "../battlefield.hpp"
-#include "../renderer.hpp"
-#include <thread>
+#include "time_tracker.hpp"
+#include "battlefield.hpp"
+#include "renderer.hpp"
+#include "guichangui.hpp"
 
 namespace neurocid {
 
-OsdScreenWidget* OsdScreenWidget::instance_ = NULL;
-
-OsdScreenWidget::OsdScreenWidget(Sint16 width, Sint16 height) : Container(), gcn::ActionListener() {
+OsdScreenWidget::OsdScreenWidget() : Screen() {
 	setOpaque(false);
 	int fs = 0;
+	Options& opts = *Options::getInstance();
+	size_t width = opts.WINDOW_WIDTH;
+	size_t height = opts.WINDOW_HEIGHT;
+
 	setDimension(gcn::Rectangle(fs, fs, width - (fs * 2), height - (fs * 2)));
 	setFrameSize(fs);
 
@@ -126,14 +128,7 @@ void OsdScreenWidget::update(BattleField& field) {
 }
 
 void OsdScreenWidget::action(const gcn::ActionEvent& event) {
-	std::thread t([&](){
-	HelpScreen& help = *HelpScreen::getInstance();
-	Gui& gui = *Gui::getInstance();
-	Widget* top = gui.getTop();
-	gui.setTop(&help);
-	help.query();
-	gui.setTop(top);
-	});
-	t.detach();
+	GuiChanGui& gui = * static_cast<GuiChanGui*>(Gui::getInstance());
+	gui.setScreen(HELP);
 }
 } /* namespace neurocid */

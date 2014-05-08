@@ -3,6 +3,8 @@
 #include "eventloop.hpp"
 #include "generative_scenarios.hpp"
 #include "2d.hpp"
+#include "error.hpp"
+#include "gui/guichangui.hpp"
 
 #ifndef _NO_JSON
 #include "json_scenario.hpp"
@@ -93,15 +95,15 @@ int main(int argc, char** argv) {
 		// get a declarative scenario by name
 		scenario = nc::get_declarative_scenario(scenarioName);
 
-		if(scenario == NULL) {
-			std::cerr << "Unknown scenario: " + scenarioName << std::endl;
-			exit(1);
-		}
+	    CHECK_MSG(scenario != NULL, "Unknown Scenario");
     }
-    assert(scenario != NULL);
+    CHECK_MSG(scenario != NULL, "Unable to load a Scenario");
 
     //initialize all subsystems - core, canvas, gui
-    nc::init_full(width,height,frameRate, scenario->bfl_);
+    nc::init(width,height,frameRate);
+    SDL_Surface* surface = nc::init_canvas(scenario->bfl_);
+    nc::GuiChanGui* gui = new nc::GuiChanGui(surface);
+    nc::init_gui(gui);
 
     //get default layouts
     nc::PopulationLayout pl = nc::make_default_population_layout();
