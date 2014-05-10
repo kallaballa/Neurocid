@@ -13,8 +13,8 @@
 #include "gui.hpp"
 
 #include <thread>
-#include <SDL/SDL.h>
-#include <SDL/SDL_events.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_events.h>
 
 namespace neurocid {
 

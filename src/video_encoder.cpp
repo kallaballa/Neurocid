@@ -5,7 +5,7 @@
 #include <cmath>
 #include <iostream>
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavutil/opt.h>

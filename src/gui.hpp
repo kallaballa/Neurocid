@@ -1,10 +1,8 @@
 #ifndef GUI_HPP_
 #define GUI_HPP_
 
-#include <guichan.hpp>
-#include <guichan/sdl.hpp>
-#include <guichan/contrib/sdl/sdltruetypefont.hpp>
 #include <cassert>
+#include <SDL_events.h>
 
 namespace neurocid {
 
