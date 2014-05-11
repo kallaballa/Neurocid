@@ -1,5 +1,5 @@
 #include "osd.hpp"
-#include "theme.hpp"
+#include "../theme.hpp"
 #include "help.hpp"
 #include "time_tracker.hpp"
 #include "battlefield.hpp"

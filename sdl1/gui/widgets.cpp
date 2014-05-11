@@ -1,8 +1,8 @@
 #include "widgets.hpp"
-#include "theme.hpp"
+#include "../theme.hpp"
 #include <sstream>
 #include <iostream>
-
+#include <guichan/sdl/sdlgraphics.hpp>
 namespace neurocid {
 
 using std::stringstream;

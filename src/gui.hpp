@@ -2,7 +2,7 @@
 #define GUI_HPP_
 
 #include <cassert>
-#include <SDL_events.h>
+#include <stddef.h>
 
 namespace neurocid {
 
@@ -28,7 +28,6 @@ public:
 	~Gui() {
 	}
 
-	virtual void pushEvent(SDL_Event event) = 0;
 	virtual void update(BattleField& field) = 0;
 	virtual void logic() = 0;
 	virtual void draw() = 0;

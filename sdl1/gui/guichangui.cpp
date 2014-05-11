@@ -1,7 +1,7 @@
 #include "guichangui.hpp"
 #include "util.hpp"
 #include "guichan/sdl/sdlgraphics.hpp"
-#include "theme.hpp"
+#include "../theme.hpp"
 #include "screen.hpp"
 #include "osd.hpp"
 #include "help.hpp"

@@ -34,7 +34,7 @@ public:
 	}
 
 	void setScreen(ScreenID id);
-	virtual void pushEvent(SDL_Event event) override;
+	void pushEvent(SDL_Event event);
 	virtual void update(BattleField& field) override;
 
 	virtual void draw() override {

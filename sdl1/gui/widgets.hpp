@@ -3,6 +3,7 @@
 
 #include "gui.hpp"
 #include <string>
+#include <guichan.hpp>
 
 namespace neurocid {
 

@@ -4,8 +4,7 @@
 #include "generative_scenarios.hpp"
 #include "2d.hpp"
 #include "error.hpp"
-#include "gui/guichangui.hpp"
-#include "sdl/sdlcanvas.hpp"
+#include "canvas/SDL2Canvas.hpp"
 
 #ifndef _NO_JSON
 #include "json_scenario.hpp"
@@ -103,10 +102,11 @@ int main(int argc, char** argv) {
     //nc::SDLCanvas* sdlc = new nc::SDLCanvas(width,height,scenario->bfl_);
     //nc::GuiChanGui* gui = new nc::GuiChanGui(sdlc->getSurface());
 
+    nc::SDL2Canvas* sdlc = new nc::SDL2Canvas(width,height,scenario->bfl_);
     //initialize all subsystems - core, canvas, gui
     nc::init(width,height,frameRate);
-    nc::init_canvas(NULL);
-    nc::init_gui(NULL);
+    nc::init_canvas(sdlc);
+//    nc::init_gui(NULL);
 
     //get default layouts
     nc::PopulationLayout pl = nc::make_default_population_layout();

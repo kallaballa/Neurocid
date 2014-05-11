@@ -54,7 +54,6 @@ void EventLoop::process() {
 	GameState& gameState = *GameState::getInstance();
 	Canvas& canvas = *Canvas::getInstance();
 	Renderer& renderer = *Renderer::getInstance();
-	Gui& gui = *Gui::getInstance();
 
 	SDL_Event event;
 
@@ -123,18 +122,18 @@ void EventLoop::process() {
 				} else if (event.key.keysym.sym == SDLKey::SDLK_DOWN) {
 					canvas.down();
 				}
-			} else
-				gui.pushEvent(event);
+			}// else
+//				gui.pushEvent(event);
 			break;
 
 		case SDL_KEYUP:
 			if (event.key.keysym.sym != SDLKey::SDLK_ESCAPE
 					&& event.key.keysym.mod != KMOD_LCTRL)
-				gui.pushEvent(event);
+//				gui.pushEvent(event);
 			break;
 
 		default:
-			gui.pushEvent(event);
+//			gui.pushEvent(event);
 			break;
 		}
 	}

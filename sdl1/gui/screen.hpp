@@ -3,6 +3,7 @@
 
 #include "battlefield.hpp"
 #include "widgets.hpp"
+#include "guichan.hpp"
 
 namespace neurocid {
 

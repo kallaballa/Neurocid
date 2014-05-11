@@ -1,5 +1,5 @@
 #include "help.hpp"
-#include "theme.hpp"
+#include "../theme.hpp"
 #include "form.hpp"
 #include "options.hpp"
 

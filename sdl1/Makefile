@@ -4,19 +4,10 @@ ifdef JAVASCRIPT
 TARGET := neurocid-bin.html
 endif
 
-SRCS  := neurocid.cpp eventloop.cpp generative_scenarios.cpp json_scenario.cpp
-
-ifdef WITH_SDL2
-SRCS += gl/SDL2Canvas.cpp
-CXXFLAGS += `sdl2-config --cflags` `pkg-config --cflags glew glu gl` -I/usr/include/GL/
-LIBS += `sdl2-config --libs` -lSDL2_ttf `pkg-config --libs glew glu gl`
-else
-SRCS += sdl/sdlcanvas.cpp sdl/background.cpp ../guichan/src/contrib/sdl/sdltruetypefont.cpp gui/guichangui.cpp gui/help.cpp gui/osd.cpp gui/widgets.cpp theme.cpp
+SRCS  := neurocid.cpp eventloop.cpp generative_scenarios.cpp json_scenario.cpp sdl/sdlcanvas.cpp sdl/background.cpp ../guichan/src/contrib/sdl/sdltruetypefont.cpp gui/guichangui.cpp gui/help.cpp gui/osd.cpp gui/widgets.cpp theme.cpp
 CXXFLAGS += `pkg-config --cflags sdl SDL_image SDL_ttf` -I../guichan/include/
 LIBS += `pkg-config --libs sdl SDL_image SDL_ttf` -lguichan -lguichan_sdl
 LDFLAGS += -L../guichan/
-endif
-
 
 #precompiled headers
 HEADERS := 
@@ -29,6 +20,15 @@ DEPS    := ${SRCS:.cpp=.dep}
 CXXFLAGS += -I../ -I../src/ 
 LDFLAGS += -L../src/
 LIBS    += -lneurocid 
+
+
+ifdef WITHOUT_SDLGFX
+CXXFLAGS += -D_NO_SDLGFX
+else
+CXXFLAGS += `pkg-config --cflags SDL_gfx`
+LIBS +=  `pkg-config --libs SDL_gfx`
+endif
+
 
 
 .PHONY: all release debug clean distclean 

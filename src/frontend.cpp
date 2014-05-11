@@ -35,7 +35,6 @@ void init_gui(Gui* gui) {
 }
 
 void quit() {
-	SDL_Quit();
 	exit(0);
 }
 

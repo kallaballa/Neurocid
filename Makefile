@@ -1,7 +1,7 @@
 CXX      := g++
-CXXFLAGS := -fno-strict-aliasing -std=c++0x -pedantic -Wall -I../kmlocal/src/ -I../fann/src/include -I../box2d/ -I../guichan/include/ -I../LuaJIT-2.0.3/src/ `pkg-config --cflags sdl SDL_image SDL_ttf` 
-LDFLAGS  := -L/opt/local/lib -L../kmlocal/src/ -L../fann/src/ -L../box2d/Box2D -L../guichan/ -L../libnoise/lib -L../json_spirit/ -L../LuaJIT-2.0.3/src/
-LIBS     := -lklocal -lm -lfann -lguichan -lguichan_sdl -lBox2D -ljson_spirit -lluajit `pkg-config --libs sdl SDL_image SDL_ttf`
+CXXFLAGS := -fno-strict-aliasing -std=c++0x -pedantic -Wall -I../kmlocal/src/ -I../fann/src/include -I../box2d/ -I../LuaJIT-2.0.3/src/
+LDFLAGS  := -L/opt/local/lib -L../kmlocal/src/ -L../fann/src/ -L../box2d/Box2D -L../json_spirit/ -L../LuaJIT-2.0.3/src/
+LIBS     := -lklocal -lm -lfann -lBox2D -ljson_spirit -lluajit
 .PHONY: all release debian-release info debug clean debian-clean distclean 
 NVCC     := /usr/local/cuda/bin/nvcc
 NVCC_HOST_CXX := g++-4.6
@@ -28,13 +28,6 @@ WITHOUT_POOL_ALLOC=1
 WITHOUT_JSON=1
 WITHOUT_EVENTLOOP=1
 WITHOUT_SDLGFX=1
-endif
-
-ifdef WITHOUT_SDLGFX
-CXXFLAGS += -D_NO_SDLGFX
-else
-CXXFLAGS += `pkg-config --cflags SDL_gfx`
-LIBS +=  `pkg-config --libs SDL_gfx`
 endif
 
 ifdef WITHOUT_EVENTLOOP
@@ -116,20 +109,22 @@ export LIBS
 
 dirs:
 	${MAKE} -C src/ ${MAKEFLAGS} CXX=${CXX} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" ${MAKECMDGOALS}
-	${MAKE} -C game/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
+	${MAKE} -C sdl1/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
+#	${MAKE} -C sdl2/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 ifndef JAVASCRIPT
 	${MAKE} -C tests/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 endif
-#	./run.sh tests/tests
 
 debian-release:
 	${MAKE} -C src/ -${MAKEFLAGS} CXX=${CXX} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" release
-	${MAKE} -C game/ -${MAKEFLAGS} CXX=${CXX} release
+	${MAKE} -C sdl1/ -${MAKEFLAGS} CXX=${CXX} release
+	${MAKE} -C sdl2/ -${MAKEFLAGS} CXX=${CXX} release
 	${MAKE} -C tests/ -${MAKEFLAGS} CXX=${CXX} release
 
 debian-clean:
 	${MAKE} -C src/ -${MAKEFLAGS} CXX=${CXX} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" clean
-	${MAKE} -C game/ -${MAKEFLAGS} CXX=${CXX} clean
+	${MAKE} -C sdl1/ -${MAKEFLAGS} CXX=${CXX} clean
+	${MAKE} -C sdl2/ -${MAKEFLAGS} CXX=${CXX} clean
 	${MAKE} -C tests/ -${MAKEFLAGS} CXX=${CXX} clean
 
 install: ${TARGET}
@@ -142,7 +137,7 @@ install: ${TARGET}
 	cp guichan/libguichan*.so* ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
 	cp box2d/Box2D/libBox2D.so* ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
 	cp src/libneurocid.so ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
-	cp game/neurocid-bin ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
+	cp sdl1/neurocid-bin ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
 	cp -r examples/ ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
 	cp *.ttf ${DESTDIR}/${PREFIX}/${LIBDIR}/neurocid
 	mkdir -p ${DESTDIR}/${PREFIX}/bin

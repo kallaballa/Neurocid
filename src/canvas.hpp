@@ -27,6 +27,9 @@ public:
 	virtual void right() = 0;
 	virtual void up() = 0;
 	virtual void down() = 0;
+	virtual void tiltUp() = 0;
+	virtual void tiltDown() = 0;
+
 
 	virtual void update() = 0;
 	virtual void clear() = 0;

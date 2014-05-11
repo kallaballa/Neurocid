@@ -66,7 +66,7 @@ void Renderer::render() {
 							canvas.clear();
 							canvas.reset();
 							if(Gui::isInitalized()) {
-							Gui& gui = *Gui::getInstance();
+								Gui& gui = *Gui::getInstance();
 								gui.update(*field_);
 								gui.logic();
 								gui.draw();
