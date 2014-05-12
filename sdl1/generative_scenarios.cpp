@@ -188,14 +188,14 @@ public:
 		SymmetricLines::configureTeams(teams);
 
 		ShipLayout attackerTL = teams[0][0].layout_;
-		attackerTL.startFuel_ = 2000;
-		attackerTL.maxFuel_ = 10000;
+		attackerTL.startFuel_ = 3000;
+		attackerTL.maxFuel_ = 20000;
 		attackerTL.maxAmmo_ = 40;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
-		defenderTL.startFuel_ = 2000;
-		defenderTL.maxFuel_ = 10000;
+		defenderTL.startFuel_ = 3000;
+		defenderTL.maxFuel_ = 20000;
 		defenderTL.maxAmmo_ = 40;
 		teams[1].update(defenderTL);
 		multiplyTeams(teams,5);

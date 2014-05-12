@@ -144,7 +144,7 @@ void SDLCanvas::drawStar(Star& s) {
 		if(s.z_ == 0)
 			circleRGBA(screen_, Sint16(s.x), Sint16(s.y), i, s.r,s.g,s.b, round(alpha));
 		else {
-			double r = i * 1.5 * zoom_;
+			double r = i * 1.5 / zoom_ / 100;
 			if(r != lastR) {
 				auto scaled = scale(Vector2D(s.x, s.y), s.z_);
 				circleRGBA(screen_, scaled.first, scaled.second, r, s.r,s.g,s.b, round((alpha / zoom_)));
@@ -367,7 +367,7 @@ void SDLCanvas::drawGrid(BattleField& field) {
 		drawLine(0,y,field.layout_.width_,y, Theme::battleFieldGrid);
 	}
 
-	drawEllipse(Vector2D(field.layout_.width_/2, field.layout_.height_/2), 2000, 2000, Theme::battleFieldCenter);
+	drawEllipse(Vector2D(field.layout_.width_/2, field.layout_.height_/2), 20, 20, Theme::battleFieldCenter);
 }
 
 void SDLCanvas::drawCenters(Scanner& scanner) {
