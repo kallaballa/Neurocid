@@ -38,9 +38,9 @@ PopulationLayout make_default_population_layout() {
 		},
 		//BrainLayout
 		{
-			4,  // metaInputs
-			2,  // metaLayers
-			4,  // meta neurons per hidden layer
+			10,  // metaInputs
+			3,  // metaLayers
+			5,  // meta neurons per hidden layer
 		    109,// inputs
 			5,  // outputs
 			5,  // layers

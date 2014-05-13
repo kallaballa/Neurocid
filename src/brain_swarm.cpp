@@ -27,17 +27,18 @@ void sortByAngularDistance(ScanObjectVector& sorted, const ScanObjectVector& sca
 void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	parentBrain_t::update(bfl, scan);
 
-	Ship& ship = *static_cast<Ship*>(scan.object_);
-	applyMeta(0, ((ship.fuel_ / ship.layout_.maxFuel_) * 2.0) -1.0);
-	applyMeta(1, ((ship.ammo_ / ship.layout_.maxAmmo_) * 2.0) -1.0);
-	applyMeta(2, ((ship.damage_ / ship.layout_.maxDamage_) * 2.0) -1.0);
-	applyMeta(3, ((ship.cool_down / ship.layout_.maxCooldown_) * 2.0) -1.0);
-//	applyMeta(9, ship.willShoot() ? 1 : -1);
-
 	ScanObjectVector friendObj;
 	ScanObjectVector enemyObj;
 	ScanObjectVector friendFacilityObj;
 	ScanObjectVector enemyFacilityObj;
+	Coord cntFriendMag = 0;
+	Coord cntEnemyMag = 0;
+	Coord cntFFacMag = 0;
+	Coord cntEFacMag = 0;
+	Coord totalFriendMag = 0;
+	Coord totalEnemyMag = 0;
+	Coord totalFFacMag = 0;
+	Coord totalEFacMag = 0;
 
 	//sort the friendly and enemy scan objects by their angular distance
 	sortByAngularDistance(friendObj, scan.objects_, FRIEND);
@@ -50,11 +51,15 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	size_t inputCnt = 0;
 	for (ScanObject& so : friendObj) {
 		if (so.dir_ != NO_VECTOR2D) {
+
 			applyInput(inputCnt * 4, so.dir_.x_);
 			applyInput(inputCnt * 4 + 1, so.dir_.y_);
 			applyInput(inputCnt * 4 + 2, so.vel_.x_);
 			applyInput(inputCnt * 4 + 3, so.vel_.y_);
+			totalFriendMag += so.dir_.length();
+			++cntFriendMag;
 		}
+
 		++inputCnt;
 	}
 
@@ -64,6 +69,8 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 			applyInput(inputCnt * 4 + 1, so.dir_.y_);
 			applyInput(inputCnt * 4 + 2, so.vel_.x_);
 			applyInput(inputCnt * 4 + 3, so.vel_.y_);
+			totalEnemyMag += so.dir_.length();
+			++cntEnemyMag;
 		}
 		++inputCnt;
 	}
@@ -74,6 +81,8 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 			applyInput(inputCnt * 4 + 1, so.dir_.y_);
 			applyInput(inputCnt * 4 + 2, so.vel_.x_);
 			applyInput(inputCnt * 4 + 3, so.vel_.y_);
+			totalFFacMag += so.dir_.length();
+			++cntFFacMag;
 		}
 		++inputCnt;
 	}
@@ -84,6 +93,8 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 			applyInput(inputCnt * 4 + 1, so.dir_.y_);
 			applyInput(inputCnt * 4 + 2, so.vel_.x_);
 			applyInput(inputCnt * 4 + 3, so.vel_.y_);
+			totalEFacMag += so.dir_.length();
+			++cntEFacMag;
 		}
 		++inputCnt;
 	}
@@ -97,6 +108,36 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 		}
 		++inputCnt;
 	}*/
+
+	Ship& ship = *static_cast<Ship*>(scan.object_);
+	applyMeta(0, ((ship.fuel_ / ship.layout_.maxFuel_) * 2.0) -1.0);
+	applyMeta(1, ((ship.ammo_ / ship.layout_.maxAmmo_) * 2.0) -1.0);
+	applyMeta(2, ((ship.damage_ / ship.layout_.maxDamage_) * 2.0) -1.0);
+	applyMeta(3, ((ship.cool_down / ship.layout_.maxCooldown_) * 2.0) -1.0);
+
+	if(cntFriendMag)
+		applyMeta(4, (totalFriendMag / cntFriendMag) * 2 - 1);
+	else
+		applyMeta(4, 0);
+
+	if(cntEnemyMag)
+		applyMeta(5, (totalEnemyMag / cntEnemyMag) * 2 - 1);
+	else
+		applyMeta(5, 0);
+
+	if(cntFFacMag)
+		applyMeta(6, (totalFFacMag / cntFFacMag) * 2 - 1);
+	else
+		applyMeta(6, 0);
+
+	if(cntEFacMag)
+		applyMeta(7, (totalEFacMag / cntEFacMag) * 2 - 1);
+	else
+		applyMeta(7, 0);
+
+	//FIXME we need the scanner layout
+	applyMeta(8, (cntFriendMag - cntEnemyMag) / 10 );
+	applyMeta(9, (cntFFacMag - cntEFacMag) / 10 );
 
 	Vector2D vel = scan.normVel_;
 	Vector2D center = scan.normCenter_;

@@ -198,7 +198,7 @@ public:
 		defenderTL.maxFuel_ = 20000;
 		defenderTL.maxAmmo_ = 40;
 		teams[1].update(defenderTL);
-		multiplyTeams(teams,5);
+		multiplyTeams(teams,3);
 		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
 		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
 		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
