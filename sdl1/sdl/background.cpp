@@ -41,7 +41,7 @@ void Background::init(BattleFieldLayout& bfl) {
 
 	for(size_t i = 0; i < 600; i++) {
 		Star s;
-		s.z_ = 5;
+		s.z_ = 8;
 		s.x = fRand(-w,w * 1.5);
 		s.y = fRand(-h,h * 1.5);
 		s.radius = fRand(1,3);
@@ -56,7 +56,7 @@ void Background::init(BattleFieldLayout& bfl) {
 
 	for(size_t i = 0; i < 1200; i++) {
 		Star s;
-		s.z_ = 6;
+		s.z_ = 12;
 		s.x = fRand(-w,w * 1.5);
 		s.y = fRand(-h,h * 1.5);
 		s.radius = fRand(1,2);
