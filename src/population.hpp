@@ -8,8 +8,8 @@
 
 #ifndef _NO_SERIALIZE
 #include <boost/serialization/vector.hpp>
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 #endif
 
 namespace neurocid {
@@ -29,7 +29,7 @@ struct PopulationLayout {
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
-      ar & size_;
+    ar & size_;
 	  ar & tl_;
 	  ar & bl_;
 	  ar & fl_;
@@ -180,7 +180,7 @@ inline void scale_population(Population& team, size_t size) {
 
 inline void read_team(size_t teamID, Population& team, istream& is) {
 #ifndef _NO_SERIALIZE
-  boost::archive::text_iarchive ia(is);
+  boost::archive::binary_iarchive ia(is);
   ia >> team;
 
   for(Ship& s : team) {
@@ -194,7 +194,7 @@ inline void read_team(size_t teamID, Population& team, istream& is) {
 
 inline void write_team(Population& team, ostream& os) {
 #ifndef _NO_SERIALIZE
-  boost::archive::text_oarchive oa(os);
+  boost::archive::binary_oarchive oa(os);
   scale_population(team, team.layout_.size_);
   oa << team;
 #else

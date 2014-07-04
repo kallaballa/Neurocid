@@ -47,13 +47,13 @@ void Game::fight(bool render) {
 
 	tt.execute("battlefield", [&](){
 	for(size_t i = 0; (i < scenario_->bfl_.iterations_) && gs.isRunning(); ++i) {
-		auto dur = tt.measure([&]() {
+    gs.pauseBarrier(100);
+
+	  auto dur = tt.measure([&]() {
 			field.step();
 		});
 
 		if(render) {
-			while(gs.tryPause()) {};
-
 			if(gs.isSlow() && dur < 1600) {
 				std::this_thread::sleep_for(std::chrono::microseconds(1600 - dur));
 			}

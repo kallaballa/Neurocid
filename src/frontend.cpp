@@ -40,7 +40,7 @@ void quit() {
 
 void play_game(size_t gameIter, Scenario* scenario,
 		vector<Population>& teams, vector<GeneticPool>& pools,
-		const string& videoFile) {
+		const string& videoFile, long autosaveInterval) {
 	GameState& gs = *GameState::getInstance();
 	TimeTracker& tt = *TimeTracker::getInstance();
 	Options& opt = *Options::getInstance();
@@ -52,6 +52,9 @@ void play_game(size_t gameIter, Scenario* scenario,
 #endif
 	scenario->configureTeams(teams);
 	scenario->configurePools(pools);
+	if(autosaveInterval > 0) {
+	  gs.enableAutosave(autosaveInterval);
+	}
     while(gs.isRunning() && --gameIter > 0) {
             tt.execute("game", [&](){
                     Game game(scenario, teams, pools);

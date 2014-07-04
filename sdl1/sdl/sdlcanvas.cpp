@@ -44,6 +44,8 @@ SDLCanvas::SDLCanvas(Coord width, Coord height, BattleFieldLayout& bfl) :
 	}
 
 	background_.init(bfl);
+	viewPort_.ul_ = {320000,320000};
+	viewPort_.lr_ = {330000,330000};
 }
 
 SDLCanvas::~SDLCanvas() {
@@ -222,19 +224,20 @@ void SDLCanvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c, Coord
 }
 
 void SDLCanvas::drawShip(Ship& ship, Color c) {
-	Vector2D dir = ship.getDirection();
-	Vector2D tip = ship.loc_;
-    if(scale_ < 0.013)
-    	tip += dir * (ship.radius_) * 10;
-    else
-    	tip += dir * (ship.radius_) * 5;
+  Vector2D dir = ship.getDirection();
+  Vector2D tip = ship.loc_;
+  if (scale_ < 0.013)
+    tip += dir * (ship.radius_) * 10;
+  else
+    tip += dir * (ship.radius_) * 5;
 
-    drawLine(ship.loc_.x_, ship.loc_.y_, tip.x_, tip.y_ ,c);
-    if(scale_ < 0.013)
-        drawEllipse(ship.loc_, ship.radius_ / 30, ship.radius_ / 30, c);
-    else
-    	drawEllipse(ship.loc_, ship.radius_ / 100, ship.radius_/ 100, c);
-    drawLine(ship.loc_.x_, ship.loc_.y_, tip.x_, tip.y_ ,c);
+  drawLine(ship.loc_.x_, ship.loc_.y_, tip.x_, tip.y_, c);
+  if (scale_ < 0.013)
+    drawEllipse(ship.loc_, ship.radius_ / 30, ship.radius_ / 30, c);
+  else
+    drawEllipse(ship.loc_, ship.radius_ / 100, ship.radius_ / 100, c);
+
+  drawLine(ship.loc_.x_, ship.loc_.y_, tip.x_, tip.y_, c);
 
 
 	if(isDrawEliteEnabled() && ship.isElite) {
@@ -347,6 +350,13 @@ Rect SDLCanvas::findBounds(BattleField& field) {
 			max.y_ = std::max(e.loc_.y_, max.y_);
 	}
 
+	auto minT = scale(min, 1);
+  auto maxT = scale(max, 1);
+	min.x_ = minT.first;
+	min.y_ = minT.second;
+	max.x_ = maxT.first;
+	max.y_ = maxT.second;
+
 	return {min, max};
 }
 
@@ -398,8 +408,8 @@ void SDLCanvas::pushTrail(Ship& t) {
 }
 
 void SDLCanvas::render(BattleField& field) {
-	if(zoom_ == 1)
-		viewPort_ = findBounds(field);
+//	if(zoom_ == 1)
+//		viewPort_ = findBounds(field);
 	calculateScale();
 
 	if(isDrawGridEnabled())

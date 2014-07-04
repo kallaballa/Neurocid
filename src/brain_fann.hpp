@@ -12,8 +12,8 @@
 #include "battlefieldlayout.hpp"
 
 #ifndef _NO_SERIALIZE
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 #include <boost/serialization/deque.hpp>
 #endif
 

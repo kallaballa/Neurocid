@@ -22,7 +22,7 @@ void render();
 bool is_running();
 void play_game(size_t gameIter, Scenario* scenario,
 		vector<Population>& teams, vector<GeneticPool>& pools,
-		const string& videoFile);
+		const string& videoFile, long autosaveInterval);
 }
 
 #endif /* FRONTEND_HPP_ */

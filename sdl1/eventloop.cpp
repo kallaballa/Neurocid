@@ -19,34 +19,34 @@
 namespace neurocid {
 
 inline void dumpTeams() {
-	GameState& gameState = *GameState::getInstance();
-	gameState.pause();
+  GameState& gameState = *GameState::getInstance();
+  gameState.pause();
 #ifndef _NO_THREADS
-	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 #endif
-	Game* game = gameState.getCurrentGame();
-	if(game != NULL) {
-		  time_t rawtime;
-		  struct tm * timeinfo;
-		  char bufferA[80];
-		  char bufferB[80];
+  Game* game = gameState.getCurrentGame();
+  if(game != NULL) {
+      time_t rawtime;
+      struct tm * timeinfo;
+      char bufferA[80];
+      char bufferB[80];
 
-		  time (&rawtime);
-		  timeinfo = localtime(&rawtime);
+      time (&rawtime);
+      timeinfo = localtime(&rawtime);
 
-		  strftime(bufferA,80,"dumpA_%d-%m-%Y_%I:%M:%S.pop",timeinfo);
-		  strftime(bufferB,80,"dumpB_%d-%m-%Y_%I:%M:%S.pop",timeinfo);
+      strftime(bufferA,80,"dumpA_%d-%m-%Y_%I:%M:%S.pop",timeinfo);
+      strftime(bufferB,80,"dumpB_%d-%m-%Y_%I:%M:%S.pop",timeinfo);
 
-		  string filenameA(bufferA);
-		  string filenameB(bufferB);
+      string filenameA(bufferA);
+      string filenameB(bufferB);
 
-		  ofstream osa(filenameA);
-		  write_team(game->teams_[0], osa);
+      ofstream osa(filenameA);
+      write_team(game->teams_[0], osa);
 
-		  ofstream osb(filenameB);
-		  write_team(game->teams_[1], osb);
-	}
-	gameState.resume();
+      ofstream osb(filenameB);
+      write_team(game->teams_[1], osb);
+  }
+  gameState.resume();
 }
 
 void EventLoop::process() {
