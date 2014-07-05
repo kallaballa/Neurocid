@@ -118,14 +118,14 @@ int main(int argc, char** argv) {
 	//either load or create a team
     if(!loadAFile.empty()) {
     	ifstream is(loadAFile);
-    	nc::read_team(0,teams[0],is);
+    	nc::read_population(0,teams[0],is);
     } else {
     	teams[0] = nc::make_population(0, pl);
     }
 
     if(!loadBFile.empty()) {
     	ifstream is(loadBFile);
-        nc::read_team(1,teams[1],is);
+        nc::read_population(1,teams[1],is);
     } else {
         teams[1] = nc::make_population(1, pl);
     }
@@ -140,12 +140,12 @@ int main(int argc, char** argv) {
     	//save the result if requested
     	if(!saveAFile.empty()) {
         	ofstream os(saveAFile);
-        	write_team(teams[0],os);
+        	write_population(teams[0],os);
         }
 
         if(!saveBFile.empty()) {
         	ofstream os(saveBFile);
-        	write_team(teams[1],os);
+        	write_population(teams[1],os);
         }
 
         #ifndef _NO_THREADS

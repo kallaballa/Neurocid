@@ -159,7 +159,7 @@ public:
 
 /* FIXME this is a very simple and stupid scaling mechanism.
  * scenarios should avoid scaling down a lot and scenarios
- * that scale up heavily
+ * that scale up heavily need quite some time to adapt.
  */
 inline void scale_population(Population& team, size_t size) {
 	if (team.size() > size) {
@@ -178,7 +178,7 @@ inline void scale_population(Population& team, size_t size) {
 	}
 }
 
-inline void read_team(size_t teamID, Population& team, istream& is) {
+inline void read_population(size_t teamID, Population& team, istream& is) {
 #ifndef _NO_SERIALIZE
   boost::archive::binary_iarchive ia(is);
   ia >> team;
@@ -192,7 +192,7 @@ inline void read_team(size_t teamID, Population& team, istream& is) {
 #endif
 }
 
-inline void write_team(Population& team, ostream& os) {
+inline void write_population(Population& team, ostream& os) {
 #ifndef _NO_SERIALIZE
   boost::archive::binary_oarchive oa(os);
   scale_population(team, team.layout_.size_);

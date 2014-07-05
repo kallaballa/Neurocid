@@ -41,10 +41,10 @@ inline void dumpTeams() {
       string filenameB(bufferB);
 
       ofstream osa(filenameA);
-      write_team(game->teams_[0], osa);
+      write_population(game->teams_[0], osa);
 
       ofstream osb(filenameB);
-      write_team(game->teams_[1], osb);
+      write_population(game->teams_[1], osb);
   }
   gameState.resume();
 }
