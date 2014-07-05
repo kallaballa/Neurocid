@@ -21,7 +21,7 @@ Population make_population(size_t teamID, PopulationLayout& pl) {
 	Population p;
 	p.layout_ = pl;
 	for(size_t i = 0; i < pl.size_; i++) {
-		Ship t(teamID, pl.tl_);
+		Ship t(teamID, pl.sl_);
 		Brain* b = new Brain();
 		b->initialize(pl.bl_);
 		b->randomize();

@@ -8,7 +8,7 @@ PopulationLayout make_default_population_layout() {
 		20, // size_
 		//Ship Layout
 		{
-		    //Projectile Layout
+		  //Projectile Layout
 			{
 				1,    // max_speed_
 				10000, // max_travel_
@@ -33,7 +33,7 @@ PopulationLayout make_default_population_layout() {
 			5, // max_cooldown_
 			3, // max_damage_
 			1, // crashes_per_damage_
-			6,  // num_perf_desc_
+			4,  // num_perf_desc_
 			"fitness/amir" // fitnessFunction;
 		},
 		//BrainLayout
@@ -41,7 +41,7 @@ PopulationLayout make_default_population_layout() {
 			10,  // metaInputs
 			3,  // metaLayers
 			5,  // meta neurons per hidden layer
-		    109,// inputs
+		  109,// inputs
 			5,  // outputs
 			5,  // layers
 			11, // neurons per hidden layer

@@ -56,7 +56,6 @@ void GeneticPool::mutate(Brain& brain) {
  * Returns a ship base on roulette wheel sampling
  */
 Ship& GeneticPool::pickSpecimen(Population& pop) {
-	//this will be set to the chosen tank go through the tanks adding up the fitness so far
 	double minFitness = 99999999999;
 	for (size_t i = 0; i < pop.size(); ++i) {
 		minFitness = std::min(minFitness, pop[i].fitness_);
@@ -83,21 +82,22 @@ Ship& GeneticPool::pickSpecimen(Population& pop) {
  * Returns a ship base on roulette wheel sampling
  */
 Ship* GeneticPool::pickSpecimen(vector<Ship*>& pop) {
-	//FIXME reevaluate
-	CHECK(false);
-	//generate a random number between 0 & total fitness count
 	double totalFitness = 0;
+  double minFitness = 99999999999;
+
 	for(Ship* s : pop) {
-		totalFitness = s->fitness_;
+		totalFitness += s->fitness_;
+    minFitness = std::min(minFitness, s->fitness_);
 	}
 
-	double slice = (double) (fRand(0, 1) * totalFitness);
+	//generate a random number between 0 & total fitness count
+	double slice = (double) (fRand(0, totalFitness - (minFitness * pop.size())));
 
 	//this will be set to the chosen tank go through the tanks adding up the fitness so far
 	double fitnessSoFar = 0;
 
 	for (size_t i = 0; i < pop.size(); ++i) {
-		fitnessSoFar += pop[i]->fitness_;
+		fitnessSoFar += (pop[i]->fitness_ - minFitness);
 
 		//if the fitness so far > random number return the tank at this point
 		if (fitnessSoFar >= slice) {
@@ -261,7 +261,6 @@ Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl)
 		return new_pop;
 	}
 
-	//FIXME preallocate
 	Population new_pop = old_pop;
 	new_pop.clear();
 	old_pop.stats_.reset();
@@ -277,20 +276,23 @@ Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl)
 	//calculate best, worst, average and total fitness
 	calculateStatistics(old_pop);
 
-	//Now to add a little elitism we shall add in some copies of the
-	//fittest genomes. Make sure we add an EVEN number or the roulette
-	//wheel sampling will crash
-	// we don't dont copy elites if we use perf descriptors since that is already a form of elitism
-	if(layout_.numElite_ < old_pop.size()){
+	/*
+	 * Only winning teams get to have an elite by copying
+	 * some of the fittest genomes without any mutation/crossover.
+	 * Make sure we add an EVEN number or the roulette wheel sampling will crash
+	 * NOTE: we don't dont copy elites if we use perf descriptors since that is already a form of elitism
+	 */
+	if(old_pop.winner_ && !layout_.usePerfDesc_ && layout_.numElite_ < old_pop.size()){
 		if (!(layout_.numEliteCopies_ * (layout_.numElite_ % 2))) {
 			copyNBest(layout_.numElite_, layout_.numEliteCopies_, old_pop, new_pop);
 		}
 	}
 
-	CHECK(old_pop.layout_.tl_.numPerfDesc_ == 6);
-	PerfDescBsp<6,Ship> pdb;
+	CHECK(old_pop.layout_.sl_.numPerfDesc_ == 4);
+	PerfDescBsp<4,Ship> pdb;
 	if(layout_.usePerfDesc_) {
 		for(Ship& t : old_pop) {
+		  CHECK(t.perfDesc_.size() == 4);
 			pdb.insert(&t);
 		}
 	}
@@ -298,22 +300,28 @@ Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl)
 	//repeat until a new population is generated
 	while (new_pop.size() < old_pop.size()) {
 		//grab two chromosones
-
 		Ship& mum = pickSpecimen(old_pop);
 		Ship* dad;
 		if(layout_.usePerfDesc_) {
 			auto pair = pdb.findClosestMate(&mum);
 			Ship* closest = *pair.first;
 			Coord dist = pair.second;
+      if(dist < 0.1)
+        dist = 0.1;
+
 			Coord range = dist + (dist / 3);
-			if(dist < 0.1)
-				dist = 0.1;
 
 			vector<Ship*> result = pdb.findInRange(&mum, range);
-			if(result.empty()) {
+      std::cerr << "found: " << result.size() << std::endl;
+
+      for(Ship* s : result) {
+        std::cerr << s->perfDesc_[0] << '\t' << s->perfDesc_[2] << '\t' << s->perfDesc_[3] << '\t' << s->perfDesc_[4] << std::endl;
+      }
+
+      if(result.empty()) {
 				dad = closest;
 			} else {
-				std::cerr << "dist/range/size: " << dist << "/" << range << ":" << result.size() <<  std::endl;
+				std::cerr << "dist/range:" << dist << "\t" << range << std::endl;
 				std::sort(result.begin(), result.end(), [&](const Ship* s1, const Ship* s2){
 					return s1->fitness_ < s2->fitness_;
 				});

@@ -22,7 +22,7 @@ struct PopulationLayout {
 	friend class boost::serialization::access;
 #endif
 	size_t size_;
-	ShipLayout tl_;
+	ShipLayout sl_;
 	BrainLayout bl_;
 	FacilityLayout fl_;
 
@@ -30,7 +30,7 @@ struct PopulationLayout {
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
     ar & size_;
-	  ar & tl_;
+	  ar & sl_;
 	  ar & bl_;
 	  ar & fl_;
 	}

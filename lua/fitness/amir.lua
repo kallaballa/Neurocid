@@ -14,6 +14,13 @@ local projectiles = nc.ship.projectiles;
 local shots = size(projectiles);
 local fitness = 0;
 
+
+-- the following global variables are required by the c++ code and will be read to build a performance descriptor.
+hitRatio = -1;
+friendlyRatioInv = -1;
+damageRatioInv = -1;
+aimRatio = 0.0;
+
 if not layout.disableProjectileFitness then
 	for i, p in pairs(projectiles) do 
 		if size(p.scan.objects) == 0 then
@@ -65,27 +72,26 @@ end
 if shots == 0 or ratedProjectiles == 0 then
   fitness = 0;
 else
-  local aimRatio = 0.0
   if not layout.disableProjectilesFitness then
 		aimRatio = (1.0 - (totalDiff / ratedProjectiles));
 		assert(aimRatio >= 0.0);
 		assert(aimRatio <= 1.0);
 	end
 
-	local failRatio = ship.failedShots / shots;
-	local hitRatio = ship.hits / shots;
-	local rechargeRatio = ship.recharged/layout.maxFuel;
-	local friendlyRatioInv = 1.0 - ship.friendlyFire / shots;
-	local damageRatioInv = 1.0 / ((ship.damage / layout.maxDamage) + 1);
+	hitRatio = ship.hits / shots;
+	friendlyRatioInv = 1.0 - (ship.friendlyFire / shots);
+	damageRatioInv = 1.0 - (ship.damage / layout.maxDamage);
 
+  assert(aimRatio >= 0.0);
+  assert(aimRatio <= 1.0);
   assert(hitRatio >= 0.0);
   assert(hitRatio <= 1.0);
-  assert(damageRatioInv >= 0.5);
+  assert(damageRatioInv >= 0.0);
   assert(damageRatioInv <= 1.0);
   assert(friendlyRatioInv >= 0.0);
   assert(friendlyRatioInv <= 1.0);
 
-	local aim = (aimRatio / (failRatio + 1));
+	local aim = (aimRatio / (ship.failedShots + 1));
   local dealt = damageRatioInv * friendlyRatioInv;
   local inflicted = (ship.hits * 3) + (ship.kills * 6);
 	local score = inflicted * dealt

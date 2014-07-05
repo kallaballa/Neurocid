@@ -75,6 +75,13 @@ public:
 		return L_;
 	}
 
+	double get_global_number(const string& name) {
+	  lua_getglobal(L_, name.c_str());
+	  double luavar = lua_tonumber(L_,-1);
+	  lua_pop(L_,1);
+	  return luavar;
+	}
+
 	void make_field(const string& name, double d) {
 		lua_pushnumber(L_, d);
 		lua_setfield(L_, -2, name.c_str());
@@ -359,7 +366,7 @@ public:
 
 ScriptLoader* ScriptLoader::instance_ = NULL;
 
-double run_fitness_function(const string& name, const Ship& ship, const BattleFieldLayout& bfl) {
+double run_fitness_function(const string& name,  Ship& ship, const BattleFieldLayout& bfl) {
 	ScriptLoader* loader = ScriptLoader::getInstance();
 	lua_State* L = loader->load(name);
 
@@ -375,9 +382,17 @@ double run_fitness_function(const string& name, const Ship& ship, const BattleFi
 		exit(1);
 	}
 
-	/* Get the returned value at the top of the stack (index -1) */
-	double fitness = lua_tonumber(L, -1);
-	lua_pop(L, 1);
+
+  /* Get the returned value at the top of the stack (index -1) */
+  double fitness = lua_tonumber(L, -1);
+  lua_pop(L, 1);
+
+  ship.perfDesc_.clear();
+	ship.perfDesc_.push_back(loader->get_global_number("hitRatio"));
+  ship.perfDesc_.push_back(loader->get_global_number("friendlyRatioInv"));
+  ship.perfDesc_.push_back(loader->get_global_number("damageRatioInv"));
+  ship.perfDesc_.push_back(loader->get_global_number("aimRatio"));
+
 	return fitness;
 }
 

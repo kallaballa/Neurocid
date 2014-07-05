@@ -93,7 +93,7 @@ js::Array get_array(js::Object& obj, const string& name) {
 }
 
 Ship make_ship(js::Object& obj, size_t teamID, PopulationLayout pl) {
-	Ship s(teamID, pl.tl_);
+	Ship s(teamID, pl.sl_);
 	s.loc_ = get_vector2d(obj,"loc");
 	s.rotation_ = normRotation(get_double(obj, "rotation"));
 	s.layout_.isDummy_ = get_bool(obj, "isDummy");
