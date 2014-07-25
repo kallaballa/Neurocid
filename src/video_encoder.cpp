@@ -73,7 +73,7 @@ void VideoEncoder::init(size_t width, size_t height, size_t fps, const char* fil
     context_->width = width;
     context_->height = height;
     /* frames per second */
-    context_->time_base = AVRational{1,fps};
+    context_->time_base = AVRational{1,(int)fps};
     context_->gop_size = 10; /* emit one intra frame every ten frames */
     context_->max_b_frames = 1;
     context_->pix_fmt = AV_PIX_FMT_YUV420P;

@@ -48,7 +48,6 @@ void play_game(size_t gameIter, Scenario* scenario,
 		const string& videoFile, long autosaveInterval) {
 	GameState& gs = *GameState::getInstance();
 	TimeTracker& tt = *TimeTracker::getInstance();
-	Options& opt = *Options::getInstance();
 	scenario->configureTeams(teams);
 	scenario->configurePools(pools);
 
