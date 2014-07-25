@@ -5,7 +5,7 @@ local fuzz = nc.pl.fuzz;
 
 -- place A
 for i, s in pairs(nc.teamA.ships) do
-	s.loc.x = s.loc.x + fRand(-s.layout.radius * fuzz, s.layout.radius * fuzz);
+  s.loc.x = s.loc.x + fRand(-s.layout.radius * fuzz, s.layout.radius * fuzz);
   s.loc.y = s.loc.y + fRand(-s.layout.radius * fuzz, s.layout.radius * fuzz);
 end
 
