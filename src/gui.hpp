@@ -6,7 +6,7 @@
 
 namespace neurocid {
 
-struct BattleField;
+class BattleField;
 
 class Gui {
 	static Gui* instance_;
