@@ -1,7 +1,7 @@
 #include "population.hpp"
 #include "frontend.hpp"
 #include "eventloop.hpp"
-#include "generative_scenarios.hpp"
+#include "procedural_scenarios.hpp"
 #include "2d.hpp"
 #include "error.hpp"
 #include "gui/guichangui.hpp"
@@ -114,6 +114,9 @@ int main(int argc, char** argv) {
 
   nc::init_canvas(sdlc);
   nc::init_gui(gui);
+#ifndef _NO_VIDEOENC
+  nc::init_video_capture(captureFile);
+#endif
 
   //make default layouts
   nc::PopulationLayout pl = nc::make_default_population_layout();

@@ -42,6 +42,7 @@ initialzed_(false) {
 }
 
 VideoEncoder::~VideoEncoder() {
+  close();
 	delete pkt_;
 }
 

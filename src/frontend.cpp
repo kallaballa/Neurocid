@@ -29,9 +29,14 @@ void init_canvas(Canvas* canvas) {
 	Canvas::init(canvas);
 }
 
+//initialize gui overlay
 void init_gui(Gui* gui) {
-	// initialize osd overlay
 	Gui::init(gui);
+}
+
+//initialize video capturing of the game
+void init_video_capture(const string& captureFile) {
+  VideoEncoder::init(captureFile);
 }
 
 void quit() {
@@ -44,29 +49,21 @@ void play_game(size_t gameIter, Scenario* scenario,
 	GameState& gs = *GameState::getInstance();
 	TimeTracker& tt = *TimeTracker::getInstance();
 	Options& opt = *Options::getInstance();
-#ifndef _NO_VIDEOENC
-	VideoEncoder& ve = *VideoEncoder::getInstance();
-	if (!videoFile.empty())
-		ve.init(opt.WINDOW_WIDTH, opt.WINDOW_HEIGHT, opt.FRAMERATE,
-				videoFile.c_str(), AV_CODEC_ID_H264);
-#endif
 	scenario->configureTeams(teams);
 	scenario->configurePools(pools);
+
 	if(autosaveInterval > 0) {
 	  gs.enableAutosave(autosaveInterval);
 	}
-    while(gs.isRunning() && --gameIter > 0) {
-            tt.execute("game", [&](){
-                    Game game(scenario, teams, pools);
-                    gs.setCurrentGame(&game);
-                    teams = game.play(true);
-                    gs.setCurrentGame(NULL);
-            });
-    }
-#ifndef _NO_VIDEOENC
-    if (!videoFile.empty())
-		ve.close();
-#endif
+
+	while (gs.isRunning() && --gameIter > 0) {
+    tt.execute("game", [&]() {
+      Game game(scenario, teams, pools);
+      gs.setCurrentGame(&game);
+      teams = game.play(true);
+      gs.setCurrentGame(NULL);
+    });
+  }
 	gs.stop();
 }
 
@@ -79,4 +76,3 @@ void render() {
 }
 
 }
-

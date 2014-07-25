@@ -1,4 +1,4 @@
-#include "generative_scenarios.hpp"
+#include "procedural_scenarios.hpp"
 #include "error.hpp"
 #include <map>
 

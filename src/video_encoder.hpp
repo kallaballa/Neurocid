@@ -3,7 +3,11 @@
 #ifndef VIDEOENCODER_HPP_
 #define VIDEOENCODER_HPP_
 
+
+#include "options.hpp"
 #include <stdio.h>
+#include <string>
+
 extern "C" {
 #include <libavcodec/avcodec.h>
 }
@@ -36,6 +40,14 @@ public:
 			instance_ = new VideoEncoder();
 
 		return instance_;
+	}
+
+	static void init(const std::string& captureFile) {
+	  VideoEncoder& ve = *VideoEncoder::getInstance();
+	  Options& opt = *Options::getInstance();
+
+	  if (!captureFile.empty())
+	    ve.init(opt.WINDOW_WIDTH, opt.WINDOW_HEIGHT, opt.FRAMERATE, captureFile.c_str(), AV_CODEC_ID_H264);
 	}
 };
 
