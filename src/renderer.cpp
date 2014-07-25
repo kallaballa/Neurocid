@@ -23,62 +23,59 @@ namespace neurocid {
 Renderer * Renderer::instance_ = NULL;
 
 Renderer::Renderer(size_t frameRate) :
-		frameRate_(frameRate) {
+    frameRate_(frameRate) {
 }
 
 void Renderer::update(BattleField* field) {
-	updateMutex.lock();
-	field_ = field;
-	if(field_ == NULL)
-		Canvas::getInstance()->reset();
-	updateMutex.unlock();
+  updateMutex.lock();
+  field_ = field;
+  if (field_ == NULL)
+    Canvas::getInstance()->reset();
+  updateMutex.unlock();
 }
 
 void Renderer::setEnabled(bool e) {
-	if(!enabled_ && e)
-		Canvas::getInstance()->reset();
-	enabled_ = e;
+  if (!enabled_ && e)
+    Canvas::getInstance()->reset();
+  enabled_ = e;
 }
 
 void Renderer::render() {
-	size_t sleep = (size_t) round(1000 / frameRate_);
-	TimeTracker& tt = *TimeTracker::getInstance();
-	Canvas& canvas = *Canvas::getInstance();
-	size_t dur = tt.measure([&]() {
-					updateMutex.lock();
-					if(field_ != NULL) {
-						if(isEnabled()) {
-							canvas.clear();
-							canvas.render(*field_);
-							if(Gui::isInitalized()) {
-								Gui& gui = *Gui::getInstance();
-								gui.update(*field_);
-								gui.logic();
-								gui.draw();
-							}
-							canvas.update();
-#ifndef _NO_VIDEOENC
-							VideoEncoder::getInstance()->encode(Canvas::getInstance()->getSurface());
-#endif
-
-							notifiedDisable = false;
-						} else if (!notifiedDisable) {
-							canvas.clear();
-							canvas.reset();
-							if(Gui::isInitalized()) {
-								Gui& gui = *Gui::getInstance();
-								gui.update(*field_);
-								gui.logic();
-								gui.draw();
-							}
-							canvas.update();
-							notifiedDisable = true;
-						}
-					}
-					updateMutex.unlock();
-	});
-	dur/=1000;
-	if(dur < sleep)
-		std::this_thread::sleep_for(std::chrono::milliseconds(sleep - dur));
+  size_t sleep = (size_t) round(1000 / frameRate_);
+  TimeTracker& tt = *TimeTracker::getInstance();
+  Canvas& canvas = *Canvas::getInstance();
+  size_t dur = tt.measure([&]() {
+    updateMutex.lock();
+    if(field_ != NULL) {
+      if(isEnabled()) {
+        canvas.clear();
+        canvas.render(*field_);
+        if(Gui::isInitalized()) {
+          Gui& gui = *Gui::getInstance();
+          gui.update(*field_);
+          gui.logic();
+          gui.draw();
+        }
+        canvas.update();
+        VideoEncoder::getInstance()->encode(Canvas::getInstance()->getSurface());
+        notifiedDisable = false;
+      } else if (!notifiedDisable) {
+        canvas.clear();
+        canvas.reset();
+        if(Gui::isInitalized()) {
+          Gui& gui = *Gui::getInstance();
+          gui.update(*field_);
+          gui.logic();
+          gui.draw();
+        }
+        canvas.update();
+        notifiedDisable = true;
+      }
+    }
+    updateMutex.unlock();
+  });
+  dur /= 1000;
+  if (dur < sleep)
+    std::this_thread::sleep_for(std::chrono::milliseconds(sleep - dur));
 }
 } /* namespace neurocid */
