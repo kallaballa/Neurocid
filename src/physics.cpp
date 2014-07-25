@@ -238,7 +238,7 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
 }
 
 Physics::Physics(PhysicsLayout pl) :
-	world_(b2Vec2(layout_.gravity_.x, layout_.gravity_.y)),
+	world_(b2Vec2(pl.gravity_.x, pl.gravity_.y)),
 	layout_(pl) {
 	//FIXME why do we have to set the gravity after construction?
 	b2Vec2 g1 = b2Vec2(layout_.gravity_.x, layout_.gravity_.y);
