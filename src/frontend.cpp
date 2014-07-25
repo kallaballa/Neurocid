@@ -12,7 +12,7 @@
 
 namespace neurocid {
 
-void init(Coord width, Coord height, size_t frameRate) {
+void init_core(Coord width, Coord height, size_t frameRate) {
 	Options& opt = *Options::getInstance();
 	opt.WINDOW_WIDTH = width;
 	opt.WINDOW_HEIGHT = height;

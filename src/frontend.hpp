@@ -13,7 +13,7 @@ class BattleFieldLayout;
 class Gui;
 class Canvas;
 
-void init(Coord width, Coord height, size_t frameRate);
+void init_core(Coord width, Coord height, size_t frameRate);
 void init_canvas(Canvas* canvas);
 void init_gui(Gui* gui);
 void quit();
