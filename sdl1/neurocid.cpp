@@ -82,6 +82,10 @@ int main(int argc, char** argv) {
   }
 
   srand(time(0));
+  /* Let's load the scenario.
+   * Either we load a hard coded (procedural) scenario
+   * or if a filename is given we load a json scenario
+   */
 #else
   scenarioName = "SymmetricLinesFar";
 #endif
@@ -93,25 +97,29 @@ int main(int argc, char** argv) {
     scenario = new nc::json::JsonScenario(scenarioName);
 #endif
   } else {
-    nc::load_delarative_scenarios();
+    // this has to be done once before trying to access procedural scenarios.
+    nc::load_procedural_scenarios();
     // get a declarative scenario by name
-    scenario = nc::get_declarative_scenario(scenarioName);
+    scenario = nc::get_procedural_scenario(scenarioName);
 
     CHECK_MSG(scenario != NULL, "Unknown Scenario");
   }
   CHECK_MSG(scenario != NULL, "Unable to load a Scenario");
 
-  //initialize all subsystems - core, canvas, gui
-  nc::init(width, height, frameRate);
+  //initialize frontend subsystems subsystems - core, canvas, gui
+  nc::init_core(width, height, frameRate);
+
   nc::SDLCanvas* sdlc = new nc::SDLCanvas(width, height, scenario->bfl_);
   nc::GuiChanGui* gui = new nc::GuiChanGui(sdlc->getSurface());
 
   nc::init_canvas(sdlc);
   nc::init_gui(gui);
 
-  //get default layouts
+  //make default layouts
   nc::PopulationLayout pl = nc::make_default_population_layout();
   nc::GeneticLayout gl = nc::make_default_genetic_layout();
+
+  //make default genetic pools
   vector<nc::GeneticPool> pools = nc::make_pools(2, gl);
 
   vector<nc::Population> teams(2);
