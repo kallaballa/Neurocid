@@ -5,13 +5,16 @@
  *      Author: elchaschab
  */
 
+#ifndef _NO_JSON
 #include "json_scenario.hpp"
+#endif
 #include "error.hpp"
 
 namespace neurocid {
 
 namespace json {
 
+#ifndef _NO_JSON
 size_t get_size_t(js::Object& obj, const string& name) {
 	  for(js::Pair& p : obj) {
 		  if(p.name_ == name)
@@ -60,7 +63,7 @@ Vector2D get_vector2d(js::Object& obj, const string& name) {
 	  for(js::Pair& p : obj) {
 		  if(p.name_ == name) {
 			  js::Array& arr = p.value_.get_array();
-			  CHECK_MSG(arr.size() == 2, "Invalid json structure");
+			  CHECK_MSG(arr.size() == 2, "Invalid vector2d");
 			  return Vector2D(arr[0].get_real(), arr[1].get_real());
 		  }
 	  }
@@ -228,6 +231,6 @@ void JsonScenario::configureTeams(vector<Population>& teams) {
 
 	JsonPlacer(teams_).place(teams);
 }
-
+#endif
 }
 }
