@@ -77,15 +77,16 @@ endif
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Darwin)
- LDFLAGS += -L/opt/X11/lib/ -pagezero_size 10000 -image_base 100000000
- CXXFLAGS += —stdlib=c++ 
+ LDFLAGS += -L/opt/X11/lib/
 else
  CXXFLAGS += -march=native
 endif
 
 all: release
 
+ifeq ($(UNAME_S), Darwin)
 release: LDFLAGS += -s
+endif
 release: CXXFLAGS += -g0 -O3
 release: dirs
 
@@ -102,7 +103,9 @@ profile: LDFLAGS += -Wl,--export-dynamic -rdynamic
 profile: dirs
 
 hardcore: CXXFLAGS += -g0 -Ofast -DNDEBUG
+ifeq ($(UNAME_S), Darwin)
 hardcore: LDFLAGS += -s
+endif
 hardcore: dirs
 
 clean: dirs
