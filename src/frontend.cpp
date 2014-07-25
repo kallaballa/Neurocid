@@ -36,11 +36,16 @@ void init_gui(Gui* gui) {
 
 //initialize video capturing of the game
 void init_video_capture(const string& captureFile) {
+#ifndef _NO_VIDEOENC
   VideoEncoder::init(captureFile);
+#endif
 }
 
 void quit() {
-	exit(0);
+#ifndef _NO_VIDEOENC
+  VideoEncoder::getInstance()->close();
+#endif
+  exit(0);
 }
 
 void play_game(size_t gameIter, Scenario* scenario,

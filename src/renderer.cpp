@@ -50,6 +50,7 @@ void Renderer::render() {
       if(isEnabled()) {
         canvas.clear();
         canvas.render(*field_);
+
         if(Gui::isInitalized()) {
           Gui& gui = *Gui::getInstance();
           gui.update(*field_);
@@ -57,7 +58,9 @@ void Renderer::render() {
           gui.draw();
         }
         canvas.update();
+#ifndef _NO_VIDEOENC
         VideoEncoder::getInstance()->encode(Canvas::getInstance()->getSurface());
+#endif
         notifiedDisable = false;
       } else if (!notifiedDisable) {
         canvas.clear();
