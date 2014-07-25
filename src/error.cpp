@@ -6,17 +6,19 @@
  */
 
 #include "error.hpp"
-
+#ifndef _NO_STACKTRACE
 #include <stdio.h>
 #include <stdlib.h>
 #include <execinfo.h>
 #include <cxxabi.h>
+#endif
 
 namespace neurocid {
 
 /** Print a demangled stack backtrace of the caller function to FILE* out. */
 void print_stacktrace(FILE *out, unsigned int max_frames)
 {
+#ifndef _NO_STACKTRACE
     fprintf(out, "stack trace:\n");
 
     // storage array for stack trace address data
@@ -97,6 +99,7 @@ void print_stacktrace(FILE *out, unsigned int max_frames)
     free(funcname);
     free(symbollist);
 		delete[] addrlist;
+#endif
 }
 
 } /* namespace tankwar */
