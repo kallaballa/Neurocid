@@ -91,9 +91,9 @@ int main(int argc, char** argv) {
     	scenario = new nc::json::JsonScenario(scenarioName);
 #endif
     } else {
-		nc::load_delarative_scenarios();
+		nc::load_procedural_scenarios();
 		// get a declarative scenario by name
-		scenario = nc::get_declarative_scenario(scenarioName);
+		scenario = nc::get_procedural_scenario(scenarioName);
 
 	    CHECK_MSG(scenario != NULL, "Unknown Scenario");
     }
@@ -104,7 +104,7 @@ int main(int argc, char** argv) {
 
     nc::SDL2Canvas* sdlc = new nc::SDL2Canvas(width,height,scenario->bfl_);
     //initialize all subsystems - core, canvas, gui
-    nc::init(width,height,frameRate);
+    nc::init_core(width,height,frameRate);
     nc::init_canvas(sdlc);
 //    nc::init_gui(NULL);
 
