@@ -47,6 +47,7 @@ VideoEncoder::~VideoEncoder() {
 }
 
 void VideoEncoder::init(size_t width, size_t height, size_t fps, const char* filename, enum AVCodecID codec_id) {
+#ifndef _NO_VIDEOENC
 	CHECK(codec_ == NULL);
 	CHECK(context_ == NULL);
 	CHECK(frameIndex_ == 0);
@@ -138,6 +139,7 @@ void VideoEncoder::init(size_t width, size_t height, size_t fps, const char* fil
     pkt_->size = 0;
 	fflush(stdout);
 	initialzed_ = true;
+#endif
 }
 
 
@@ -173,6 +175,7 @@ Uint32 getpixel(SDL_Surface *surface, int x, int y)
 }
 
 void VideoEncoder::encode(SDL_Surface *surface) {
+#ifndef _NO_VIDEOENC
 	if(!initialzed_)
 		return;
 
@@ -215,9 +218,11 @@ void VideoEncoder::encode(SDL_Surface *surface) {
 		av_free_packet(pkt_);
 	}
 	++frameIndex_;
+#endif
 }
 
 void VideoEncoder::close() {
+#ifndef _NO_VIDEOENC
 	if(!initialzed_)
 		return;
 
@@ -256,6 +261,7 @@ void VideoEncoder::close() {
     yuvFrame_=NULL;
     rgbFrame_=NULL;
     initialzed_ = false;
+#endif
 }
 } /* namespace neurocid */
 
