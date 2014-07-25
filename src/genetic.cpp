@@ -312,16 +312,16 @@ Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl)
 			Coord range = dist + (dist / 3);
 
 			vector<Ship*> result = pdb.findInRange(&mum, range);
-      std::cerr << "found: " << result.size() << std::endl;
+      /*std::cerr << "found: " << result.size() << std::endl;
 
       for(Ship* s : result) {
         std::cerr << s->perfDesc_[0] << '\t' << s->perfDesc_[2] << '\t' << s->perfDesc_[3] << '\t' << s->perfDesc_[4] << std::endl;
-      }
+      }*/
 
       if(result.empty()) {
 				dad = closest;
 			} else {
-				std::cerr << "dist/range:" << dist << "\t" << range << std::endl;
+				//std::cerr << "dist/range:" << dist << "\t" << range << std::endl;
 				std::sort(result.begin(), result.end(), [&](const Ship* s1, const Ship* s2){
 					return s1->fitness_ < s2->fitness_;
 				});
