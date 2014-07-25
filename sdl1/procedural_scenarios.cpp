@@ -310,7 +310,7 @@ void multiplyTeams(vector<Population>& teams, size_t n) {
 	teams[1] = newB;
 }
 
-Scenario* get_declarative_scenario(const string& name) {
+Scenario* get_procedural_scenario(const string& name) {
 	auto it = registeredScenarios.find(name);
 	if (it == registeredScenarios.end())
 		return NULL;
@@ -318,7 +318,7 @@ Scenario* get_declarative_scenario(const string& name) {
 		return (*it).second;
 }
 
-void load_delarative_scenarios() {
+void load_procedural_scenarios() {
 	registerScenario("AimOnOneNoMove", new AimOnOneNoMove());
 	registerScenario("AimOnOne", new AimOnOne());
 	registerScenario("SymmetricLines", new SymmetricLines());

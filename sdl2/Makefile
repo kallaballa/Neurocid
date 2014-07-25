@@ -4,7 +4,7 @@ ifdef JAVASCRIPT
 TARGET := neurocid-bin.html
 endif
 
-SRCS  := neurocid.cpp eventloop.cpp generative_scenarios.cpp json_scenario.cpp canvas/SDL2Canvas.cpp
+SRCS  := neurocid.cpp eventloop.cpp procedural_scenarios.cpp json_scenario.cpp canvas/SDL2Canvas.cpp
 CXXFLAGS += `sdl2-config --cflags` `pkg-config --cflags glew glu gl` -I/usr/include/GL/
 LIBS += `sdl2-config --libs` -lSDL2_ttf `pkg-config --libs glew glu gl`
 
