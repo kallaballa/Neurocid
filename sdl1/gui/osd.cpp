@@ -53,7 +53,7 @@ OsdScreenWidget::OsdScreenWidget() : Screen() {
     osdStatus_->setPosition(20, height - 38);
 
     helpButton_ = new Button("Help");
-    helpButton_->setDimension({width - 70,height - 40, 50, 25});
+    helpButton_->setDimension({(int)width - 70,(int)height - 40, 50, 25});
     helpButton_->addActionListener(this);
 
     add(osdStatistics_);
