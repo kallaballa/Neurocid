@@ -31,6 +31,11 @@ WITHOUT_EVENTLOOP=1
 WITHOUT_SDLGFX=1
 endif
 
+ifdef X86
+CXXFLAGS += -m32
+LDFLAGS += -L/usr/lib -m32
+endif 
+
 ifdef WITHOUT_STACKTRACE
 CXXFLAGS += -D_NO_STACKTRACE
 endif
@@ -84,7 +89,7 @@ endif
 
 all: release
 
-ifeq ($(UNAME_S), Darwin)
+ifneq ($(UNAME_S), Darwin)
 release: LDFLAGS += -s
 endif
 release: CXXFLAGS += -g0 -O3
