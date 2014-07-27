@@ -33,7 +33,16 @@ endif
 
 ifdef X86
 CXXFLAGS += -m32
-LDFLAGS += -L/usr/lib -m32
+LDFLAGS += -L/usr/lib -m32 
+endif
+
+ifdef STATIC
+LDFLAGS += -static-libgcc -Wl,-Bstatic
+endif
+
+ifdef X86
+CXXFLAGS += -m32
+LDFLAGS += -L/usr/lib -static-libgcc -m32 -Wl,-Bstatic
 endif 
 
 ifdef WITHOUT_STACKTRACE
