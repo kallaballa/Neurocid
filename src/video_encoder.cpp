@@ -19,10 +19,6 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
-#define INBUF_SIZE 4096
-#define AUDIO_INBUF_SIZE 20480
-#define AUDIO_REFILL_THRESH 4096
-
 namespace neurocid {
 
 VideoEncoder* VideoEncoder::instance_ = NULL;
