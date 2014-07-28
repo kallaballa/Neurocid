@@ -26,14 +26,25 @@ using std::deque;
 
 struct BrainStatistics {
 	deque<size_t> switches_;
-	size_t numGameSwitches_ = 0;
 
 	void recordBrainSwitch(size_t index) {
-		numGameSwitches_ = 0;
 		switches_.push_back(index);
 		if(switches_.size() > 10000)
 			switches_.pop_front();
 	}
+
+	size_t countSwitches() {
+	  size_t s = 0;
+	  size_t last_bi = 0;
+	  for(size_t bi : switches_) {
+	    if(last_bi != bi)
+	      ++s;
+	    else
+	      last_bi = bi;
+	  }
+	  return s;
+	}
+
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {

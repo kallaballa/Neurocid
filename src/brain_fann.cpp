@@ -100,7 +100,7 @@ void BrainFann::destroy() {
 
 void BrainFann::reset() {
 	lastBrain_ = 0;
-	brainStats_.numGameSwitches_ = 0;
+	brainStats_.switches_.clear();
 	CHECK(metaInputs_ != NULL);
 	CHECK(inputs_ != NULL);
 
