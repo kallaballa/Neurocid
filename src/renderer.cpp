@@ -64,13 +64,13 @@ void Renderer::render() {
 #ifndef _NO_VIDEOENC
         VideoEncoder::getInstance()->encode(Canvas::getInstance()->getSurface());
 #endif
-        resetCanvas_ = false;
-      } else if (!resetCanvas_) {
+        resetCanvas_ = true;
+      } else if (resetCanvas_) {
         canvas.clear();
         canvas.reset();
         renderGui();
         canvas.update();
-        resetCanvas_ = true;
+        resetCanvas_ = false;
       }
     }
     updateMutex_.unlock();
