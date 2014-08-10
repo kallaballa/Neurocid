@@ -6,6 +6,7 @@
 #include "genetic.hpp"
 #include "physics.hpp"
 #include "scenario.hpp"
+#include "battlefield.hpp"
 #include <ctime>
 #include <vector>
 #include <stddef.h>
@@ -29,9 +30,14 @@ public:
 	vector<Population>& teams_;
 	vector<Population> newTeams_;
 	vector<GeneticPool>& pools_;
+  BattleField* field_;
+  size_t steps_;
 
 	Game(Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools);
 	~Game();
+	void start();
+	vector<Population> finish();
+	bool step(bool render);
 	vector<Population> play(bool render);
 };
 

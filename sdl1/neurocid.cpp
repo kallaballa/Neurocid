@@ -172,7 +172,6 @@ int main(int argc, char** argv) {
     }
   });
 
-  //rendering loop. needs to be in the main thread!
   while (neurocid::is_running()) {
     neurocid::render();
   }
