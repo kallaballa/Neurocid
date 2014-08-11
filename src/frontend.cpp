@@ -45,8 +45,8 @@ void destroy() {
   GameState::getInstance()->stop();
 #ifndef _NO_VIDEOENC
   VideoEncoder::getInstance()->close();
-#endif
   VideoEncoder::destroy();
+#endif
   Options::destroy();
   GameState::destroy();
   TimeTracker::destroy();
