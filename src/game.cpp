@@ -172,14 +172,12 @@ void Game::print() {
 void Game::start(){
   TimeTracker& tt = *TimeTracker::getInstance();
 
-  size_t dur = tt.measure([&]() {
-    tt.execute("game", "prepare", [&]() {
-      prepare();
-    });
+  tt.execute("game", "prepare", [&]() {
+    prepare();
+  });
 
-    tt.execute("game", "place", [&]() {
-      place();
-    });
+  tt.execute("game", "place", [&]() {
+    place();
   });
 
   field_ =  new BattleField(scenario_, teams_);
@@ -189,22 +187,20 @@ vector<Population> Game::finish(){
   TimeTracker& tt = *TimeTracker::getInstance();
   Renderer::getInstance()->update(NULL);
 
-  size_t dur = tt.measure([&]() {
-    tt.execute("game", "score", [&]() {
-      score();
-    });
+  tt.execute("game", "score", [&]() {
+    score();
+  });
 
-    tt.execute("game", "mate", [&]() {
-      mate();
-    });
+  tt.execute("game", "mate", [&]() {
+    mate();
+  });
 
-    tt.execute("game", "print", [&]() {
-      print();
-    });
+  tt.execute("game", "print", [&]() {
+    print();
+  });
 
-    tt.execute("game", "cleanup", [&]() {
-      cleanup();
-    });
+  tt.execute("game", "cleanup", [&]() {
+    cleanup();
   });
 
   delete field_;

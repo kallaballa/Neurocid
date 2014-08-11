@@ -51,6 +51,13 @@ public:
 	    ve.init(opt.WINDOW_WIDTH, opt.WINDOW_HEIGHT, opt.FRAMERATE, captureFile.c_str(), AV_CODEC_ID_H264);
 	}
 #endif
+
+  static void destroy() {
+    if(instance_)
+      delete instance_;
+
+    instance_ = NULL;
+  }
 };
 
 } /* namespace neurocid */

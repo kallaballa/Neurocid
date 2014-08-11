@@ -41,10 +41,22 @@ void init_video_capture(const string& captureFile) {
 #endif
 }
 
-void quit() {
+void destroy() {
+  GameState::getInstance()->stop();
 #ifndef _NO_VIDEOENC
   VideoEncoder::getInstance()->close();
 #endif
+  VideoEncoder::destroy();
+  Options::destroy();
+  GameState::destroy();
+  TimeTracker::destroy();
+  Canvas::destroy();
+  Gui::destroy();
+  Renderer::destroy();
+}
+
+void quit() {
+  destroy();
   exit(0);
 }
 

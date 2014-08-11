@@ -25,7 +25,14 @@ public:
 		return instance_;
 	}
 
-	~Gui() {
+  static void destroy() {
+    if(instance_)
+      delete instance_;
+
+    instance_ = NULL;
+  }
+
+	virtual ~Gui() {
 	}
 
 	virtual void update(BattleField& field) = 0;

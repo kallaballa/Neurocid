@@ -24,6 +24,13 @@ public:
 			instance_ = new Options();
 		return instance_;
 	}
+
+  static void destroy() {
+    if(instance_)
+      delete instance_;
+
+    instance_ = NULL;
+  }
 };
 
 } /* namespace neurocid */

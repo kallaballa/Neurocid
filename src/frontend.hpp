@@ -17,6 +17,7 @@ void init_core(Coord width, Coord height, size_t frameRate);
 void init_canvas(Canvas* canvas);
 void init_gui(Gui* gui);
 void init_video_capture(const string& captureFile);
+void destroy();
 void quit();
 
 void render();
