@@ -238,7 +238,7 @@ bool Game::step(bool render) {
   }
 
   ++steps_;
-  if (steps_ >= scenario_->bfl_.iterations_ || !gs.isRunning())
+  if (steps_ >= scenario_->bfl_.iterations_ || !gs.isRunning() || (teams_[0].isDead() || teams_[1].isDead()))
     return false;
   else
     return true;
