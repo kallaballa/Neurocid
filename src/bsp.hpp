@@ -1,6 +1,7 @@
 #ifndef BSB_H_
 #define BSB_H_
 
+#include "error.hpp"
 #include "object.hpp"
 #include <kdtree++/kdtree.hpp>
 
@@ -38,7 +39,7 @@ public:
 		auto result = this->find_nearest_if(t, std::numeric_limits<Coord>().max(), [&](Tunit* candidate) {
 			return candidate != t;
 		});
-		assert(t != (*result.first));
+		CHECK(t != (*result.first));
 
 		return result;
 	}

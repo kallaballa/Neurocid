@@ -10,7 +10,6 @@
 #include <ctime>
 #include <vector>
 #include <stddef.h>
-#include <cassert>
 
 namespace neurocid {
 

@@ -9,6 +9,7 @@
 #define SCAN_HPP_
 
 #include "2d.hpp"
+#include "error.hpp"
 #include <vector>
 
 namespace neurocid {
@@ -35,7 +36,7 @@ inline void scale(Vector2D& v, const Coord& distance, const Coord& maxDistance) 
 
 	v.x_ *= scale;
 	v.y_ *= scale;
-	assert(v.x_ >= -1 && v.x_ <= 1 && v.y_ >= -1 && v.y_ <= 1);
+	CHECK(v.x_ >= -1 && v.x_ <= 1 && v.y_ >= -1 && v.y_ <= 1);
 }
 
 class Scan;

@@ -5,6 +5,7 @@
 #include <iostream>
 #include "ship.hpp"
 #include "facility.hpp"
+#include "error.hpp"
 
 #ifndef _NO_SERIALIZE
 #include <boost/serialization/vector.hpp>
@@ -188,7 +189,7 @@ inline void read_population(size_t teamID, Population& team, istream& is) {
   }
   scale_population(team, team.layout_.size_);
 #else
-  assert(false);
+  CHECK(false);
 #endif
 }
 
@@ -198,7 +199,7 @@ inline void write_population(Population& team, ostream& os) {
   scale_population(team, team.layout_.size_);
   oa << team;
 #else
-  assert(false);
+  CHECK(false);
 #endif
 }
 }

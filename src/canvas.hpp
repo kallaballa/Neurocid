@@ -41,12 +41,12 @@ public:
 	virtual SDL_Surface* getSurface() const = 0;
 
 	static void init(Canvas* canvas) {
-		assert(instance_ == NULL);
+		CHECK(instance_ == NULL);
 		instance_ = canvas;
 	}
 
 	static Canvas* getInstance() {
-		assert(instance_ != NULL);
+		CHECK(instance_ != NULL);
 		return instance_;
 	}
 

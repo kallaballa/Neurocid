@@ -4,7 +4,6 @@
 #include "error.hpp"
 #include <cmath>
 #include <iostream>
-#include <cassert>
 
 #include <SDL2/SDL.h>
 extern "C" {

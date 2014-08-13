@@ -15,6 +15,9 @@
 
 namespace neurocid {
 
+std::function<void(const std::string& msg)> ErrorHandler::delegate_;
+bool ErrorHandler::initialized_ = false;
+
 /** Print a demangled stack backtrace of the caller function to FILE* out. */
 void print_stacktrace(FILE *out, unsigned int max_frames)
 {

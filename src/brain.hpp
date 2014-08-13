@@ -4,7 +4,6 @@
 #include <fann.h>
 #include "2d.hpp"
 #include <memory>
-#include <assert.h>
 #include <vector>
 #include "scan.hpp"
 

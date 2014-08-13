@@ -1,7 +1,7 @@
 #ifndef GUI_HPP_
 #define GUI_HPP_
 
-#include <cassert>
+#include "error.hpp"
 #include <stddef.h>
 
 namespace neurocid {
@@ -12,7 +12,7 @@ class Gui {
 	static Gui* instance_;
 public:
 	static void init(Gui* gui) {
-		assert(instance_ == NULL);
+		CHECK(instance_ == NULL);
 		instance_ = gui;
 	}
 
@@ -21,7 +21,7 @@ public:
 	}
 
 	static Gui* getInstance() {
-		assert(instance_ != NULL);
+	  CHECK(instance_ != NULL);
 		return instance_;
 	}
 

@@ -89,6 +89,10 @@ int main(int argc, char** argv) {
 #else
   scenarioName = "SymmetricLinesFar";
 #endif
+
+  //initialize frontend subsystems subsystems - core, canvas, gui
+  nc::init_core(width, height, frameRate);
+
   string suffix = ".nsj";
   nc::Scenario* scenario = NULL;
 
@@ -106,8 +110,6 @@ int main(int argc, char** argv) {
   }
   CHECK_MSG(scenario != NULL, "Unable to load a Scenario");
 
-  //initialize frontend subsystems subsystems - core, canvas, gui
-  nc::init_core(width, height, frameRate);
 
   nc::SDLCanvas* sdlc = new nc::SDLCanvas(width, height, scenario->bfl_);
   nc::GuiChanGui* gui = new nc::GuiChanGui(sdlc->getSurface());

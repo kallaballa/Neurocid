@@ -1,3 +1,4 @@
+#include "error.hpp"
 #include "options.hpp"
 #include "gamestate.hpp"
 #include "canvas.hpp"
@@ -12,8 +13,9 @@
 
 namespace neurocid {
 
-void init_core(Coord width, Coord height, size_t frameRate) {
-	Options& opt = *Options::getInstance();
+void init_core(Coord width, Coord height, size_t frameRate, std::function<void(const string& msg)> errorDelegate) {
+  ErrorHandler::init(errorDelegate);
+  Options& opt = *Options::getInstance();
 	opt.WINDOW_WIDTH = width;
 	opt.WINDOW_HEIGHT = height;
 	opt.FRAMERATE = frameRate;

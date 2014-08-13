@@ -2,10 +2,10 @@
 #define TWD_HPP_
 
 #define _USE_MATH_DEFINES
+#include "error.hpp"
 #include <stdint.h>
 #include <math.h>
 #include <iostream>
-#include <cassert>
 #include <limits>
 #ifndef _NO_SERIALIZE
 #include <boost/archive/binary_iarchive.hpp>
@@ -15,8 +15,8 @@
 namespace neurocid {
 typedef double Coord;
 
-#define ASSERT_LOC(V) assert(V.x_ != NO_COORD && V.y_ != NO_COORD);
-#define ASSERT_DIR(V) assert(V.x_ >= -1 && V.x_ <= 1 && V.y_ >= -1 && V.y_ <= 1);
+#define ASSERT_LOC(V) CHECK(V.x_ != NO_COORD && V.y_ != NO_COORD);
+#define ASSERT_DIR(V) CHECK(V.x_ >= -1 && V.x_ <= 1 && V.y_ >= -1 && V.y_ <= 1);
 
 struct Vector2D {
 #ifndef _NO_SERIALIZE
@@ -75,8 +75,8 @@ struct Vector2D {
 	}
 
 	Vector2D& normalize(Coord w, Coord h) {
- 		assert(w > 0);
-		assert(h > 0);
+ 		CHECK(w > 0);
+		CHECK(h > 0);
 
 		Coord ox = this->x_;
 		Coord oy = this->y_;
@@ -86,8 +86,8 @@ struct Vector2D {
 
 		if(!(this->x_ >= -1 && this->x_ <= 1 && this->y_ >= -1 && this->y_ <= 1))
 			std::cerr << "normalize error: " << "(" << ox << "," << oy << ") -> " << "(" << this->x_ << "," << this->y_ << ")" << std::endl;
-		assert(this->x_ >= -1 && this->x_ <= 1);
-		assert(this->y_ >= -1 && this->y_ <= 1);
+		CHECK(this->x_ >= -1 && this->x_ <= 1);
+		CHECK(this->y_ >= -1 && this->y_ <= 1);
 
 		return *this;
 	}
@@ -172,8 +172,8 @@ inline Vector2D operator-(const Vector2D &lhs, const Vector2D &rhs) {
 }
 
 inline Vector2D dirFromRad(const Coord rad) {
-	assert(rad <= M_PI);
-	assert(rad >= -M_PI);
+	CHECK(rad <= M_PI);
+	CHECK(rad >= -M_PI);
 
 	return Vector2D(sin(rad), -cos(rad));
 }
@@ -184,8 +184,8 @@ inline Vector2D dirFromDeg(const Coord degrees) {
 
 inline Coord radFromDir(const Vector2D dir) {
 	Coord r = atan2(dir.x_, -dir.y_);
-	assert(r <= M_PI);
-	assert(r >= -M_PI);
+	CHECK(r <= M_PI);
+	CHECK(r >= -M_PI);
 	return r;
 }
 
