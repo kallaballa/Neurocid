@@ -1,12 +1,12 @@
 #ifndef GAMESTATE_HPP_
 #define GAMESTATE_HPP_
 
+#include "error.hpp"
 #include <stddef.h>
 #include <thread>
 #include <chrono>
 #include <iostream>
 #include <mutex>
-#include <cassert>
 
 namespace neurocid {
 
@@ -52,7 +52,7 @@ public:
 
 	//FIXME implement disabling autosave
 	void enableAutosave(long intervalMinutes) {
-	  assert(intervalMinutes > 0);
+	  CHECK(intervalMinutes > 0);
 	  autosaveInterval_ = std::chrono::minutes(intervalMinutes);
 	  if(!enableAutosave_) {
 	    enableAutosave_ = true;
@@ -102,6 +102,13 @@ public:
 			instance_ = new GameState();
 		return instance_;
 	}
+
+  static void destroy() {
+    if(instance_)
+      delete instance_;
+
+    instance_ = NULL;
+  }
 
 	void setCurrentGame(Game* g);
 	Game* getCurrentGame();

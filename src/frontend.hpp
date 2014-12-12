@@ -13,10 +13,11 @@ class BattleFieldLayout;
 class Gui;
 class Canvas;
 
-void init_core(Coord width, Coord height, size_t frameRate);
+void init_core(Coord width, Coord height, size_t frameRate, std::function<void(const string& msg)> errorDelegate = default_error_delegate);
 void init_canvas(Canvas* canvas);
 void init_gui(Gui* gui);
 void init_video_capture(const string& captureFile);
+void destroy();
 void quit();
 
 void render();

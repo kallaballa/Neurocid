@@ -130,6 +130,13 @@ public:
 
 		return instance_;
 	}
+
+  static void destroy() {
+    if(instance_)
+      delete instance_;
+
+    instance_ = NULL;
+  }
 };
 
 

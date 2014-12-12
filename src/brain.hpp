@@ -4,7 +4,6 @@
 #include <fann.h>
 #include "2d.hpp"
 #include <memory>
-#include <assert.h>
 #include <vector>
 #include "scan.hpp"
 
@@ -63,6 +62,7 @@ public:
 	Tweight fthrust_ = 0;
 	Tweight bthrust_ = 0;
 	Tweight shoot_ = 0;
+  Tweight jump_ = 0;
 	Tweight* metaInputs_ = NULL;
 	Tweight* inputs_ = NULL;
 

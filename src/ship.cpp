@@ -75,7 +75,11 @@ void Ship::move(BattleFieldLayout& bfl) {
 		--cool_down;
 	}
 
-	//std::cerr << "canMove: " << tl_.canMove_ << "\tcanRotate: " << tl_.canRotate_ << "\tspeed: " << speed_ << "\trotForce:" << rotForce_  << std::endl;
+	bool canJump = layout_.canJump_ && fuel_ > layout_.jumpRate_;
+  bool wantsJump = (brain_->jump_ > 0.0);
+
+  isJumping_ = canJump && wantsJump;
+  //std::cerr << "canMove: " << tl_.canMove_ << "\tcanRotate: " << tl_.canRotate_ << "\tspeed: " << speed_ << "\trotForce:" << rotForce_  << std::endl;
 }
 
 void Ship::damage() {

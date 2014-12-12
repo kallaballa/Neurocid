@@ -10,6 +10,8 @@
 
 #include "2d.hpp"
 #include "object_types.hpp"
+#include "error.hpp"
+
 #include <math.h>
 #include <stdlib.h>
 #ifndef _NO_SERIALIZE
@@ -38,7 +40,7 @@ public:
 
 	Object(ObjectType type, Vector2D loc, Coord rotation, Coord radius, bool explode, bool dead, bool crashed) :
 			type_(type), loc_(loc), vel_(), angVel_(0), rotation_(rotation), radius_(radius), explode_(explode), dead_(dead), crashed_(crashed) {
-		assert(rotation != 10);
+		CHECK(rotation != 10);
 	}
 
 	virtual ~Object() {
@@ -64,7 +66,7 @@ public:
 	void setDirection(Vector2D dir) {
 		ASSERT_DIR(dir);
 		rotation_ = radFromDir(dir);
-		assert(rotation_ != 10);
+		CHECK(rotation_ != 10);
 	}
 
 	Vector2D getDirection() const {

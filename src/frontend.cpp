@@ -1,3 +1,4 @@
+#include "error.hpp"
 #include "options.hpp"
 #include "gamestate.hpp"
 #include "canvas.hpp"
@@ -12,8 +13,9 @@
 
 namespace neurocid {
 
-void init_core(Coord width, Coord height, size_t frameRate) {
-	Options& opt = *Options::getInstance();
+void init_core(Coord width, Coord height, size_t frameRate, std::function<void(const string& msg)> errorDelegate) {
+  ErrorHandler::init(errorDelegate);
+  Options& opt = *Options::getInstance();
 	opt.WINDOW_WIDTH = width;
 	opt.WINDOW_HEIGHT = height;
 	opt.FRAMERATE = frameRate;
@@ -36,11 +38,28 @@ void init_gui(Gui* gui) {
 
 //initialize video capturing of the game
 void init_video_capture(const string& captureFile) {
+#ifndef _NO_VIDEOENC
   VideoEncoder::init(captureFile);
+#endif
+}
+
+void destroy() {
+  GameState::getInstance()->stop();
+#ifndef _NO_VIDEOENC
+  VideoEncoder::getInstance()->close();
+  VideoEncoder::destroy();
+#endif
+  Options::destroy();
+  GameState::destroy();
+  TimeTracker::destroy();
+  Canvas::destroy();
+  Gui::destroy();
+  Renderer::destroy();
 }
 
 void quit() {
-	exit(0);
+  destroy();
+  exit(0);
 }
 
 void play_game(size_t gameIter, Scenario* scenario,

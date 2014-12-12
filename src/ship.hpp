@@ -30,6 +30,7 @@ struct ShipLayout {
 	bool canShoot_;
 	bool canRotate_;
 	bool canMove_;
+  bool canJump_;
 	bool disableProjectileFitness_;
 
 	Coord radius_;
@@ -37,6 +38,7 @@ struct ShipLayout {
 	Coord maxRotation_;
 	Coord maxFuel_;
 	Coord startFuel_;
+	Coord jumpRate_;
 	Coord fuelRate_;
 	Coord hardness_;
 
@@ -58,6 +60,7 @@ struct ShipLayout {
 	  ar & canShoot_;
 	  ar & canRotate_;
 	  ar & canMove_;
+	  ar & canJump_;
 	  ar & disableProjectileFitness_;
 
 	  ar & radius_;
@@ -65,6 +68,7 @@ struct ShipLayout {
 	  ar & maxRotation_;
 	  ar & maxFuel_;
 	  ar & startFuel_;
+	  ar & jumpRate_;
 	  ar & fuelRate_;
 	  ar & hardness_;
 
@@ -118,6 +122,7 @@ public:
 
 	Coord fitness_ = 0;
 	bool isElite = false;
+  bool isJumping_ = false;
 
 #ifndef _NO_SERIALIZE
 	template<class Archive>

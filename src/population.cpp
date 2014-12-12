@@ -18,6 +18,7 @@ PopulationLayout make_default_population_layout() {
 			true,// canShoot_
 			true,// canRotate_
 			true,// canMove_
+			true,// canJump_
 			false,// disableProjectileFitness_
 
 			50.0,// radius_
@@ -25,6 +26,7 @@ PopulationLayout make_default_population_layout() {
 			1.0, // max_rotation_
 			20000.0, // max_fuel_
 			20000.0, // start_fuel_
+			10.0, // jump_rate_
 			1.0, // fuel_rate_
 			0.7, // hardness_
 
@@ -41,8 +43,8 @@ PopulationLayout make_default_population_layout() {
 			10,  // metaInputs
 			3,  // metaLayers
 			5,  // meta neurons per hidden layer
-		  109,// inputs
-			5,  // outputs
+		  57,// inputs
+			6,  // outputs
 			5,  // layers
 			11, // neurons per hidden layer
 			8   // numBrains

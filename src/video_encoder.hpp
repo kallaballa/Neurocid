@@ -31,7 +31,7 @@ private:
 	VideoEncoder();
 public:
 	virtual ~VideoEncoder();
-    void init(size_t width, size_t height, size_t fps, const char* filename, enum AVCodecID codec_id);
+  void init(size_t width, size_t height, size_t fps, const char* filename, enum AVCodecID codec_id);
 	void encode(SDL_Surface *surface);
 	void close();
 
@@ -43,12 +43,21 @@ public:
 	}
 
 	static void init(const std::string& captureFile) {
+#ifndef _NO_VIDEOENC
 	  VideoEncoder& ve = *VideoEncoder::getInstance();
 	  Options& opt = *Options::getInstance();
 
 	  if (!captureFile.empty())
 	    ve.init(opt.WINDOW_WIDTH, opt.WINDOW_HEIGHT, opt.FRAMERATE, captureFile.c_str(), AV_CODEC_ID_H264);
 	}
+#endif
+
+  static void destroy() {
+    if(instance_)
+      delete instance_;
+
+    instance_ = NULL;
+  }
 };
 
 } /* namespace neurocid */

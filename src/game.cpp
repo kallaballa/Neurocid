@@ -14,7 +14,9 @@ Game::Game(Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& p
 		scenario_(scenario),
 		teams_(teams),
 		newTeams_(teams.size()),
-		pools_(pools) {
+		pools_(pools),
+		field_(NULL),
+		steps_(0) {
 }
 
 Game::~Game() {
@@ -26,6 +28,7 @@ void Game::prepare() {
 		random_shuffle(team.begin(), team.end());
 		for(Ship& t : team) {
 			t.resetScore();
+      t.resetGameState();
 			t.brain_->reset();
 		}
 	}
@@ -40,7 +43,7 @@ void Game::place() {
 void Game::fight(bool render) {
 	//std::cerr << "####### game start #######" << std::endl;
 
-	BattleField field(scenario_, teams_);
+  BattleField field(scenario_, teams_);
 	GameState& gs = *GameState::getInstance();
 	TimeTracker& tt = *TimeTracker::getInstance();
 	Renderer& renderer = *Renderer::getInstance();
@@ -166,37 +169,88 @@ void Game::print() {
 	std::cout << std::endl;
 }
 
+void Game::start(){
+  TimeTracker& tt = *TimeTracker::getInstance();
+
+  tt.execute("game", "prepare", [&]() {
+    prepare();
+  });
+
+  tt.execute("game", "place", [&]() {
+    place();
+  });
+
+  field_ =  new BattleField(scenario_, teams_);
+}
+
+vector<Population> Game::finish(){
+  TimeTracker& tt = *TimeTracker::getInstance();
+  Renderer::getInstance()->update(NULL);
+
+  tt.execute("game", "score", [&]() {
+    score();
+  });
+
+  tt.execute("game", "mate", [&]() {
+    mate();
+  });
+
+  tt.execute("game", "print", [&]() {
+    print();
+  });
+
+  tt.execute("game", "cleanup", [&]() {
+    cleanup();
+  });
+
+  delete field_;
+
+  if(!GameState::getInstance()->isRunning()) {
+    return teams_;
+  }
+  else {
+    return newTeams_;
+  }
+}
+
+bool Game::step(bool render) {
+  GameState& gs = *GameState::getInstance();
+  TimeTracker& tt = *TimeTracker::getInstance();
+  Renderer& renderer = *Renderer::getInstance();
+
+  gs.pauseBarrier(100);
+
+  auto dur = tt.measure([&]() {
+    field_->step();
+  });
+
+  if (render) {
+    if (gs.isSlow() && dur < 1600) {
+      std::this_thread::sleep_for(std::chrono::microseconds(1600 - dur));
+    } else if (gs.isSlower() && dur < 16000) {
+      std::this_thread::sleep_for(std::chrono::microseconds(6400 - dur));
+    }
+    renderer.update(field_);
+  }
+
+  ++steps_;
+  if (steps_ >= scenario_->bfl_.iterations_ || !gs.isRunning() || (teams_[0].isDead() || teams_[1].isDead()))
+    return false;
+  else
+    return true;
+}
+
 vector<Population> Game::play(bool render) {
 	TimeTracker& tt = *TimeTracker::getInstance();
 
 	size_t dur = tt.measure([&]() {
-		tt.execute("game", "prepare", [&]() {
-			prepare();
-		});
-
-		tt.execute("game", "place", [&]() {
-			place();
-		});
+	  start();
 
 		tt.execute("game", "fight", [&]() {
-			fight(render);
+			while(step(render)){};
 		});
 
-		tt.execute("game", "score", [&]() {
-			score();
-		});
-
-		tt.execute("game", "mate", [&]() {
-			mate();
-		});
-
-		tt.execute("game", "print", [&]() {
-			print();
-		});
-
-		tt.execute("game", "cleanup", [&]() {
-			cleanup();
-		});
+		finish();
 	});
 
 	std::cerr << "game/s: " << 1000000.0f/dur << std::endl;

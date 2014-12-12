@@ -18,10 +18,6 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
-#define INBUF_SIZE 4096
-#define AUDIO_INBUF_SIZE 20480
-#define AUDIO_REFILL_THRESH 4096
-
 namespace neurocid {
 
 VideoEncoder* VideoEncoder::instance_ = NULL;
@@ -35,14 +31,15 @@ file_(NULL),
 rgbFrame_(NULL),
 yuvFrame_(NULL),
 initialzed_(false) {
-	av_log_set_level(AV_LOG_ERROR);
+#ifndef _NO_VIDEOENC
+  av_log_set_level(AV_LOG_ERROR);
     /* register all the codecs (you can also register only the codec
        you wish to have smaller code */
     avcodec_register_all();
+#endif
 }
 
 VideoEncoder::~VideoEncoder() {
-  close();
 	delete pkt_;
 }
 
@@ -186,8 +183,8 @@ void VideoEncoder::encode(SDL_Surface *surface) {
     size_t cnt = 0;
 	for (int y = 0; y < context_->height; y++) {
 		for (int x = 0; x < context_->width; x++) {
-			Uint32 p = getpixel(surface,x,y);
-		    SDL_GetRGB(p, fmt, &r, &g, &b);
+		    uint32_t p = getpixel(surface,x,y);
+        SDL_GetRGB(p, fmt, &r, &g, &b);
 		    rgbFrame_->data[0][(y * rgbFrame_->linesize[0] + (x * 3))] = r;
 		    rgbFrame_->data[0][(y * rgbFrame_->linesize[0] + (x * 3)) + 1] = g;
 		    rgbFrame_->data[0][(y * rgbFrame_->linesize[0] + (x * 3)) + 2] = b;

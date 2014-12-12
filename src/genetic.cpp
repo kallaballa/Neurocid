@@ -204,7 +204,7 @@ void GeneticPool::calculateStatistics(Population& pop) {
 		pop.stats_.totalHits_  += pop[i].hits_;
 		pop.stats_.totalDamage_  += pop[i].damage_;
 		pop.stats_.totalRecharged_ += pop[i].recharged_;
-		pop.stats_.totalBrainSwitches_ += pop[i].brain_->brainStats_.numGameSwitches_;
+		pop.stats_.totalBrainSwitches_ += pop[i].brain_->brainStats_.countSwitches();
 
 		//update fittest if necessary
 		if (highestSoFar == 0 || pop[i].fitness_ > highestSoFar) {
