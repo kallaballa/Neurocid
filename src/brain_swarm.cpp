@@ -48,14 +48,15 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 	CHECK(enemyObj.size() + friendObj.size() + friendFacilityObj.size() + enemyFacilityObj.size() == scan.objects_.size());
 
+	size_t iPerObj = 2;
 	size_t inputCnt = 0;
 	for (ScanObject& so : friendObj) {
 		if (so.dir_ != NO_VECTOR2D) {
 
-			applyInput(inputCnt * 4, so.dir_.x_);
-			applyInput(inputCnt * 4 + 1, so.dir_.y_);
-			applyInput(inputCnt * 4 + 2, so.vel_.x_);
-			applyInput(inputCnt * 4 + 3, so.vel_.y_);
+			applyInput(inputCnt * iPerObj, so.dir_.x_);
+			applyInput(inputCnt * iPerObj + 1, so.dir_.y_);
+//			applyInput(inputCnt * iPerObj + 2, so.vel_.x_);
+//			applyInput(inputCnt * iPerObj + 3, so.vel_.y_);
 			totalFriendMag += so.dir_.length();
 			++cntFriendMag;
 		}
@@ -65,10 +66,10 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 	for (ScanObject& so : friendFacilityObj) {
 		if (so.dir_ != NO_VECTOR2D) {
-			applyInput(inputCnt * 4, so.dir_.x_);
-			applyInput(inputCnt * 4 + 1, so.dir_.y_);
-			applyInput(inputCnt * 4 + 2, so.vel_.x_);
-			applyInput(inputCnt * 4 + 3, so.vel_.y_);
+			applyInput(inputCnt * iPerObj, so.dir_.x_);
+			applyInput(inputCnt * iPerObj + 1, so.dir_.y_);
+//			applyInput(inputCnt * iPerObj + 2, so.vel_.x_);
+//			applyInput(inputCnt * iPerObj + 3, so.vel_.y_);
 			totalEnemyMag += so.dir_.length();
 			++cntEnemyMag;
 		}
@@ -77,10 +78,10 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 	for (ScanObject& so : enemyObj) {
 		if (so.dir_ != NO_VECTOR2D) {
-			applyInput(inputCnt * 4, so.dir_.x_);
-			applyInput(inputCnt * 4 + 1, so.dir_.y_);
-			applyInput(inputCnt * 4 + 2, so.vel_.x_);
-			applyInput(inputCnt * 4 + 3, so.vel_.y_);
+			applyInput(inputCnt * iPerObj, so.dir_.x_);
+			applyInput(inputCnt * iPerObj + 1, so.dir_.y_);
+//			applyInput(inputCnt * iPerObj + 2, so.vel_.x_);
+//			applyInput(inputCnt * iPerObj + 3, so.vel_.y_);
 			totalFFacMag += so.dir_.length();
 			++cntFFacMag;
 		}
@@ -89,10 +90,10 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 	for (ScanObject& so : enemyFacilityObj) {
 		if (so.dir_ != NO_VECTOR2D) {
-			applyInput(inputCnt * 4, so.dir_.x_);
-			applyInput(inputCnt * 4 + 1, so.dir_.y_);
-			applyInput(inputCnt * 4 + 2, so.vel_.x_);
-			applyInput(inputCnt * 4 + 3, so.vel_.y_);
+			applyInput(inputCnt * iPerObj, so.dir_.x_);
+			applyInput(inputCnt * iPerObj + 1, so.dir_.y_);
+//			applyInput(inputCnt * iPerObj + 2, so.vel_.x_);
+//			applyInput(inputCnt * iPerObj + 3, so.vel_.y_);
 			totalEFacMag += so.dir_.length();
 			++cntEFacMag;
 		}
@@ -101,10 +102,10 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 
 	/*for (ScanObject& so : projectileObj) {
 		if (so.dir_ != NO_VECTOR2D) {
-			applyInput(inputCnt * 4, so.dir_.x_);
-			applyInput(inputCnt * 4 + 1, so.dir_.y_);
-			applyInput(inputCnt * 4 + 2, so.vel_.x_);
-			applyInput(inputCnt * 4 + 3, so.vel_.y_);
+			applyInput(inputCnt * iPerObj, so.dir_.x_);
+			applyInput(inputCnt * iPerObj + 1, so.dir_.y_);
+			applyInput(inputCnt * iPerObj + 2, so.vel_.x_);
+			applyInput(inputCnt * iPerObj + 3, so.vel_.y_);
 		}
 		++inputCnt;
 	}*/
@@ -147,11 +148,11 @@ void BrainSwarm::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	else if(angVel < -10)
 		angVel = -10;
 
-	applyInput(inputCnt * 4, vel.x_);
-	applyInput(inputCnt * 4 + 1, vel.y_);
-	applyInput(inputCnt * 4 + 2, center.x_);
-	applyInput(inputCnt * 4 + 3, center.y_);
-	applyInput(inputCnt * 4 + 4, angVel / 10);
+	applyInput(inputCnt * iPerObj, vel.x_);
+	applyInput(inputCnt * iPerObj + 1, vel.y_);
+	applyInput(inputCnt * iPerObj + 2, center.x_);
+	applyInput(inputCnt * iPerObj + 3, center.y_);
+	applyInput(inputCnt * iPerObj + 4, angVel / 10);
 
 	for(size_t i = 0; i < layout_.numInputs_; ++i) {
 		CHECK(!std::isinf(inputs_[i]));

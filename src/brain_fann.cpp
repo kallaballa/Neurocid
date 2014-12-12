@@ -143,7 +143,7 @@ void BrainFann::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	CHECK(metaInputs_ != NULL);
 	CHECK(inputs_ != NULL);
 	CHECK(!destroyed_);
-	CHECK(layout_.numInputs_ == (scan.objects_.size() * 4) + 5);
+	CHECK(layout_.numInputs_ == (scan.objects_.size() * 2) + 5);
 
 	CHECK(layout_.numMetaInputs_ == fann_get_num_input(nn_[0]));
 	CHECK(layout_.numBrains_ == fann_get_num_output(nn_[0]));
@@ -175,8 +175,9 @@ void BrainFann::run() {
 	fthrust_ = outputs[2];
 	bthrust_ = outputs[3];
 	shoot_ = outputs[4];
+	jump_ = outputs[5];
 
-	CHECK(!std::isnan(bthrust_) && !std::isnan(fthrust_) && !std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(shoot_));
-	CHECK(!std::isinf(bthrust_) && !std::isinf(fthrust_) && !std::isinf(lthrust_) && !std::isinf(rthrust_) && !std::isinf(shoot_));
+	CHECK(!std::isnan(bthrust_) && !std::isnan(fthrust_) && !std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(shoot_) && !std::isnan(jump_));
+	CHECK(!std::isinf(bthrust_) && !std::isinf(fthrust_) && !std::isinf(lthrust_) && !std::isinf(rthrust_) && !std::isinf(shoot_) && !std::isinf(jump_));
 }
 } /* namespace neurocid */
