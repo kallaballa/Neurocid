@@ -64,7 +64,7 @@ void EventLoop::process() {
 			if (event.key.keysym.sym == SDLKey::SDLK_ESCAPE) {
 				std::cerr << "Quitting" << std::endl;
 				gameState.stop();
-			} else if ((event.key.keysym.mod == KMOD_LALT || event.key.keysym.mod == KMOD_RALT)) {
+			} else if (true || (event.key.keysym.mod == KMOD_LALT || event.key.keysym.mod == KMOD_RALT)) {
 				if (event.key.keysym.sym == SDLKey::SDLK_SPACE) {
 					if (renderer.isEnabled()) {
 						if (gameState.isSlow()) {
