@@ -217,7 +217,7 @@ void SDLCanvas::fillCircle(Vector2D loc, Coord radius, Color c) {
 #endif
 }
 
-void SDLCanvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color& c, Coord s) {
+void SDLCanvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color c, Coord s) {
 	auto scaled0 = transform(Vector2D(x0, y0), s);
 	auto scaled1 = transform(Vector2D(x1, y1), s);
     lineRGBA(screen_, scaled0.first, scaled0.second, scaled1.first, scaled1.second, c.r, c.g, c.b, c.a);
@@ -243,6 +243,12 @@ void SDLCanvas::drawShip(Ship& ship, Color c) {
 	if(isDrawEliteEnabled() && ship.isElite) {
 	    drawEllipse(ship.loc_, 2, 2, {255,0,255});
 	}
+
+  Color cengine;
+  if(ship.teamID_ == 0)
+    cengine = Theme::enginesA;
+  else
+    cengine = Theme::enginesB;
 
 	if(isDrawEnginesEnabled()) {
 		Vector2D across1 = dir;
@@ -270,16 +276,34 @@ void SDLCanvas::drawShip(Ship& ship, Color c) {
 		Vector2D brforce = brengine;
 		brforce += across2 * -(ship.brthrust_ * 600);
 
-		Color cengine;
-		if(ship.teamID_ == 0)
-			cengine = Theme::enginesA;
-		else
-			cengine = Theme::enginesB;
-
 		drawLine(flengine.x_, flengine.y_, flforce.x_, flforce.y_, cengine);
 		drawLine(frengine.x_, frengine.y_, frforce.x_, frforce.y_, cengine);
 		drawLine(blengine.x_, blengine.y_, blforce.x_, blforce.y_, cengine);
 		drawLine(brengine.x_, brengine.y_, brforce.x_, brforce.y_, cengine);
+	}
+
+	if(ship.isJumping_) {
+	  Vector2D center = ship.loc_;
+    Vector2D across1 = dir;
+    Vector2D across2 = dir;
+    across1.rotate(-45);
+    across2.rotate(45);
+	  Vector2D flforce;
+    flforce += across2 * -(ship.flthrust_ * ship.layout_.maxSpeed_ * 240);
+    Vector2D frforce;
+    frforce += across1 * (ship.frthrust_ * ship.layout_.maxSpeed_ * 240);
+    Vector2D blforce;
+    blforce += across1 * (ship.blthrust_ * ship.layout_.maxSpeed_ * 240);
+    Vector2D brforce;
+    brforce += across2 * -(ship.brthrust_ * ship.layout_.maxSpeed_ * 240);
+
+    Vector2D totalForce;
+    totalForce += flforce;
+    totalForce += frforce;
+    totalForce += blforce;
+    totalForce += brforce;
+
+    drawLine(center.x_, center.y_, center.x_ + totalForce.x_ * 30, center.y_ + totalForce.y_ * 30, {255,255,255});
 	}
 }
 

@@ -26,7 +26,7 @@ PopulationLayout make_default_population_layout() {
 			1.0, // max_rotation_
 			20000.0, // max_fuel_
 			20000.0, // start_fuel_
-			10.0, // jump_rate_
+			50.0, // jump_rate_
 			1.0, // fuel_rate_
 			0.7, // hardness_
 

@@ -320,11 +320,22 @@ void Physics::step() {
 					frengine += (across2 * (t->radius_));
 					blengine += (across2 * -(t->radius_));
 					brengine += (across1 * -(t->radius_));
+					Vector2D totalForce;
+					totalForce += flforce;
+					totalForce += frforce;
+					totalForce += blforce;
+					totalForce += brforce;
 
-					body->ApplyLinearImpulse(b2Vec2(flforce.x_, flforce.y_), b2Vec2(flengine.x_, flengine.y_),false);
-					body->ApplyLinearImpulse(b2Vec2(frforce.x_, frforce.y_), b2Vec2(frengine.x_, frengine.y_),false);
-					body->ApplyLinearImpulse(b2Vec2(blforce.x_, blforce.y_), b2Vec2(blengine.x_, blengine.y_),false);
-					body->ApplyLinearImpulse(b2Vec2(brforce.x_, brforce.y_), b2Vec2(brengine.x_, brengine.y_),false);
+					if(t->isJumping_) {
+					  b2Vec2 tf(totalForce.x_ * 30, totalForce.y_ * 30);
+					  b2Vec2 newpos = body->GetPosition() + tf;
+					  body->SetTransform(newpos, body->GetAngle());
+					} else {
+            body->ApplyLinearImpulse(b2Vec2(flforce.x_, flforce.y_), b2Vec2(flengine.x_, flengine.y_),false);
+            body->ApplyLinearImpulse(b2Vec2(frforce.x_, frforce.y_), b2Vec2(frengine.x_, frengine.y_),false);
+            body->ApplyLinearImpulse(b2Vec2(blforce.x_, blforce.y_), b2Vec2(blengine.x_, blengine.y_),false);
+            body->ApplyLinearImpulse(b2Vec2(brforce.x_, brforce.y_), b2Vec2(brengine.x_, brengine.y_),false);
+					}
 				} else {
 					t->flthrust_ = 0;
 					t->frthrust_ = 0;

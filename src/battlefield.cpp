@@ -57,6 +57,10 @@ void BattleField::move() {
 				continue;
 
 			t.move(layout_);
+			if(t.loc_.x_ < 0 || t.loc_.y_ < 0 || t.loc_.x_ > layout_.width_ || t.loc_.y_ > layout_.height_) {
+			  t.dead_ = true;
+			  continue;
+			}
 			if(t.willShoot()) {
 				spawned_.push_back(t.shoot());
 			}

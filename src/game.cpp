@@ -57,10 +57,10 @@ void Game::fight(bool render) {
 		});
 
 		if(render) {
-			if(gs.isSlow() && dur < 1600) {
-				std::this_thread::sleep_for(std::chrono::microseconds(1600 - dur));
+			if(gs.isSlow()) {
+				std::this_thread::sleep_for(std::chrono::microseconds(2400 - dur));
 			}
-			else if(gs.isSlower() && dur < 16000) {
+			else if(gs.isSlower()) {
 				std::this_thread::sleep_for(std::chrono::microseconds(6400 - dur));
 			}
 			renderer.update(&field);

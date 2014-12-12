@@ -79,6 +79,9 @@ void Ship::move(BattleFieldLayout& bfl) {
   bool wantsJump = (brain_->jump_ > 0.0);
 
   isJumping_ = canJump && wantsJump;
+
+  if(isJumping_)
+    fuel_ -= layout_.jumpRate_;
   //std::cerr << "canMove: " << tl_.canMove_ << "\tcanRotate: " << tl_.canRotate_ << "\tspeed: " << speed_ << "\trotForce:" << rotForce_  << std::endl;
 }
 
@@ -191,6 +194,7 @@ void Ship::resetGameState() {
 	explode_ = false;
 	cool_down = 0;
 	willShoot_ = false;
+	isJumping_ = false;
 	crashed_ = false;
 }
 
