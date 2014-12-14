@@ -89,6 +89,10 @@ int main(int argc, char** argv) {
 #else
   scenarioName = "SymmetricLinesFar";
 #endif
+
+  //initialize frontend subsystems subsystems - core, canvas, gui
+  nc::init_core(width, height, frameRate);
+
   string suffix = ".nsj";
   nc::Scenario* scenario = NULL;
 
@@ -106,17 +110,13 @@ int main(int argc, char** argv) {
   }
   CHECK_MSG(scenario != NULL, "Unable to load a Scenario");
 
-  //initialize frontend subsystems subsystems - core, canvas, gui
-  nc::init_core(width, height, frameRate);
 
   nc::SDLCanvas* sdlc = new nc::SDLCanvas(width, height, scenario->bfl_);
   nc::GuiChanGui* gui = new nc::GuiChanGui(sdlc->getSurface());
 
   nc::init_canvas(sdlc);
   nc::init_gui(gui);
-#ifndef _NO_VIDEOENC
   nc::init_video_capture(captureFile);
-#endif
 
   //make default layouts
   nc::PopulationLayout pl = nc::make_default_population_layout();
@@ -174,7 +174,6 @@ int main(int argc, char** argv) {
     }
   });
 
-  //rendering loop. needs to be in the main thread!
   while (neurocid::is_running()) {
     neurocid::render();
   }

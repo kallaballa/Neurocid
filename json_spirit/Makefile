@@ -10,7 +10,7 @@ DEPS    := ${SRCS:.cpp=.dep}
 
 CXX      := g++
 CXXFLAGS := -std=c++0x -g0 -O3 -pedantic -Wall -fpic 
-LDFLAGS  := -s -L/opt/local/lib -shared
+LDFLAGS  := -L/opt/local/lib -shared
 LIBS     := 
 .PHONY: all release clean 
 DESTDIR := /

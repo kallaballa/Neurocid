@@ -39,7 +39,7 @@ local startB = Vector2D:Add(centerB, Vector2D:Mult(sideDirB, fRand(-lengthB, len
 for i, s in pairs(shipsA) do
 	s.loc = startA:copy();
   s.loc:sub(Vector2D:Mult(sideDirA, (s.layout.radius * 2 + pl.spacing) * i));
-  s.loc:add(Vector2D:Mult(axisDir, math.random(-s.layout.radius, s.layout.radius)));
+  s.loc:add(Vector2D:Mult(axisDir, math.random(-s.layout.radius * pl.fuzz, s.layout.radius * pl.fuzz)));
   s.rotation = fRand(-math.pi, math.pi);
 end
 
@@ -65,7 +65,7 @@ end
 for i, s in pairs(shipsB) do
   s.loc = startB:copy();
   s.loc:sub(Vector2D:Mult(sideDirB, (s.layout.radius * 2 + pl.spacing) * i));
-  s.loc:add(Vector2D:Mult(axisDir, math.random(-s.layout.radius, s.layout.radius)));
+  s.loc:add(Vector2D:Mult(axisDir, math.random(-s.layout.radius * pl.fuzz, s.layout.radius * pl.fuzz)));
   s.rotation = fRand(-math.pi, math.pi);
 end
 

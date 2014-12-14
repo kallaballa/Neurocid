@@ -15,5 +15,4 @@ function run() {
 
 [ -n "$1" ] && POP="$1"
 POP=`run 14000 SymmetricLinesHuge $POP`
-POP=`run 14000 CrossHuge $POP`
 cp $POP play.pop

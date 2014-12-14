@@ -1,5 +1,5 @@
 TARGET  := tests
-SRCS    := main.cpp
+SRCS    := main.cpp ../src/error.cpp
 #precompiled headers
 HEADERS := 
 GCH    := ${HEADERS:.h=.gch}

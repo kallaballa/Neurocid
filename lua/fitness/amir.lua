@@ -1,6 +1,7 @@
 require "vector2d" 
 require "ncutils"
 
+-- recursivly print the ship table
 -- tprint(nc.ship, 2)
 
 local width = nc.bfl.width;
@@ -79,28 +80,25 @@ else
 	end
 
 	hitRatio = ship.hits / shots;
-	friendlyRatioInv = 1.0 - (ship.friendlyFire / shots);
-	damageRatioInv = 1.0 - (ship.damage / layout.maxDamage);
+	friendlyRatioInv = 2.0 - (ship.friendlyFire / shots);
+	damageRatioInv = 2.0 - (ship.damage / layout.maxDamage);
 
   assert(aimRatio >= 0.0);
   assert(aimRatio <= 1.0);
   assert(hitRatio >= 0.0);
   assert(hitRatio <= 1.0);
-  assert(damageRatioInv >= 0.0);
-  assert(damageRatioInv <= 1.0);
-  assert(friendlyRatioInv >= 0.0);
-  assert(friendlyRatioInv <= 1.0);
+  assert(damageRatioInv >= 1.0);
+  assert(damageRatioInv <= 2.0);
+  assert(friendlyRatioInv >= 1.0);
+  assert(friendlyRatioInv <= 2.0);
 
 	local aim = (aimRatio / (ship.failedShots + 1));
-  local dealt = damageRatioInv * friendlyRatioInv;
-  local inflicted = (ship.hits * 3) + (ship.kills * 6);
-	local score = inflicted * dealt
+  local taken = damageRatioInv * friendlyRatioInv;
+  local inflicted = (ship.hits) + (ship.kills * 3);
 
-  if ship.captured > 0 then
-    inflicted = inflicted * 2;
-  end
+	local score = inflicted * taken * ((ship.captured + 1) * 2);
 
-  fitness = aim + inflicted;
+  fitness = aim + score;
 
   if ship.dead then
       fitness = fitness / 2.0;

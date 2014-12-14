@@ -31,6 +31,20 @@ WITHOUT_EVENTLOOP=1
 WITHOUT_SDLGFX=1
 endif
 
+ifdef X86
+CXXFLAGS += -m32
+LDFLAGS += -L/usr/lib -m32 
+endif
+
+ifdef STATIC
+LDFLAGS += -static-libgcc -Wl,-Bstatic
+endif
+
+ifdef X86
+CXXFLAGS += -m32
+LDFLAGS += -L/usr/lib -static-libgcc -m32 -Wl,-Bstatic
+endif 
+
 ifdef WITHOUT_STACKTRACE
 CXXFLAGS += -D_NO_STACKTRACE
 endif
@@ -77,15 +91,16 @@ endif
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Darwin)
- LDFLAGS += -L/opt/X11/lib/ -pagezero_size 10000 -image_base 100000000
- CXXFLAGS += —stdlib=c++ 
+ LDFLAGS += -L/opt/X11/lib/
 else
  CXXFLAGS += -march=native
 endif
 
 all: release
 
+ifneq ($(UNAME_S), Darwin)
 release: LDFLAGS += -s
+endif
 release: CXXFLAGS += -g0 -O3
 release: dirs
 
@@ -102,7 +117,9 @@ profile: LDFLAGS += -Wl,--export-dynamic -rdynamic
 profile: dirs
 
 hardcore: CXXFLAGS += -g0 -Ofast -DNDEBUG
+ifeq ($(UNAME_S), Darwin)
 hardcore: LDFLAGS += -s
+endif
 hardcore: dirs
 
 clean: dirs
@@ -113,10 +130,12 @@ export LIBS
 
 dirs:
 	${MAKE} -C src/ ${MAKEFLAGS} CXX=${CXX} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" ${MAKECMDGOALS}
+ifndef STATIC
 	${MAKE} -C sdl1/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 #	${MAKE} -C sdl2/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 ifndef JAVASCRIPT
 	${MAKE} -C tests/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
+endif
 endif
 
 debian-release:
