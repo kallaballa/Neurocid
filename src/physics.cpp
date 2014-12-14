@@ -23,20 +23,45 @@ void Physics::wallHit(Projectile& p) {
 	p.death();
 }
 
+void Physics::wallHit(Blast& ex) {
+}
+
 void Physics::collide(Projectile& p1, Projectile& p2) {
-	return;
-	p1.death();
-	p2.death();
+  p1.death();
+  p2.death();
+  if(p1.blast())
+    blastingProjectiles_.push_back(&p1);
+
+  if(p2.blast())
+    blastingProjectiles_.push_back(&p2);
 }
 
 void Physics::collide(Projectile& p, Ship& t) {
 	if (t != (*p.owner_)) {
 		t.impact(p);
 	}
+	p.death();
+	if(p.blast())
+	  blastingProjectiles_.push_back(&p);
 }
 
 void Physics::collide(Ship& t1, Ship& t2) {
 	t1.impact(t2);
+}
+
+void Physics::collide(Blast& ex1, Blast& ex2) {
+}
+
+void Physics::collide(Blast& ex, Ship& t) {
+  if (t != (*ex.owner_->owner_)) {
+    t.impact(*ex.owner_);
+  }
+}
+
+void Physics::collide(Blast& ex1, Projectile& p) {
+  p.death();
+  if(p.blast())
+    blastingProjectiles_.push_back(&p);
 }
 
 void Physics::BeginContact(b2Contact* contact) {
@@ -50,7 +75,13 @@ void Physics::BeginContact(b2Contact* contact) {
 	  } else if(oB == NULL && oA != NULL && oA->type() == PROJECTILE && !oA->dead_) {
 		  wallHit(*static_cast<Projectile*>(oA));
 		  deadBodies_.push_back(contact->GetFixtureA()->GetBody());
-	  } else if(oA == NULL && oB != NULL && oB->type() == SHIP && !oB->dead_) {
+	  } else if(oA == NULL && oB != NULL && oB->type() == BLAST && !oB->dead_) {
+      wallHit(*static_cast<Blast*>(oB));
+      deadBodies_.push_back(contact->GetFixtureB()->GetBody());
+    } else if(oB == NULL && oA != NULL && oA->type() == BLAST && !oA->dead_) {
+      wallHit(*static_cast<Blast*>(oA));
+      deadBodies_.push_back(contact->GetFixtureA()->GetBody());
+    } else if(oA == NULL && oB != NULL && oB->type() == SHIP && !oB->dead_) {
 		  wallHit(*static_cast<Ship*>(oB));
 		  deadBodies_.push_back(contact->GetFixtureB()->GetBody());
 	  } else if(oB == NULL && oA != NULL && oA->type() == SHIP && !oA->dead_) {
@@ -63,7 +94,13 @@ void Physics::BeginContact(b2Contact* contact) {
 			  collide(*static_cast<Projectile*>(oA), *static_cast<Ship*>(oB));
 		  } else if(oA->type() == SHIP && oB->type() == PROJECTILE) {
 			  collide(*static_cast<Projectile*>(oB), *static_cast<Ship*>(oA));
-		  }
+		  } else if(oA->type() == BLAST && oB->type() == BLAST) {
+        collide(*static_cast<Blast*>(oA), *static_cast<Blast*>(oB));
+      } else if(oA->type() == BLAST && oB->type() == SHIP) {
+        collide(*static_cast<Blast*>(oA), *static_cast<Ship*>(oB));
+      } else if(oA->type() == BLAST && oB->type() == PROJECTILE) {
+        collide(*static_cast<Blast*>(oA), *static_cast<Projectile*>(oB));
+      }
 
 		  if(oA->dead_)
 			  deadBodies_.push_back(contact->GetFixtureA()->GetBody());
@@ -237,6 +274,45 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
     return body;
 }
 
+b2Body* Physics::makeBlastBody(Projectile& p) {
+  CHECK(p.blast_ != NULL);
+  b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(toMeters(p.loc_.x_), toMeters(p.loc_.y_));
+    CHECK(p.rotation_ <= M_PI);
+    bodyDef.angle = p.rotation_;
+    bodyDef.allowSleep = true;
+    bodyDef.awake = true;
+    bodyDef.userData = p.blast_;
+    b2Body* body = world_.CreateBody(&bodyDef);
+
+    // Define another box shape for our dynamic body.
+    b2CircleShape dynamicCircle;
+    dynamicCircle.m_p.Set(0, 0);
+    dynamicCircle.m_radius = toMeters(p.blast_->radius_);
+
+    // Define the dynamic body fixture.
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &dynamicCircle;
+
+    // Set the box density to be non-zero, so it will be dynamic.
+    fixtureDef.density = 1;
+
+    // Override the default friction.
+    fixtureDef.friction = 0.3f;
+
+    //Deativate projectile collisions
+    fixtureDef.filter.maskBits = 1;
+    fixtureDef.filter.categoryBits = 3;
+//    fixtureDef.filter.maskBits = 1;
+//    fixtureDef.filter.categoryBits = 3;
+    body->SetFixedRotation(true);
+    body->CreateFixture(&fixtureDef);
+    body->SetLinearDamping(0);
+    body->SetAngularDamping(0);
+    return body;
+}
+
 Physics::Physics(PhysicsLayout pl) :
 	world_(b2Vec2(pl.gravity_.x, pl.gravity_.y)),
 	layout_(pl) {
@@ -371,14 +447,20 @@ void Physics::step() {
 			} else if(o->type() == PROJECTILE) {
 				Projectile* p = static_cast<Projectile*>(o);
 				if((p->loc_ - p->startLoc_).length() > p->layout_.maxTravel_) {
-					p->dead_ = true;
-					deadBodies_.push_back(body);
+				  p->death();
+				  /*if(p->blast())
+				    makeBlastBody(*p);
+				  deadBodies_.push_back(body);*/
 				} else {
 					Vector2D force = p->getDirection() * (p->layout_.maxSpeed_ * 10000);
 					body->SetAwake(true);
 					body->SetLinearVelocity(b2Vec2(force.x_, force.y_));
 				}
-			}
+      } else if(o->type() == BLAST) {
+        Blast* ex = static_cast<Blast*>(o);
+        ex->dead_ = true;
+        deadBodies_.push_back(body);
+      }
 		}
 	}
 
@@ -388,6 +470,13 @@ void Physics::step() {
 		world_.DestroyBody(body);
 	}
 	deadBodies_.clear();
+
+  //create blast bodies
+  for(Projectile* p : blastingProjectiles_) {
+    makeBlastBody(*p);
+  }
+
+  blastingProjectiles_.clear();
 
 	//FIXME don't copy coordinates
 	for (b2Body* body = world_.GetBodyList(); body; body = body->GetNext()) {

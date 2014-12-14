@@ -196,7 +196,6 @@ inline void read_population(size_t teamID, Population& team, istream& is) {
 inline void write_population(Population& team, ostream& os) {
 #ifndef _NO_SERIALIZE
   boost::archive::binary_oarchive oa(os);
-  scale_population(team, team.layout_.size_);
   oa << team;
 #else
   CHECK(false);

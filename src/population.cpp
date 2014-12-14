@@ -10,8 +10,12 @@ PopulationLayout make_default_population_layout() {
 		{
 		  //Projectile Layout
 			{
+			  //Explosion Layout
+			  {
+			     1000
+			  },
 				1,    // max_speed_
-				10000, // max_travel_
+				30000, // max_travel_
 				10     // radius_
 			},
 			false, // isDummy_
@@ -26,7 +30,7 @@ PopulationLayout make_default_population_layout() {
 			1.0, // max_rotation_
 			20000.0, // max_fuel_
 			20000.0, // start_fuel_
-			50.0, // jump_rate_
+			100.0, // jump_rate_
 			1.0, // fuel_rate_
 			0.7, // hardness_
 

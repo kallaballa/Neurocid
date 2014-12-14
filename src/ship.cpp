@@ -125,7 +125,6 @@ void Ship::impact(Ship& other) {
 }
 
 void Ship::impact(Projectile& p) {
-	p.death();
 	damage();
 
 	if (p.owner_->teamID_ != teamID_) {
@@ -181,7 +180,9 @@ Ship Ship::clone() const {
 
 void Ship::resetGameState() {
 	for(Projectile* p : projectiles_) {
-		delete p;
+	  if(p->blast_ != NULL)
+	    delete p->blast_;
+	  delete p;
 	}
 	projectiles_.clear();
 	flthrust_ = 0;

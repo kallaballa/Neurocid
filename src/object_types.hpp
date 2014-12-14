@@ -5,7 +5,8 @@ namespace neurocid {
 enum ObjectType {
 	SHIP,
 	PROJECTILE,
-	FACILITY
+	FACILITY,
+	BLAST
 };
 }
 

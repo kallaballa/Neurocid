@@ -11,6 +11,7 @@
 #include "object.hpp"
 #include "scanner.hpp"
 #include <limits>
+#include "blast.hpp"
 
 #ifndef _NO_SERIALIZE
 #include <boost/archive/binary_iarchive.hpp>
@@ -25,7 +26,7 @@ struct ProjectileLayout {
 #ifndef _NO_SERIALIZE
 	friend class boost::serialization::access;
 #endif
-
+	BlastLayout el_;
 	Coord maxSpeed_;
 	Coord maxTravel_;
 	Coord radius_;
@@ -33,6 +34,7 @@ struct ProjectileLayout {
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
+	  ar & el_;
 	  ar & maxSpeed_;
 	  ar & maxTravel_;
 	  ar & radius_;
@@ -46,13 +48,18 @@ public:
 	ProjectileLayout layout_;
 	Vector2D startLoc_;
 	Scan scan_;
+	Blast* blast_;
 
 	Projectile(Ship& owner, ProjectileLayout& layout, Vector2D& loc, Coord& rotation) :
 		Object(PROJECTILE, loc, rotation, layout.radius_, false, false, false),
 		owner_(&owner),
 		layout_(layout),
 		startLoc_(loc),
-		scan_(this){
+		scan_(this),
+		blast_(NULL) {
+	}
+
+	~Projectile() {
 	}
 
 	void move(BattleFieldLayout& bfl) {
@@ -60,8 +67,16 @@ public:
 
 	void death() {
 		dead_ = true;
-		explode_ = true;
+    explode_ = true;
 	}
+
+  bool blast() {
+    if(blast_ == NULL) {
+      blast_ = new Blast(*this,layout_.el_, loc_);
+      return true;
+    }
+    return false;
+  }
 };
 
 }

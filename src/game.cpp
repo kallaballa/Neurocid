@@ -40,41 +40,6 @@ void Game::place() {
 	lua::run_placer(scenario_->pl_.placer_, teams_, scenario_->pl_, 0);
 }
 
-void Game::fight(bool render) {
-	//std::cerr << "####### game start #######" << std::endl;
-
-  BattleField field(scenario_, teams_);
-	GameState& gs = *GameState::getInstance();
-	TimeTracker& tt = *TimeTracker::getInstance();
-	Renderer& renderer = *Renderer::getInstance();
-
-	tt.execute("battlefield", [&](){
-	for(size_t i = 0; (i < scenario_->bfl_.iterations_) && gs.isRunning(); ++i) {
-    gs.pauseBarrier(100);
-
-	  auto dur = tt.measure([&]() {
-			field.step();
-		});
-
-		if(render) {
-			if(gs.isSlow()) {
-				std::this_thread::sleep_for(std::chrono::microseconds(2400 - dur));
-			}
-			else if(gs.isSlower()) {
-				std::this_thread::sleep_for(std::chrono::microseconds(6400 - dur));
-			}
-			renderer.update(&field);
-		}
-#ifdef _NO_THREADS
-	    	renderer.render();
-#endif
-	}
-	});
-
-	if(render)
-		renderer.update(NULL);
-}
-
 void Game::score() {
 	vector<size_t> ownedFacilites(2,0);
 
@@ -228,7 +193,7 @@ bool Game::step(bool render) {
     if (gs.isSlow() && dur < 1600) {
       std::this_thread::sleep_for(std::chrono::microseconds(1600 - dur));
     } else if (gs.isSlower() && dur < 16000) {
-      std::this_thread::sleep_for(std::chrono::microseconds(6400 - dur));
+      std::this_thread::sleep_for(std::chrono::microseconds(64000 - dur));
     }
     renderer.update(field_);
   }

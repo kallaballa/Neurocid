@@ -174,7 +174,7 @@ void SDLCanvas::drawExplosion(Explosion& expl) {
 	    c.a = std::min(size_t(200 + (255 / (i + 1))), size_t(255));
 	    if(lastR != r) {
 	    	auto scaled = transform(expl.loc_);
-	    	circleRGBA(screen_, scaled.first, scaled.second, r, c.r, c.g, c.b, c.a);
+	    	circleRGBA(screen_, scaled.first, scaled.second, round(r * scale_), c.r, c.g, c.b, c.a);
 	    }
 		lastR = r;
 	}
@@ -183,19 +183,29 @@ void SDLCanvas::drawExplosion(Explosion& expl) {
 
 void SDLCanvas::drawTrail(const Trail& trail, const Color& c) {
 #ifndef _NO_SDLGFX
-	size_t cnt = 0;
+  size_t cnt = 0;
+  Sint16 lastX = -1;
+  Sint16 lastY = -1;
 
-	for(const Vector2D& v : trail) {
-    	auto scaled = transform(v);
-    	size_t r;
-    	if(scale_ < 0.013)
-    		r= round(1.5 / (cnt + 1) * scale_);
-    	else
-    		r= round(0.5 / (cnt + 1) * scale_);
+  for (const Vector2D& v : trail) {
+    auto scaled = transform(v);
+    size_t r;
+    if (scale_ < 0.013)
+      r = round(1.5 / (cnt + 1) * scale_);
+    else
+      r = round(0.5 / (cnt + 1) * scale_);
 
-    	filledCircleRGBA(screen_, scaled.first, scaled.second, r, c.r, c.g, c.b, c.a);
-		++cnt;
-	}
+    filledCircleRGBA(screen_, scaled.first, scaled.second, r, c.r, c.g, c.b, c.a);
+
+    if(lastX != -1 && lastY != -1) {
+      lineRGBA(screen_, lastX, lastY, scaled.first, scaled.second, c.r, c.g, c.b, 48);
+    }
+
+    lastX = scaled.first;
+    lastY = scaled.second;
+
+    ++cnt;
+  }
 #endif
 }
 
@@ -303,7 +313,8 @@ void SDLCanvas::drawShip(Ship& ship, Color c) {
     totalForce += blforce;
     totalForce += brforce;
 
-    drawLine(center.x_, center.y_, center.x_ + totalForce.x_ * 30, center.y_ + totalForce.y_ * 30, {255,255,255});
+    Color jumpColor = c * 3;
+    drawLine(center.x_, center.y_, center.x_ + totalForce.x_ * -30, center.y_ + totalForce.y_ * -30, c);
 	}
 }
 
@@ -475,8 +486,12 @@ void SDLCanvas::render(BattleField& field) {
 			t.explode_ = false;
 			t.crashed_ = false;
 			for(Projectile* p : t.projectiles_) {
-				if(p->explode_)
-					explosions_.push_back({p->loc_, 0, 20, {255,64,0,255}});
+//				if(p->explode_)
+//					explosions_.push_back({p->loc_, 0, 20, {255,64,0,255}});
+
+        if(p->blast_ != NULL && !p->blast_->dead_)
+          explosions_.push_back({p->loc_, 35, 40, {255,128,0,255}});
+
 				else if(!p->dead_) {
 					if(t.teamID_ == 0)
 						this->drawProjectile(*p,Theme::projectileA);
