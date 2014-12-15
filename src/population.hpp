@@ -125,7 +125,7 @@ public:
 		}
 	}
 
-	size_t countDead() {
+	size_t countDeadShips() {
 		size_t cnt = 0;
 		for (Ship& t : *this) {
 			if (t.dead_)
@@ -134,8 +134,17 @@ public:
 		return cnt;
 	}
 
+  size_t countDeadFacilities() {
+    size_t cnt = 0;
+    for (Facility& f : this->facilities_) {
+      if (f.dead_)
+        cnt++;
+    }
+    return cnt;
+  }
+
 	bool isDead() {
-		return countDead() == size();
+		return countDeadFacilities() == facilities_.size() || countDeadShips() == size();
 	}
 
 	Population& operator=(const Population& other) {

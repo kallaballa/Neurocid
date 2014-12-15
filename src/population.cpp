@@ -56,7 +56,9 @@ PopulationLayout make_default_population_layout() {
 		//FacilityLayout
 		{
 			6000,
-			500
+			500,
+			100,
+			1
 		}
 	};
 }

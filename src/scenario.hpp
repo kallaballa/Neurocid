@@ -32,7 +32,7 @@ public:
 		pl_.placer_ = "placer/opposite";
 
 		phl_.gravity_ = {0,0};
-		phl_.timeStep_ = 1.0f/30.0f;
+		phl_.timeStep_ = 1.0f/10.0f;
 		phl_.positionIterations_ = 2;
 		phl_.velocityIterations_ = 6;
 		phl_.coordToMetersFactor_ = 0.03f;

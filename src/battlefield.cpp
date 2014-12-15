@@ -78,9 +78,9 @@ void BattleField::move() {
 void BattleField::cleanup() {
 }
 
-void BattleField::step() {
+bool BattleField::step() {
 	if(teams_[0].isDead() || teams_[1].isDead())
-		return;
+		return false;
 
 	TimeTracker& tt = *TimeTracker::getInstance();
 	tt.execute("battlefield", "scan", [&](){
@@ -95,6 +95,8 @@ void BattleField::step() {
 	tt.execute("battlefield", "cleanup", [&](){
 		cleanup();
 	});
+
+	return true;
 }
 
 } /* namespace neurocid */

@@ -216,84 +216,47 @@ void HybridScanner::scan(BattleField& field) {
 	teamScan(teamB, teamA, centersB_, centersA_, bspB_, bspA_, bspFB_, bspFA_, bspPA_, field.layout_);
 
 	vector<Object*> objsA;
-	vector<Object*> objsB;
+  vector<Object*> objsB;
 
-	for(Facility& f : teamA.facilities_) {
-		findInRange(bspA_, f, objsA, f.layout_.radius_);
-		findInRange(bspB_, f, objsB, f.layout_.radius_);
+  for (Facility& f : teamA.facilities_) {
+    if(f.dead_)
+      continue;
+    findInRange(bspA_, f, objsA, f.layout_.radius_ * 2);
+    findInRange(bspB_, f, objsB, f.layout_.radius_ * 2);
 
-		if(f.isCool()) {
-			signed long diff = objsA.size() - objsB.size();
+    if (f.teamID_ == 0) {
+      for (Object* o : objsA) {
+        static_cast<Ship*>(o)->recharged();
+      }
+    } else {
+      for (Object* o : objsB) {
+        static_cast<Ship*>(o)->recharged();
+      }
+    }
+    objsA.clear();
+    objsB.clear();
+  }
 
-			if(diff >= 3) {
-				if(f.teamID_ != 0) {
-					for(Object* o: objsA) {
-						static_cast<Ship*>(o)->captured();
-					}
-					f.captured();
-				}
-				f.teamID_ = 0;
-			} else if(diff <= -3) {
-				if(f.teamID_ != 1) {
-					for(Object* o: objsB) {
-						static_cast<Ship*>(o)->captured();
-					}
-					f.captured();
-				}
-				f.teamID_ = 1;
-			}
-		}
-		if(f.teamID_ == 0) {
-			for(Object* o: objsA) {
-				static_cast<Ship*>(o)->recharged();
-			}
-		} else {
-			for(Object* o: objsB) {
-				static_cast<Ship*>(o)->recharged();
-			}
-		}
-		objsA.clear();
-		objsB.clear();
-	}
+  for (Facility& f : teamB.facilities_) {
+    if(f.dead_)
+      continue;
+    findInRange(bspA_, f, objsA, f.layout_.radius_ * 2);
+    findInRange(bspB_, f, objsB, f.layout_.radius_ * 2);
 
-	for(Facility& f : teamB.facilities_) {
-		findInRange(bspA_, f, objsA, f.layout_.radius_);
-		findInRange(bspB_, f, objsB, f.layout_.radius_);
-
-		if(f.isCool()) {
-			signed long diff = objsA.size() - objsB.size();
-			if(diff >= 3) {
-				if(f.teamID_ != 0) {
-					for(Object* o: objsA) {
-						static_cast<Ship*>(o)->captured();
-					}
-					f.captured();
-				}
-				f.teamID_ = 0;
-			} else if(diff <= -3) {
-				if(f.teamID_ != 1) {
-					for(Object* o: objsB) {
-						static_cast<Ship*>(o)->captured();
-					}
-					f.captured();
-				}
-				f.teamID_ = 1;
-			}
-		}
-
-		if(f.teamID_ == 0) {
-			for(Object* o: objsA) {
-				static_cast<Ship*>(o)->recharged();
-			}
-		} else {
-			for(Object* o: objsB) {
-				static_cast<Ship*>(o)->recharged();
-			}
-		}
-		objsA.clear();
-		objsB.clear();
-	}
+    if (f.teamID_ == 0) {
+      for (Object* o : objsA) {
+        static_cast<Ship*>(o)->recharged();
+      }
+    } else {
+      for (Object* o : objsB) {
+        static_cast<Ship*>(o)->recharged();
+      }
+    }
+    objsA.clear();
+    objsB.clear();
+  }
 }
+
 
 void HybridScanner::prepare(BattleField& field) {
 	BspScanner::prepare(field);

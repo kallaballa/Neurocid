@@ -22,7 +22,7 @@ public:
 	vector<Projectile*> spawned_;
 
 	BattleField(Scenario* scenario, vector<Population>& teams);
-	void step();
+	bool step();
 private:
 	void scan();
 	void think();

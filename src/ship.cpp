@@ -12,6 +12,18 @@
 
 namespace neurocid {
 
+
+Ship::Ship(ObjectType type, size_t teamID, ShipLayout tl, Brain* brain) :
+    Object(type, {0,0}, 0, tl.radius_, false, false, false),
+    teamID_(teamID),
+    layout_(tl),
+    brain_(brain),
+    scan_(this),
+    history_(),
+    ammo_(tl.startAmmo_){
+  resetGameState();
+}
+
 Ship::Ship(size_t teamID, ShipLayout tl, Brain* brain) :
 		Object(SHIP, {0,0}, 0, tl.radius_, false, false, false),
 		teamID_(teamID),
@@ -117,6 +129,11 @@ void Ship::crash() {
 		crashDamage_ = 0;
 		damage();
 	}
+}
+
+void Ship::impact(Facility& f) {
+  crash();
+  f.crash();
 }
 
 void Ship::impact(Ship& other) {

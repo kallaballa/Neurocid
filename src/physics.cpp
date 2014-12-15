@@ -19,6 +19,10 @@ void Physics::wallHit(Ship& t) {
 	t.kill();
 }
 
+void Physics::wallHit(Facility& f) {
+  f.death();
+}
+
 void Physics::wallHit(Projectile& p) {
 	p.death();
 }
@@ -53,15 +57,48 @@ void Physics::collide(Blast& ex1, Blast& ex2) {
 }
 
 void Physics::collide(Blast& ex, Ship& t) {
+  return;
   if (t != (*ex.owner_->owner_)) {
     t.impact(*ex.owner_);
   }
 }
 
 void Physics::collide(Blast& ex1, Projectile& p) {
+  return;
   p.death();
   if(p.blast())
     blastingProjectiles_.push_back(&p);
+}
+
+
+void Physics::collide(Facility& f1, Facility& f2) {
+  f1.damage();
+  f2.damage();
+}
+
+void Physics::collide(Facility& f, Blast& ex) {
+  f.damage();
+}
+
+void Physics::collide(Facility& f, Ship& t) {
+//  t.impact(f);
+}
+
+void Physics::collide(Facility& f, Projectile& p) {
+  p.death();
+  if(p.blast())
+    blastingProjectiles_.push_back(&p);
+
+  if (p.owner_->teamID_ != f.teamID_) {
+    p.owner_->hits_++;
+  } else {
+    p.owner_->friendlyFire_++;
+  }
+
+  if(f.dead_ && p.owner_->teamID_ != f.teamID_)
+    p.owner_->killed();
+
+  f.damage();
 }
 
 void Physics::BeginContact(b2Contact* contact) {
@@ -82,24 +119,48 @@ void Physics::BeginContact(b2Contact* contact) {
       wallHit(*static_cast<Blast*>(oA));
       deadBodies_.push_back(contact->GetFixtureA()->GetBody());
     } else if(oA == NULL && oB != NULL && oB->type() == SHIP && !oB->dead_) {
-		  wallHit(*static_cast<Ship*>(oB));
-		  deadBodies_.push_back(contact->GetFixtureB()->GetBody());
-	  } else if(oB == NULL && oA != NULL && oA->type() == SHIP && !oA->dead_) {
-		  wallHit(*static_cast<Ship*>(oA));
-		  deadBodies_.push_back(contact->GetFixtureA()->GetBody());
-	  } else if(oA != NULL && oB != NULL && !oA->dead_ && !oB->dead_) {
-		  if(oA->type() == PROJECTILE && oB->type() == PROJECTILE) {
+      wallHit(*static_cast<Ship*>(oB));
+      deadBodies_.push_back(contact->GetFixtureB()->GetBody());
+    } else if(oB == NULL && oA != NULL && oA->type() == SHIP && !oA->dead_) {
+      wallHit(*static_cast<Ship*>(oA));
+      deadBodies_.push_back(contact->GetFixtureA()->GetBody());
+    } else if(oA == NULL && oB != NULL && oB->type() == FACILITY && !oB->dead_) {
+      wallHit(*static_cast<Facility*>(oB));
+      deadBodies_.push_back(contact->GetFixtureB()->GetBody());
+    } else if(oB == NULL && oA != NULL && oA->type() == FACILITY && !oA->dead_) {
+      wallHit(*static_cast<Facility*>(oA));
+      deadBodies_.push_back(contact->GetFixtureA()->GetBody());
+    } else if(oA != NULL && oB != NULL && !oA->dead_ && !oB->dead_) {
+		  if(oA->type() == PROJECTILE && oB->type() == PROJECTILE) {              //PROJECTILE
 			  collide(*static_cast<Projectile*>(oA), *static_cast<Projectile*>(oB));
 		  } else if(oA->type() == PROJECTILE && oB->type() == SHIP) {
 			  collide(*static_cast<Projectile*>(oA), *static_cast<Ship*>(oB));
 		  } else if(oA->type() == SHIP && oB->type() == PROJECTILE) {
 			  collide(*static_cast<Projectile*>(oB), *static_cast<Ship*>(oA));
-		  } else if(oA->type() == BLAST && oB->type() == BLAST) {
+		  } else if(oA->type() == BLAST && oB->type() == BLAST) {                 //BLAST
         collide(*static_cast<Blast*>(oA), *static_cast<Blast*>(oB));
       } else if(oA->type() == BLAST && oB->type() == SHIP) {
         collide(*static_cast<Blast*>(oA), *static_cast<Ship*>(oB));
       } else if(oA->type() == BLAST && oB->type() == PROJECTILE) {
         collide(*static_cast<Blast*>(oA), *static_cast<Projectile*>(oB));
+      } else if(oA->type() == SHIP && oB->type() == BLAST) {
+        collide(*static_cast<Blast*>(oB), *static_cast<Ship*>(oA));
+      } else if(oA->type() == PROJECTILE && oB->type() == BLAST) {
+        collide(*static_cast<Blast*>(oB), *static_cast<Projectile*>(oA));
+      } else if(oA->type() == FACILITY && oB->type() == FACILITY) {           //FACILITY
+        collide(*static_cast<Facility*>(oA), *static_cast<Facility*>(oB));
+      } else if(oA->type() == FACILITY && oB->type() == SHIP) {
+        collide(*static_cast<Facility*>(oA), *static_cast<Ship*>(oB));
+      } else if(oA->type() == FACILITY && oB->type() == PROJECTILE) {
+        collide(*static_cast<Facility*>(oA), *static_cast<Projectile*>(oB));
+      } else if(oA->type() == FACILITY && oB->type() == BLAST) {
+        collide(*static_cast<Facility*>(oA), *static_cast<Blast*>(oB));
+      } else if(oA->type() == SHIP && oB->type() == FACILITY) {
+        collide(*static_cast<Facility*>(oB), *static_cast<Ship*>(oA));
+      } else if(oA->type() == PROJECTILE && oB->type() == FACILITY) {
+        collide(*static_cast<Facility*>(oB), *static_cast<Projectile*>(oA));
+      } else if(oA->type() == BLAST && oB->type() == FACILITY) {
+        collide(*static_cast<Facility*>(oB), *static_cast<Blast*>(oA));
       }
 
 		  if(oA->dead_)
@@ -169,26 +230,26 @@ b2Body* Physics::makeWorldBox(BattleFieldLayout& bfl) {
 	b2FixtureDef topFixdef;
 	topFixdef.shape = &topShape;
 	topFixdef.density = 1;
-	topFixdef.filter.maskBits = 3;
-	topFixdef.filter.categoryBits = 3;
+	topFixdef.filter.maskBits = 7;
+	topFixdef.filter.categoryBits = 7;
 
 	b2FixtureDef leftFixdef;
 	leftFixdef.shape = &leftShape;
 	leftFixdef.density = 1;
-	leftFixdef.filter.maskBits = 3;
-	leftFixdef.filter.categoryBits = 3;
+	leftFixdef.filter.maskBits = 7;
+	leftFixdef.filter.categoryBits = 7;
 
 	b2FixtureDef bottomFixdef;
 	bottomFixdef.shape = &bottomShape;
 	bottomFixdef.density = 1;
-	bottomFixdef.filter.maskBits = 3;
-	bottomFixdef.filter.categoryBits = 3;
+	bottomFixdef.filter.maskBits = 7;
+	bottomFixdef.filter.categoryBits = 7;
 
 	b2FixtureDef rightFixdef;
 	rightFixdef.shape = &rightShape;
 	rightFixdef.density = 1;
-	rightFixdef.filter.maskBits = 3;
-	rightFixdef.filter.categoryBits = 3;
+	rightFixdef.filter.maskBits = 7;
+	rightFixdef.filter.categoryBits = 7;
 
 	body = world_.CreateBody(&bodyDef);
 	body->CreateFixture(&topFixdef);
@@ -226,8 +287,46 @@ b2Body* Physics::makeShipBody(Ship& t) {
 
     // Override the default friction.
     fixtureDef.friction = 0.0f;
-    fixtureDef.filter.maskBits = 1;
-    fixtureDef.filter.categoryBits = 3;
+    fixtureDef.filter.maskBits = 5; // all but facilities
+    fixtureDef.filter.categoryBits = 1;
+
+    // Add the shape to the body.
+    body->CreateFixture(&fixtureDef);
+    body->SetLinearDamping(0);
+    body->SetAngularDamping(0);
+    return body;
+}
+
+b2Body* Physics::makeFacilityBody(Facility& f) {
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(toMeters(f.loc_.x_), toMeters(f.loc_.y_));
+
+    CHECK(f.rotation_ <= M_PI);
+    bodyDef.angle = f.rotation_;
+    bodyDef.userData = static_cast<Object*>(&f);
+    bodyDef.allowSleep = true;
+    bodyDef.awake = true;
+    b2Body* body = world_.CreateBody(&bodyDef);
+
+    // Define another box shape for our dynamic body.
+    b2CircleShape dynamicCircle;
+    dynamicCircle.m_p.Set(0, 0);
+    dynamicCircle.m_radius = toMeters(f.radius_);
+
+    // Define the dynamic body fixture.
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &dynamicCircle;
+
+    // Set the box density to be non-zero, so it will be dynamic.
+    fixtureDef.density = 0.2f;
+
+    fixtureDef.restitution = 0.5f;
+
+    // Override the default friction.
+    fixtureDef.friction = 0.0f;
+    fixtureDef.filter.maskBits = 6; // all but ships
+    fixtureDef.filter.categoryBits = 2;
 
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
@@ -263,10 +362,10 @@ b2Body* Physics::makeProjectileBody(Projectile& p) {
     fixtureDef.friction = 0.3f;
 
     //Deativate projectile collisions
-    fixtureDef.filter.maskBits = 2;
-    fixtureDef.filter.categoryBits = 1;
-//    fixtureDef.filter.maskBits = 1;
-//    fixtureDef.filter.categoryBits = 3;
+ //   fixtureDef.filter.maskBits = 2;
+ //   fixtureDef.filter.categoryBits = 1;
+    fixtureDef.filter.maskBits = 7;
+    fixtureDef.filter.categoryBits = 4;
     body->SetFixedRotation(true);
     body->CreateFixture(&fixtureDef);
     body->SetLinearDamping(0);
@@ -301,11 +400,8 @@ b2Body* Physics::makeBlastBody(Projectile& p) {
     // Override the default friction.
     fixtureDef.friction = 0.3f;
 
-    //Deativate projectile collisions
-    fixtureDef.filter.maskBits = 1;
-    fixtureDef.filter.categoryBits = 3;
-//    fixtureDef.filter.maskBits = 1;
-//    fixtureDef.filter.categoryBits = 3;
+    fixtureDef.filter.maskBits = 7;
+    fixtureDef.filter.categoryBits = 4;
     body->SetFixedRotation(true);
     body->CreateFixture(&fixtureDef);
     body->SetLinearDamping(0);
@@ -334,6 +430,10 @@ void Physics::create(BattleField& field) {
 				makeProjectileBody(*p);
 			}
 		}
+
+    for(Facility& f: team.facilities_) {
+      makeFacilityBody(f);
+    }
 	}
 
 	world_.SetContactListener(this);

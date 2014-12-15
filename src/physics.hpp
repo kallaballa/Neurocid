@@ -9,6 +9,7 @@
 #define PHYSICS_HPP_
 
 #include "projectile.hpp"
+#include "facility.hpp"
 #include "2d.hpp"
 #include <Box2D/Box2D.h>
 #include <vector>
@@ -41,9 +42,11 @@ private:
 
 	b2Body* makeWorldBox(BattleFieldLayout& bfl);
 	b2Body* makeShipBody(Ship& t);
+  b2Body* makeFacilityBody(Facility& f);
 	b2Body* makeProjectileBody(Projectile& p);
 	b2Body* makeBlastBody(Projectile& p);
 
+	void wallHit(Facility& f);
 	void wallHit(Ship& t);
 	void wallHit(Projectile& p);
 	void wallHit(Blast& ex);
@@ -53,6 +56,10 @@ private:
   void collide(Blast& ex1, Blast& ex2);
   void collide(Blast& ex, Ship& t);
   void collide(Blast& ex1, Projectile& p);
+  void collide(Facility& f1, Facility& f2);
+  void collide(Facility& f, Blast& ex);
+  void collide(Facility& f, Ship& t);
+  void collide(Facility& f, Projectile& p);
 
   void BeginContact(b2Contact* contact)  override;
 	void EndContact(b2Contact* contact) override;

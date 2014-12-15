@@ -313,8 +313,8 @@ void SDLCanvas::drawShip(Ship& ship, Color c) {
     totalForce += blforce;
     totalForce += brforce;
 
-    Color jumpColor = c * 3;
-    drawLine(center.x_, center.y_, center.x_ + totalForce.x_ * -30, center.y_ + totalForce.y_ * -30, c);
+    Color jumpColor = c * 2;
+    drawLine(center.x_, center.y_, center.x_ + totalForce.x_ * -30, center.y_ + totalForce.y_ * -30, jumpColor);
 	}
 }
 
@@ -455,15 +455,12 @@ void SDLCanvas::render(BattleField& field) {
 	size_t teamCnt = 0;
 	for(Population& team : field.teams_) {
 		for(Facility& f : team.facilities_) {
-			if(f.teamID_ == 0 )
+		  if(f.dead_)
+		    continue;
+		  if(f.teamID_ == 0 )
 				this->drawFacility(f, Theme::teamA);
 			else
 				this->drawFacility(f, Theme::teamB);
-
-			if(f.captured_)
-				explosions_.push_back({f.loc_, 30, 50, {255, 255, 0, 255}});
-
-			f.captured_ = false;
 		}
 
 		for(Ship& t : team) {

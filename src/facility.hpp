@@ -13,11 +13,16 @@ struct FacilityLayout {
 #endif
 	size_t radius_;
 	size_t maxCooldown_;
+	size_t maxDamage_;
+	size_t crashesPerDamage_;
+
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
 	  ar & radius_;
 	  ar & maxCooldown_;
+	  ar & maxDamage_;
+	  ar & crashesPerDamage_;
 	}
 #endif
 };
@@ -27,43 +32,48 @@ public:
 	size_t teamID_;
 	FacilityLayout layout_;
 	Scan scan_;
-	bool captured_;
-	size_t cooldown_;
+	size_t damage_;
+	size_t crash_;
+	size_t crashDamage_;
 
 	Facility(const size_t& teamID, const FacilityLayout& layout, const Vector2D& loc) :
 		Object(FACILITY, loc, 0, layout.radius_, false, false, false),
 		teamID_(teamID),
 		layout_(layout),
-		scan_(this),
-		captured_(false),
-		cooldown_(0) {
-	}
+		scan_(this)
+	{}
 
 	void move(BattleFieldLayout& bfl) {
-		cool();
 	}
 
-	void captured() {
-		cooldown_ = layout_.maxCooldown_;
-		captured_ = true;
+	void resetGameState() {
+	  dead_ = false;
+	  explode_ = false;
+	  crashed_ = false;
 	}
 
-	void cool() {
-		if(cooldown_ > 0)
-			--cooldown_;
+	void damage() {
+	  damage_++;
+	  if (damage_ >= layout_.maxDamage_) {
+	    death();
+	  }
 	}
 
-	bool isCool() {
-		return cooldown_ == 0;
-	}
-
-	void reset() {
-		cooldown_ = 0;
-	}
 	void death() {
-		dead_ = true;
-		explode_ = true;
-		captured_ = false;
+	  damage_ = layout_.maxDamage_;
+	  dead_ = true;
+	  explode_ = true;
+	}
+
+	void crash() {
+	  crash_++;
+	  crashDamage_++;
+	  crashed_ = true;
+
+	  if(crashDamage_ >= layout_.crashesPerDamage_) {
+	    crashDamage_ = 0;
+	    damage();
+	  }
 	}
 };
 

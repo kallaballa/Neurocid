@@ -117,9 +117,9 @@ void OsdScreenWidget::update(BattleField& field) {
 	}
 
 	osdDeadA_->clear();
-	osdDeadA_->addLine("alive", std::to_string(field.teams_[0].size() - field.teams_[0].countDead()));
+	osdDeadA_->addLine("alive", std::to_string(field.teams_[0].size() - field.teams_[0].countDeadShips()));
 	osdDeadB_->clear();
-	osdDeadB_->addLine("alive", std::to_string(field.teams_[1].size() - field.teams_[1].countDead()));
+	osdDeadB_->addLine("alive", std::to_string(field.teams_[1].size() - field.teams_[1].countDeadShips()));
 
 	osdScoreA_->clear();
 	osdScoreA_->addLine("score", std::to_string(field.teams_[0].score_));

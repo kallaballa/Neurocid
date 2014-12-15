@@ -104,8 +104,7 @@ void Game::mate() {
 void Game::cleanup() {
 	for(Population& p : teams_) {
 		for(Facility& f : p.facilities_) {
-			f.teamID_ = p[0].teamID_;
-			f.reset();
+			f.resetGameState();
 		}
 
 		for(Ship& t : p) {
@@ -116,8 +115,7 @@ void Game::cleanup() {
 
 	for(Population& p : newTeams_) {
 		for(Facility& f : p.facilities_) {
-			f.teamID_ = p[0].teamID_;
-			f.reset();
+			f.resetGameState();
 		}
 
 		for(Ship& t : p) {
@@ -184,10 +182,13 @@ bool Game::step(bool render) {
   Renderer& renderer = *Renderer::getInstance();
 
   gs.pauseBarrier(100);
-
+  bool cont;
   auto dur = tt.measure([&]() {
-    field_->step();
+    cont = field_->step();
   });
+
+  if(!cont)
+    return false;
 
   if (render) {
     if (gs.isSlow() && dur < 1600) {

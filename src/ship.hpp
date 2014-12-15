@@ -3,6 +3,7 @@
 
 #include "object.hpp"
 #include "projectile.hpp"
+#include "facility.hpp"
 #include "battlefieldlayout.hpp"
 #include "2d.hpp"
 #include <cstring>
@@ -139,6 +140,8 @@ public:
 			brain_(NULL),
 			scan_(this)
 	{};
+
+	Ship(ObjectType type, size_t teamID, ShipLayout tl, Brain* brain = NULL);
 	Ship(size_t teamID, ShipLayout tl, Brain* brain = NULL);
 	~Ship() {
 	};
@@ -151,6 +154,7 @@ public:
 	void death();
 	void kill();
 	void crash();
+	void impact(Facility& f);
 	void impact(Ship& t);
 	void impact(Projectile& p);
 	void recharged();
