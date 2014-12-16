@@ -52,6 +52,13 @@ public:
 	  crashed_ = false;
 	}
 
+
+	void resetScore() {
+    damage_ = 0;
+	  crash_ = 0;
+	  crashDamage_ = 0;
+	}
+
 	void damage() {
 	  damage_++;
 	  if (damage_ >= layout_.maxDamage_) {

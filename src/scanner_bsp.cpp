@@ -67,7 +67,8 @@ void BspScanner::findInRange(ObjectBsp& bsp, Object& from, vector<Object*>& resu
 	bsp.find_within_range(&from, range, std::back_inserter(objects));
 
 	for(size_t i = 0; i < objects.size(); ++i) {
-		result.push_back(objects[i]);
+    if(!objects[i]->dead_)
+      result.push_back(objects[i]);
 	}
 }
 
@@ -76,7 +77,8 @@ void BspScanner::findInRange(ObjectBsp& bsp, Object& from, ScanObjectType type, 
 	bsp.find_within_range(&from, range, std::back_inserter(objects));
 
 	for(size_t i = 0; i < objects.size(); ++i) {
-		result.push_back(ScanObject{type, objects[i]->loc_, objects[i]->distance(from), objects[i]->vel_});
+	  if(!objects[i]->dead_)
+	    result.push_back(ScanObject{type, objects[i]->loc_, objects[i]->distance(from), objects[i]->vel_});
 	}
 }
 
@@ -84,7 +86,7 @@ void BspScanner::findInRange(ObjectBsp& bsp, Object& from, ScanObjectType type, 
 bool BspScanner::findNearest(ObjectBsp& bsp, Object& from, ScanObjectType type, ScanObjectVector& result) {
 	CHECK(!from.dead_);
 	auto p = bsp.find_nearest_if(&from, std::numeric_limits<Coord>().max(), [&](Object* candidate) {
-		return candidate != &from;
+		return !candidate->dead_ && candidate != &from;
 	});
 	CHECK(&from != (*p.first));
 
@@ -102,7 +104,7 @@ size_t BspScanner::findNearestN(ObjectBsp& bsp, Object& from, ScanObjectType typ
 	CHECK(!from.dead_);
 	size_t cnt = 0;
 	auto p = bsp.find_nearest_if(&from, std::numeric_limits<Coord>().max(), [&](Object* candidate) {
-		if(candidate != &from)
+		if(!candidate->dead_ && candidate != &from)
 			++cnt;
 		else
 			return false;

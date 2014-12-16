@@ -31,6 +31,11 @@ void Game::prepare() {
       t.resetGameState();
 			t.brain_->reset();
 		}
+
+    for(Facility& f : team.facilities_) {
+      f.resetGameState();
+      f.resetScore();
+    }
 	}
 }
 

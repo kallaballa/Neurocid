@@ -49,8 +49,7 @@ public:
 	  vector<Facility> facilities_;
 
 	struct Statistics {
-		Statistics() {
-			generationCnt_ = 0;
+		Statistics() : generationCnt_(0) {
 			reset();
 		}
 
@@ -77,6 +76,7 @@ public:
 		double averageBrainSwitches_;
 		size_t generationCnt_;
 		double score_;
+		size_t battleFieldIterations_;
 
 		size_t fittestGenome_;
 
@@ -98,6 +98,7 @@ public:
 			totalRecharged_ = 0;
 			totalBrainSwitches_ = 0;
 			score_ = 0;
+			battleFieldIterations_ = 0;
 		}
 
 		void print(std::ostream& os) {

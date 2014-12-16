@@ -96,6 +96,9 @@ bool BattleField::step() {
 		cleanup();
 	});
 
+	++(teams_[0].stats_.battleFieldIterations_);
+  ++(teams_[1].stats_.battleFieldIterations_);
+
 	return true;
 }
 

@@ -76,7 +76,7 @@ void Ship::move(BattleFieldLayout& bfl) {
 	brthrust_ = brain_->bthrust_;
 
 	bool canShoot = layout_.canShoot_ && (cool_down == 0 && ammo_ > 0);
-	bool wantsShoot = (brain_->shoot_ > 0.0);
+	bool wantsShoot = (brain_->shoot_ > 0.5);
 	if(canShoot && wantsShoot) {
 		willShoot_ = true;
 	} else if(cool_down > 0){
@@ -88,7 +88,7 @@ void Ship::move(BattleFieldLayout& bfl) {
 	}
 
 	bool canJump = layout_.canJump_ && fuel_ > layout_.jumpRate_;
-  bool wantsJump = (brain_->jump_ > 0.0);
+  bool wantsJump = (brain_->jump_ > 0.5);
 
   isJumping_ = canJump && wantsJump;
 

@@ -79,7 +79,7 @@ Ship& GeneticPool::pickSpecimen(Population& pop) {
 }
 
 /*
- * Returns a ship base on roulette wheel sampling
+ * Returns a ship based on roulette wheel sampling
  */
 Ship* GeneticPool::pickSpecimen(vector<Ship*>& pop) {
 	double totalFitness = 0;
@@ -231,7 +231,7 @@ void GeneticPool::calculateStatistics(Population& pop) {
 	pop.stats_.averageHits_ = pop.stats_.totalHits_ / size;
 	pop.stats_.averageDamage_ = pop.stats_.totalDamage_ / size;
 	pop.stats_.averageRecharged_ = pop.stats_.totalRecharged_ / size;
-	pop.stats_.averageBrainSwitches_ = pop.stats_.totalBrainSwitches_ / size;
+	pop.stats_.averageBrainSwitches_ = pop.stats_.totalBrainSwitches_ / pop.stats_.battleFieldIterations_;
 }
 
 /*
