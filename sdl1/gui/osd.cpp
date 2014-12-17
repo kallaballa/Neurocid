@@ -95,14 +95,15 @@ void OsdScreenWidget::update(BattleField& field) {
 		osdStatistics_->addLine("Best", "   " + std::to_string(field.teams_[0].stats_.bestFitness_) + " / " + std::to_string(field.teams_[1].stats_.bestFitness_));
 		osdStatistics_->addLine("Avg", "    " + std::to_string(field.teams_[0].stats_.averageFitness_) + " / " + std::to_string(field.teams_[1].stats_.averageFitness_));
 
-		string name = "game";
-		auto it = tiMap.find(name);
+		auto it = tiMap.find("game");
 		if(it != tiMap.end()) {
-			double gamesPerSecond = 0;
-			if((*it).second.last > 0)
-				gamesPerSecond = 1000000.0 / (*it).second.last;
-
-			osdStatistics_->addLine("Games/s", std::to_string(gamesPerSecond));
+		  auto itC = (*it).second.children_.find("step");
+		  if(itC != (*it).second.children_.end()) {
+        double stepsPerSecond = 0;
+        if((*itC).second.gameTime_ > 0)
+          stepsPerSecond = ((double)(*itC).second.gameCnt_ / (double)(*itC).second.gameTime_) * 1000000.0;
+        osdStatistics_->addLine("Steps/s", std::to_string(stepsPerSecond));
+		  }
 		}
 	}
 
