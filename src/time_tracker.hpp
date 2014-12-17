@@ -14,6 +14,7 @@
 #include <string>
 #include <sstream>
 #include <ostream>
+#include <limits>
 
 namespace neurocid {
 
@@ -24,30 +25,45 @@ using std::map;
 using std::chrono::microseconds;
 
 struct TimeInfo {
-	size_t cnt_ = 0;
-	size_t totalTime_ = 0;
-	size_t last = 0;
+	long totalCnt_ = 0;
+	long totalTime_ = 0;
+	long gameCnt_ = 0;
+	long gameTime_ = 0;
+	long last_ = 0;
 	map<string, TimeInfo> children_;
 
 	void add(size_t t) {
-		last = t;
+		last_ = t;
 		totalTime_ += t;
-		++cnt_;
-		if(cnt_ == 100) {
-			cnt_ = 1;
-			totalTime_ /= 100;
+    gameTime_ += t;
+		++totalCnt_;
+    ++gameCnt_;
+
+		if(totalCnt_ == std::numeric_limits<long>::max() || totalTime_ == std::numeric_limits<long>::max()) {
+			totalCnt_ = 0;
+			totalTime_ = 0;
 		}
+
+    if(gameCnt_ == std::numeric_limits<long>::max() || gameTime_ == std::numeric_limits<long>::max()) {
+      gameCnt_ = 0;
+      gameTime_ = 0;
+    }
+	}
+
+	void newGame() {
+	  gameCnt_ = 0;
+	  gameTime_ = 0;
 	}
 
 	string str() const {
 		stringstream ss;
-		ss << (double)totalTime_/(double)cnt_/1000 << " = (" << (double)totalTime_/(double)1000 << '\\' << cnt_ << ')';
+		ss << (double)totalTime_/(double)totalCnt_/1000.0 << " = (" << (double)totalTime_/(double)1000.0 << '\\' << totalCnt_ << ')';
 		return ss.str();
 	}
 };
 
 inline std::ostream& operator<<(ostream& os, TimeInfo& ti) {
-	os << (double)ti.totalTime_/(double)ti.cnt_/1000 << " = (" << (double)ti.totalTime_/(double)1000 << '\\' << ti.cnt_ << ')';
+	os << (double)ti.totalTime_/(double)ti.totalCnt_/1000 << " = (" << (double)ti.totalTime_/(double)1000 << '\\' << ti.totalCnt_ << ')';
 	return os;
 }
 
@@ -137,8 +153,16 @@ public:
 
     instance_ = NULL;
   }
-};
 
+  static void newGame() {
+    for(auto pair : instance_->tiMap_) {
+      pair.second.newGame();
+      for(auto pairc : pair.second.children_) {
+        pairc.second.newGame();
+      }
+    }
+  }
+};
 
 } /* namespace neurocid */
 

@@ -215,13 +215,20 @@ bool Game::step(bool render) {
 }
 
 vector<Population> Game::play(bool render) {
+  TimeTracker::newGame();
 	TimeTracker& tt = *TimeTracker::getInstance();
 
 	size_t dur = tt.measure([&]() {
 	  start();
 
 		tt.execute("game", "fight", [&]() {
-			while(step(render)){};
+			bool cont;
+		  do {
+		    tt.execute("game", "step", [&]() {
+		      cont = step(render);
+		    });
+		  }
+		  while(cont);
 		});
 
 		finish();
