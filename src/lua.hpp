@@ -20,7 +20,7 @@ struct PlacerLayout;
 struct BattleFieldLayout;
 
 namespace lua {
-double run_fitness_function(const string& script, Ship& ship, const BattleFieldLayout& bfl);
+double run_fitness_function(const string& script, Ship& ship, Facility& f, const BattleFieldLayout& bfl, bool winner);
 void run_placer(const string& name, vector<Population>& teams, const PlacerLayout& sl, const size_t& tick);
 }
 } /* namespace neurocid */

@@ -60,7 +60,7 @@ void Physics::collide(Facility& f, Projectile& p) {
   p.blast();
 
   if (p.owner_->teamID_ != f.teamID_) {
-    p.owner_->hits_++;
+    p.owner_->offensiveHits_++;
   } else {
     p.owner_->friendlyFire_++;
   }
@@ -462,7 +462,7 @@ void Physics::step() {
 				Projectile* p = static_cast<Projectile*>(o);
 				if((p->loc_ - p->startLoc_).length() > p->layout_.maxTravel_) {
 				  p->death();
-				  //p->blast();
+				  p->blast();
 				  deadBodies_.push_back(body);
 				} else {
 					Vector2D force = p->getDirection() * (p->layout_.maxSpeed_ * 10000);

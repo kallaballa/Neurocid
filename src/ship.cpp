@@ -40,19 +40,14 @@ void Ship::setBrain(Brain* b) {
 	brain_ = b;
 }
 
-static const Coord euler_constanct = std::exp(1.0);
-inline Coord sigmoid(const Coord& x) {
-	return (1 / (1 + pow(euler_constanct,-x)));
-}
-
 void Ship::log() {
 	if(!dead_)
 		history_.update(*this);
 }
 
-void Ship::calculateFitness(const BattleFieldLayout& bfl) {
+void Ship::calculateFitness(const BattleFieldLayout& bfl, Facility& f, bool winner) {
 	history_.calculate();
-	fitness_ = neurocid::lua::run_fitness_function(layout_.fitnessFunction_,*this, bfl);
+	fitness_ = neurocid::lua::run_fitness_function(layout_.fitnessFunction_,*this, f, bfl, winner);
 }
 
 void Ship::think(BattleFieldLayout& bfl) {
@@ -75,9 +70,18 @@ void Ship::move(BattleFieldLayout& bfl) {
 	blthrust_ = brain_->fthrust_;
 	brthrust_ = brain_->bthrust_;
 
-	bool canShoot = layout_.canShoot_ && (cool_down == 0 && ammo_ > 0);
+  bool canJump = layout_.canJump_ && fuel_ > layout_.jumpRate_;
+  bool wantsJump = (brain_->jump_ > 0.5);
+
+  isJumping_ = canJump && wantsJump;
+
+  if(isJumping_)
+    fuel_ -= layout_.jumpRate_;
+
+  bool canShoot = layout_.canShoot_ && (cool_down == 0 && ammo_ > 0);
 	bool wantsShoot = (brain_->shoot_ > 0.5);
-	if(canShoot && wantsShoot) {
+
+	if(canShoot && wantsShoot && isJumping_) {
 		willShoot_ = true;
 	} else if(cool_down > 0){
 		if(wantsShoot)
@@ -87,13 +91,6 @@ void Ship::move(BattleFieldLayout& bfl) {
 		--cool_down;
 	}
 
-	bool canJump = layout_.canJump_ && fuel_ > layout_.jumpRate_;
-  bool wantsJump = (brain_->jump_ > 0.5);
-
-  isJumping_ = canJump && wantsJump;
-
-  if(isJumping_)
-    fuel_ -= layout_.jumpRate_;
   //std::cerr << "canMove: " << tl_.canMove_ << "\tcanRotate: " << tl_.canRotate_ << "\tspeed: " << speed_ << "\trotForce:" << rotForce_  << std::endl;
 }
 
@@ -114,7 +111,8 @@ void Ship::death() {
 void Ship::kill() {
 	projectiles_.clear();
 	scan_.objects_.clear();
-	hits_ = 0;
+	defensiveHits_ = 0;
+  offensiveHits_ = 0;
 	recharged_ = 0;
 	fuel_ = 0;
 	death();
@@ -145,25 +143,13 @@ void Ship::impact(Projectile& p) {
 	damage();
 
 	if (p.owner_->teamID_ != teamID_) {
-		p.owner_->hits_++;
+		p.owner_->defensiveHits_++;
 	} else {
 		p.owner_->friendlyFire_++;
 	}
 
 	if(dead_ && p.owner_->teamID_ != teamID_)
 		p.owner_->killed();
-}
-
-void Ship::recharged() {
-	Coord amount = (layout_.maxFuel_ - fuel_);
-	CHECK(amount >= 0);
-	recharged_ += amount;
-	fuel_ = layout_.maxFuel_;
-	ammo_ = layout_.maxAmmo_;
-}
-
-void Ship::captured() {
-	++captured_;
 }
 
 void Ship::killed() {
@@ -220,12 +206,12 @@ void Ship::resetScore() {
 	friendlyFire_ = 0;
 	crash_ = 0;
 	crashDamage_ = 0;
-	hits_ = 0;
+	defensiveHits_ = 0;
+  offensiveHits_ = 0;
 	damage_ = 0;
 	fitness_ = 0;
 	recharged_ = 0;
 	failedShots_ = 0;
-	captured_ = 0;
 	kills_ = 0;
 }
 

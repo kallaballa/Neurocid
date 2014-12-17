@@ -210,11 +210,26 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
         findInRange(bspFriendFacilities, *p->blast_, result, p->blast_->layout_.radius_);
         findInRange(bspEnemyFacilities, *p->blast_, result, p->blast_->layout_.radius_);
 
+        size_t cntColateral = 0;
         for (Object* o : result) {
+          if(cntColateral >= p->blast_->layout_.maxColateral_)
+            break;
           if (o->type() == SHIP) {
-            static_cast<Ship*>(o)->damage();
+            static_cast<Ship*>(o)->impact(*p);
+            ++cntColateral;
           } else if (o->type() == FACILITY) {
-            static_cast<Facility*>(o)->damage();
+            Facility* f = static_cast<Facility*>(o);
+            f->damage();
+
+            if (p->owner_->teamID_ != f->teamID_) {
+              p->owner_->defensiveHits_++;
+            } else {
+              p->owner_->friendlyFire_++;
+            }
+
+            if(f->dead_ && p->owner_->teamID_ != f->teamID_)
+              p->owner_->killed();
+            ++cntColateral;
           }
         }
 
@@ -244,11 +259,11 @@ void HybridScanner::scan(BattleField& field) {
 
     if (f.teamID_ == 0) {
       for (Object* o : objsA) {
-        static_cast<Ship*>(o)->recharged();
+        f.recharge(*static_cast<Ship*>(o));
       }
     } else {
       for (Object* o : objsB) {
-        static_cast<Ship*>(o)->recharged();
+        f.recharge(*static_cast<Ship*>(o));
       }
     }
     objsA.clear();
@@ -263,11 +278,11 @@ void HybridScanner::scan(BattleField& field) {
 
     if (f.teamID_ == 0) {
       for (Object* o : objsA) {
-        static_cast<Ship*>(o)->recharged();
+        f.recharge(*static_cast<Ship*>(o));
       }
     } else {
       for (Object* o : objsB) {
-        static_cast<Ship*>(o)->recharged();
+        f.recharge(*static_cast<Ship*>(o));
       }
     }
     objsA.clear();

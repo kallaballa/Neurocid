@@ -278,13 +278,13 @@ void SDLCanvas::drawShip(Ship& ship, Color c) {
 		brengine += (across1 * -(ship.radius_));
 
 		Vector2D flforce = flengine;
-		flforce += across2 * -(ship.flthrust_ * 600);
+		flforce += across2 * -(ship.flthrust_ * 6000);
 		Vector2D frforce = frengine;
-		frforce += across1 * (ship.frthrust_ * 600);
+		frforce += across1 * (ship.frthrust_ * 6000);
 		Vector2D blforce = blengine;
-		blforce += across1 * (ship.blthrust_ * 600);
+		blforce += across1 * (ship.blthrust_ * 6000);
 		Vector2D brforce = brengine;
-		brforce += across2 * -(ship.brthrust_ * 600);
+		brforce += across2 * -(ship.brthrust_ * 6000);
 
 		drawLine(flengine.x_, flengine.y_, flforce.x_, flforce.y_, cengine);
 		drawLine(frengine.x_, frengine.y_, frforce.x_, frforce.y_, cengine);
@@ -320,7 +320,10 @@ void SDLCanvas::drawShip(Ship& ship, Color c) {
 
 void SDLCanvas::drawFacility(Facility& facility, Color c) {
 #ifndef _NO_SDLGFX
-	auto scaled = transform(facility.loc_);
+  if(facility.recharged_ >= facility.layout_.maxRecharge_)
+    c = c * 0.5;
+
+  auto scaled = transform(facility.loc_);
 	filledCircleRGBA(screen_, scaled.first, scaled.second, round((facility.layout_.radius_ / 100) * scale_), c.r, c.g, c.b, 128);
 
 	for(size_t i = 0; i < 50; ++i) {

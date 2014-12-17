@@ -19,11 +19,14 @@ struct BlastLayout {
 	friend class boost::serialization::access;
 #endif
 	Coord radius_;
+  Coord maxColateral_;
+
 
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
 	  ar & radius_;
+	  ar & maxColateral_;
 	}
 #endif
 };

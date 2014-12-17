@@ -64,18 +64,19 @@ public:
 
 		double totalFriendlyFire_;
 		double totalCrash_;
-		double totalHits_;
+		double totalDefensiveHits_;
+    double totalOffensiveHits_;
 		double totalDamage_;
 		double totalRecharged_;
 		double totalBrainSwitches_;
 		double averageFriendlyFire_;
 		double averageCrash_;
-		double averageHits_;
+		double averageDefensiveHits_;
+    double averageOffensiveHits_;
 		double averageDamage_;
 		double averageRecharged_;
 		double averageBrainSwitches_;
 		size_t generationCnt_;
-		double score_;
 		size_t battleFieldIterations_;
 
 		size_t fittestGenome_;
@@ -93,11 +94,11 @@ public:
 			totalFitness_ = 0;
 			totalCrash_ = 0;
 			totalFriendlyFire_ = 0;
-			totalHits_ = 0;
+			totalDefensiveHits_ = 0;
+      totalOffensiveHits_ = 0;
 			totalDamage_ = 0;
 			totalRecharged_ = 0;
 			totalBrainSwitches_ = 0;
-			score_ = 0;
 			battleFieldIterations_ = 0;
 		}
 
@@ -105,13 +106,13 @@ public:
 			os << generationCnt_ << ":"
 					<< bestFitness_ << ":"
 					<< averageFitness_ << ":"
-					<< averageHits_ << ":"
+					<< averageDefensiveHits_ << ":"
+          << averageOffensiveHits_ << ":"
 					<< averageFriendlyFire_ << ":"
 					<< averageCrash_ << ":"
 					<< averageDamage_ << ":"
-					<< (averageRecharged_ / 3) << ":"
-					<< averageBrainSwitches_ << ":"
-					<< (score_);
+					<< averageRecharged_ << ":"
+					<< averageBrainSwitches_;
 		}
 	};
 

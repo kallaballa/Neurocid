@@ -42,6 +42,8 @@ int main(int argc, char** argv) {
   size_t width = 800;
   size_t height = 800;
   size_t frameRate = 25;
+  string statCSV;
+  string brainAU;
   long autosaveInterval = 0;
 
 #ifndef _NO_PROGRAM_OPTIONS
@@ -54,6 +56,8 @@ int main(int argc, char** argv) {
       ("saveA", po::value<string>(&saveAFile), "Save the team A population to a file after running the scenario")
       ("saveB", po::value<string>(&saveBFile), "Save the team B population to a file after running the scenario")
       ("capture,c", po::value<string>(&captureFile), "Capture the game to a video file")
+      ("stats-csv", po::value<string>(&statCSV), "Dump the population statistics to a CSV (text) file.")
+      ("brain-au", po::value<string>(&brainAU), "Dump the neural network output to an AU (audio) file")
       ("width,x", po::value<size_t>(&width), "The window width")
       ("height,y", po::value<size_t>(&height), "The window height")
       ("framerate,f", po::value<size_t>(&frameRate), "The frame rate of the renderer and video encoder")

@@ -78,6 +78,13 @@ CXXFLAGS += -D__STDC_CONSTANT_MACROS `pkg-config --cflags libavformat libavcodec
 LIBS     += `pkg-config --libs libavformat libavcodec libswscale libavutil`
 endif
 
+ifdef WITHOUT_SNDFILE
+CXXFLAGS += -D_NO_SNDFILE
+else
+CXXFLAGS += `pkg-config --cflags sndfile`
+LIBS     += `pkg-config --libs sndfile`
+endif
+
 ifdef WITHOUT_THREADS
 CXXFLAGS += -D_NO_THREADS
 endif

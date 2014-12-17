@@ -8,7 +8,7 @@ else
 TARGET := libneurocid.a
 endif
 
-SRCS    := brain_swarm.cpp brain_fann.cpp battlefield.cpp ship.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner_bsp.cpp scanner_cluster.cpp time_tracker.cpp scanner_hybrid.cpp scan.cpp video_encoder.cpp frontend.cpp lua.cpp population.cpp history.cpp error.cpp gui.cpp canvas.cpp
+SRCS    := brain_swarm.cpp brain_fann.cpp battlefield.cpp ship.cpp genetic.cpp util.cpp renderer.cpp game.cpp options.cpp gamestate.cpp physics.cpp scanner_bsp.cpp scanner_cluster.cpp time_tracker.cpp scanner_hybrid.cpp scan.cpp video_encoder.cpp frontend.cpp lua.cpp population.cpp history.cpp error.cpp gui.cpp canvas.cpp facility.cpp
 ifdef TANKWAR_GPU
 SRCS += KMeans.cpp
 endif

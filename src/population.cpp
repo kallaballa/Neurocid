@@ -10,9 +10,10 @@ PopulationLayout make_default_population_layout() {
 		{
 		  //Projectile Layout
 			{
-			  //Explosion Layout
+			  //Blast Layout
 			  {
-			     1000
+			     1000,
+			     10
 			  },
 				1,    // max_speed_
 				30000, // max_travel_
@@ -39,7 +40,7 @@ PopulationLayout make_default_population_layout() {
 			5, // max_cooldown_
 			3, // max_damage_
 			1, // crashes_per_damage_
-			4,  // num_perf_desc_
+			2,  // num_perf_desc_
 			"fitness/amir" // fitnessFunction;
 		},
 		//BrainLayout
@@ -57,8 +58,9 @@ PopulationLayout make_default_population_layout() {
 		{
 			6000,
 			500,
-			100,
-			1
+			500,
+			1,
+			2000000
 		}
 	};
 }

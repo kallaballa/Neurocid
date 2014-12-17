@@ -17,9 +17,9 @@ local fitness = 0;
 
 
 -- the following global variables are required by the c++ code and will be read to build a performance descriptor.
-hitRatio = -1;
+offensiveRatio = -1;
+defensiveRatio = -1;
 friendlyRatioInv = -1;
-damageRatioInv = -1;
 aimRatio = 0.0;
 
 if not layout.disableProjectileFitness then
@@ -79,30 +79,45 @@ else
 		assert(aimRatio <= 1.0);
 	end
 
-	hitRatio = ship.hits / shots;
-	friendlyRatioInv = 2.0 - (ship.friendlyFire / shots);
-	damageRatioInv = 2.0 - (ship.damage / layout.maxDamage);
-
+	friendlyRatioInv = 2.0 - ((ship.friendlyFire / shots) / 10);
+	local damageRatioInv = 2.0 - (ship.damage / layout.maxDamage);
+	local fDamageRatioInv = 2.0 - (nc.facility.damage / nc.facility.layout.maxDamage)
+  offensiveRatio = (ship.offensiveHits / shots) / 10; -- FIXME: we need the blast layout
+  defensiveRatio = (ship.defensiveHits / shots) / 10;
+	
   assert(aimRatio >= 0.0);
   assert(aimRatio <= 1.0);
-  assert(hitRatio >= 0.0);
-  assert(hitRatio <= 1.0);
-  assert(damageRatioInv >= 1.0);
+  assert(damageRatioInv >= 0.0);
   assert(damageRatioInv <= 2.0);
-  assert(friendlyRatioInv >= 1.0);
+  assert(friendlyRatioInv >= 0.0);
   assert(friendlyRatioInv <= 2.0);
+  assert(offensiveRatio >= 0.0);
+  assert(offensiveRatio <= 1.0);
+  assert(defensiveRatio >= 0.0);
+  assert(defensiveRatio <= 1.0);
 
 	local aim = (aimRatio / (ship.failedShots + 1));
-  local taken = damageRatioInv * friendlyRatioInv;
-  local inflicted = (ship.hits) + (ship.kills * 3);
-
-	local score = inflicted * taken * ((ship.captured + 1) * 2);
+  local taken = damageRatioInv * friendlyRatioInv * fDamageRatioInv;
+  local offense = ship.offensiveHits;
+  local defense = ship.defensiveHits;
+  if offense < defense then
+    offense = offense * 2;
+  elseif defense < offense then
+		defense = defense * 2;
+	end
+    
+	local score = (offense + defense) * taken;
 
   fitness = aim + score;
 
   if ship.dead then
       fitness = fitness / 2.0;
 	end
+
+  if nc.winner then
+      fitness = fitness * 3;
+  end
+
 end
 
 if fitness == 0 and ship.fuel == 0 then

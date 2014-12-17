@@ -51,7 +51,8 @@ void Game::score() {
 	for(size_t i = 0; i < teams_.size(); ++i) {
 		Population& team = teams_[i];
 		for(Facility& f : team.facilities_) {
-			++ownedFacilites[f.teamID_];
+		  if(!f.dead_)
+		    ++ownedFacilites[f.teamID_];
 		}
 	}
 
@@ -59,9 +60,11 @@ void Game::score() {
 		if(ownedFacilites[0] > ownedFacilites[1]) {
 			teams_[0].score_++;
 			teams_[0].winner_=true;
+      teams_[1].winner_=false;
 		} else {
 			teams_[1].score_++;
 			teams_[1].winner_=true;
+      teams_[0].winner_=false;
 		}
 	}
 

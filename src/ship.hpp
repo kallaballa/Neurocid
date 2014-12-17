@@ -112,10 +112,10 @@ public:
 	size_t friendlyFire_ = 0;
 	size_t crash_ = 0;
 	size_t crashDamage_= 0;
-	size_t hits_= 0;
+	size_t defensiveHits_= 0;
+	size_t offensiveHits_ = 0;
 	size_t damage_= 0;
 	size_t failedShots_ = 0;
-	size_t captured_ = 0;
 	size_t kills_ = 0;
 
 	Coord fuel_ = 0;
@@ -157,12 +157,10 @@ public:
 	void impact(Facility& f);
 	void impact(Ship& t);
 	void impact(Projectile& p);
-	void recharged();
-	void captured();
 	void killed();
 
 	void log();
-	void calculateFitness(const BattleFieldLayout& bfl);
+	void calculateFitness(const BattleFieldLayout& bfl, Facility& f, bool winner);
 	void resetGameState();
 	void resetScore();
 	void update(ShipLayout tl);

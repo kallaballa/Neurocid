@@ -17,7 +17,7 @@ GeneticLayout make_default_genetic_layout() {
 			0.3, // maxPertubation
 			4,   // numElite
 			1,   // numEliteCopies
-			false// usePerfDesc_
+			true// usePerfDesc_
 	};
 }
 
@@ -201,7 +201,8 @@ void GeneticPool::calculateStatistics(Population& pop) {
 	for (size_t i = 0; i < size; ++i) {
 		pop.stats_.totalFriendlyFire_ += pop[i].friendlyFire_;
 		pop.stats_.totalCrash_ += pop[i].crash_;
-		pop.stats_.totalHits_  += pop[i].hits_;
+		pop.stats_.totalDefensiveHits_  += pop[i].defensiveHits_;
+		pop.stats_.totalOffensiveHits_  += pop[i].offensiveHits_;
 		pop.stats_.totalDamage_  += pop[i].damage_;
 		pop.stats_.totalRecharged_ += pop[i].recharged_;
 		pop.stats_.totalBrainSwitches_ += pop[i].brain_->brainStats_.countSwitches();
@@ -224,14 +225,14 @@ void GeneticPool::calculateStatistics(Population& pop) {
 
 	CHECK(pop.stats_.bestFitness_ != std::numeric_limits<double>().max());
 
-	pop.stats_.score_ = pop.stats_.totalHits_ - pop.stats_.totalDamage_;
 	pop.stats_.averageFitness_ = pop.stats_.totalFitness_ / size;
 	pop.stats_.averageFriendlyFire_ = pop.stats_.totalFriendlyFire_ / size;
 	pop.stats_.averageCrash_ = pop.stats_.totalCrash_ / size;
-	pop.stats_.averageHits_ = pop.stats_.totalHits_ / size;
+	pop.stats_.averageDefensiveHits_ = pop.stats_.totalDefensiveHits_ / size;
+  pop.stats_.averageOffensiveHits_ = pop.stats_.totalOffensiveHits_ / size;
 	pop.stats_.averageDamage_ = pop.stats_.totalDamage_ / size;
 	pop.stats_.averageRecharged_ = pop.stats_.totalRecharged_ / size;
-	pop.stats_.averageBrainSwitches_ = pop.stats_.totalBrainSwitches_ / pop.stats_.battleFieldIterations_;
+	pop.stats_.averageBrainSwitches_ = pop.stats_.totalBrainSwitches_ / pop.stats_.battleFieldIterations_ + 1;
 }
 
 /*
@@ -244,7 +245,7 @@ Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl)
 		old_pop.stats_.reset();
 
 		for(Ship& t : old_pop) {
-			t.calculateFitness(bfl);
+			t.calculateFitness(bfl, old_pop.facilities_.front(), old_pop.winner_);
 			t.isElite = false;
 		}
 
@@ -266,7 +267,7 @@ Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl)
 	old_pop.stats_.reset();
 
 	for(Ship& t : old_pop) {
-		t.calculateFitness(bfl);
+		t.calculateFitness(bfl, old_pop.facilities_.front(), old_pop.winner_);
 		t.isElite = false;
 	}
 
@@ -288,11 +289,11 @@ Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl)
 		}
 	}
 
-	CHECK(old_pop.layout_.sl_.numPerfDesc_ == 4);
-	PerfDescBsp<4,Ship> pdb;
+	CHECK(old_pop.layout_.sl_.numPerfDesc_ == 2);
+	PerfDescBsp<2,Ship> pdb;
 	if(layout_.usePerfDesc_) {
 		for(Ship& t : old_pop) {
-		  CHECK(t.perfDesc_.size() == 4);
+		  CHECK(t.perfDesc_.size() == 2);
 			pdb.insert(&t);
 		}
 	}
