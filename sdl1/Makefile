@@ -6,7 +6,7 @@ endif
 
 SRCS  := neurocid.cpp eventloop.cpp procedural_scenarios.cpp json_scenario.cpp sdl/sdlcanvas.cpp sdl/background.cpp ../guichan/src/contrib/sdl/sdltruetypefont.cpp gui/guichangui.cpp gui/help.cpp gui/osd.cpp gui/widgets.cpp theme.cpp
 CXXFLAGS += `pkg-config --cflags sdl SDL_image SDL_ttf` -I../guichan/include/
-LIBS += `pkg-config --libs sdl SDL_image SDL_ttf` -lguichan -lguichan_sdl
+LIBS += `pkg-config --libs sdl SDL_image SDL_ttf` -lguichan -lguichan_sdl -lpthread
 LDFLAGS += -L../guichan/
 
 #precompiled headers
@@ -25,10 +25,9 @@ LIBS    += -lneurocid
 ifdef WITHOUT_SDLGFX
 CXXFLAGS += -D_NO_SDLGFX
 else
-CXXFLAGS += `pkg-config --cflags SDL_gfx`
-LIBS +=  `pkg-config --libs SDL_gfx`
+CXXFLAGS += `pkg-config --cflags SDL_gfx SDL_image`
+LIBS +=  `pkg-config --libs SDL_gfx SDL_image`
 endif
-
 
 
 .PHONY: all release debug clean distclean 
