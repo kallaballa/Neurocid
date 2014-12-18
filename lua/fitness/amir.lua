@@ -115,7 +115,7 @@ else
 	end
 
   if nc.winner then
-      fitness = fitness * 3;
+      fitness = math.pow(fitness,0.9);
   end
 
 end

@@ -46,6 +46,7 @@ struct ShipLayout {
 	size_t maxAmmo_;
 	size_t startAmmo_;
 	size_t maxCooldown_;
+  size_t maxStun_;
 	size_t maxDamage_;
 	size_t crashesPerDamage_;
 	size_t numPerfDesc_;
@@ -75,6 +76,7 @@ struct ShipLayout {
 
 	  ar & maxAmmo_;
 	  ar & maxCooldown_;
+    ar & maxStun_;
 	  ar & maxDamage_;
 	  ar & crashesPerDamage_;
 	  ar & numPerfDesc_;
@@ -108,7 +110,7 @@ public:
 	Coord brthrust_ = 0;
 	size_t ammo_ = 0;
 	size_t cool_down = 0;
-
+	size_t stun_ = 0;
 	size_t friendlyFire_ = 0;
 	size_t crash_ = 0;
 	size_t crashDamage_= 0;
@@ -158,6 +160,7 @@ public:
 	void impact(Ship& t);
 	void impact(Projectile& p);
 	void killed();
+	void stun();
 
 	void log();
 	void calculateFitness(const BattleFieldLayout& bfl, Facility& f, bool winner);

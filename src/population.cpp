@@ -12,8 +12,8 @@ PopulationLayout make_default_population_layout() {
 			{
 			  //Blast Layout
 			  {
-			     1000,
-			     10
+			     1000, // radius
+			     10    // maxColaterl
 			  },
 				1,    // max_speed_
 				30000, // max_travel_
@@ -38,6 +38,7 @@ PopulationLayout make_default_population_layout() {
 			20,// max_ammo_
 			0, // start_ammo_
 			5, // max_cooldown_
+			200, //max_stun_
 			3, // max_damage_
 			1, // crashes_per_damage_
 			2,  // num_perf_desc_

@@ -44,7 +44,7 @@ void Facility::crash() {
 }
 
 bool Facility::recharge(Ship& s) {
-  if (recharged_ < layout_.maxRecharge_) {
+//  if (recharged_ < layout_.maxRecharge_) {
     Coord amount = (s.layout_.maxFuel_ - s.fuel_);
     amount += (s.layout_.maxAmmo_ - s.ammo_) * 10;
     CHECK(amount >= 0);
@@ -53,7 +53,7 @@ bool Facility::recharge(Ship& s) {
     s.ammo_ = s.layout_.maxAmmo_;
     recharged_ += amount;
     return true;
-  }
-  return false;
+//  }
+//  return false;
 }
 }

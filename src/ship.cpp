@@ -63,25 +63,33 @@ void Ship::move(BattleFieldLayout& bfl) {
 	if(layout_.isDummy_)
 		return;
 
+  bool isStunned = stun_ > 0.0;
+  bool canJump = layout_.canJump_ && fuel_ > layout_.jumpRate_;
+  bool wantsJump = (brain_->jump_ > 0.0);
+
 	CHECK(brain_ != NULL);
 	//assign the outputs
-	flthrust_ = brain_->lthrust_;
-	frthrust_ = brain_->rthrust_;
-	blthrust_ = brain_->fthrust_;
-	brthrust_ = brain_->bthrust_;
+	if(!isStunned) {
+	  flthrust_ = brain_->lthrust_;
+	  frthrust_ = brain_->rthrust_;
+	  blthrust_ = brain_->fthrust_;
+	  brthrust_ = brain_->bthrust_;
+	} else {
+	  flthrust_ = 0;
+	  frthrust_ = 0;
+	  blthrust_ = 0;
+	  brthrust_ = 0;
+	}
 
-  bool canJump = layout_.canJump_ && fuel_ > layout_.jumpRate_;
-  bool wantsJump = (brain_->jump_ > 0.5);
-
-  isJumping_ = canJump && wantsJump;
+  isJumping_ = canJump && wantsJump && !isStunned;
 
   if(isJumping_)
     fuel_ -= layout_.jumpRate_;
 
-  bool canShoot = layout_.canShoot_ && (cool_down == 0 && ammo_ > 0);
-	bool wantsShoot = (brain_->shoot_ > 0.5);
+  bool canShoot = layout_.canShoot_ && (cool_down == 0 && ammo_ > 0) && !isStunned && !isJumping_;
+	bool wantsShoot = (brain_->shoot_ > 0.0);
 
-	if(canShoot && wantsShoot && isJumping_) {
+	if(canShoot && wantsShoot) {
 		willShoot_ = true;
 	} else if(cool_down > 0){
 		if(wantsShoot)
@@ -91,6 +99,8 @@ void Ship::move(BattleFieldLayout& bfl) {
 		--cool_down;
 	}
 
+	if(isStunned)
+	  --stun_;
   //std::cerr << "canMove: " << tl_.canMove_ << "\tcanRotate: " << tl_.canRotate_ << "\tspeed: " << speed_ << "\trotForce:" << rotForce_  << std::endl;
 }
 
@@ -154,6 +164,10 @@ void Ship::impact(Projectile& p) {
 
 void Ship::killed() {
 	++kills_;
+}
+
+void Ship::stun() {
+  stun_ = layout_.maxStun_;
 }
 
 Ship Ship::makeChild() const {

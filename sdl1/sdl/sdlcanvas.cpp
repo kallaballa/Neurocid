@@ -247,6 +247,13 @@ void SDLCanvas::drawShip(Ship& ship, Color c) {
   else
     drawEllipse(ship.loc_, ship.radius_ / 100, ship.radius_ / 100, c);
 
+  if(ship.stun_ > 0 && !ship.layout_.isDummy_)
+  {
+    if (scale_ < 0.013)
+      drawEllipse(ship.loc_, ship.radius_, ship.radius_, {255,255,255});
+    else
+      drawEllipse(ship.loc_, ship.radius_, ship.radius_, {255,255,255});
+  }
   drawLine(ship.loc_.x_, ship.loc_.y_, tip.x_, tip.y_, c);
 
 

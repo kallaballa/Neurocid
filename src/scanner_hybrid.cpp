@@ -215,10 +215,11 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
           if(cntColateral >= p->blast_->layout_.maxColateral_)
             break;
           if (o->type() == SHIP) {
+            static_cast<Ship*>(o)->stun();
             static_cast<Ship*>(o)->impact(*p);
             ++cntColateral;
           } else if (o->type() == FACILITY) {
-            Facility* f = static_cast<Facility*>(o);
+            /*Facility* f = static_cast<Facility*>(o);
             f->damage();
 
             if (p->owner_->teamID_ != f->teamID_) {
@@ -229,7 +230,7 @@ void HybridScanner::teamScan(Population& friends, Population& enemies, vector<Ve
 
             if(f->dead_ && p->owner_->teamID_ != f->teamID_)
               p->owner_->killed();
-            ++cntColateral;
+            ++cntColateral;*/
           }
         }
 

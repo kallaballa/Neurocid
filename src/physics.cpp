@@ -37,9 +37,9 @@ void Physics::collide(Projectile& p1, Projectile& p2) {
 void Physics::collide(Projectile& p, Ship& t) {
 	if (t != (*p.owner_)) {
 		t.impact(p);
+	  p.death();
+	  p.blast();
 	}
-	p.death();
-	p.blast();
 }
 
 void Physics::collide(Ship& t1, Ship& t2) {
