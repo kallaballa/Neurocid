@@ -5,8 +5,8 @@ TARGET := neurocid-bin.html
 endif
 
 SRCS  := neurocid.cpp eventloop.cpp procedural_scenarios.cpp json_scenario.cpp sdl/sdlcanvas.cpp sdl/background.cpp ../guichan/src/contrib/sdl/sdltruetypefont.cpp gui/guichangui.cpp gui/help.cpp gui/osd.cpp gui/widgets.cpp theme.cpp
-CXXFLAGS += `pkg-config --cflags sdl SDL_image SDL_ttf` -I../guichan/include/
-LIBS += `pkg-config --libs sdl SDL_image SDL_ttf` -lguichan -lguichan_sdl -lpthread
+CXXFLAGS += `pkg-config --cflags sdl SDL_image SDL_ttf x11` -I../guichan/include/
+LIBS += `pkg-config --libs sdl SDL_image SDL_ttf x11` -lguichan -lguichan_sdl -lpthread
 LDFLAGS += -L../guichan/
 
 #precompiled headers
