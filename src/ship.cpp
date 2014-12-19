@@ -86,7 +86,7 @@ void Ship::move(BattleFieldLayout& bfl) {
   if(isJumping_)
     fuel_ -= layout_.jumpRate_;
 
-  bool canShoot = layout_.canShoot_ && (cool_down == 0 && ammo_ > 0) && !isStunned && !isJumping_;
+  bool canShoot = layout_.canShoot_ && (cool_down == 0 && ammo_ > 0) && !isJumping_ && !isStunned;
 	bool wantsShoot = (brain_->shoot_ > 0.0);
 
 	if(canShoot && wantsShoot) {
@@ -196,13 +196,16 @@ Ship Ship::clone() const {
 }
 
 void Ship::resetGameState() {
-	for(Projectile* p : projectiles_) {
+  auto pcopy = projectiles_;
+  projectiles_.clear();
+
+  for(Projectile* p : pcopy) {
 	  if(p->blast_ != NULL)
 	    delete p->blast_;
 	  delete p;
 	}
-	projectiles_.clear();
-	flthrust_ = 0;
+
+  flthrust_ = 0;
 	frthrust_ = 0;
 	blthrust_ = 0;
 	brthrust_ = 0;

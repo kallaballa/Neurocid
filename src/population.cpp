@@ -38,7 +38,7 @@ PopulationLayout make_default_population_layout() {
 			20,// max_ammo_
 			0, // start_ammo_
 			5, // max_cooldown_
-			200, //max_stun_
+			500, //max_stun_
 			3, // max_damage_
 			1, // crashes_per_damage_
 			2,  // num_perf_desc_
@@ -61,7 +61,7 @@ PopulationLayout make_default_population_layout() {
 			500,
 			500,
 			1,
-			2000000
+			20000000
 		}
 	};
 }
