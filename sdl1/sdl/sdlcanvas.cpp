@@ -493,7 +493,7 @@ void SDLCanvas::render(BattleField& field) {
 			t.explode_ = false;
 			t.crashed_ = false;
 			for(Projectile* p : t.projectiles_) {
-//				if(p->explode_)
+			  //				if(p->explode_)
 //					explosions_.push_back({p->loc_, 0, 20, {255,64,0,255}});
 
         if(p->blast_ != NULL && !p->blast_->dead_)
