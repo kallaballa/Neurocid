@@ -106,7 +106,7 @@ else
 		defense = defense * 2;
 	end
     
-	local score = (offense + defense) * taken;
+	local score = ((offense) + (defense)) * taken;
 
   fitness = aim + score;
 
