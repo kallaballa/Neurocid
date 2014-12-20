@@ -66,7 +66,9 @@ void BrainFann::makeNN() {
 
     metaInputs_ = new fann_type[layout_.numMetaInputs_];
 	inputs_ = new fann_type[layout_.numInputs_];
-    delete[] layerArray;
+  outputs_ = new fann_type[layout_.numOutputs];
+
+	delete[] layerArray;
 
 	reset();
 
@@ -95,7 +97,11 @@ void BrainFann::destroy() {
 
 	delete[] inputs_;
 	inputs_ = NULL;
-	destroyed_ = true;
+
+  delete[] outputs_;
+  outputs_ = NULL;
+
+  destroyed_ = true;
 }
 
 void BrainFann::reset() {
@@ -103,6 +109,7 @@ void BrainFann::reset() {
 	brainStats_.switches_.clear();
 	CHECK(metaInputs_ != NULL);
 	CHECK(inputs_ != NULL);
+  CHECK(outputs_ != NULL);
 
 	std::fill_n(metaInputs_, layout_.numMetaInputs_, std::numeric_limits<fann_type>().max());
 	std::fill_n(inputs_, layout_.numInputs_, std::numeric_limits<fann_type>().max());
@@ -142,6 +149,8 @@ void BrainFann::update(const BattleFieldLayout& bfl, const Scan& scan) {
 	CHECK(nn_ != NULL);
 	CHECK(metaInputs_ != NULL);
 	CHECK(inputs_ != NULL);
+  CHECK(outputs_ != NULL);
+
 	CHECK(!destroyed_);
 	CHECK(layout_.numInputs_ == (scan.objects_.size() * 2) + 5);
 
@@ -170,14 +179,9 @@ void BrainFann::run() {
 
 	lastBrain_ = selected;
 	outputs = fann_run(nn_[selected], inputs_);
-	lthrust_ = outputs[0];
-	rthrust_ = outputs[1];
-	fthrust_ = outputs[2];
-	bthrust_ = outputs[3];
-	shoot_ = outputs[4];
-	jump_ = outputs[5];
-
-	CHECK(!std::isnan(bthrust_) && !std::isnan(fthrust_) && !std::isnan(lthrust_) && !std::isnan(rthrust_) && !std::isnan(shoot_) && !std::isnan(jump_));
-	CHECK(!std::isinf(bthrust_) && !std::isinf(fthrust_) && !std::isinf(lthrust_) && !std::isinf(rthrust_) && !std::isinf(shoot_) && !std::isinf(jump_));
+	for(size_t i = 0; i < layout_.numOutputs; ++i) {
+	  outputs_[i] = outputs[i];
+	  CHECK(!std::isnan(outputs_[i]) && !std::isnan(outputs_[i]));
+	}
 }
 } /* namespace neurocid */

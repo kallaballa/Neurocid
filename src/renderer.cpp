@@ -5,9 +5,6 @@
  *      Author: elchaschab
  */
 
-#ifndef _NO_VIDEOENC
-#include "video_encoder.hpp"
-#endif
 #include "renderer.hpp"
 #include "gamestate.hpp"
 #include "canvas.hpp"
@@ -61,9 +58,6 @@ void Renderer::render() {
         canvas.render(*field_);
         renderGui();
         canvas.update();
-#ifndef _NO_VIDEOENC
-        VideoEncoder::getInstance()->encode(Canvas::getInstance()->getSurface());
-#endif
         resetCanvas_ = true;
       } else if (resetCanvas_) {
         canvas.clear();

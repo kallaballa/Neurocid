@@ -57,20 +57,17 @@ public:
 	bool destroyed_ = false;
 	bool initialized_ = false;
 	BrainLayout  layout_;
-	Tweight lthrust_ = 0;
 	Tweight rthrust_ = 0;
-	Tweight fthrust_ = 0;
-	Tweight bthrust_ = 0;
-	Tweight shoot_ = 0;
-  Tweight jump_ = 0;
 	Tweight* metaInputs_ = NULL;
 	Tweight* inputs_ = NULL;
+  Tweight* outputs_ = NULL;
 
-	BasicBrain() {
+  BasicBrain() {
 	}
 
 	void initialize(BrainLayout layout, Tweight** weight = NULL) {
-		layout_ = layout;
+	  outputs_ = new Tweight[layout.numOutputs];
+	  layout_ = layout;
 		metaInputs_ = NULL;
 		inputs_ = NULL;
 		makeNN();

@@ -106,7 +106,7 @@ public:
 	virtual void render(BattleField& field) override;
 	virtual void reset() override;
 
-	SDL_Surface* getSurface() const override {
+	SDL_Surface* getSurface() const {
 		return screen_;
 	}
 

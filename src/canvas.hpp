@@ -38,7 +38,6 @@ public:
 
 	virtual Coord width() const = 0;
 	virtual Coord height() const = 0;
-	virtual SDL_Surface* getSurface() const = 0;
 
 	static void init(Canvas* canvas) {
 		CHECK(instance_ == NULL);

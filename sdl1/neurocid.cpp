@@ -6,6 +6,8 @@
 #include "error.hpp"
 #include "gui/guichangui.hpp"
 #include "sdl/sdlcanvas.hpp"
+#include "sound_encoder.hpp"
+
 #include <X11/Xlib.h>
 
 #ifndef _NO_JSON
@@ -39,6 +41,8 @@ int main(int argc, char** argv) {
   string loadBFile;
   string saveBFile;
   string captureFile;
+  string brainDumpFileA;
+  string brainDumpFileB;
   string scenarioName;
   size_t gameIterations = 1000;
   size_t width = 800;
@@ -56,6 +60,8 @@ int main(int argc, char** argv) {
       ("saveA", po::value<string>(&saveAFile), "Save the team A population to a file after running the scenario")
       ("saveB", po::value<string>(&saveBFile), "Save the team B population to a file after running the scenario")
       ("capture,c", po::value<string>(&captureFile), "Capture the game to a video file")
+      ("brainDumpA", po::value<string>(&brainDumpFileA), "Dump the neural network output of team A to an AU (audio) file.")
+      ("brainDumpB", po::value<string>(&brainDumpFileB), "Dump the neural network output of team B to an AU (audio) file.")
       ("width,x", po::value<size_t>(&width), "The window width")
       ("height,y", po::value<size_t>(&height), "The window height")
       ("framerate,f", po::value<size_t>(&frameRate), "The frame rate of the renderer and video encoder")
@@ -143,6 +149,10 @@ int main(int argc, char** argv) {
   } else {
     teams[1] = nc::make_population(1, pl);
   }
+
+  nc::SoundEncoder::getInstance()->init("teamA", brainDumpFileA, teams[0].layout_.bl_.numOutputs, 1000);
+  nc::SoundEncoder::getInstance()->init("teamB", brainDumpFileB, teams[1].layout_.bl_.numOutputs, 1000);
+
 #ifndef _NO_THREADS
   std::thread gameThread([&]() {
 #endif

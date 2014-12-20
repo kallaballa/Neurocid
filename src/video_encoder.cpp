@@ -5,7 +5,7 @@
 #include <cmath>
 #include <iostream>
 
-#include <SDL2/SDL.h>
+#include <SDL/SDL.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavutil/opt.h>
@@ -215,7 +215,7 @@ void VideoEncoder::encode(SDL_Surface *surface) {
 		av_free_packet(pkt_);
 	}
 	++frameIndex_;
-#endif
+	#endif
 }
 
 void VideoEncoder::close() {

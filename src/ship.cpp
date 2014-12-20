@@ -65,15 +65,15 @@ void Ship::move(BattleFieldLayout& bfl) {
 
   bool isStunned = stun_ > 0.0;
   bool canJump = layout_.canJump_ && fuel_ > layout_.jumpRate_;
-  bool wantsJump = (brain_->jump_ > 0.0);
+  bool wantsJump = (brain_->outputs_[4] > 0.0);
 
 	CHECK(brain_ != NULL);
 	//assign the outputs
 	if(!isStunned) {
-	  flthrust_ = brain_->lthrust_;
-	  frthrust_ = brain_->rthrust_;
-	  blthrust_ = brain_->fthrust_;
-	  brthrust_ = brain_->bthrust_;
+	  flthrust_ = brain_->outputs_[0];
+	  frthrust_ = brain_->outputs_[1];
+	  blthrust_ = brain_->outputs_[2];
+	  brthrust_ = brain_->outputs_[3];
 	} else {
 	  flthrust_ = 0;
 	  frthrust_ = 0;
@@ -87,7 +87,7 @@ void Ship::move(BattleFieldLayout& bfl) {
     fuel_ -= layout_.jumpRate_;
 
   bool canShoot = layout_.canShoot_ && (cool_down == 0 && ammo_ > 0) && !isJumping_ && !isStunned;
-	bool wantsShoot = (brain_->shoot_ > 0.0);
+	bool wantsShoot = (brain_->outputs_[5] > 0.0);
 
 	if(canShoot && wantsShoot) {
 		willShoot_ = true;

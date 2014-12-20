@@ -416,7 +416,10 @@ void Physics::step() {
 					totalForce += blforce;
 					totalForce += brforce;
 
-					if(t->isJumping_) {
+					if(t->stun_ > 0) {
+					  body->SetLinearVelocity(b2Vec2(0,0));
+					  body->SetAngularVelocity(0);
+					} else if(t->isJumping_) {
 					  b2Vec2 tf(totalForce.x_ * 30, totalForce.y_ * 30);
 					  b2Vec2 newpos = body->GetPosition() + tf;
 					  body->SetTransform(newpos, body->GetAngle());

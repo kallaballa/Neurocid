@@ -2,7 +2,7 @@
 #include "population.hpp"
 #include "gamestate.hpp"
 #include "time_tracker.hpp"
-
+#include "sound_encoder.hpp"
 #include <vector>
 #include <list>
 #include <cstdlib>
@@ -78,6 +78,30 @@ void BattleField::move() {
 void BattleField::cleanup() {
 }
 
+void write_brain_dump(const string& name, Population& pop, int channels, float* buffer = NULL) {
+  if(!SoundEncoder::getInstance()->has(name))
+    return;
+
+  bool destroy = false;
+  if (buffer == NULL) {
+    buffer = new float[channels];
+    destroy = true;
+  }
+
+  CHECK(channels <= pop.layout_.bl_.numOutputs);
+
+  for (size_t i = 0; i < channels; ++i) {
+    for (Ship& s : pop) {
+      buffer[i] += s.brain_->outputs_[i];
+    }
+    buffer[i] /= pop.size();
+  }
+
+  SoundEncoder::getInstance()->encode(name, buffer, channels);
+  if (destroy)
+    delete buffer;
+}
+
 bool BattleField::step() {
 	if(teams_[0].isDead() || teams_[1].isDead())
 		return false;
@@ -95,6 +119,9 @@ bool BattleField::step() {
 	tt.execute("battlefield", "cleanup", [&](){
 		cleanup();
 	});
+	int channels = teams_[0].layout_.bl_.numOutputs;
+	write_brain_dump("teamA", teams_[0], channels);
+  write_brain_dump("teamB", teams_[1], channels);
 
 	++(teams_[0].stats_.battleFieldIterations_);
   ++(teams_[1].stats_.battleFieldIterations_);

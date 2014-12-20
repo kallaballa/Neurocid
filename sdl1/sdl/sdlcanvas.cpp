@@ -7,6 +7,9 @@
 #include "population.hpp"
 #include "time_tracker.hpp"
 #include "../theme.hpp"
+#ifndef _NO_VIDEOENC
+#include "video_encoder.hpp"
+#endif
 
 #include <sstream>
 #include <thread>
@@ -371,6 +374,11 @@ void SDLCanvas::update() {
 	if(screen_ != NULL) {
 		SDL_Flip(screen_);
 	}
+  SDL_LockSurface(screen_);
+#ifndef _NO_VIDEOENC
+        VideoEncoder::getInstance()->encode(screen_);
+#endif
+  SDL_UnlockSurface(screen_);
 }
 
 Rect SDLCanvas::findBounds(BattleField& field) {
