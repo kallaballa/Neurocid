@@ -408,8 +408,8 @@ double run_fitness_function(const string& name, Ship& ship, Facility& f, const B
   ship.perfDesc_.clear();
   ship.perfDesc_.push_back(loader->get_global_number("offensiveRatio"));
   ship.perfDesc_.push_back(loader->get_global_number("defensiveRatio"));
-  /*ship.perfDesc_.push_back(loader->get_global_number("friendlyRatioInv"));
-  ship.perfDesc_.push_back(loader->get_global_number("aimRatio"));*/
+  ship.perfDesc_.push_back(loader->get_global_number("friendlyRatioInv"));
+  ship.perfDesc_.push_back(loader->get_global_number("aimRatio"));
 
   return fitness;
 }

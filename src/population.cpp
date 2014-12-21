@@ -41,7 +41,7 @@ PopulationLayout make_default_population_layout() {
 			200, //max_stun_
 			3, // max_damage_
 			1, // crashes_per_damage_
-			2,  // num_perf_desc_
+			4,  // num_perf_desc_
 			"fitness/amir" // fitnessFunction;
 		},
 		//BrainLayout
