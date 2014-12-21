@@ -3,6 +3,7 @@
 #include "gamestate.hpp"
 #include "time_tracker.hpp"
 #include "sound_encoder.hpp"
+#include "renderer.hpp"
 #include <vector>
 #include <list>
 #include <cstdlib>
@@ -47,6 +48,9 @@ void BattleField::think() {
 }
 
 void BattleField::move() {
+  // lock the renderer while we move.
+  Renderer::getInstance()->lock();
+
 	//mpve tanks and update the simulation with spawned projectiles
 	spawned_.clear();
 	for(size_t i = 0; i < teams_.size(); ++i)  {
@@ -73,6 +77,7 @@ void BattleField::move() {
 
 	physics_.update(spawned_);
 	physics_.step();
+  Renderer::getInstance()->unlock();
 }
 
 void BattleField::cleanup() {

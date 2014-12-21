@@ -32,6 +32,14 @@ public:
 	  return enabled_;
 	}
 
+	void lock() {
+	  updateMutex_.lock();
+	}
+
+  void unlock() {
+    updateMutex_.unlock();
+  }
+
 	void setEnabled(bool e);
 	void setFramerate(double frameRate) {
 		frameRate_ = frameRate;
