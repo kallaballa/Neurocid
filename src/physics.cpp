@@ -400,16 +400,18 @@ void Physics::step() {
 					Vector2D blforce = across1 * -(t->blthrust_ * t->layout_.maxSpeed_ * 8);
 					Vector2D brforce = across2 * (t->brthrust_ * t->layout_.maxSpeed_ * 8);
 
+
 					b2Vec2 wc = body->GetWorldCenter();
 					Vector2D flengine(wc.x, wc.y);
 					Vector2D frengine(wc.x, wc.y);
 					Vector2D blengine(wc.x, wc.y);
 					Vector2D brengine(wc.x, wc.y);
 
-					flengine += (across1 * (t->radius_));
-					frengine += (across2 * (t->radius_));
-					blengine += (across2 * -(t->radius_));
-					brengine += (across1 * -(t->radius_));
+					flengine += (dir * (t->radius_ / 2));
+					frengine += (dir * (t->radius_ / 2));
+					blengine += (dir * -(t->radius_ / 2));
+					brengine += (dir * -(t->radius_ / 2));
+
 					Vector2D totalForce;
 					totalForce += flforce;
 					totalForce += frforce;

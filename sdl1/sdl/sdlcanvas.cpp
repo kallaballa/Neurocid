@@ -282,10 +282,10 @@ void SDLCanvas::drawShip(Ship& ship, Color c) {
 		Vector2D blengine = wc;
 		Vector2D brengine = wc;
 
-		flengine += (across1 * (ship.radius_));
-		frengine += (across2 * (ship.radius_));
-		blengine += (across2 * -(ship.radius_));
-		brengine += (across1 * -(ship.radius_));
+		flengine += (dir * (ship.radius_ / 2));
+		frengine += (dir * (ship.radius_ / 2));
+		blengine += (dir * -(ship.radius_ / 2));
+		brengine += (dir * -(ship.radius_ / 2));
 
 		Vector2D flforce = flengine;
 		flforce += across2 * -(ship.flthrust_ * 6000);
@@ -488,15 +488,15 @@ void SDLCanvas::render(BattleField& field) {
 			if(t.crashed_)
 				explosions_.push_back({t.loc_, 0, 20, {64,128,255,128}});
 			else if(!t.dead_) {
-				if(t.teamID_ == 0 )
+	      auto it = trails_.find(&t);
+	      if(!t.dead_ && it != trails_.end())
+	        drawTrail((*it).second,(*it).second.color_);
+
+			  if(t.teamID_ == 0 )
 					this->drawShip(t, Theme::teamA);
 				else
 					this->drawShip(t, Theme::teamB);
 			}
-
-			auto it = trails_.find(&t);
-			if(!t.dead_ && it != trails_.end())
-				drawTrail((*it).second,(*it).second.color_);
 
 			t.explode_ = false;
 			t.crashed_ = false;
