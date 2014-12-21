@@ -190,7 +190,7 @@ bool Game::step(bool render) {
   Renderer& renderer = *Renderer::getInstance();
 
   gs.pauseBarrier(100);
-  bool cont;
+  bool cont = false;
   auto dur = tt.measure([&]() {
     cont = field_->step();
   });
