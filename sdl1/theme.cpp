@@ -15,7 +15,7 @@ Color Theme::projectileA = {243,243,21,255};
 Color Theme::projectileB = {21, 243, 243,255};
 
 Color Theme::enginesA = {255,0,0,255};
-Color Theme::enginesB = {255,0,0,255};
+Color Theme::enginesB = {0,255,0,255};
 
 Color Theme::explosion = {255,0,0,255};
 
