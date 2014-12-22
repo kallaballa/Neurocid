@@ -96,17 +96,11 @@ else
   assert(defensiveRatio >= 0.0);
   assert(defensiveRatio <= 1.0);
 
-	local aim = (aimRatio / (ship.failedShots + 1));
+  local aim = (aimRatio / (ship.failedShots + 1));
   local taken = damageRatioInv * friendlyRatioInv * fDamageRatioInv;
   local offense = ship.offensiveHits;
   local defense = ship.defensiveHits;
-  if offense < defense then
-    offense = offense * 2;
-  elseif defense < offense then
-		defense = defense * 2;
-	end
-    
-	local score = ((offense * 2) + (defense)) * taken;
+  local score = (offense + defense) * taken;
 
   fitness = aim + score;
 
