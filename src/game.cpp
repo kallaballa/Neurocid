@@ -89,7 +89,7 @@ void Game::mate() {
 			for(size_t i = 0; i < pools_[0].layout_.numElite_; ++i) {
 				if(newTeams_[0][i].layout_.isDummy_)
 					continue;
-				size_t j ss= newTeams_[1].size() - i - 1;
+				size_t j = newTeams_[1].size() - i - 1;
 				newTeams_[1][j].brain_->destroy();
 				newTeams_[1][j] = newTeams_[0][i].clone();
 				newTeams_[1][j].teamID_ = 1;
