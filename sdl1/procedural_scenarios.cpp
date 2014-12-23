@@ -188,8 +188,8 @@ public:
 		SymmetricLines::configureTeams(teams);
 		teams[0].facilities_[0].layout_.maxDamage_ = 2000;
 		teams[1].facilities_[0].layout_.maxDamage_ = 2000;
-    //teams[0].facilities_[0].layout_.maxRecharge_ = 10000000;
-    //teams[1].facilities_[0].layout_.maxRecharge_ = 10000000;
+    teams[0].facilities_[0].layout_.maxRecharge_ = 10000000;
+    teams[1].facilities_[0].layout_.maxRecharge_ = 10000000;
 
 
 		ShipLayout attackerTL = teams[0][0].layout_;
