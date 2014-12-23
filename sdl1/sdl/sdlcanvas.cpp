@@ -236,6 +236,20 @@ void SDLCanvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color c, Coord 
     lineRGBA(screen_, scaled0.first, scaled0.second, scaled1.first, scaled1.second, c.r, c.g, c.b, c.a);
 }
 
+void SDLCanvas::drawRect(Coord x0, Coord y0, Coord x1, Coord y1, Color c, Coord s) {
+  auto scaled0 = transform(Vector2D(x0, y0), s);
+  auto scaled1 = transform(Vector2D(x1, y1), s);
+  rectangleRGBA(screen_, scaled0.first, scaled0.second, scaled1.first, scaled1.second, c.r, c.g, c.b, c.a);
+}
+
+void SDLCanvas::fillRect(Coord x0, Coord y0, Coord x1, Coord y1, Color c, Coord s) {
+  auto scaled0 = transform(Vector2D(x0, y0), s);
+  auto scaled1 = transform(Vector2D(x1, y1), s);
+  const Sint16 xv[5] = {scaled0.first, scaled1.first, scaled1.first, scaled0.first,scaled0.first};
+  const Sint16 yv[5] = {scaled0.second, scaled0.second, scaled1.second, scaled1.second, scaled0.second};
+
+  filledPolygonRGBA(screen_, xv, yv, 5, c.r, c.g, c.b, c.a);
+}
 void SDLCanvas::drawShip(Ship& ship, Color c) {
   Vector2D dir = ship.getDirection();
   Vector2D tip = ship.loc_;
@@ -348,6 +362,13 @@ void SDLCanvas::drawFacility(Facility& facility, Color c) {
 		end = iRand(start,360);
 		pieRGBA(screen_, scaled.first, scaled.second, round(scale_ * (facility.layout_.radius_ / 150 )), start, end, 255, 255, 0, 255);
 	}
+
+	Vector2D ul(facility.loc_.x_ + facility.layout_.radius_ + 1000,facility.loc_.y_ - facility.layout_.radius_ / 2 - 4000);
+  Vector2D lr(ul.x_ + 1500, ul.y_ + 15000);
+  Coord height = lr.y_ - ul.y_;
+  height *= (1.0 - ((double)facility.damage_ / (double)facility.layout_.maxDamage_));
+  ul.y_ = lr.y_ - height;
+  fillRect(ul.x_, ul.y_, lr.x_, lr.y_, {255,255,255});
 #endif
 }
 

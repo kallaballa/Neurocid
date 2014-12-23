@@ -83,6 +83,8 @@ private:
 	void drawExplosion(Explosion& expl);
 	void drawTrail(const Trail& trail, const Color& c);
 	void drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color c, Coord scale = 1);
+	void drawRect(Coord x0, Coord y0, Coord x1, Coord y1, Color c, Coord s = 1);
+	void fillRect(Coord x0, Coord y0, Coord x1, Coord y1, Color c, Coord s = 1);
 	void drawShip(Ship& tank, Color c);
 	void drawFacility(Facility& facility, Color c);
 	void drawProjectile(Projectile& pro, Color& c);
