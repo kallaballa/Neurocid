@@ -276,12 +276,9 @@ Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl)
   calculateStatistics(old_pop);
 
   /*
-   * Only winning teams get to have an elite by copying
-   * some of the fittest genomes without any mutation/crossover.
    * Make sure we add an EVEN number or the roulette wheel sampling will crash
-   * NOTE: we don't dont copy elites if we use perf descriptors since that is already a form of elitism
    */
-  if (old_pop.winner_ && !layout_.usePerfDesc_ && layout_.numElite_ < old_pop.size()) {
+  if (layout_.numElite_ < old_pop.size()) {
     if (!(layout_.numEliteCopies_ * (layout_.numElite_ % 2))) {
       copyNBest(layout_.numElite_, layout_.numEliteCopies_, old_pop, new_pop);
     }
