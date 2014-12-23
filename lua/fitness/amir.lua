@@ -122,8 +122,9 @@ if fitness == 0 and ship.fuel == 0 then
 		end
 	end
 	if minDist < 9999999 then 
-		assert(minDist <= maxDistance);
-		fitness = fitness + (0.01 - ((minDist/maxDistance) / 100.0));
+		if minDist <= maxDistance then
+			fitness = fitness + (0.01 - ((minDist/maxDistance) / 100.0));
+		end
 	end
 end
 
