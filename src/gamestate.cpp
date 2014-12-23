@@ -1,9 +1,25 @@
 #include "gamestate.hpp"
 #include "game.hpp"
+#include "time_tracker.hpp"
 
 namespace neurocid {
 
 GameState* GameState::instance_ = NULL;
+
+void GameState::setSlow(bool s) {
+  slow_ = s;
+  if(slow_)
+    slower_ = false;
+  TimeTracker::getInstance()->newGameCount();
+}
+
+void GameState::setSlower(bool s) {
+  slower_ = s;
+  if(slower_)
+    slow_ = false;
+
+  TimeTracker::getInstance()->newGameCount();
+}
 
 void GameState::setCurrentGame(Game* g) {
   currentGame_ = g;

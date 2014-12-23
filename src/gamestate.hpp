@@ -34,20 +34,8 @@ public:
 		return slower_;
 	}
 
-	void setSlow(bool s) {
-		slow_ = s;
-		if(slow_)
-			slower_ = false;
-    TimeTracker::getInstance()->newGameCount();
-	}
-
-	void setSlower(bool s) {
-		slower_ = s;
-		if(slower_)
-			slow_ = false;
-
-	  TimeTracker::getInstance()->newGameCount();
-	}
+	void setSlow(bool s);
+	void setSlower(bool s);
 
 	bool isRunning() {
 		return run_;
