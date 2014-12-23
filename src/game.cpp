@@ -213,7 +213,7 @@ bool Game::step(bool render) {
 }
 
 vector<Population> Game::play(bool render) {
-  TimeTracker::newGame();
+  TimeTracker::newGameCount();
 	TimeTracker& tt = *TimeTracker::getInstance();
 
 	size_t dur = tt.measure([&]() {

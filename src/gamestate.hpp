@@ -38,12 +38,15 @@ public:
 		slow_ = s;
 		if(slow_)
 			slower_ = false;
+    TimeTracker::getInstance()->newGameCount();
 	}
 
 	void setSlower(bool s) {
 		slower_ = s;
 		if(slower_)
 			slow_ = false;
+
+	  TimeTracker::getInstance()->newGameCount();
 	}
 
 	bool isRunning() {

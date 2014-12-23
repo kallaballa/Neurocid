@@ -50,7 +50,7 @@ struct TimeInfo {
     }
 	}
 
-	void newGame() {
+	void newGameCount() {
 	  gameCnt_ = 0;
 	  gameTime_ = 0;
 	}
@@ -154,11 +154,11 @@ public:
     instance_ = NULL;
   }
 
-  static void newGame() {
+  static void newGameCount() {
     for(auto pair : instance_->tiMap_) {
-      pair.second.newGame();
+      pair.second.newGameCount();
       for(auto pairc : pair.second.children_) {
-        pairc.second.newGame();
+        pairc.second.newGameCount();
       }
     }
   }
