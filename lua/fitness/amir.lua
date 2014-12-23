@@ -108,9 +108,9 @@ else
       fitness = fitness / 2.0;
 	end
 
-  if nc.winner then
-      fitness = math.pow(fitness,0.9);
-  end
+--  if nc.winner then
+--      fitness = math.pow(fitness,0.9);
+--  end
 
 end
 

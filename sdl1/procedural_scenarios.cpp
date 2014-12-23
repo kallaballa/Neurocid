@@ -178,7 +178,7 @@ public:
 	SymmetricLinesHuge() : SymmetricLines() {
 		bfl_.width_ = 600000;
 		bfl_.height_ = 600000;
-		bfl_.iterations_ = 50000;
+		bfl_.iterations_ = 100000;
 		pl_.center_ = {300000,300000};
 		pl_.distance_ = 200000;
 		pl_.spacing_ = 1000;
@@ -195,16 +195,16 @@ public:
 		ShipLayout attackerTL = teams[0][0].layout_;
 		attackerTL.startFuel_ = 3000;
 		attackerTL.maxFuel_ = 20000;
-		attackerTL.maxAmmo_ = 40;
+		attackerTL.maxAmmo_ = 20;
 		teams[0].update(attackerTL);
 
 		ShipLayout defenderTL = teams[1][0].layout_;
 		defenderTL.startFuel_ = 3000;
 		defenderTL.maxFuel_ = 20000;
-		defenderTL.maxAmmo_ = 40;
+		defenderTL.maxAmmo_ = 20;
 		teams[1].update(defenderTL);
 		multiplyTeams(teams,3);
-	/*	teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
+/*		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
 		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
 		teams[0].facilities_.push_back(Facility(0, teams[0].layout_.fl_, {0,0}));
 		teams[1].facilities_.push_back(Facility(1, teams[1].layout_.fl_, {0,0}));
