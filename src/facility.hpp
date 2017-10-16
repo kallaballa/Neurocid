@@ -44,8 +44,10 @@ public:
 	}
 
 	void captured() {
+	  return; //FIXME delete this function
+	  /*
 		cooldown_ = layout_.maxCooldown_;
-		captured_ = true;
+		captured_ = true;*/
 	}
 
 	void cool() {

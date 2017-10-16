@@ -140,7 +140,8 @@ void Ship::recharged() {
 }
 
 void Ship::captured() {
-	++captured_;
+  return; //FIXME delete this function
+	//++captured_;
 }
 
 void Ship::killed() {
