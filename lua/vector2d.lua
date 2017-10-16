@@ -149,7 +149,7 @@ function Vector2D:Dist(vec1, vec2)
 end
 
 function RadFromDir(vec)
-	local r = math.atan2(vec.x, -vec.y);
+	local r = math.atan(vec.x, -vec.y);
 	assert(r <= math.pi);
 	assert(r >= -math.pi);
 	return r;

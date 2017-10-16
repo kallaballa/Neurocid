@@ -46,8 +46,9 @@ void Game::fight(bool render) {
   BattleField field(scenario_, teams_);
 	GameState& gs = *GameState::getInstance();
 	TimeTracker& tt = *TimeTracker::getInstance();
+#ifndef _NO_GUI
 	Renderer& renderer = *Renderer::getInstance();
-
+#endif
 	tt.execute("battlefield", [&](){
 	for(size_t i = 0; (i < scenario_->bfl_.iterations_) && gs.isRunning(); ++i) {
     gs.pauseBarrier(100);
@@ -63,16 +64,20 @@ void Game::fight(bool render) {
 			else if(gs.isSlower() && dur < 16000) {
 				std::this_thread::sleep_for(std::chrono::microseconds(6400 - dur));
 			}
+#ifndef _NO_GUI
 			renderer.update(&field);
-		}
+#endif
+			}
 #ifdef _NO_THREADS
 	    	renderer.render();
 #endif
 	}
 	});
 
+#ifndef _NO_GUI
 	if(render)
 		renderer.update(NULL);
+#endif
 }
 
 void Game::score() {
@@ -185,8 +190,9 @@ void Game::start(){
 
 vector<Population> Game::finish(){
   TimeTracker& tt = *TimeTracker::getInstance();
+#ifndef _NO_GUI
   Renderer::getInstance()->update(NULL);
-
+#endif
   tt.execute("game", "score", [&]() {
     score();
   });
@@ -216,8 +222,9 @@ vector<Population> Game::finish(){
 bool Game::step(bool render) {
   GameState& gs = *GameState::getInstance();
   TimeTracker& tt = *TimeTracker::getInstance();
+#ifndef _NO_GUI
   Renderer& renderer = *Renderer::getInstance();
-
+#endif
   gs.pauseBarrier(100);
 
   auto dur = tt.measure([&]() {
@@ -230,7 +237,9 @@ bool Game::step(bool render) {
     } else if (gs.isSlower() && dur < 16000) {
       std::this_thread::sleep_for(std::chrono::microseconds(6400 - dur));
     }
+#ifndef _NO_GUI
     renderer.update(field_);
+#endif
   }
 
   ++steps_;

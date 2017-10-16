@@ -1,7 +1,7 @@
 CXX      := g++
-CXXFLAGS := -fno-strict-aliasing -std=c++0x -pedantic -Wall -I../kmlocal/src/ -I../fann/src/include -I../box2d/ -I../LuaJIT-2.0.3/src/
-LDFLAGS  := -L/opt/local/lib -L../kmlocal/src/ -L../fann/src/ -L../box2d/Box2D -L../json_spirit/ -L../LuaJIT-2.0.3/src/
-LIBS     := -lklocal -lm -lfann -lBox2D -ljson_spirit -lluajit
+CXXFLAGS := -fno-strict-aliasing -std=c++0x -pedantic -Wall -I../kmlocal/src/ -I../fann/src/include -I../box2d/
+LDFLAGS  := -L/opt/local/lib -L../kmlocal/src/ -L../fann/src/ -L../box2d/Box2D -L../json_spirit/
+LIBS     := -lklocal -lm -lfann -lBox2D -ljson_spirit
 .PHONY: all release debian-release info debug clean debian-clean distclean 
 NVCC     := /usr/local/cuda/bin/nvcc
 NVCC_HOST_CXX := g++-4.6
@@ -17,9 +17,10 @@ ifeq ($(MACHINE), i686)
   LIBDIR = lib
 endif
 
+
 ifdef JAVASCRIPT
 CXX			 := em++
-CXXFLAGS += -I/usr/local/include
+CXXFLAGS += -I/usr/local/include --embed-file DejaVuSansMono-Bold.ttf  --embed-file DejaVuSansMono.ttf --embed-file lua/
 WITHOUT_STACKTRACE=1
 WITHOUT_SERIALIZE=1
 WITHOUT_VIDEOENC=1
@@ -29,6 +30,7 @@ WITHOUT_POOL_ALLOC=1
 WITHOUT_JSON=1
 WITHOUT_EVENTLOOP=1
 WITHOUT_SDLGFX=1
+WITHOUT_LUAJIT=1
 endif
 
 ifdef X86
@@ -44,6 +46,20 @@ ifdef X86
 CXXFLAGS += -m32
 LDFLAGS += -L/usr/lib -static-libgcc -m32 -Wl,-Bstatic
 endif 
+
+ifdef WITHOUT_GUI
+CXXFLAGS += -D_NO_GUI
+endif
+
+ifdef WITHOUT_LUAJIT
+CXXFLAGS += -I../lua-5.3.4/src/ -D_NO_LUAJIT -DLUA_COMPAT_5_1
+LDFLAGS += -L../lua-5.3.4/src/
+LIBS += -llua
+else
+CXXFLAGS +=  -I../LuaJIT-2.0.3/src/
+LDFLAGS += -L../LuaJIT-2.0.3/src/
+LIBS += -lluajit
+endif
 
 ifdef WITHOUT_STACKTRACE
 CXXFLAGS += -D_NO_STACKTRACE

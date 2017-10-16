@@ -110,14 +110,14 @@ int main(int argc, char** argv) {
   }
   CHECK_MSG(scenario != NULL, "Unable to load a Scenario");
 
-
+#ifndef _NO_GUI
   nc::SDLCanvas* sdlc = new nc::SDLCanvas(width, height, scenario->bfl_);
   nc::GuiChanGui* gui = new nc::GuiChanGui(sdlc->getSurface());
 
   nc::init_canvas(sdlc);
   nc::init_gui(gui);
   nc::init_video_capture(captureFile);
-
+#endif
   //make default layouts
   nc::PopulationLayout pl = nc::make_default_population_layout();
   nc::GeneticLayout gl = nc::make_default_genetic_layout();
@@ -164,7 +164,9 @@ int main(int argc, char** argv) {
     });
 #endif
 
+
 #ifndef _NO_THREADS
+#ifndef _NO_GUI
   //event loop
   std::thread eventThread([&]() {
     nc::EventLoop el;
@@ -179,6 +181,7 @@ int main(int argc, char** argv) {
   }
 
   eventThread.join();
+#endif
   gameThread.join();
 #endif
   nc::quit();

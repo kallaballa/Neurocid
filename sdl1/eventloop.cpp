@@ -64,8 +64,7 @@ void EventLoop::process() {
 			if (event.key.keysym.sym == SDLKey::SDLK_ESCAPE) {
 				std::cerr << "Quitting" << std::endl;
 				gameState.stop();
-			} else if ((event.key.keysym.mod == KMOD_LALT || event.key.keysym.mod == KMOD_RALT)) {
-				if (event.key.keysym.sym == SDLKey::SDLK_SPACE) {
+			} else if (event.key.keysym.sym == SDLKey::SDLK_SPACE) {
 					if (renderer.isEnabled()) {
 						if (gameState.isSlow()) {
 							gameState.setSlower(true);
@@ -126,9 +125,8 @@ void EventLoop::process() {
 					canvas.tiltUp();
 				} else if (event.key.keysym.sym == SDLKey::SDLK_PAGEDOWN) {
 					canvas.tiltDown();
-				}
-			} else
-				gui.pushEvent(event);
+				} else
+				  gui.pushEvent(event);
 			break;
 
 		case SDL_KEYUP:

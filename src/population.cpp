@@ -45,7 +45,7 @@ PopulationLayout make_default_population_layout() {
 			5,  // outputs
 			5,  // layers
 			11, // neurons per hidden layer
-			8   // numBrains
+			3   // numBrains
 		},
 		//FacilityLayout
 		{
