@@ -8,6 +8,7 @@ timeseries.csv
 game/neurocid-bin
 render/makeAndRender
 src/libneurocid.so
+sdl1/neurocid-bin
 *.pop
 *.csv
 *.so.*
