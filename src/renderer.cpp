@@ -46,7 +46,7 @@ void Renderer::renderGui() {
   }
 }
 
-void Renderer::render() {
+void Renderer::render(bool dosleep) {
   size_t sleep = (size_t) round(1000 / frameRate_);
   TimeTracker& tt = *TimeTracker::getInstance();
   Canvas& canvas = *Canvas::getInstance();
@@ -70,7 +70,9 @@ void Renderer::render() {
     updateMutex_.unlock();
   });
   dur /= 1000;
-  if (dur < sleep)
-    std::this_thread::sleep_for(std::chrono::milliseconds(sleep - dur));
+  if(dosleep){
+    if (dur < sleep)
+      std::this_thread::sleep_for(std::chrono::milliseconds(sleep - dur));
+  }
 }
 } /* namespace neurocid */

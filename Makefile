@@ -29,6 +29,7 @@ WITHOUT_POOL_ALLOC=1
 WITHOUT_JSON=1
 WITHOUT_EVENTLOOP=1
 WITHOUT_SDLGFX=1
+WITHOUT_SOUNDENC=1
 endif
 
 ifdef X86
@@ -44,6 +45,10 @@ ifdef X86
 CXXFLAGS += -m32
 LDFLAGS += -L/usr/lib -static-libgcc -m32 -Wl,-Bstatic
 endif 
+
+ifdef WITHOUT_SOUNDENC
+CXXFLAGS += -D_NO_SOUNDENC
+endif
 
 ifdef WITHOUT_GUI
 CXXFLAGS += -D_NO_GUI

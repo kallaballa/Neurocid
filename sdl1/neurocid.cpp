@@ -150,9 +150,10 @@ int main(int argc, char** argv) {
   } else {
     teams[1] = nc::make_population(1, pl);
   }
-
+#ifndef _NO_SOUNDENC
   nc::SoundEncoder::getInstance()->init("teamA", brainDumpFileA, teams[0].layout_.bl_.numOutputs, 1000);
   nc::SoundEncoder::getInstance()->init("teamB", brainDumpFileB, teams[1].layout_.bl_.numOutputs, 1000);
+#endif
 
 #ifndef _NO_THREADS
   std::thread gameThread([&]() {

@@ -186,7 +186,7 @@ vector<Population> Game::finish(){
 bool Game::step(bool render) {
   GameState& gs = *GameState::getInstance();
   TimeTracker& tt = *TimeTracker::getInstance();
-#ifndef _NO_GUI
+  #ifndef _NO_GUI
   Renderer& renderer = *Renderer::getInstance();
 #endif
   gs.pauseBarrier(100);
@@ -197,7 +197,7 @@ bool Game::step(bool render) {
 
   if(!cont)
     return false;
-
+#ifndef _NO_THREADS
   if (render) {
     if (gs.isSlow() && dur < 1600) {
       std::this_thread::sleep_for(std::chrono::microseconds(1600 - dur));
@@ -207,7 +207,12 @@ bool Game::step(bool render) {
 #ifndef _NO_GUI
     renderer.update(field_);
 #endif
-  }
+}
+#else
+    renderer.update(field_);
+    renderer.render(false);
+#endif
+
 
   ++steps_;
   if (steps_ >= scenario_->bfl_.iterations_ || !gs.isRunning() || (teams_[0].isDead() || teams_[1].isDead()))

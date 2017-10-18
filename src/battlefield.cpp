@@ -87,6 +87,7 @@ void BattleField::cleanup() {
 }
 
 void write_brain_dump(const string& name, Population& pop, int channels, float* buffer = NULL) {
+#ifndef _NO_SOUNDENC
   if(!SoundEncoder::getInstance()->has(name))
     return;
 
@@ -108,6 +109,7 @@ void write_brain_dump(const string& name, Population& pop, int channels, float* 
   SoundEncoder::getInstance()->encode(name, buffer, channels);
   if (destroy)
     delete buffer;
+#endif
 }
 
 bool BattleField::step() {

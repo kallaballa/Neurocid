@@ -53,7 +53,7 @@
 #include "guichan/sdl/sdlimage.hpp"
 #include "guichan/sdl/sdlpixel.hpp"
 #include <SDL/SDL_gfxPrimitives.h>
-#include <SDL/SDL_gfxBlitFunc.h>
+//#include <SDL/SDL_gfxBlitFunc.h>
 
 // For some reason an old version of MSVC did not like std::abs,
 // so we added this macro.

@@ -363,13 +363,7 @@ namespace gcn
               value = Key::RightMeta;
               break;
           case SDLK_LMETA:
-              value = Key::LeftMeta;
-              break;
-          case SDLK_LSUPER:
               value = Key::LeftSuper;
-              break;
-          case SDLK_RSUPER:
-              value = Key::RightSuper;
               break;
           case SDLK_MODE:
               value = Key::AltGr;

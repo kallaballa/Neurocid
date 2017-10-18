@@ -5,15 +5,18 @@
 #include <stdio.h>
 #include <string>
 #include <map>
+#ifndef _NO_SOUNDENC
 #include <sndfile.hh>
-
+#endif
 namespace neurocid {
 using std::map;
 using std::string;
 
 class SoundEncoder {
 private:
+#ifndef _NO_SOUNDENC
   map<string, SndfileHandle> handles_;
+#endif
   static SoundEncoder* instance_;
   SoundEncoder() {}
 public:

@@ -26,7 +26,7 @@ public:
 	Renderer(size_t frameRate);
 	void update(BattleField* field);
 	void renderGui();
-	void render();
+	void render(bool dosleep=true);
 
 	bool isEnabled() {
 	  return enabled_;

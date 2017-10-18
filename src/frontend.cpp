@@ -10,7 +10,6 @@
 #include "gui.hpp"
 #include "video_encoder.hpp"
 #include "battlefieldlayout.hpp"
-#include <sndfile.hh>
 
 namespace neurocid {
 

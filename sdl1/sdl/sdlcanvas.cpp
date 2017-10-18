@@ -12,7 +12,6 @@
 #endif
 
 #include <sstream>
-#include <thread>
 #include <chrono>
 #include <iostream>
 #include <algorithm>
