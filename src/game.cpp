@@ -154,8 +154,9 @@ void Game::start(){
 
 vector<Population> Game::finish(){
   TimeTracker& tt = *TimeTracker::getInstance();
+#ifndef _NO_GUI
   Renderer::getInstance()->update(NULL);
-
+#endif
   tt.execute("game", "score", [&]() {
     score();
   });
@@ -185,8 +186,9 @@ vector<Population> Game::finish(){
 bool Game::step(bool render) {
   GameState& gs = *GameState::getInstance();
   TimeTracker& tt = *TimeTracker::getInstance();
+#ifndef _NO_GUI
   Renderer& renderer = *Renderer::getInstance();
-
+#endif
   gs.pauseBarrier(100);
   bool cont = false;
   auto dur = tt.measure([&]() {
@@ -202,7 +204,9 @@ bool Game::step(bool render) {
     } else if (gs.isSlower() && dur < 16000) {
       std::this_thread::sleep_for(std::chrono::microseconds(64000 - dur));
     }
+#ifndef _NO_GUI
     renderer.update(field_);
+#endif
   }
 
   ++steps_;

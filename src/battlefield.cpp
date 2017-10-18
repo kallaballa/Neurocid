@@ -48,9 +48,10 @@ void BattleField::think() {
 }
 
 void BattleField::move() {
+#ifndef _NO_GUI
   // lock the renderer while we move.
   Renderer::getInstance()->lock();
-
+#endif
 	//mpve tanks and update the simulation with spawned projectiles
 	spawned_.clear();
 	for(size_t i = 0; i < teams_.size(); ++i)  {
@@ -77,7 +78,9 @@ void BattleField::move() {
 
 	physics_.update(spawned_);
 	physics_.step();
+#ifndef _NO_GUI
   Renderer::getInstance()->unlock();
+#endif
 }
 
 void BattleField::cleanup() {

@@ -91,7 +91,9 @@ bool is_running() {
 }
 
 void render() {
+#ifndef _NO_GUI
 	Renderer::getInstance()->render();
+#endif
 }
 
 }

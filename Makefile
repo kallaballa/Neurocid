@@ -45,6 +45,11 @@ CXXFLAGS += -m32
 LDFLAGS += -L/usr/lib -static-libgcc -m32 -Wl,-Bstatic
 endif 
 
+ifdef WITHOUT_GUI
+CXXFLAGS += -D_NO_GUI
+WITHOUT_EVENTLOOP=1
+endif
+
 ifdef WITHOUT_STACKTRACE
 CXXFLAGS += -D_NO_STACKTRACE
 endif
