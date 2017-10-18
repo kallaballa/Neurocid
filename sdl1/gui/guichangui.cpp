@@ -23,12 +23,12 @@ GuiChanGui::GuiChanGui(SDL_Surface* surface) : gcn::Gui() {
 	}
 	try {
 	std::string neurocidPath = get_env("NEUROCID_PATH");
-
+#ifndef _JAVASCRIPT
 	if(neurocidPath.empty()) {
 		std::cerr << "Environment variable $NEUROCID_PATH not set" << std::endl;
 		exit(1);
 	}
-
+#endif
 	font_ = new gcn::contrib::SDLTrueTypeFont(neurocidPath + "/DejaVuSansMono-Bold.ttf",18);
 	} catch(gcn::Exception& ex) {
 		std::cerr << ex.getMessage() << std::endl;

@@ -210,7 +210,8 @@ bool Game::step(bool render) {
 }
 #else
     renderer.update(field_);
-    renderer.render(false);
+    if(steps_ % 10 == 0)
+      renderer.render();
 #endif
 
 
@@ -219,6 +220,21 @@ bool Game::step(bool render) {
     return false;
   else
     return true;
+}
+
+void Game::init() {
+  TimeTracker::newGame();
+  start();
+}
+
+vector<Population> Game::result() {
+  finish();
+    if(!GameState::getInstance()->isRunning()) {
+	    return teams_;
+    }
+    else {
+	    return newTeams_;
+    }
 }
 
 vector<Population> Game::play(bool render) {

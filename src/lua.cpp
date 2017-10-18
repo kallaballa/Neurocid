@@ -18,6 +18,9 @@ extern "C" {
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
+#ifdef _NO_LUAJIT
+  #include <luaconf.h>
+#endif
 }
 
 namespace neurocid {
@@ -35,15 +38,17 @@ public:
   ScriptLoader() {
     L_ = luaL_newstate();
     luaL_openlibs(L_);
+    luaL_dostring(L_, "package.path = package.path .. ';/?.lua'");
 
     std::string neurocidPath = get_env("NEUROCID_PATH");
-
+#ifndef _JAVASCRIPT
     if (neurocidPath.empty()) {
       std::cerr << "Environment variable $NEUROCID_PATH not set" << std::endl;
       exit(1);
     }
-
     path_ = neurocidPath + "/lua/";
+#endif
+    path_ = "lua/";
   }
 
   ~ScriptLoader() {

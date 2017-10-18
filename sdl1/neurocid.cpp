@@ -7,6 +7,9 @@
 #include "gui/guichangui.hpp"
 #include "sdl/sdlcanvas.hpp"
 #include "sound_encoder.hpp"
+#ifdef _JAVASCRIPT
+#include "/home/elchaschab/build/emsdk-portable/emscripten/1.37.22/system/include/emscripten.h"
+#endif
 
 #include <X11/Xlib.h>
 
@@ -160,6 +163,11 @@ int main(int argc, char** argv) {
 #endif
       teams[0].score_ = 0;
       teams[1].score_ = 0;
+#ifdef _JAVASCRIPT
+      neurocid::init_game(gameIterations, scenario, teams, pools);
+      emscripten_set_main_loop(neurocid::iter_game, 0, 1);
+#else
+
       //play the game!
       neurocid::play_game(gameIterations, scenario, teams, pools, captureFile, autosaveInterval);
 
@@ -173,7 +181,7 @@ int main(int argc, char** argv) {
         ofstream os(saveBFile);
         write_population(teams[1],os);
       }
-
+#endif
 #ifndef _NO_THREADS
     });
 #endif

@@ -62,27 +62,62 @@ void quit() {
   exit(0);
 }
 
+size_t gameIter_;
+Scenario* scenario_;
+vector<Population> teams_;
+vector<GeneticPool> pools_;
+Game* game_ = NULL;
+
+void init_game(size_t gameIter, Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools) {
+  gameIter_ = gameIter;
+  scenario_ = scenario;
+  teams_ = teams;
+  pools_ = pools;
+  scenario_->configureTeams(teams_);
+  scenario_->configurePools(pools_);
+}
+
+void iter_game() {
+  GameState& gs = *GameState::getInstance();
+  TimeTracker& tt = *TimeTracker::getInstance();
+
+  if(game_ == NULL) {
+    game_ = new Game(scenario_, teams_, pools_);
+    gs.setCurrentGame(game_);
+    game_->init();
+  }
+
+  bool cont = gs.getCurrentGame()->step(true);
+
+  if(!cont) {
+    teams_ = gs.getCurrentGame()->result();
+    gs.setCurrentGame(NULL);
+    delete game_;
+    game_ = NULL;
+  }
+}
+
 void play_game(size_t gameIter, Scenario* scenario,
 		vector<Population>& teams, vector<GeneticPool>& pools,
 		const string& videoFile, long autosaveInterval) {
-	GameState& gs = *GameState::getInstance();
-	TimeTracker& tt = *TimeTracker::getInstance();
-	scenario->configureTeams(teams);
-	scenario->configurePools(pools);
+    GameState& gs = *GameState::getInstance();
+    TimeTracker& tt = *TimeTracker::getInstance();
+    scenario->configureTeams(teams);
+    scenario->configurePools(pools);
 
-	if(autosaveInterval > 0) {
-	  gs.enableAutosave(autosaveInterval);
-	}
+    if(autosaveInterval > 0) {
+      gs.enableAutosave(autosaveInterval);
+    }
 
-	while (gs.isRunning() && --gameIter > 0) {
-    tt.execute("game", [&]() {
-      Game game(scenario, teams, pools);
-      gs.setCurrentGame(&game);
-      teams = game.play(true);
-      gs.setCurrentGame(NULL);
-    });
-  }
-	gs.stop();
+    while(gs.isRunning() && --gameIter > 0) {
+      tt.execute("game", [&]() {
+	Game game(scenario, teams, pools);
+	gs.setCurrentGame(&game);
+	teams = game.play(true);
+	gs.setCurrentGame(NULL);
+      });
+    }
+    gs.stop();
 }
 
 bool is_running() {

@@ -22,6 +22,8 @@ void quit();
 
 void render();
 bool is_running();
+void init_game(size_t gameIter, Scenario* scenario, vector<Population>& teams, vector<GeneticPool>& pools);
+void iter_game();
 void play_game(size_t gameIter, Scenario* scenario,
 		vector<Population>& teams, vector<GeneticPool>& pools,
 		const string& videoFile, long autosaveInterval);

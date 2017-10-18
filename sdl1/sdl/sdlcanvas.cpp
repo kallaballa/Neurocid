@@ -385,8 +385,10 @@ void SDLCanvas::drawProjectile(Projectile& pro, Color& c) {
 }
 
 void SDLCanvas::clear() {
-	SDL_Rect clrDest = {0,0, Uint16(width_), Uint16(height_)};
-	SDL_FillRect(screen_, &clrDest, 0);
+	  const Sint16 xv[5] = {0, Sint16(width_), Sint16(width_), 0, 0};
+	  const Sint16 yv[5] = {0, 0, Sint16(height_), Sint16(height_), 0};
+
+	  filledPolygonRGBA(screen_, xv, yv, 5, 255, 255, 255, 255);
 	background_.draw(screen_);
 }
 
@@ -394,11 +396,12 @@ void SDLCanvas::update() {
 	if(screen_ != NULL) {
 		SDL_Flip(screen_);
 	}
-  SDL_LockSurface(screen_);
 #ifndef _NO_VIDEOENC
-        VideoEncoder::getInstance()->encode(screen_);
-#endif
+  SDL_LockSurface(screen_);
+  VideoEncoder::getInstance()->encode(screen_);
   SDL_UnlockSurface(screen_);
+#endif
+
 }
 
 Rect SDLCanvas::findBounds(BattleField& field) {

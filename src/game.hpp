@@ -36,7 +36,9 @@ public:
 	~Game();
 	void start();
 	vector<Population> finish();
-	bool step(bool render);
+	bool step(bool render = true);
+	void init();
+	vector<Population> result();
 	vector<Population> play(bool render);
 };
 
