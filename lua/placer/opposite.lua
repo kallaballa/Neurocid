@@ -1,5 +1,5 @@
-require("vector2d")
-require("ncutils")
+require("../vector2d")
+require("../ncutils")
 
 --tprint(nc, 2);
 
