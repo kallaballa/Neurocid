@@ -5,7 +5,7 @@ namespace neurocid {
 
 PopulationLayout make_default_population_layout() {
 	return {
-		20, // size_
+		40, // size_
 		//Ship Layout
 		{
 		  //Projectile Layout
@@ -39,7 +39,7 @@ PopulationLayout make_default_population_layout() {
 			0, // start_ammo_
 			5, // max_cooldown_
 			200, //max_stun_
-			3, // max_damage_
+			1, // max_damage_
 			1, // crashes_per_damage_
 			4,  // num_perf_desc_
 			"fitness/amir" // fitnessFunction;
