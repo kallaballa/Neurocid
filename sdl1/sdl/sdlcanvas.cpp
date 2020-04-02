@@ -404,7 +404,7 @@ void SDLCanvas::drawProjectile(Projectile& pro, Color& c) {
 void SDLCanvas::clear() {
 	SDL_Rect rect = { 0, 0, Uint16(width_), Uint16(height_) };
 	SDL_FillRect(screen_, &rect, SDL_MapRGB(screen_->format, 0, 0, 0));
-	background_.draw(screen_);
+	background_.draw();
 }
 
 void SDLCanvas::update() {
