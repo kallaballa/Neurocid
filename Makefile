@@ -168,6 +168,7 @@ dirs:
 	${MAKE} -C src/ ${MAKEFLAGS} CXX=${CXX} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" ${MAKECMDGOALS}
 ifndef STATIC
 	${MAKE} -C sdl1/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
+	${MAKE} -C felgo/ -${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 #	${MAKE} -C sdl2/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 ifndef JAVASCRIPT
 	${MAKE} -C tests/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
@@ -178,12 +179,14 @@ debian-release:
 	${MAKE} -C src/ -${MAKEFLAGS} CXX=${CXX} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" release
 	${MAKE} -C sdl1/ -${MAKEFLAGS} CXX=${CXX} release
 	${MAKE} -C sdl2/ -${MAKEFLAGS} CXX=${CXX} release
+	${MAKE} -C felgo/ -${MAKEFLAGS} CXX=${CXX} release
 	${MAKE} -C tests/ -${MAKEFLAGS} CXX=${CXX} release
 
 debian-clean:
 	${MAKE} -C src/ -${MAKEFLAGS} CXX=${CXX} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" clean
 	${MAKE} -C sdl1/ -${MAKEFLAGS} CXX=${CXX} clean
 	${MAKE} -C sdl2/ -${MAKEFLAGS} CXX=${CXX} clean
+	${MAKE} -C felgo/ -${MAKEFLAGS} CXX=${CXX} clean
 	${MAKE} -C tests/ -${MAKEFLAGS} CXX=${CXX} clean
 
 install: ${TARGET}
