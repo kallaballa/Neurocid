@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.10.2, 2020-04-02T20:03:29. -->
+<!-- Written by QtCreator 4.10.2, 2020-04-03T01:29:17. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -302,11 +302,14 @@
      <value type="int">14</value>
     </valuelist>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
-    <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
+    <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes">
+     <value type="QString">NEUROCID_PATH=/usr/local/lib64/neurocid</value>
+     <value type="QString">LUA_PATH=/usr/local/lib64/neurocid/lua/?.lua</value>
+    </valuelist>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">felgo-neurocid</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/elchaschab/devel/Neurocid/felgo/felgo-neurocid.pro</value>
-    <value type="QString" key="RunConfiguration.Arguments"></value>
+    <value type="QString" key="RunConfiguration.Arguments"> -i 1000 -a 10 --saveA SymmetricLinesAttackerMove.pop SymmetricLinesAttackerMove</value>
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
@@ -314,7 +317,8 @@
     <value type="bool" key="RunConfiguration.UseMultiProcess">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
+    <value type="bool" key="RunConfiguration.UseTerminal">false</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory">/home/elchaschab/devel/Neurocid</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/elchaschab/projects/felgo_challenge/build-Cpp-qml-integration-Felgo_Desktop_Qt_5_13_2_GCC-Debug</value>
    </valuemap>
    <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
