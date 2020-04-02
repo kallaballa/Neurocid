@@ -1,10 +1,3 @@
-/*
- * background.hpp
- *
- *  Created on: Apr 9, 2014
- *      Author: elchaschab
- */
-
 #ifndef BACKGROUND_HPP_
 #define BACKGROUND_HPP_
 
@@ -16,7 +9,7 @@ namespace neurocid {
 
 using std::vector;
 
-class SDLCanvas;
+class Canvas;
 class BattleFieldLayout;
 
 struct Star {
@@ -34,14 +27,14 @@ struct Star {
 
 class Background {
 private:
-	SDLCanvas* canvas_;
+	Canvas* canvas_;
 	vector<Star> buffers_;
 public:
-	Background(SDLCanvas* canvas);
+	Background(Canvas* canvas);
 	void init(BattleFieldLayout& bfl);
-	void draw(SDL_Surface* surface);
+	void draw();
 };
 
-} /* namespace tankwar */
+}
 
 #endif /* BACKGROUND_HPP_ */

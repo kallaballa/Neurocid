@@ -1,22 +1,12 @@
-/*
- * background.cpp
- *
- *  Created on: Apr 9, 2014
- *      Author: elchaschab
- */
-
 #include "background.hpp"
 #include "battlefieldlayout.hpp"
 #include "util.hpp"
-#include "sdlcanvas.hpp"
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_gfxPrimitives.h>
-#include <SDL/SDL.h>
+#include "canvas.hpp"
 
 namespace neurocid {
 
 
-Background::Background(SDLCanvas* canvas) :
+Background::Background(Canvas* canvas) :
 		canvas_(canvas) {
 }
 
@@ -70,7 +60,7 @@ void Background::init(BattleFieldLayout& bfl) {
 	}
 }
 
-void Background::draw(SDL_Surface* surface) {
+void Background::draw() {
 	for(Star& s : buffers_) {
 		canvas_->drawStar(s);
 	}
