@@ -100,12 +100,12 @@ else
 LIBS     += -lboost_system -lboost_serialization
 endif
 
-ifdef WITHOUT_VIDEOENC
+#ifdef WITHOUT_VIDEOENC
 CXXFLAGS += -D_NO_VIDEOENC
-else
-CXXFLAGS += -D__STDC_CONSTANT_MACROS `pkg-config --cflags libavformat libavcodec libswscale libavutil`
-LIBS     += `pkg-config --libs libavformat libavcodec libswscale libavutil`
-endif
+#else
+#CXXFLAGS += -D__STDC_CONSTANT_MACROS `pkg-config --cflags libavformat libavcodec libswscale libavutil`
+#LIBS     += `pkg-config --libs libavformat libavcodec libswscale libavutil`
+#endif
 
 ifdef WITHOUT_SNDFILE
 CXXFLAGS += -D_NO_SNDFILE
