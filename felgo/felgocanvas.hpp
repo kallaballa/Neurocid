@@ -3,12 +3,12 @@
 
 #include "options.hpp"
 #include "projectile.hpp"
-#include "background.hpp"
+#include "../src/background.hpp"
 #include "canvas.hpp"
 #include "ship.hpp"
 #include "battlefieldlayout.hpp"
+#include "../guichan/include/guichan/color.hpp"
 
-#include <guichan.hpp>
 #include <algorithm>
 #include "2d.hpp"
 #include <string>

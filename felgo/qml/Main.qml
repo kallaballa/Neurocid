@@ -16,7 +16,6 @@ App {
                     renderTarget: Canvas.Image;
                     renderStrategy: Canvas.Immediate;
 
-
                     function makePadded8BitHexString(v) {
                         if(v < 0 || v > 255) {
                             console.error("makePadded8BitHexString: value out of bounds");
