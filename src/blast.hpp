@@ -25,6 +25,8 @@ struct BlastLayout {
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
+    //suppress warning about unused variable version
+    assert(version >= 0);
 	  ar & radius_;
 	  ar & maxColateral_;
 	}

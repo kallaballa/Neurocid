@@ -1,6 +1,7 @@
 #ifndef CANVAS_H_
 #define CANVAS_H_
 
+#include "background.hpp"
 #include "2d.hpp"
 #include "SDL/SDL.h"
 
@@ -38,6 +39,7 @@ public:
 
 	virtual Coord width() const = 0;
 	virtual Coord height() const = 0;
+	virtual void drawStar(Star& s) = 0;
 
 	static void init(Canvas* canvas) {
 		CHECK(instance_ == NULL);

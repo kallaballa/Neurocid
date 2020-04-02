@@ -30,6 +30,8 @@ struct PopulationLayout {
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
+    //suppress warning about unused variable version
+    assert(version >= 0);
     ar & size_;
 	  ar & sl_;
 	  ar & bl_;
@@ -161,6 +163,8 @@ public:
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
+    //suppress warning about unused variable version
+    assert(version >= 0);
 	  ar & layout_;
 	  ar & score_;
 	  ar & winner_;

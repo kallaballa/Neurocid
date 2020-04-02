@@ -56,6 +56,8 @@ struct ShipLayout {
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
+    //suppress warning about unused variable version
+    assert(version >= 0);
 	  ar & pl_;
 
 	  ar & isDummy_;
@@ -130,6 +132,8 @@ public:
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
+    //suppress warning about unused variable version
+    assert(version >= 0);
 	  ar & boost::serialization::base_object<Object>(*this);
 	  ar & teamID_;
 	  ar & layout_;

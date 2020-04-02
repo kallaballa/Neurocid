@@ -34,6 +34,8 @@ struct BrainLayout  {
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
+    //suppress warning about unused variable version
+    assert(version >= 0);
 		ar & numMetaInputs_;
 		ar & numMetaLayers_;
 		ar & numMetaNeuronsPerHidden_;
@@ -101,7 +103,9 @@ public:
 #ifndef _NO_SERIALIZE
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
-	  ar & layout_;
+    //suppress warning about unused variable version
+    assert(version >= 0);
+		ar & layout_;
 	  if(!initialized_)
 		  makeNN();
 
