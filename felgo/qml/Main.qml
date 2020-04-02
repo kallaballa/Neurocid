@@ -9,23 +9,13 @@ App {
         Page {
             title: "A Felgo Frontend for Neurocid"
 
-            /*
-                both the appbutton "invisible" and the canvas "nc_canvas" fill the whole page
-                but only canvas is visible. That way, when you click in the canvas area you actually
-                click the button.
-            */
-            Column {
-                anchors.fill: parent;
-                AppButton {
-                    anchors.fill: parent;
-                    id: invisible
-                    text: "I'm invisible"
-                    onClicked: nc_canvas.requestPaint()
-                }
-
                 Canvas {
                     id: nc_canvas
+                    objectName: "nc_canvas"
                     anchors.fill: parent;
+                    renderTarget: Canvas.Image;
+                    renderStrategy: Canvas.Immediate;
+
 
                     function makePadded8BitHexString(v) {
                         if(v < 0 || v > 255) {
@@ -57,6 +47,7 @@ App {
                     }
 
                     function lineRGBA(x1, y1, x2, y2, r, g, b, a) {
+                        var ctx = getContext("2d");
                         setRGBA(ctx, r, g, b, a);
                         ctx.beginPath();
                         ctx.moveTo(x1, y1);
@@ -65,25 +56,14 @@ App {
                     }
 
                     function circleRGBA(x, y, radius, r, g, b, a) {
+                        var ctx = getContext("2d");
                         setRGBA(ctx, r, g, b, a);
                         ctx.beginPath();
                         ctx.arc(x,y,radius,0,2 * Math.PI);
                         ctx.stroke();
                     }
-
-                    onPaint: {
-                        var ctx = getContext("2d");
-                        ctx.fillStyle = Qt.rgba(1, 0, 0, 1);
-                        ctx.fillRect(0, 0, width, height);
-                        console.log("FRAME");
-                    }
-                }
-
-                Item {
                 }
             }
-        }
-
     }
 }
 
