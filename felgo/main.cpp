@@ -41,25 +41,15 @@ int main(int argc, char *argv[])
     QList<QObject*> rootObjs = engine.rootObjects();
     assert(rootObjs.size() == 1);
 
-    QObject *canvas = rootObjs.first()->findChild<QObject*>("nc_canvas");
-    assert(canvas != nullptr);
+    QObject *qmlCanvas = rootObjs.first()->findChild<QObject*>("nc_canvas");
+    assert(qmlCanvas != nullptr);
+
 
     std::thread renderThread([=]() {
-        while(!canvas->property("available").toBool()) {
+        while(!qmlCanvas->property("available").toBool()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             std::cerr << "wait" << std::endl;
         }
-
-        QMetaObject::invokeMethod(canvas, "lineRGBA",
-                                  Q_ARG(QVariant, 0),
-                                  Q_ARG(QVariant, 0),
-                                  Q_ARG(QVariant, 100),
-                                  Q_ARG(QVariant, 100),
-                                  Q_ARG(QVariant, 0),
-                                  Q_ARG(QVariant, 0),
-                                  Q_ARG(QVariant, 255),
-                                  Q_ARG(QVariant, 255)
-                                  );
 
         //command line parsing
         string loadAFile;
@@ -132,7 +122,8 @@ int main(int argc, char *argv[])
 
         CHECK_MSG(scenario != nullptr, "Unable to load a Scenario")
 
-        nc::FelgoCanvas* felgoCanvas = new nc::FelgoCanvas(width, height, scenario->bfl_);
+        nc::FelgoGFX* felgoGfx = new nc::FelgoGFX(qmlCanvas);
+        nc::FelgoCanvas* felgoCanvas = new nc::FelgoCanvas(felgoGfx, width, height, scenario->bfl_);
         nc::Canvas* canvas = dynamic_cast<nc::Canvas*>(felgoCanvas);
         CHECK_MSG(canvas != nullptr, "Can't cast FelgoCanvas to Canvas?!?")
 

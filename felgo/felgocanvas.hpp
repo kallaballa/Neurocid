@@ -8,6 +8,7 @@
 #include "ship.hpp"
 #include "battlefieldlayout.hpp"
 #include "../guichan/include/guichan/color.hpp"
+#include "felgogfx.hpp"
 
 #include <algorithm>
 #include "2d.hpp"
@@ -51,6 +52,7 @@ struct Trail : public std::deque<Vector2D> {
 class FelgoCanvas : public Canvas {
 	friend class Background;
 private:
+	FelgoGFX* felgoGfx_;
 	Coord width_;
 	Coord height_;
 	Coord scale_;
@@ -83,7 +85,7 @@ private:
 	void drawCenters(Scanner& scanner);
 	void pushTrail(Ship& t);
 public:
-	FelgoCanvas(Coord width, Coord height, BattleFieldLayout& bfl);
+	FelgoCanvas(FelgoGFX* felgoGfx, Coord width, Coord height, BattleFieldLayout& bfl);
 	virtual ~FelgoCanvas();
 
 	virtual void zoomIn() override;

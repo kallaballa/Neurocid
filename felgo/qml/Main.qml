@@ -31,7 +31,7 @@ App {
                     }
 
                     function makeHtmlColorString(r, g, b) {
-                        return makePadded8BitHexString(r) +
+                        return "#" + makePadded8BitHexString(r) +
                                 makePadded8BitHexString(g) +
                                 makePadded8BitHexString(b)
                     }
@@ -54,12 +54,30 @@ App {
                         ctx.stroke();
                     }
 
+                    function filledCircleRGBA(x, y, radius, r, g, b, a) {
+                        var ctx = getContext("2d");
+                        setRGBA(ctx, r, g, b, a);
+                        ctx.beginPath();
+                        ctx.arc(x,y,radius,0,2 * Math.PI);
+                        ctx.fill();
+                    }
+
                     function circleRGBA(x, y, radius, r, g, b, a) {
                         var ctx = getContext("2d");
                         setRGBA(ctx, r, g, b, a);
                         ctx.beginPath();
                         ctx.arc(x,y,radius,0,2 * Math.PI);
                         ctx.stroke();
+                    }
+
+                    function clear() {
+                        var ctx = getContext("2d");
+                        setRGBA(ctx, 0,0,0,255);
+                        ctx.fillRect(0, 0, width, height);
+                    }
+
+                    function flip() {
+                        requestPaint();
                     }
                 }
             }
