@@ -6,6 +6,7 @@ LIBS     := -lklocal -lm -lfann -lBox2D -ljson_spirit
 NVCC     := /usr/local/cuda/bin/nvcc
 NVCC_HOST_CXX := g++-4.6
 NVCC_CXXFLAGS := -Xcompiler -fpic -I/usr/local/cuda-5.0/samples/common/inc/
+FELGO_PATH :=~/Felgo/
 DESTDIR := /
 PREFIX := /usr/local
 MACHINE := $(shell uname -m)
@@ -168,7 +169,17 @@ dirs:
 	${MAKE} -C src/ ${MAKEFLAGS} CXX=${CXX} NVCC="${NVCC}" NVCC_HOST_CXX="${NVCC_HOST_CXX}" NVCC_CXXFLAGS="${NVCC_CXXFLAGS}" ${MAKECMDGOALS}
 ifndef STATIC
 	${MAKE} -C sdl1/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
+ifeq ($(MAKECMDGOALS), debug)
+	${FELGO_PATH}/Felgo/gcc_64/bin/qmake -o felgo/Makefile -recursive CONFIG+=debug felgo/felgo-neurocid.pro
+	${MAKE} -C felgo/ -${MAKEFLAGS} CXX=${CXX}
+else
+ifeq ($(MAKECMDGOALS), release)
+	${FELGO_PATH}/Felgo/gcc_64/bin/qmake -o felgo/Makefile -recursive CONFIG+=release felgo/felgo-neurocid.pro
+	${MAKE} -C felgo/ -${MAKEFLAGS} CXX=${CXX}
+else
 	${MAKE} -C felgo/ -${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
+endif
+endif
 #	${MAKE} -C sdl2/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 ifndef JAVASCRIPT
 	${MAKE} -C tests/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
