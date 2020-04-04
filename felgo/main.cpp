@@ -18,7 +18,7 @@
 #include "felgocanvas.hpp"
 #include "../src/canvas.hpp"
 #include "../sdl1/json_scenario.hpp"
-
+#include "qneurocidcontrol.hpp"
 
 namespace po = boost::program_options;
 namespace nc = neurocid;
@@ -28,6 +28,7 @@ using std::cerr;
 using std::endl;
 using std::vector;
 
+QNeurocidControl NC_CONTROL;
 
 int main(int argc, char *argv[])
 {
@@ -45,7 +46,25 @@ int main(int argc, char *argv[])
     assert(qmlCanvas != nullptr);
 
 
+    QObject::connect(qmlCanvas, SIGNAL(zoomIn()),
+                     &NC_CONTROL, SLOT(zoomIn()));
+    QObject::connect(qmlCanvas, SIGNAL(zoomOut()),
+                     &NC_CONTROL, SLOT(zoomOut()));
+    QObject::connect(qmlCanvas, SIGNAL(left()),
+                     &NC_CONTROL, SLOT(left()));
+    QObject::connect(qmlCanvas, SIGNAL(right()),
+                     &NC_CONTROL, SLOT(right()));
+    QObject::connect(qmlCanvas, SIGNAL(up()),
+                     &NC_CONTROL, SLOT(up()));
+    QObject::connect(qmlCanvas, SIGNAL(down()),
+                     &NC_CONTROL, SLOT(down()));
+    QObject::connect(qmlCanvas, SIGNAL(tiltUp()),
+                     &NC_CONTROL, SLOT(tiltUp()));
+    QObject::connect(qmlCanvas, SIGNAL(tiltDown()),
+                     &NC_CONTROL, SLOT(tiltDown()));
+
     std::thread renderThread([=]() {
+
         while(!qmlCanvas->property("available").toBool()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             std::cerr << "wait" << std::endl;
