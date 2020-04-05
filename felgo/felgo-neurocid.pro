@@ -35,7 +35,7 @@ SOURCES += main.cpp felgocanvas.cpp ../guichan/src/color.cpp ../sdl1/procedural_
     qneurocidcontrol.cpp
 INCLUDEPATH += $$PWD/../ $$PWD/../kmlocal/src/ $$PWD/../box2d/ $$PWD/../src/ $$PWD/../sdl1/sdl/ $$PWD/../guichan/include/
 
-LIBS += -L$$PWD/../src/ -lneurocid -L$$PWD/../box2d/Box2D/ -lBox2D -L$$PWD/../json_spirit/ -ljson_spirit -L$$PWD/../kmlocal/src/ -lklocal -lboost_program_options -lboost_serialization
+LIBS += -L$$PWD/../src/ -lneurocid -L$$PWD/../box2d/Box2D/ -lBox2D -L$$PWD/../json_spirit/ -ljson_spirit -L$$PWD/../kmlocal/src/ -lklocal -lboost_serialization
 
 android {
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
