@@ -1,5 +1,6 @@
 import Felgo 3.0
-import QtQuick 2.5
+import QtQuick 2.9
+import QtQuick.Extras 1.4
 
 App {
     id: app
@@ -22,6 +23,9 @@ App {
                 signal down()
                 signal tiltUp()
                 signal tiltDown()
+                signal setSpeed(int s)
+                signal togglePauseGame()
+                signal dumpTeams()
 
                 function makePadded8BitHexString(v) {
                     if(v < 0 || v > 255) {
@@ -127,61 +131,104 @@ App {
                 function flip() {
                     requestPaint();
                 }
+                Item {
+                    anchors.fill: parent
+                    Row {
+                        id: panRow
+                        anchors.top: parent.top
+                        anchors.horizontalCenter: parent.horizontalCenter
 
-                AppButton {
-                    id: zoomInBtn
-                    text: "Zoom In"
-                    onClicked: nc_canvas.zoomIn()
-                }
+                        AppButton {
+                            id: leftBtn
+                            text: "Left"
+                            onClicked: nc_canvas.left()
+                        }
 
-                AppButton {
-                    id: zoomOutBtn
-                    anchors.left: zoomInBtn.right;
-                    text: "Zoom Out"
-                    onClicked: nc_canvas.zoomOut()
-                }
+                        AppButton {
+                            id: rightBtn
+                            text: "Right"
+                            onClicked: nc_canvas.right()
+                        }
 
-                AppButton {
-                    id: leftBtn
-                    anchors.left: zoomOutBtn.right;
-                    text: "Left"
-                    onClicked: nc_canvas.left()
-                }
+                        AppButton {
+                            id: upBtn
+                            text: "Up"
+                            onClicked: nc_canvas.up()
+                        }
 
-                AppButton {
-                    id: rightBtn
-                    anchors.left: leftBtn.right;
-                    text: "Right"
-                    onClicked: nc_canvas.right()
-                }
+                        AppButton {
+                            id: downBtn
+                            text: "Down"
+                            onClicked: nc_canvas.down()
+                        }
+                    }
+                    Row {
+                        id: zoomAndTiltRow
+                        anchors.top: panRow.bottom
+                        anchors.horizontalCenter: parent.horizontalCenter
 
-                AppButton {
-                    id: upBtn
-                    anchors.left: rightBtn.right;
-                    text: "Up"
-                    onClicked: nc_canvas.up()
-                }
+                        AppButton {
+                            id: tiltUpBtn
+                            text: "Tilt Up"
+                            onClicked: nc_canvas.tiltUp()
+                        }
 
-                AppButton {
-                    id: downBtn
-                    anchors.left: upBtn.right;
-                    text: "Down"
-                    onClicked: nc_canvas.down()
-                }
+                        AppButton {
+                            id: tiltDownBtn
+                            text: "Tilt Down"
+                            onClicked: nc_canvas.tiltDown()
+                        }
 
-                AppButton {
-                    id: tiltUpBtn
-                    anchors.left: downBtn.right;
-                    text: "Tilt Up"
-                    onClicked: nc_canvas.tiltUp()
-                }
+                        AppButton {
+                            id: zoomInBtn
+                            text: "Zoom In"
+                            onClicked: nc_canvas.zoomIn()
+                        }
 
+                        AppButton {
+                            id: zoomOutBtn
+                            text: "Zoom Out"
+                            onClicked: nc_canvas.zoomOut()
+                        }
+                    }
 
-                AppButton {
-                    id: tiltDownBtn
-                    anchors.left: tiltUpBtn.right;
-                    text: "Tilt Down"
-                    onClicked: nc_canvas.tiltDown()
+                    Row {
+                        id: gameStateRow
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.bottom: parent.bottom
+
+                        AppButton {
+                            id: changeSpeedTgl
+                            property var gameSpeed: 0
+                            backgroundColor: gameSpeed === 0 ? "red" : (gameSpeed === 1 ? "orange" : "yellow")
+                            text: gameSpeed === 0 ? "Fast" : (gameSpeed === 1 ? "Slow" : "Slowest")
+                            onClicked: {
+                                if(gameSpeed > 1)
+                                    gameSpeed = 0;
+                                else
+                                    gameSpeed++;
+                                nc_canvas.setSpeed(gameSpeed)
+                            }
+                        }
+
+                        // ToggleButton component is ugly and bloated: https://doc.qt.io/qt-5/qml-qtquick-extras-togglebutton.htm
+                        AppButton {
+                            id: pauseGameTgl
+                            property bool enabled: false
+                            backgroundColor: !enabled ? "green" : "red"
+                            text: "Pause"
+                            onClicked: {
+                                enabled = !enabled
+                                nc_canvas.togglePauseGame()
+                            }
+                        }
+
+                        AppButton {
+                            id: dumpTeamsBtn
+                            text: "Dump Teams"
+                            onClicked: nc_canvas.dumpTeams()
+                        }
+                    }
                 }
             }
         }

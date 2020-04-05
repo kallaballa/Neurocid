@@ -2,7 +2,6 @@
 #define QNEUROCIDCONTROL_HPP
 
 #include <QObject>
-#include "../src/canvas.hpp"
 
 
 class QNeurocidControl : public QObject
@@ -22,6 +21,11 @@ public slots:
     void down();
     void tiltUp();
     void tiltDown();
+
+    void setSpeed(int s);
+    void togglePauseGame();
+    void dumpTeams();
+
 };
 
 #endif // QNEUROCIDCONTROL_HPP

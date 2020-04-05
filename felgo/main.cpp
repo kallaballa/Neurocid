@@ -63,6 +63,13 @@ int main(int argc, char *argv[])
     QObject::connect(qmlCanvas, SIGNAL(tiltDown()),
                      &NC_CONTROL, SLOT(tiltDown()));
 
+    QObject::connect(qmlCanvas, SIGNAL(setSpeed(int)),
+                     &NC_CONTROL, SLOT(setSpeed(int)));
+    QObject::connect(qmlCanvas, SIGNAL(togglePauseGame()),
+                     &NC_CONTROL, SLOT(togglePauseGame()));
+    QObject::connect(qmlCanvas, SIGNAL(dumpTeams()),
+                     &NC_CONTROL, SLOT(dumpTeams()));
+
     std::thread renderThread([=]() {
 
         while(!qmlCanvas->property("available").toBool()) {

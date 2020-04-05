@@ -1,33 +1,62 @@
 #include "qneurocidcontrol.hpp"
 
+#include "../src/canvas.hpp"
+#include "../src/gamestate.hpp"
+
+using namespace neurocid;
+
 void QNeurocidControl::zoomIn() {
-    neurocid::Canvas::getInstance()->zoomIn();
+    Canvas::getInstance()->zoomIn();
 }
 
 void QNeurocidControl::zoomOut() {
-    neurocid::Canvas::getInstance()->zoomOut();
+    Canvas::getInstance()->zoomOut();
 }
 
 void QNeurocidControl::left() {
-    neurocid::Canvas::getInstance()->left();
+    Canvas::getInstance()->left();
 }
 
 void QNeurocidControl::right() {
-    neurocid::Canvas::getInstance()->right();
+    Canvas::getInstance()->right();
 }
 
 void QNeurocidControl::up() {
-    neurocid::Canvas::getInstance()->up();
+    Canvas::getInstance()->up();
 }
 
 void QNeurocidControl::down() {
-    neurocid::Canvas::getInstance()->down();
+    Canvas::getInstance()->down();
 }
 
 void QNeurocidControl::tiltUp() {
-    neurocid::Canvas::getInstance()->tiltUp();
+    Canvas::getInstance()->tiltUp();
 }
 
 void QNeurocidControl::tiltDown() {
-    neurocid::Canvas::getInstance()->tiltDown();
+    Canvas::getInstance()->tiltDown();
 }
+
+void QNeurocidControl::setSpeed(int s) {
+    auto* gameState = GameState::getInstance();
+    if(s == 0) {
+        gameState->setSlow(false);
+        gameState->setSlower(false);
+    } else if(s == 1) {
+        gameState->setSlow(true);
+    } else if(s == 1) {
+        gameState->setSlower(true);
+    }
+}
+
+void QNeurocidControl::togglePauseGame() {
+    if(neurocid::GameState::getInstance()->isPaused())
+        neurocid::GameState::getInstance()->resume();
+    else
+        neurocid::GameState::getInstance()->pause();
+}
+
+void QNeurocidControl::dumpTeams() {
+    neurocid::GameState::getInstance()->dumpTeams();
+}
+
