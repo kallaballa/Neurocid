@@ -23,7 +23,7 @@ public slots:
     void tiltDown();
 
     void setSpeed(int s);
-    void togglePauseGame();
+    void setPaused(bool p);
     void dumpTeams();
 
 };

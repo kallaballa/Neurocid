@@ -42,37 +42,36 @@ int main(int argc, char *argv[])
     QList<QObject*> rootObjs = engine.rootObjects();
     assert(rootObjs.size() == 1);
 
-    QObject *qmlCanvas = rootObjs.first()->findChild<QObject*>("nc_canvas");
-    assert(qmlCanvas != nullptr);
+    QObject *qmlGfxCanvas = rootObjs.first()->findChild<QObject*>("gfxCanvas");
+    QObject *qmlApp = rootObjs.first();
+    assert(qmlGfxCanvas != nullptr);
+    assert(qmlApp != nullptr);
 
-
-    QObject::connect(qmlCanvas, SIGNAL(zoomIn()),
+    QObject::connect(qmlApp, SIGNAL(zoomIn()),
                      &NC_CONTROL, SLOT(zoomIn()));
-    QObject::connect(qmlCanvas, SIGNAL(zoomOut()),
+    QObject::connect(qmlApp, SIGNAL(zoomOut()),
                      &NC_CONTROL, SLOT(zoomOut()));
-    QObject::connect(qmlCanvas, SIGNAL(left()),
+    QObject::connect(qmlApp, SIGNAL(left()),
                      &NC_CONTROL, SLOT(left()));
-    QObject::connect(qmlCanvas, SIGNAL(right()),
+    QObject::connect(qmlApp, SIGNAL(right()),
                      &NC_CONTROL, SLOT(right()));
-    QObject::connect(qmlCanvas, SIGNAL(up()),
+    QObject::connect(qmlApp, SIGNAL(up()),
                      &NC_CONTROL, SLOT(up()));
-    QObject::connect(qmlCanvas, SIGNAL(down()),
+    QObject::connect(qmlApp, SIGNAL(down()),
                      &NC_CONTROL, SLOT(down()));
-    QObject::connect(qmlCanvas, SIGNAL(tiltUp()),
+    QObject::connect(qmlApp, SIGNAL(tiltUp()),
                      &NC_CONTROL, SLOT(tiltUp()));
-    QObject::connect(qmlCanvas, SIGNAL(tiltDown()),
+    QObject::connect(qmlApp, SIGNAL(tiltDown()),
                      &NC_CONTROL, SLOT(tiltDown()));
-
-    QObject::connect(qmlCanvas, SIGNAL(setSpeed(int)),
+    QObject::connect(qmlApp, SIGNAL(setSpeed(int)),
                      &NC_CONTROL, SLOT(setSpeed(int)));
-    QObject::connect(qmlCanvas, SIGNAL(togglePauseGame()),
-                     &NC_CONTROL, SLOT(togglePauseGame()));
-    QObject::connect(qmlCanvas, SIGNAL(dumpTeams()),
+    QObject::connect(qmlApp, SIGNAL(setPaused(bool)),
+                     &NC_CONTROL, SLOT(setPaused(bool)));
+    QObject::connect(qmlApp, SIGNAL(dumpTeams()),
                      &NC_CONTROL, SLOT(dumpTeams()));
 
     std::thread renderThread([=]() {
-
-        while(!qmlCanvas->property("available").toBool()) {
+        while(!qmlGfxCanvas->property("available").toBool()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             std::cerr << "wait" << std::endl;
         }
@@ -148,7 +147,7 @@ int main(int argc, char *argv[])
 
         CHECK_MSG(scenario != nullptr, "Unable to load a Scenario")
 
-        nc::FelgoGFX* felgoGfx = new nc::FelgoGFX(qmlCanvas);
+        nc::FelgoGFX* felgoGfx = new nc::FelgoGFX(qmlGfxCanvas);
         nc::FelgoCanvas* felgoCanvas = new nc::FelgoCanvas(felgoGfx, width, height, scenario->bfl_);
         nc::Canvas* canvas = dynamic_cast<nc::Canvas*>(felgoCanvas);
         CHECK_MSG(canvas != nullptr, "Can't cast FelgoCanvas to Canvas?!?")

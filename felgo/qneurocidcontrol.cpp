@@ -49,8 +49,8 @@ void QNeurocidControl::setSpeed(int s) {
     }
 }
 
-void QNeurocidControl::togglePauseGame() {
-    if(neurocid::GameState::getInstance()->isPaused())
+void QNeurocidControl::setPaused(bool p) {
+    if(!p)
         neurocid::GameState::getInstance()->resume();
     else
         neurocid::GameState::getInstance()->pause();
