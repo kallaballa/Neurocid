@@ -31,7 +31,7 @@ HEADERS += \
     felgogfx.hpp \
     qneurocidcontrol.hpp
 
-SOURCES += main.cpp felgocanvas.cpp ../guichan/src/color.cpp ../sdl1/procedural_scenarios.cpp ../sdl1/theme.cpp felgogfx.cpp \
+SOURCES += main.cpp felgocanvas.cpp ../guichan/src/color.cpp ../sdl1/theme.cpp felgogfx.cpp \
     qneurocidcontrol.cpp
 INCLUDEPATH += $$PWD/../ $$PWD/../kmlocal/src/ $$PWD/../box2d/ $$PWD/../src/ $$PWD/../sdl1/sdl/ $$PWD/../guichan/include/
 

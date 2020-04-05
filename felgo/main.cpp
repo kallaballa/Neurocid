@@ -11,12 +11,13 @@
 
 #include "../src/population.hpp"
 #include "../src/frontend.hpp"
-#include "../sdl1/procedural_scenarios.hpp"
+#include "../src/procedural_scenarios.hpp"
+#include "../src/json_scenario.hpp"
 #include "../src/2d.hpp"
 #include "../src/error.hpp"
 #include "felgocanvas.hpp"
 #include "../src/canvas.hpp"
-#include "../sdl1/json_scenario.hpp"
+
 #include "qneurocidcontrol.hpp"
 
 namespace nc = neurocid;
