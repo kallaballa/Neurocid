@@ -10,6 +10,8 @@
 
 namespace neurocid {
 
+template <typename... Args> inline void unused(Args&&...) {}
+
 void print_stacktrace(FILE *out = stderr, unsigned int max_frames = 63);
 
 class ErrorHandler {

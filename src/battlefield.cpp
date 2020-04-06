@@ -97,9 +97,9 @@ void write_brain_dump(const string& name, Population& pop, int channels, float* 
     destroy = true;
   }
 
-  CHECK(channels <= pop.layout_.bl_.numOutputs);
+  CHECK(static_cast<size_t>(channels) <= pop.layout_.bl_.numOutputs);
 
-  for (size_t i = 0; i < channels; ++i) {
+  for (size_t i = 0; i < static_cast<size_t>(channels); ++i) {
     for (Ship& s : pop) {
       buffer[i] += s.brain_->outputs_[i];
     }

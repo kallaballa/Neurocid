@@ -23,7 +23,7 @@ PopulationLayout make_default_population_layout() {
 			true,// canShoot_
 			true,// canRotate_
 			true,// canMove_
-			true,// canJump_
+			false,// canJump_
 			false,// disableProjectileFitness_
 
 			50.0,// radius_

@@ -98,7 +98,7 @@ void FelgoGFX::rectangleRGBA(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int
                             Q_ARG(QVariant, x1),
                             Q_ARG(QVariant, y1),
                             Q_ARG(QVariant, x2),
-                            Q_ARG(QVariant, x2),
+                            Q_ARG(QVariant, y2),
                             Q_ARG(QVariant, r),
                             Q_ARG(QVariant, g),
                             Q_ARG(QVariant, b),

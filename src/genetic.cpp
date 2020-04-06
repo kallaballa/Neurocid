@@ -282,7 +282,7 @@ Population GeneticPool::epoch(Population& old_pop, const BattleFieldLayout& bfl)
    * NOTE: we don't dont copy elites if we use perf descriptors since that is already a form of elitism
    */
   if (old_pop.winner_ && !layout_.usePerfDesc_ && layout_.numElite_ < old_pop.size()) {
-    if (!(layout_.numEliteCopies_ * (layout_.numElite_ % 2))) {
+    if ((layout_.numEliteCopies_ * (layout_.numElite_ % 2)) == 0) {
       copyNBest(layout_.numElite_, layout_.numEliteCopies_, old_pop, new_pop);
     }
   }

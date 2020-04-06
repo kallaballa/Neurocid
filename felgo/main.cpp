@@ -27,7 +27,7 @@ using std::cerr;
 using std::endl;
 using std::vector;
 
-QNeurocidControl NC_CONTROL;
+static QNeurocidControl NC_CONTROL;
 
 int main(int argc, char *argv[])
 {

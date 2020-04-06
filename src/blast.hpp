@@ -43,6 +43,7 @@ public:
   }
 
 	void move(BattleFieldLayout& bfl) {
+		unused(bfl);
 	}
 
 	void death() {

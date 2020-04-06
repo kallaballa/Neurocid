@@ -37,10 +37,10 @@ public:
 	size_t teamID_;
 	FacilityLayout layout_;
 	Scan scan_;
-	size_t damage_;
-	size_t crash_;
-	size_t crashDamage_;
-	size_t recharged_;
+	size_t damage_ = 0;
+	size_t crash_ = 0;
+	size_t crashDamage_= 0;
+	size_t recharged_= 0;
 
 	Facility(const size_t& teamID, const FacilityLayout& layout, const Vector2D& loc) :
 		Object(FACILITY, loc, 0, layout.radius_, false, false, false),

@@ -127,10 +127,10 @@ void EventLoop::process() {
 			break;
 
 		case SDL_KEYUP:
-			if (event.key.keysym.sym != SDLKey::SDLK_ESCAPE
-					&& event.key.keysym.mod != KMOD_LCTRL)
+//			if (event.key.keysym.sym != SDLKey::SDLK_ESCAPE
+//					&& event.key.keysym.mod != KMOD_LCTRL)
 //				gui.pushEvent(event);
-			break;
+//			break;
 
 		default:
 //			gui.pushEvent(event);

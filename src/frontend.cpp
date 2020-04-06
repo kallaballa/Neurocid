@@ -79,7 +79,6 @@ void init_game(size_t gameIter, Scenario* scenario, vector<Population>& teams, v
 
 void iter_game() {
   GameState& gs = *GameState::getInstance();
-  TimeTracker& tt = *TimeTracker::getInstance();
 
   if(game_ == NULL) {
     game_ = new Game(scenario_, teams_, pools_);

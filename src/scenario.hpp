@@ -49,8 +49,12 @@ public:
 	virtual ~Scenario(){
 	};
 
-	virtual void configureTeams(vector<Population>& teams) {};
-	virtual void configurePools(vector<GeneticPool>& pools) {};
+	virtual void configureTeams(vector<Population>& teams) {
+		unused(teams);
+	};
+	virtual void configurePools(vector<GeneticPool>& pools) {
+		unused(pools);
+	};
 };
 
 } /* namespace neurocid */
