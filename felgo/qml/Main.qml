@@ -5,17 +5,21 @@ App {
     id: neurocidApp
     objectName: "neurocidApp"
 
-    signal zoomIn()
-    signal zoomOut()
     signal left()
     signal right()
     signal up()
     signal down()
+
+    signal zoomIn()
+    signal zoomOut()
     signal tiltUp()
     signal tiltDown()
+
     signal setSpeed(int s)
     signal setPaused(bool p)
     signal dumpTeams()
+
+    signal resize(int width, int height)
 
     NavigationStack {
         Page {
@@ -25,6 +29,9 @@ App {
                 id: gfxCanvas
                 objectName: "gfxCanvas"
                 anchors.fill: parent;
+                //make sure to send a initial resize signal when canvas becomes available
+                onAvailableChanged: neurocidApp.resize(width, height)
+                onCanvasSizeChanged: neurocidApp.resize(width, height)
 
                 Item {
                     anchors.fill: parent
@@ -63,18 +70,6 @@ App {
                         anchors.horizontalCenter: parent.horizontalCenter
 
                         AppButton {
-                            id: tiltUpBtn
-                            text: "Tilt Up"
-                            onClicked: neurocidApp.tiltUp()
-                        }
-
-                        AppButton {
-                            id: tiltDownBtn
-                            text: "Tilt Down"
-                            onClicked: neurocidApp.tiltDown()
-                        }
-
-                        AppButton {
                             id: zoomInBtn
                             text: "Zoom In"
                             onClicked: neurocidApp.zoomIn()
@@ -84,6 +79,18 @@ App {
                             id: zoomOutBtn
                             text: "Zoom Out"
                             onClicked: neurocidApp.zoomOut()
+                        }
+
+                        AppButton {
+                            id: tiltUpBtn
+                            text: "Tilt Up"
+                            onClicked: neurocidApp.tiltUp()
+                        }
+
+                        AppButton {
+                            id: tiltDownBtn
+                            text: "Tilt Down"
+                            onClicked: neurocidApp.tiltDown()
                         }
                     }
 

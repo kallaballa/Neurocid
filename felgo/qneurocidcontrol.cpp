@@ -2,6 +2,7 @@
 
 #include "../src/canvas.hpp"
 #include "../src/gamestate.hpp"
+#include "../src/options.hpp"
 
 using namespace neurocid;
 
@@ -58,5 +59,10 @@ void QNeurocidControl::setPaused(bool p) {
 
 void QNeurocidControl::dumpTeams() {
     neurocid::GameState::getInstance()->dumpTeams();
+}
+
+void QNeurocidControl::resize(int width, int height) {
+    if(Canvas::isInitialized())
+        Canvas::getInstance()->resize(width,height);
 }
 

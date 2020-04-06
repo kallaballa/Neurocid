@@ -3,7 +3,6 @@
 
 #include <QObject>
 
-
 class QNeurocidControl : public QObject
 {
     Q_OBJECT
@@ -26,6 +25,7 @@ public slots:
     void setPaused(bool p);
     void dumpTeams();
 
+    void resize(int width, int height);
 };
 
 #endif // QNEUROCIDCONTROL_HPP

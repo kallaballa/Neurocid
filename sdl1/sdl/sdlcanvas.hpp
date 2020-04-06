@@ -112,6 +112,11 @@ public:
 		return screen_;
 	}
 
+	void resize(Coord width, Coord height) override {
+		width_ = width;
+		height_ = height;
+	}
+
 	Coord width() const override {
 		return width_;
 	}

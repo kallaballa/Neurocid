@@ -122,7 +122,7 @@ void FelgoCanvas::drawStar(Star& s) {
 		if (s.z_ == 0) {
 			felgoGfx_->circleRGBA(Sint16(s.x), Sint16(s.y), i, s.r, s.g, s.b,	round(alpha));
 		} else {
-			double r = i * 1.5 / zoom_;
+            double r = std::ceil(i * 1.5 / zoom_ / 100);
 			if (r != lastR) {
 				auto scaled = scale(Vector2D(s.x, s.y), s.z_);
 				felgoGfx_->circleRGBA(scaled.first, scaled.second, r, s.r, s.g,	s.b, std::min(static_cast<int16_t>(255), static_cast<int16_t>(round((alpha / zoom_)))));

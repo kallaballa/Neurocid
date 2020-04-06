@@ -37,6 +37,7 @@ public:
 	virtual void render(BattleField& field) = 0;
 	virtual void reset() = 0;
 
+        virtual void resize(Coord width, Coord height) = 0;
 	virtual Coord width() const = 0;
 	virtual Coord height() const = 0;
 	virtual void drawStar(Star& s) = 0;
@@ -51,7 +52,11 @@ public:
 		return instance_;
 	}
 
-  static void destroy() {
+        static bool isInitialized() {
+                return instance_ != NULL;
+        }
+
+static void destroy() {
     if(instance_)
       delete instance_;
 

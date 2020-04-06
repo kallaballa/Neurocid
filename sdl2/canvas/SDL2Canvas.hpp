@@ -66,6 +66,11 @@ public:
 	virtual void render(BattleField& field) override;
 	virtual void reset() override;
 
+	void resize(Coord width, Coord height) override {
+		width_ = width;
+		height_ = height;
+	}
+
 	Coord width() const override;
 	Coord height() const override;
 

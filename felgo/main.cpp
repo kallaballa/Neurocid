@@ -68,6 +68,9 @@ int main(int argc, char *argv[])
                      &NC_CONTROL, SLOT(setPaused(bool)));
     QObject::connect(qmlApp, SIGNAL(dumpTeams()),
                      &NC_CONTROL, SLOT(dumpTeams()));
+    QObject::connect(qmlApp, SIGNAL(resize(int,int)),
+                     &NC_CONTROL, SLOT(resize(int,int)));
+
 
     std::thread renderThread([=]() {
         while(!qmlGfxCanvas->property("available").toBool()) {
