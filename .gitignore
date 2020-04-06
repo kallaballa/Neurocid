@@ -8,6 +8,7 @@ timeseries.csv
 game/neurocid-bin
 render/makeAndRender
 src/libneurocid.so
+*.nsj
 *.pop
 *.csv
 *.so.*
@@ -35,4 +36,10 @@ LuaJIT-2.0.3/src/lj_libdef.h
 LuaJIT-2.0.3/src/lj_recdef.h
 LuaJIT-2.0.3/src/lj_vm.s
 LuaJIT-2.0.3/src/luajit
-
+.cproject
+.project
+.settings/
+Default/
+felgo/.qmake.stash
+felgo/Makefile
+felgo/felgo-neurocid
