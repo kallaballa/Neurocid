@@ -115,21 +115,34 @@ void FelgoCanvas::tiltDown() {
 		angle_ = 0.1;
 }
 
+//FIXME debug star rendering
 void FelgoCanvas::drawStar(Star& s) {
-	double alpha = s.alpha;
-	for (size_t i = 0; i < s.radius; i++) {
-        felgoGfx_->circleRGBA(int16_t(s.x), int16_t(s.y), int16_t(i), s.r, s.g, s.b, uint8_t(round(alpha)));
-
-		if (i == s.discontinuity)
-			alpha /= 3;
-		alpha *= s.step;
-	}
+    unused(s);
+    /*    double alpha = s.alpha;
+    double lastR = 0;
+    for (size_t i = 0; i < s.radius; i++) {
+        if (s.z_ < 0.001)
+            felgoGfx_->circleRGBA(Sint16(s.x), Sint16(s.y), i, s.r, s.g, s.b,
+                    round(alpha));
+        else {
+            double r = i * 1.5 / zoom_;
+            if (std::fabs(r - lastR) > 0.001) {
+                auto scaled = scale(Vector2D(s.x, s.y), s.z_);
+                felgoGfx_->circleRGBA(scaled.first, scaled.second, r, s.r, s.g,
+                        s.b, round((alpha / zoom_)));
+            }
+            lastR = r;
+        }
+        if (i == s.discontinuity)
+            alpha /= 3;
+        alpha *= s.step;
+    }*/
 }
 
 void FelgoCanvas::drawExplosion(Explosion& expl) {
 #ifndef _NO_SDLGFX
 	size_t lastR = 0, r = 0;
-	for (size_t i = expl.tick_; i > 0; --i) {
+    for (size_t i = expl.tick_; i > 0; --i) {
 		if (scale_ < 0.013)
             r = size_t(round((pow(i, 2) / 30) * 6 * scale_));
 		else
@@ -354,7 +367,7 @@ void FelgoCanvas::drawProjectile(Projectile& pro, Color& c) {
 
 void FelgoCanvas::clear() {
     felgoGfx_->clear(0,0,0);
-	background_.draw();
+    background_.draw();
 }
 
 void FelgoCanvas::update() {
