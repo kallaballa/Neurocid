@@ -53,7 +53,7 @@ public:
     */
     void clear(const uint8_t& r, const uint8_t& g, const uint8_t& b);
     /**
-        This function has no pendant in SDL_gfx but it serves the same purpose as SDL_Flip, though
+        This function has no corresponding function in SDL_gfx but it serves the same purpose as SDL_Flip, though
         the exact semantics are very different.
     */
     void flip();
