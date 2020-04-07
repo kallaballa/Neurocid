@@ -36,7 +36,7 @@ void FelgoCanvas::calculateScale() {
 	scale_ = std::min(scaleX, scaleY) * preScale / zoom_;
 }
 
-std::pair<Sint16, Sint16> FelgoCanvas::scale(const Vector2D& v, Coord z) {
+std::pair<int16_t, int16_t> FelgoCanvas::scale(const Vector2D& v, Coord z) {
 	Coord px = v.x_ - viewPort_.lr_.x_;
 	Coord py = v.y_ - viewPort_.lr_.y_;
 	Coord pz = z * 100000;
@@ -49,10 +49,10 @@ std::pair<Sint16, Sint16> FelgoCanvas::scale(const Vector2D& v, Coord z) {
 	x += width_ / 2;
 	y *= scale_;
 	y += height_ / 2;
-	return {(Sint16)round(x), (Sint16)round(y)};
+    return {static_cast<int16_t>(round(x)), static_cast<int16_t>(round(y))};
 }
 
-std::pair<Sint16, Sint16> FelgoCanvas::transform(const Vector2D& v, Coord z) {
+std::pair<int16_t, int16_t> FelgoCanvas::transform(const Vector2D& v, Coord z) {
 	Coord cx = v.x_ - viewPort_.lr_.x_;
 	Coord cy = v.y_ - viewPort_.lr_.y_;
 
@@ -71,7 +71,7 @@ std::pair<Sint16, Sint16> FelgoCanvas::transform(const Vector2D& v, Coord z) {
 	y *= scale_;
 	y += height_ / 2;
 
-	return {(Sint16)round(x), (Sint16)round(y)};
+    return {static_cast<int16_t>(round(x)), static_cast<int16_t>(round(y))};
 }
 
 void FelgoCanvas::zoomIn() {
@@ -117,18 +117,9 @@ void FelgoCanvas::tiltDown() {
 
 void FelgoCanvas::drawStar(Star& s) {
 	double alpha = s.alpha;
-	double lastR = 0;
 	for (size_t i = 0; i < s.radius; i++) {
-		if (s.z_ == 0) {
-			felgoGfx_->circleRGBA(Sint16(s.x), Sint16(s.y), i, s.r, s.g, s.b,	round(alpha));
-		} else {
-            double r = std::ceil(i * 1.5 / zoom_ / 100);
-			if (r != lastR) {
-				auto scaled = scale(Vector2D(s.x, s.y), s.z_);
-				felgoGfx_->circleRGBA(scaled.first, scaled.second, r, s.r, s.g,	s.b, std::min(static_cast<int16_t>(255), static_cast<int16_t>(round((alpha / zoom_)))));
-			}
-			lastR = r;
-		}
+        felgoGfx_->circleRGBA(int16_t(s.x), int16_t(s.y), int16_t(i), s.r, s.g, s.b, uint8_t(round(alpha)));
+
 		if (i == s.discontinuity)
 			alpha /= 3;
 		alpha *= s.step;
@@ -140,15 +131,15 @@ void FelgoCanvas::drawExplosion(Explosion& expl) {
 	size_t lastR = 0, r = 0;
 	for (size_t i = expl.tick_; i > 0; --i) {
 		if (scale_ < 0.013)
-			r = round((pow(i, 2) / 30) * 6 * scale_);
+            r = size_t(round((pow(i, 2) / 30) * 6 * scale_));
 		else
-			r = round((pow(i, 2) / 30) * scale_);
+            r = size_t(round((pow(i, 2) / 30) * scale_));
 
 		Color c = expl.color_ + Color(0, 10, 0);
-		c.a = std::min(size_t(200 + (255 / (i + 1))), size_t(255));
+        c.a = int(std::min(size_t(200 + (255 / (i + 1))), size_t(255)));
 		if (lastR != r) {
 			auto scaled = transform(expl.loc_);
-			felgoGfx_->circleRGBA(scaled.first, scaled.second, round(r * scale_), c.r, c.g, c.b, c.a);
+            felgoGfx_->circleRGBA(scaled.first, scaled.second, int16_t(round(r * scale_)), uint8_t(c.r), uint8_t(c.g), uint8_t(c.b), uint8_t(c.a));
 		}
 		lastR = r;
 	}
@@ -158,21 +149,21 @@ void FelgoCanvas::drawExplosion(Explosion& expl) {
 void FelgoCanvas::drawTrail(const Trail& trail, const Color& c) {
 #ifndef _NO_SDLGFX
 	size_t cnt = 0;
-	Sint16 lastX = -1;
-	Sint16 lastY = -1;
+    int16_t lastX = -1;
+    int16_t lastY = -1;
 
 	for (const Vector2D& v : trail) {
 		auto scaled = transform(v);
 		size_t r;
 		if (scale_ < 0.013)
-			r = round(1.5 / (cnt + 1) * scale_);
+            r = size_t(round(1.5 / (cnt + 1) * scale_));
 		else
-			r = round(0.5 / (cnt + 1) * scale_);
+            r = size_t(round(0.5 / (cnt + 1) * scale_));
 
-		felgoGfx_->filledCircleRGBA(scaled.first, scaled.second, r, c.r, c.g, c.b, c.a);
+        felgoGfx_->filledCircleRGBA(scaled.first, scaled.second, int16_t(r), uint8_t(c.r), uint8_t(c.g), uint8_t(c.b), uint8_t(c.a));
 
 		if (lastX != -1 && lastY != -1) {
-			felgoGfx_->lineRGBA(lastX, lastY, scaled.first, scaled.second, c.r, c.g, c.b, 48);
+            felgoGfx_->lineRGBA(lastX, lastY, scaled.first, scaled.second, uint8_t(c.r), uint8_t(c.g), uint8_t(c.b), 48);
 		}
 
 		lastX = scaled.first;
@@ -185,13 +176,13 @@ void FelgoCanvas::drawTrail(const Trail& trail, const Color& c) {
 
 void FelgoCanvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
 	auto scaled = transform(loc);
-	felgoGfx_->ellipseRGBA(scaled.first, scaled.second, round(rangeX * scale_), round(rangeY * scale_), c.r, c.g, c.b, c.a);
+    felgoGfx_->ellipseRGBA(scaled.first, scaled.second, int16_t(round(rangeX * scale_)), int16_t(round(rangeY * scale_)), uint8_t(c.r), uint8_t(c.g), uint8_t(c.b), uint8_t(c.a));
 }
 
 void FelgoCanvas::fillCircle(Vector2D loc, Coord radius, Color c) {
 #ifndef _NO_SDLGFX
 	auto scaled = transform(loc);
-	felgoGfx_->filledCircleRGBA(scaled.first, scaled.second, round(radius * scale_), c.r, c.g, c.b, c.a);
+    felgoGfx_->filledCircleRGBA(scaled.first, scaled.second, int16_t(round(radius * scale_)), uint8_t(c.r), uint8_t(c.g), uint8_t(c.b), uint8_t(c.a));
 #endif
 }
 
@@ -199,26 +190,26 @@ void FelgoCanvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color c,
 		Coord s) {
 	auto scaled0 = transform(Vector2D(x0, y0), s);
 	auto scaled1 = transform(Vector2D(x1, y1), s);
-	felgoGfx_->lineRGBA(scaled0.first, scaled0.second, scaled1.first, scaled1.second, c.r, c.g, c.b, c.a);
+    felgoGfx_->lineRGBA(scaled0.first, scaled0.second, scaled1.first, scaled1.second, uint8_t(c.r), uint8_t(c.g), uint8_t(c.b), uint8_t(c.a));
 }
 
 void FelgoCanvas::drawRect(Coord x0, Coord y0, Coord x1, Coord y1, Color c,
 		Coord s) {
 	auto scaled0 = transform(Vector2D(x0, y0), s);
 	auto scaled1 = transform(Vector2D(x1, y1), s);
-	felgoGfx_->rectangleRGBA(scaled0.first, scaled0.second, scaled1.first, scaled1.second, c.r, c.g, c.b, c.a);
+    felgoGfx_->rectangleRGBA(scaled0.first, scaled0.second, scaled1.first, scaled1.second, uint8_t(c.r), uint8_t(c.g), uint8_t(c.b), uint8_t(c.a));
 }
 
 void FelgoCanvas::fillRect(Coord x0, Coord y0, Coord x1, Coord y1, Color c,
 		Coord s) {
 	auto scaled0 = transform(Vector2D(x0, y0), s);
 	auto scaled1 = transform(Vector2D(x1, y1), s);
-	const Sint16 xv[5] = { scaled0.first, scaled1.first, scaled1.first,
+    const int16_t xv[5] = { scaled0.first, scaled1.first, scaled1.first,
 			scaled0.first, scaled0.first };
-	const Sint16 yv[5] = { scaled0.second, scaled0.second, scaled1.second,
+    const int16_t yv[5] = { scaled0.second, scaled0.second, scaled1.second,
 			scaled1.second, scaled0.second };
 
-	felgoGfx_->filledPolygonRGBA(xv, yv, 5, c.r, c.g, c.b, c.a);
+    felgoGfx_->filledPolygonRGBA(xv, yv, 5, uint8_t(c.r), uint8_t(c.g), uint8_t(c.b), uint8_t(c.a));
 }
 void FelgoCanvas::drawShip(Ship& ship, Color c) {
 	Vector2D dir = ship.getDirection();
@@ -319,7 +310,7 @@ void FelgoCanvas::drawFacility(Facility& facility, Color c) {
 		c = c * 0.5;
 
 	auto scaled = transform(facility.loc_);
-	felgoGfx_->filledCircleRGBA(scaled.first, scaled.second, round((facility.layout_.radius_ / 100) * scale_), c.r, c.g, c.b, 128);
+    felgoGfx_->filledCircleRGBA(scaled.first, scaled.second, int16_t(round((facility.layout_.radius_ / 100) * scale_)), uint8_t(c.r), uint8_t(c.g), uint8_t(c.b), 128);
 
 	for (size_t i = 0; i < 50; ++i) {
 		drawEllipse(facility.loc_, facility.layout_.radius_ / 100 - i,
@@ -327,12 +318,12 @@ void FelgoCanvas::drawFacility(Facility& facility, Color c) {
 	}
 
 	for (size_t i = 0; i < 3; ++i) {
-		Sint16 start = iRand(0, 360);
-		Sint16 end = iRand(start, 360);
-		felgoGfx_->pieRGBA(scaled.first, scaled.second, round(scale_ * (facility.layout_.radius_ / 150)), start, end, 0, 0, 255, 255);
-		start = iRand(0, 360);
-		end = iRand(start, 360);
-		felgoGfx_->pieRGBA(scaled.first, scaled.second, round(scale_ * (facility.layout_.radius_ / 150)), start, end, 255, 255, 0, 255);
+        int16_t start = int16_t(iRand(0, 360));
+        int16_t end = int16_t(iRand(start, 360));
+        felgoGfx_->pieRGBA(scaled.first, scaled.second, int16_t(round(scale_ * (facility.layout_.radius_ / 150))), start, end, 0, 0, 255, 255);
+        start = int16_t(iRand(0, 360));
+        end = int16_t(iRand(start, 360));
+        felgoGfx_->pieRGBA(scaled.first, scaled.second, int16_t(round(scale_ * (facility.layout_.radius_ / 150))), start, end, 255, 255, 0, 255);
 	}
 
 	Vector2D ul(facility.loc_.x_ + facility.layout_.radius_ + 1000,
@@ -341,8 +332,8 @@ void FelgoCanvas::drawFacility(Facility& facility, Color c) {
 	Coord height = lr.y_ - ul.y_;
 	height *=
 			(1.0
-					- ((double) facility.damage_
-							/ (double) facility.layout_.maxDamage_));
+                    - (static_cast<double>(facility.damage_)
+                            / static_cast<double>(facility.layout_.maxDamage_)));
 	ul.y_ = lr.y_ - height;
 	fillRect(ul.x_, ul.y_, lr.x_, lr.y_, { 255, 255, 255 });
 #endif
@@ -362,7 +353,7 @@ void FelgoCanvas::drawProjectile(Projectile& pro, Color& c) {
 }
 
 void FelgoCanvas::clear() {
-	felgoGfx_->clear();
+    felgoGfx_->clear(0,0,0);
 	background_.draw();
 }
 
@@ -498,7 +489,7 @@ void FelgoCanvas::render(BattleField& field) {
 				//				if(p->explode_)
 //					explosions_.push_back({p->loc_, 0, 20, {255,64,0,255}});
 
-				if (p->blast_ != NULL && !p->blast_->dead_)
+                if (p->blast_ != nullptr && !p->blast_->dead_)
 					explosions_.push_back( { p->loc_, 35, 40,
 							{ 255, 128, 0, 255 } });
 
