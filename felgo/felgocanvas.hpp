@@ -105,11 +105,6 @@ public:
 	void resize(Coord width, Coord height) override {
 		width_ = width;
 		height_ = height;
-/*		scale_ = 1;
-		zoom_ = 1;
-		viewPort_ = Rect();
-		viewPort_.ul_ = {320000,320000};
-		viewPort_.lr_ = {330000,330000};*/
 	}
 
 	Coord width() const override {
