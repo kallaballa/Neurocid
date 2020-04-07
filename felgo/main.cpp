@@ -62,14 +62,14 @@ int main(int argc, char *argv[])
                      &NC_CONTROL, SLOT(tiltUp()));
     QObject::connect(qmlApp, SIGNAL(tiltDown()),
                      &NC_CONTROL, SLOT(tiltDown()));
+    QObject::connect(qmlApp, SIGNAL(resizeCanvasBackend(int,int)),
+                     &NC_CONTROL, SLOT(resizeCanvasBackend(int,int)));
     QObject::connect(qmlApp, SIGNAL(setSpeed(int)),
                      &NC_CONTROL, SLOT(setSpeed(int)));
     QObject::connect(qmlApp, SIGNAL(setPaused(bool)),
                      &NC_CONTROL, SLOT(setPaused(bool)));
     QObject::connect(qmlApp, SIGNAL(dumpTeams()),
                      &NC_CONTROL, SLOT(dumpTeams()));
-    QObject::connect(qmlApp, SIGNAL(resize(int,int)),
-                     &NC_CONTROL, SLOT(resize(int,int)));
 
 
     std::thread renderThread([=]() {
