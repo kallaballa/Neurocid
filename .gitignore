@@ -43,3 +43,8 @@ Default/
 felgo/.qmake.stash
 felgo/Makefile
 felgo/felgo-neurocid
+felgo/moc_predefs.h
+felgo/moc_qneurocidcontrol.cpp
+felgo/qrc_resources_user.cpp
+sdl1/neurocid-bin
+
