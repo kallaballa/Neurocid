@@ -9,7 +9,7 @@ namespace neurocid {
 FelgoGFX::FelgoGFX(QObject* canvas) : canvas_(canvas) {
 }
 
-void FelgoGFX::lineRGBA(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t r, int16_t g, int16_t b, int16_t a) {
+void FelgoGFX::lineRGBA(const int16_t& x1, const int16_t& y1, const int16_t& x2, const int16_t& y2, const uint8_t& r, const uint8_t& g, const uint8_t& b, const uint8_t& a) {
     QMetaObject::invokeMethod(canvas_, "lineRGBA",
                               Q_ARG(QVariant, x1),
                               Q_ARG(QVariant, y1),
@@ -23,7 +23,7 @@ void FelgoGFX::lineRGBA(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t 
 }
 
 
-void FelgoGFX::circleRGBA(int16_t x, int16_t y, int16_t radius, int16_t r, int16_t g, int16_t b, int16_t a) {
+void FelgoGFX::circleRGBA(const int16_t& x, const int16_t& y, const int16_t& radius, const uint8_t& r, const uint8_t& g, const uint8_t& b, const uint8_t& a) {
     QMetaObject::invokeMethod(canvas_, "circleRGBA",
                               Q_ARG(QVariant, x),
                               Q_ARG(QVariant, y),
@@ -35,7 +35,7 @@ void FelgoGFX::circleRGBA(int16_t x, int16_t y, int16_t radius, int16_t r, int16
                               );
 }
 
-void FelgoGFX::filledCircleRGBA(int16_t x, int16_t y, int16_t radius, int16_t r, int16_t g, int16_t b, int16_t a) {
+void FelgoGFX::filledCircleRGBA(const int16_t& x, const int16_t& y, const int16_t& radius, const uint8_t& r, const uint8_t& g, const uint8_t& b, const uint8_t& a) {
     QMetaObject::invokeMethod(canvas_, "filledCircleRGBA",
                               Q_ARG(QVariant, x),
                               Q_ARG(QVariant, y),
@@ -48,7 +48,7 @@ void FelgoGFX::filledCircleRGBA(int16_t x, int16_t y, int16_t radius, int16_t r,
 }
 
 //FIXME test me
-void FelgoGFX::pieRGBA(int16_t x, int16_t y, int16_t radius, int16_t start, int16_t end, int16_t r, int16_t g, int16_t b, int16_t a) {
+void FelgoGFX::pieRGBA(const int16_t& x, const int16_t& y, const int16_t& radius, const int16_t& start, const int16_t& end, const uint8_t& r, const uint8_t& g, const uint8_t& b, const uint8_t& a) {
     QMetaObject::invokeMethod(canvas_, "pieRGBA",
                               Q_ARG(QVariant, x),
                               Q_ARG(QVariant, y),
@@ -62,7 +62,7 @@ void FelgoGFX::pieRGBA(int16_t x, int16_t y, int16_t radius, int16_t start, int1
                               );
 }
 
-void FelgoGFX::filledPolygonRGBA(const int16_t* vx,	const int16_t* vy, int n, int16_t r, int16_t g, int16_t b, int16_t a) {
+void FelgoGFX::filledPolygonRGBA(const int16_t* vx,	const int16_t* vy, int n, const uint8_t& r, const uint8_t& g, const uint8_t& b, const uint8_t& a) {
 	QVariantList lx;
   QVariantList ly;
 	lx.reserve(n);
@@ -80,7 +80,7 @@ void FelgoGFX::filledPolygonRGBA(const int16_t* vx,	const int16_t* vy, int n, in
 	                              );
 }
 
-void FelgoGFX::ellipseRGBA(int16_t x, int16_t y, int16_t radiusx, int16_t radiusy, int16_t r, int16_t g, int16_t b, int16_t a) {
+void FelgoGFX::ellipseRGBA(const int16_t& x, const int16_t& y, const int16_t& radiusx, const int16_t& radiusy, const uint8_t& r, const uint8_t& g, const uint8_t& b, const uint8_t& a) {
   QMetaObject::invokeMethod(canvas_, "ellipseRGBA",
                             Q_ARG(QVariant, x),
                             Q_ARG(QVariant, y),
@@ -93,7 +93,7 @@ void FelgoGFX::ellipseRGBA(int16_t x, int16_t y, int16_t radiusx, int16_t radius
                             );
 }
 
-void FelgoGFX::rectangleRGBA(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t r, int16_t g, int16_t b, int16_t a) {
+void FelgoGFX::rectangleRGBA(const int16_t& x1, const int16_t& y1, const int16_t& x2, const int16_t& y2, const uint8_t& r, const uint8_t& g, const uint8_t& b, const uint8_t& a) {
   QMetaObject::invokeMethod(canvas_, "rectangleRGBA",
                             Q_ARG(QVariant, x1),
                             Q_ARG(QVariant, y1),
@@ -106,8 +106,12 @@ void FelgoGFX::rectangleRGBA(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int
                             );
 }
 
-void FelgoGFX::clear() {
-  QMetaObject::invokeMethod(canvas_, "clear");
+void FelgoGFX::clear(const uint8_t& r, const uint8_t& g, const uint8_t& b) {
+  QMetaObject::invokeMethod(canvas_, "clear",
+                            Q_ARG(QVariant, r),
+                            Q_ARG(QVariant, g),
+                            Q_ARG(QVariant, b)
+                            );
 }
 
 void FelgoGFX::flip() {
