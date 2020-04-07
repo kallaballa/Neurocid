@@ -38,6 +38,11 @@ void QNeurocidControl::tiltDown() {
     Canvas::getInstance()->tiltDown();
 }
 
+void QNeurocidControl::resizeCanvasBackend(int width, int height) {
+    if(Canvas::isInitialized())
+        Canvas::getInstance()->resize(width,height);
+}
+
 void QNeurocidControl::setSpeed(int s) {
     auto* gameState = GameState::getInstance();
     if(s == 0) {
@@ -52,17 +57,13 @@ void QNeurocidControl::setSpeed(int s) {
 
 void QNeurocidControl::setPaused(bool p) {
     if(!p)
-        neurocid::GameState::getInstance()->resume();
+        GameState::getInstance()->resume();
     else
-        neurocid::GameState::getInstance()->pause();
+        GameState::getInstance()->pause();
 }
 
 void QNeurocidControl::dumpTeams() {
-    neurocid::GameState::getInstance()->dumpTeams();
+    GameState::getInstance()->dumpTeams();
 }
 
-void QNeurocidControl::resize(int width, int height) {
-    if(Canvas::isInitialized())
-        Canvas::getInstance()->resize(width,height);
-}
 

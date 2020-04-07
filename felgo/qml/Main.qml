@@ -5,6 +5,10 @@ App {
     id: neurocidApp
     objectName: "neurocidApp"
 
+    /*
+        Please see: qneurocidcontrol.hpp for documentation on the corresponding
+        slots to the signals below
+    */
     signal left()
     signal right()
     signal up()
@@ -19,19 +23,20 @@ App {
     signal setPaused(bool p)
     signal dumpTeams()
 
-    signal resize(int width, int height)
+    signal resizeCanvasBackend(int width, int height)
 
     NavigationStack {
         Page {
-            title: "A Felgo Frontend for Neurocid based on an SDLgfx-like Canvas"
+            title: "A Felgo Frontend for Neurocid, based on an SDLgfx-like Canvas"
 
             GfxCanvas {
                 id: gfxCanvas
                 objectName: "gfxCanvas"
                 anchors.fill: parent;
-                //make sure to send a initial resize signal when canvas becomes available
-                onAvailableChanged: neurocidApp.resize(width, height)
-                onCanvasSizeChanged: neurocidApp.resize(width, height)
+                //make sure to send an initial resizeCanvasBackend signal when canvas
+                //becomes available
+                onAvailableChanged: neurocidApp.resizeCanvasBackend(width, height)
+                onCanvasSizeChanged: neurocidApp.resizeCanvasBackend(width, height)
 
                 Item {
                     anchors.fill: parent

@@ -1,18 +1,20 @@
 import QtQuick 2.0
 
-/*!
-   \qmltype GfxCanvas
-   \inherits Canvas
-   \brief
-        This is an incomplete drop-in replacement for SDL_gfx based drawing functions.
-        It only implements functions required by Neurocid and doesn't yet honor all
-        the api conventions. e.g.: no error reporting through returning an int
+/**
+    This is an incomplete drop-in replacement for SDL_gfx based rasterisation
+    (https://en.wikipedia.org/wiki/Rasterisation) functions.
+    It only implements functions required by Neurocid and doesn't yet honor all
+    the api conventions. e.g.: no error reporting by returning an integer value.
 */
 Canvas {
     // FIXME Benchmark renderTarget and renderStrategy, though the current choice should be fine
     renderTarget: Canvas.Image;
     renderStrategy: Canvas.Immediate;
 
+    /**
+        Creates a hex string from an integer value with a value from 0 to 255. If the resulting
+        string consists of only one character a leading zero is added.
+    */
     function makePadded8BitHexString(v) {
         if(v < 0 || v > 255) {
             console.error("makePadded8BitHexString: value out of bounds");
@@ -27,12 +29,14 @@ Canvas {
         }
     }
 
+    //Creates an html like rgb hex-string. e.g.: "#ff0000" for pure red
     function makeHtmlColorString(r, g, b) {
         return "#" + makePadded8BitHexString(r) +
                 makePadded8BitHexString(g) +
                 makePadded8BitHexString(b)
     }
 
+    //Sets the fill and stroke color of the 2d context.
     function setRGBA(ctx, r, g, b, a) {
         if(a < 0 || a > 255) {
             console.error("setRGBA: alpha value out of bounds");
@@ -42,6 +46,15 @@ Canvas {
         ctx.fillStyle = ctx.strokeStyle = makeHtmlColorString(r, g, b);
     }
 
+    /*  -------------------------------
+    *   All following methods have a pendant in felgogfx.hpp. Every function ending with RGBA
+    *   is modelled after a SDL_gfx primitive function. the functions "clear" and "flip" don't have a
+    *   counterpart in SDL_gfx. Please see felgogfx.hpp for more information.
+    *
+    *   You can find documentation on the SDL_gfx functions here:
+    *   https://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8h.html
+    *   -------------------------------
+    */
     function lineRGBA(x1, y1, x2, y2, r, g, b, a) {
         var ctx = getContext("2d");
         setRGBA(ctx, r, g, b, a);
@@ -67,9 +80,6 @@ Canvas {
         ctx.stroke();
     }
 
-    /* FIXME
-        Arcs drawn with this function and with SDL_gfx differ.
-    */
     function pieRGBA(x, y, radius, start, end, r, g, b, a) {
         var ctx = getContext("2d");
         setRGBA(ctx, r, g, b, a);
@@ -111,13 +121,14 @@ Canvas {
         ctx.stroke();
     }
 
-    function clear() {
+    function clear(r,g,b) {
         var ctx = getContext("2d");
-        setRGBA(ctx, 0,0,0,255);
+        setRGBA(ctx, r,g,b,255);
         ctx.fillRect(0, 0, width, height);
     }
 
     function flip() {
+        //FIXME there are several ways to achieve a buffer flip. Find the optimal way.
         requestPaint();
     }
 }
