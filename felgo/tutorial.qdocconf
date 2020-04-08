@@ -3,8 +3,8 @@
 # practices. For that reason, any QDoc configuration file needs to
 # include compat.qdocconf.
 #include(compat.qdocconf)
-project                 = felgo-neurocid
-description             = Tutorial: How I ported an SDL_gfx based game to felgo
+project                 = felgo-neurocidd
+description             = Tutorial: How I ported an C++/SDL_gfx based game to Felgo
 
 # QDoc needs lists of file extensions to know which files to process in
 # different situations. Uncomment the following include statement to get
@@ -12,8 +12,8 @@ description             = Tutorial: How I ported an SDL_gfx based game to felgo
 #include(fileextensions.qdocconf)
 
 # You can also specify file extensions manually.
-headers.fileextensions  = "*.h *.hpp"
-sources.fileextensions  = "*.cpp *.qml *.qdoc"
+headers.fileextensions  = "*.hpp"
+sources.fileextensions  = "*.qml *.qdoc *.cpp"
 
 # The outputdir variable specifies the directory
 # where QDoc will put the generated documentation.

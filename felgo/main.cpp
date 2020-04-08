@@ -31,21 +31,59 @@ using std::vector;
 
 static QNeurocidControl NC_CONTROL;
 
+/*!
+ * \class CommandLineOptions
+ * \brief The collection of all Neurocid options in a struct.
+ */
 struct CommandLineOptions {
+   /*!
+   * \param loadAFile_
+   * \brief The file from which to load Team A
+   */
   string loadAFile_;
+  /*!
+  * \param saveAFile_
+  * \brief The file to save Team A in after the scenario has ended
+  */
   string saveAFile_;
+  /*!
+  * \param loadBFile_
+  * \brief The file from which to load Team B
+  */
   string loadBFile_;
+  /*!
+  * \param saveBFile_
+  * \brief The file to save Team B in after the scenario has ended
+  */
   string saveBFile_;
-  string captureFile_;
-  string brainDumpFileA_;
-  string brainDumpFileB_;
+  /*!
+  * \param scenarioName_
+  * \brief Either a name of a scenario defined in ../src/procedural_scenarios.cpp or a json file ending with the suffix nsj
+  */
   string scenarioName_;
+  /*!
+  * \param gameIterations_
+  * \brief The number of times the scenario should be run
+  */
   size_t gameIterations_ = 1000;
-  size_t width_ = 800;
-  size_t height_ = 800;
+  /*!
+  * \param frameRate_
+  * \brief The frame rate of the renderer
+  */
   size_t frameRate_ = 25;
+  /*!
+  * \param autosaveInterval_
+  * \brief interval in minutes for autosaving
+  */
   long autosaveInterval_ = 0;
 
+  /*!
+   * \fn parse
+   * \brief parse the command line options and setup the above variables
+   * \param argc the argument count as it was passed to the main function
+   * \param argv the argument vector as it was passed to the main function
+   * \return zero on success.
+   */
   int parse(const int argc, const char* const argv[]) {
     po::options_description genericDesc("Options");
     genericDesc.add_options()
@@ -55,11 +93,6 @@ struct CommandLineOptions {
         ("loadB", po::value<string>(&this->loadBFile_), "Load the population as team B from a file before running the scenario")
         ("saveA", po::value<string>(&this->saveAFile_), "Save the team A population to a file after running the scenario")
         ("saveB", po::value<string>(&this->saveBFile_), "Save the team B population to a file after running the scenario")
-        ("capture,c", po::value<string>(&this->captureFile_), "Capture the game to a video file")
-        ("brainDumpA", po::value<string>(&this->brainDumpFileA_), "Dump the neural network output of team A to an AU (audio) file.")
-        ("brainDumpB", po::value<string>(&this->brainDumpFileB_), "Dump the neural network output of team B to an AU (audio) file.")
-        ("width,x", po::value<size_t>(&this->width_), "The window width")
-        ("height,y", po::value<size_t>(&this->height_), "The window height")
         ("framerate,f", po::value<size_t>(&this->frameRate_), "The frame rate of the renderer and video encoder")
         ("help,h", "Produce help message");
 
@@ -88,18 +121,21 @@ struct CommandLineOptions {
   }
 };
 
+/*!
+ * \fn setup the neurocid backend according to the options passed and start it
+ * \brief run_felgo_neurocid
+ * \param opts The command line options parsed from argc and argv
+ * \param qmlGfxCanvas The QML \c GfxCanvas object we aquired from the \c QQmlApplicationEngine
+ */
 void run_felgo_neurocid(const CommandLineOptions& opts, QObject *qmlGfxCanvas) {
-	srand(time(0));
-	  /* Let's load the scenario.
-	   * Either we load a hard coded (procedural) scenario
-	   * or if a filename is given we load a json scenario
-	   */
+    //seed the pseudo-random generator
+    srand(static_cast<unsigned int>(time(nullptr)));
 
-	  //initialize frontend subsystems
-	  nc::init_core(opts.width_, opts.height_, opts.frameRate_);
+      //initialize frontend subsystems. the width and height arguments provided here are rather meaningless (but required) once the Feglo frontend takes over.
+      nc::init_core(800, 600, opts.frameRate_);
 
 	  string suffix = ".nsj";
-	  nc::Scenario* scenario = NULL;
+      nc::Scenario* scenario = nullptr;
 
 	  if (opts.scenarioName_.length() > suffix.length() && std::equal(suffix.rbegin(), suffix.rend(), opts.scenarioName_.rbegin())) {
 	    scenario = new nc::json::JsonScenario(opts.scenarioName_);
@@ -109,16 +145,16 @@ void run_felgo_neurocid(const CommandLineOptions& opts, QObject *qmlGfxCanvas) {
 	    // get a declarative scenario by name
 	    scenario = nc::get_procedural_scenario(opts.scenarioName_);
 
-	    CHECK_MSG(scenario != NULL, "Unknown Scenario");
+        CHECK_MSG(scenario != nullptr, "Unknown Scenario")
 	  }
-	  CHECK_MSG(scenario != NULL, "Unable to load a Scenario");
+      CHECK_MSG(scenario != nullptr, "Unable to load a Scenario")
 	  nc::FelgoGFX* felgoGfx = new nc::FelgoGFX(qmlGfxCanvas);
-	  nc::FelgoCanvas* felgoCanvas = new nc::FelgoCanvas(felgoGfx, opts.width_, opts.height_, scenario->bfl_);
+      nc::FelgoCanvas* felgoCanvas = new nc::FelgoCanvas(felgoGfx, 800, 600, scenario->bfl_);
 	  nc::Canvas* canvas = dynamic_cast<nc::Canvas*>(felgoCanvas);
 	  CHECK_MSG(canvas != nullptr, "Can't cast FelgoCanvas to Canvas!")
 
 	  //initialize rendering
-		nc::init_canvas(canvas);
+        nc::init_canvas(canvas);
 
 	  //make default layouts
 	  nc::PopulationLayout pl = nc::make_default_population_layout();
@@ -164,7 +200,7 @@ void run_felgo_neurocid(const CommandLineOptions& opts, QObject *qmlGfxCanvas) {
 	      }
 	    });
 
-
+      //renderer loop
 	  while (neurocid::is_running()) {
 	    neurocid::render();
 	  }
@@ -174,24 +210,33 @@ void run_felgo_neurocid(const CommandLineOptions& opts, QObject *qmlGfxCanvas) {
 }
 
 int main(int argc, char *argv[]) {
-		CommandLineOptions opts;
-		opts.parse(argc, argv);
+    CommandLineOptions opts;
+    opts.parse(argc, argv);
 
-		QApplication app(argc, argv);
+    //pretty standard initialization of the Felgo app
+    QApplication app(argc, argv);
     FelgoApplication felgo;
     QQmlApplicationEngine engine;
     felgo.initialize(&engine);
+    //load main qml file
     felgo.setMainQmlFileName(QStringLiteral("qml/Main.qml"));
     engine.load(QUrl(felgo.mainQmlFileName()));
 
+    //we know there is only one root object but it's better to check anyways
     QList<QObject*> rootObjs = engine.rootObjects();
     assert(rootObjs.size() == 1);
 
+    //find the gfxCanvas QML object
     QObject *qmlGfxCanvas = rootObjs.first()->findChild<QObject*>("gfxCanvas");
+    //get the neurocidApp QML object
     QObject *qmlApp = rootObjs.first();
     assert(qmlGfxCanvas != nullptr);
     assert(qmlApp != nullptr);
 
+    /*
+     * connect the back-channel (to the neurocid backend) signals of the neurocid app
+     * to the global QNeurocidControl object
+     */
     QObject::connect(qmlApp, SIGNAL(zoomIn()),
                      &NC_CONTROL, SLOT(zoomIn()));
     QObject::connect(qmlApp, SIGNAL(zoomOut()),
@@ -217,16 +262,20 @@ int main(int argc, char *argv[]) {
     QObject::connect(qmlApp, SIGNAL(dumpTeams()),
                      &NC_CONTROL, SLOT(dumpTeams()));
 
+    //run neurocid in a thread
     std::thread neurocidThread([=]() {
+        //wait for the GfxCanvas to become available
         while(!qmlGfxCanvas->property("available").toBool()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             std::cerr << "wait" << std::endl;
         }
 
+        //setup the neurocid backend according to the opts and run it.
         run_felgo_neurocid(opts,qmlGfxCanvas);
     });
 
     neurocidThread.detach();
 
+    //now that everything is setup, run the felgo applications
     return app.exec();
 }

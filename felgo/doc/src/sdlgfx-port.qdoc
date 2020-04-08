@@ -2,29 +2,31 @@
 \page sdlgfx-port-tutorial.html
 \title Tutorial: How I ported C++/SDL_gfx based application to Felgo
 
-There are several ways to port SDL/SDL_gfx based applications to Felgo. The most canonical way
+There are several ways to port C++/SDL_gfx based applications to Felgo. The most canonical way
 would be to provide a model with all the game data needed for rendering and pass it to Felgo
 app to do the heavy lifting as described here: \l{https://felgo.com/doc/apps-howto-model-view-separation/}{Model-view-separation-tutorial}.
-But in case you want a quick result and you don't need any of the advantages of using Felgo for
+But in case you want a quick result, your rendering just works fine the way it is, and you don't need any of the advantages of using Felgo for
 rendering: This is the tutorial to read.
 The approach is pretty simple: Create a SDL_gfx drop-in replacement that behind the scenes uses
-a \c QML Canvas element to do the actual drawing (do be more exact: \l{https://en.wikipedia.org/wiki/Rasterisation}{rasterisation}).
+an extend QML Canvas element (\c GfxCanvas) to do the actual drawing (do be more exact: \l{https://en.wikipedia.org/wiki/Rasterisation}{rasterisation}).
 We are going to use a real-world example to demonstrate the approach: Neurocid - a space battle simulation driven by \l{https://en.wikipedia.org/wiki/Genetic_algorithm}{a genetic algorithm}
 and \l{https://en.wikipedia.org/wiki/Artificial_neural_network}{artifical neural networks}. The code for this tutorial resides in two \l{https://en.wikipedia.org/wiki/Git}{git-branches} of the Neurocid github project:
 \list
 \li \l{https://github.com/kallaballa/Neurocid/tree/master}{Neurocid master} - The code before the port
 \li \l{https://github.com/kallaballa/Neurocid/tree/felgo}{Neurocid felgo} - The code after the port
-\endlist
+<\endlist
 
 If you want all the changes at a glance you can \l{https://github.com/kallaballa/Neurocid/compare/master...felgo}{compare}
-those branches but please be aware that not all of them are strictly necessary to achieve the goal of this tutorial and we are going
-throught the process step by step anyway.
+those branches but please be aware that not all of them are strictly necessary to achieve the goal of this tutorial.
 
 Tutorial chapters:
 \list 1
 \li \l{Chapter 0: Comments on how I approached the challenge in general}
 \li \l{Chapter 1: Building Neurocid for Debian Linux 10}
 \li \l{Chapter 2: Running the Neurocid-Felgo frontend}
+\li \l{Chapter 3: Write a QML Canvas object that mimics a SDL_gfx-like API}
+\li \l{Chapter 4: Write a C++ to QML Canvas bridge}
+\li \l{Chapter 5: How to use the SDL_gfx-like drop-in replacement}
 \li \l{Appendix: Issues with the Challenge and Felgo}
 \endlist
 */
@@ -38,13 +40,16 @@ Tutorial chapters:
 \li I disabled Neurocid features that were in the way and are not strictly necessary (e.g.: like compiling to javascript using emscripten)
 \li Where possible I ignored Neurocid issues.
 \li I didn't fix issues/warnings in third-party code (e.g.: Box2D).
-\li I held back on beautifing the App and the Docs because you are looking for a backend hacker.
+\li I held back on beautifying the App and the Docs because you are looking for a backend hacker.
 \li I made sure the project can be edited, build and run with and without QT-Creator.
 \li I didn't test and benchmark to a professional extent but i made sure it runs on Ubuntu, Debian and OpenSUSE.
 \li I didn't test for Mac OSX at all (which is a supported target of the master-branch)
 \li I chose a quite ambigous task knowing it is significantly more work than required, because i wanted to implement something that wouldn't go to waist, no matter what.
+\li In general it would be very nice if you could provide a full Felgo-qdoc-tutorial with config a qdoc document, style-sheets and assets.
+\li Most of the time I'm not a last minute guy but job, family and virus-life took their toll.
+\li I didn't include the appendix (just) to show off. If focus/given directions/time allow(s) it, I regard doing a tutorial as testing a tutorial (in projects I am involved in)
+\li I didn't include the qt/qtdoc pitfalls that i encountered. e.g.: it took quite some time to find out that source documentation can't be in source files and doesn't warn about it. try to search for it :)
 \endlist
-
 */
 /*!
 \page build-neurocid-debian.html
@@ -115,6 +120,154 @@ To run the training do the following:
 \code
 cd Neurocid/
 felgo/training.sh
+\endcode
+*/
+/*!
+\page write_qml_canvas.html
+\title Chapter 3: Write a QML Canvas object that mimics a SDL_gfx-like API
+SDL_gfx provides a simple and straight-forward {https://www.ferzkopp.net/Software/SDL_gfx-2.0/Docs/html/_s_d_l__gfx_primitives_8h.html}{API) for rasterising vector graphics.
+What we need to do is extend a QML Canvas with methods resembling the SDL_gfx-functions we require. Let's say for the sake of simplicity we only require straight-line rendering.
+The following sections shows an example of QML Canvas that supports exactly that. Please note that the renderTarget and renderStrategy are educated guesses and that
+he helper functions preceeding the function lineRGBA are required to generate html color-hex-strings (e.g: "#ff0000" for pure red), to clear the whole canvas and to control the
+framebuffer.
+You can find the full (and abstracted implementation) in GfxCanvas.qml
+
+\code
+Canvas {
+    renderTarget: Canvas.Image;
+    renderStrategy: Canvas.Immediate;
+    //VERY important. we need the objectName so we can find the object in the C++ code.
+    objectName: "gfxCanvas"
+
+    //Creates a hex string from an integer value with a value from 0 to 255. If the resulting
+    //string consists of only one character a leading zero is added.
+    function makePadded8BitHexString(v) {
+        if(v < 0 || v > 255) {
+            console.error("makePadded8BitHexString: value out of bounds");
+            return "00";
+        } else {
+            var vHex = v.toString(16);
+            if(vHex.length === 1) {
+                return "0" + vHex;
+            } else {
+                return vHex;
+            }
+        }
+    }
+
+    //Creates an html like rgb hex-string. e.g.: "#ff0000" for pure red
+    function makeHtmlColorString(r, g, b) {
+        return "#" + makePadded8BitHexString(r) +
+                makePadded8BitHexString(g) +
+                makePadded8BitHexString(b)
+    }
+
+    //Sets the fill and stroke color of the 2d context.
+    function setRGBA(ctx, r, g, b, a) {
+        if(a < 0 || a > 255) {
+            console.error("setRGBA: alpha value out of bounds");
+            return;
+        }
+        ctx.globalAlpha = a / 255.0;
+        ctx.fillStyle = ctx.strokeStyle = makeHtmlColorString(r, g, b);
+    }
+
+    //Fill the whole Canvas with the provided RGB color
+    function clear(r,g,b) {
+        var ctx = getContext("2d");
+        setRGBA(ctx, r,g,b,255);
+        ctx.fillRect(0, 0, width, height);
+    }
+
+    //Flip the framebuffer and therefor display what has been rendered off-screen
+    function flip() {
+        requestPaint();
+    }
+
+    //the actual code drawing a line using the 2d graphics context
+    function lineRGBA(x1, y1, x2, y2, r, g, b, a) {
+        var ctx = getContext("2d");
+        setRGBA(ctx, r, g, b, a);
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+    }
+}
+\endcode
+*/
+/*!
+\page write_a_cpp_to_qml_bridge.html
+\title Chapter 4: Write a C++ to QML Canvas bridge
+The following code demonstrates how to call the corresponding QML method from C++. Please note that the functions flip and clear don't have a corresponding SDL_gfx function
+but are still required to be effectivly able to render. Flip performs a buffer flip of the framebuffer (which you need to do after you've done all the drawing operations to actually display
+the frame (see {https://en.wikipedia.org/wiki/Multiple_buffering#Double_buffering_in_computer_graphics}{double buffering}) and clear fills the whole canvas with the RGB color provided.
+There are several ways to call the QML Canvas methods (e.g.: using signals/slots) but i chose the QMetaObject::invokeMethod approached because i wanted tight(er) binding than the message passing of signals/slots provides.
+Also I couldn't find a use case that would require binding those functions many times from many locations.
+You can find the full in felgogfx.cpp
+
+\code
+FelgoGFX::FelgoGFX(QObject* canvas) : canvas_(canvas) {
+}
+
+//except for the return value this function behaves like explained here: https://www.ferzkopp.net/Software/SDL_gfx-2.0/Docs/html/_s_d_l__gfx_primitives_8h.html#a5e4bd13b12d34698fbcb2dc9d3a0e9f3
+void FelgoGFX::lineRGBA(const int16_t& x1, const int16_t& y1, const int16_t& x2, const int16_t& y2, const uint8_t& r, const uint8_t& g, const uint8_t& b, const uint8_t& a) {
+    QMetaObject::invokeMethod(canvas_, "lineRGBA",
+                              Q_ARG(QVariant, x1),
+                              Q_ARG(QVariant, y1),
+                              Q_ARG(QVariant, x2),
+                              Q_ARG(QVariant, y2),
+                              Q_ARG(QVariant, r),
+                              Q_ARG(QVariant, g),
+                              Q_ARG(QVariant, b),
+                              Q_ARG(QVariant, a)
+                              );
+}
+
+//This function has no corresponding function in SDL_gfx. It fills the whole canvas with a uniform color.
+void FelgoGFX::clear(const uint8_t& r, const uint8_t& g, const uint8_t& b) {
+  QMetaObject::invokeMethod(canvas_, "clear",
+                            Q_ARG(QVariant, r),
+                            Q_ARG(QVariant, g),
+                            Q_ARG(QVariant, b)
+                            );
+}
+
+//This function has no corresponding function in SDL_gfx but it serves the same purpose as SDL_Flip, though the exact semantics are very different.
+void FelgoGFX::flip() {
+  QMetaObject::invokeMethod(canvas_, "flip");
+}
+\endcode
+*/
+/*!
+\page howto_use_replacement.html
+\title Chapter 5: How to use the SDL_gfx-like drop-in replacement
+
+The following code shows an example of how to use the API we created.
+You can find the full implementation in main.cpp
+
+\code
+    //A common felgo boiler-plate
+    QApplication app(argc, argv);
+    FelgoApplication felgo;
+    QQmlApplicationEngine engine;
+    felgo.initialize(&engine);
+
+    //load main qml file
+    felgo.setMainQmlFileName(QStringLiteral("qml/GfxCanvasExample.qml"));
+    engine.load(QUrl(felgo.mainQmlFileName()));
+
+    //find the gfxCanvas QML object by the objectName we assigned in Chapter 3
+    QObject *qmlGfxCanvas = rootObjs.first()->findChild<QObject*>("gfxCanvas");
+
+    //Instantiate our C++ to QML bridge.
+    FelgoGFX* felgoGfx = new nc::FelgoGFX(qmlGfxCanvas);
+    //fill the canvas black
+    felgoGfx.clear(0,0,0)
+    //draw a line
+    felgoGfx.lineRGBA(0,0,100,100,255,0,0,255);
+    //display what we have drawn
+    felgoGfx.flip();
 \endcode
 */
 /*!
