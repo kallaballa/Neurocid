@@ -173,11 +173,8 @@ ifeq ($(MAKECMDGOALS), debug)
 	${FELGO_PATH}/Felgo/gcc_64/bin/qmake -o felgo/Makefile -recursive CONFIG+=debug felgo/felgo-neurocid.pro
 	${MAKE} -C felgo/ -${MAKEFLAGS} CXX=${CXX}
 else
-ifeq ($(MAKECMDGOALS), release)
 	${FELGO_PATH}/Felgo/gcc_64/bin/qmake -o felgo/Makefile -recursive CONFIG+=release felgo/felgo-neurocid.pro
 	${MAKE} -C felgo/ -${MAKEFLAGS} CXX=${CXX}
-else
-	${MAKE} -C felgo/ -${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 endif
 endif
 #	${MAKE} -C sdl2/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
