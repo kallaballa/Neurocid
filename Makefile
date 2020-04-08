@@ -176,7 +176,6 @@ else
 	${FELGO_PATH}/Felgo/gcc_64/bin/qmake -o felgo/Makefile -recursive CONFIG+=release felgo/felgo-neurocid.pro
 	${MAKE} -C felgo/ -${MAKEFLAGS} CXX=${CXX}
 endif
-endif
 #	${MAKE} -C sdl2/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 ifndef JAVASCRIPT
 	${MAKE} -C tests/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
