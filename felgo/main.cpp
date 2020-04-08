@@ -10,14 +10,14 @@
 #include <cassert>
 #include <boost/program_options.hpp>
 
-#include "../src/population.hpp"
-#include "../src/frontend.hpp"
-#include "../src/procedural_scenarios.hpp"
-#include "../src/json_scenario.hpp"
-#include "../src/2d.hpp"
-#include "../src/error.hpp"
+#include "population.hpp"
+#include "frontend.hpp"
+#include "procedural_scenarios.hpp"
+#include "json_scenario.hpp"
+#include "2d.hpp"
+#include "error.hpp"
 #include "felgocanvas.hpp"
-#include "../src/canvas.hpp"
+#include "canvas.hpp"
 
 #include "qneurocidcontrol.hpp"
 

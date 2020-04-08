@@ -3,11 +3,11 @@
 
 #include "options.hpp"
 #include "projectile.hpp"
-#include "../src/background.hpp"
+#include "background.hpp"
 #include "canvas.hpp"
 #include "ship.hpp"
 #include "battlefieldlayout.hpp"
-#include "../guichan/include/guichan/color.hpp"
+#include "color.hpp"
 #include "felgogfx.hpp"
 
 #include <algorithm>

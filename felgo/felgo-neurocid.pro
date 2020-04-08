@@ -27,13 +27,9 @@ RESOURCES += #    resources.qrc # uncomment for publishing
 # The .cpp file which was generated for your project. Feel free to hack it.
 
 
-HEADERS += \
-    felgogfx.hpp \
-    qneurocidcontrol.hpp \
-    felgocanvas.hpp
+HEADERS += felgogfx.hpp qneurocidcontrol.hpp felgocanvas.hpp color.hpp theme.hpp
 
-SOURCES += main.cpp felgocanvas.cpp ../guichan/src/color.cpp ../sdl1/theme.cpp felgogfx.cpp \
-    qneurocidcontrol.cpp
+SOURCES += main.cpp felgocanvas.cpp color.cpp theme.cpp felgogfx.cpp qneurocidcontrol.cpp
 INCLUDEPATH += $$PWD/../ $$PWD/../kmlocal/src/ $$PWD/../box2d/ $$PWD/../src/ $$PWD/../sdl1/sdl/ $$PWD/../guichan/include/
 
 LIBS += -L$$PWD/../src/ -lneurocid -L$$PWD/../box2d/Box2D/ -lBox2D -L$$PWD/../json_spirit/ -ljson_spirit -L$$PWD/../kmlocal/src/ -lklocal -lboost_serialization -lboost_program_options

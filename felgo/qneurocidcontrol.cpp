@@ -1,8 +1,8 @@
 #include "qneurocidcontrol.hpp"
 
-#include "../src/canvas.hpp"
-#include "../src/gamestate.hpp"
-#include "../src/options.hpp"
+#include "canvas.hpp"
+#include "gamestate.hpp"
+#include "options.hpp"
 
 using namespace neurocid;
 

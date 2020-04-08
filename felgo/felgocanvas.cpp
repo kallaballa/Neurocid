@@ -4,7 +4,7 @@
 #include "battlefield.hpp"
 #include "population.hpp"
 #include "time_tracker.hpp"
-#include "../theme.hpp"
+#include "theme.hpp"
 
 #include <sstream>
 #include <chrono>
