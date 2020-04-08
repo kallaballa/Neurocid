@@ -1,0 +1,87 @@
+/*!
+\page sdlgfx-port-tutorial.html
+\title Tutorial: How I ported C++/SDL_gfx based application to Felgo
+
+Prerequisites:
+\list
+\li Basic Linux proficiency (Using the command line, editing files, ...)
+\li Basit git handling
+\endlist
+
+There are several ways to port SDL/SDL_gfx based applications to Felgo. The most canonical way
+would be to provide a model with all the game data needed for rendering and pass it to Felgo
+app to do the heavy lifting as described here: \l{https://felgo.com/doc/apps-howto-model-view-separation/}{Model-view-separation-tutorial}.
+But in case you want a quick result and you don't need any of the advantages of using Felgo for
+rendering: This is the tutorial to read.
+The approach is pretty simple: Create a SDL_gfx drop-in replacement that behind the scenes uses
+a \c Canvas element to do the actual drawing (do be more exact: \l{https://en.wikipedia.org/wiki/Rasterisation}{rasterisation}).
+We are going to use a real-world example to demonstrate the approach: Neurocid - a space battle simulation driven by \l{https://en.wikipedia.org/wiki/Genetic_algorithm}{a genetic algorithm}
+and \l{https://en.wikipedia.org/wiki/Artificial_neural_network}{artifical neural networks}. The code for this tutorial resides in two \l{https://en.wikipedia.org/wiki/Git}{git-branches} of the Neurocid github project:
+\list
+\li \l{https://github.com/kallaballa/Neurocid/tree/master}{Neurocid master} - The code before the port
+\li \l{https://github.com/kallaballa/Neurocid/tree/felgo}{Neurocid felgo} - The code after the port
+\endlist
+
+If you want all the changes at a glance you can \l{https://github.com/kallaballa/Neurocid/compare/master...felgo}{compare}
+those branches but please be aware that not all of them are strictly necessary to achieve the goal of this tutorial and we are going
+throught the process step by step anyway.
+
+Tutorial chapters:
+\list 1
+\li \l{Chapter 1: Building Neurocid for Debian Linux 10}
+\endlist
+*/
+
+/*!
+\page build-neurocid-debian.html
+\title Chapter 1: Building Neurocid for Debian Linux 10
+
+First, let's install all build dependencies:
+\code
+su - # change to root
+apt-get install git-core pkg-config cmake build-essentials g++ libsdl1.2-dev libsdl-gfx1.2-dev libsdl-image1.2-dev libsdl-ttf1.2-dev libboost-system-dev libboost-program-options-dev libboost-serialization-dev libsndfile1-dev
+\endcode
+
+For convenience we are going to install sudo and configure it:
+\code
+su - # change to root
+apt-get install sudo
+adduser <your user> sudo
+\endcode
+
+Please note, that you need to log out and back in for the changes to take effect (and hence being able to use sudo)
+From this point all commands that are not prefixed with "sudo" should be run with the unprivileged user that you want to run felgo-neurocid with.
+
+Next let's get the code. We are going to clone the "felgo" branch (not master!).
+\code
+git clone --branch felgo https://github.com/kallaballa/Neurocid
+\endcode
+
+Now we need to install Felgo. Please follow the corresponding \l{https://felgo.com/doc/felgo-installation/}{tutorial}
+and make sure to install Felgo directly in your home folder (/home/<your user>/Felgo) or to adjust the variable "FELGO_PATH"
+in the main Neurocid Makefile (Neurocid/Makefile). For example, if you installed Felgo to /opt/Felgo you need to change the variable to the following:
+\code
+FELGO_PATH :=/opt/Felgo/
+\endcode
+
+Now we are ready to build Neurocid (including the felgo frontend)!
+
+\code
+cd Neurocid/ # change to the Neurocid directory
+\endcode
+
+Start by building the third-party code of the repository:
+\code
+./build_deps.sh
+\endcode
+
+And now let's actually build neurocid including the felgo qt-project which resides in ./felgo/
+\code
+make -j4 # change 4 to the number of cores/hyperthreads/CPUS your system has to accelerate the build process. if you don't want to do a parallel build, just omit '-j4'
+\endcode
+
+And don't forget to install!
+\code
+sudo make install
+\endcode
+*/
