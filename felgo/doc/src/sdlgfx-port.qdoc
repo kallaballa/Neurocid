@@ -2,19 +2,13 @@
 \page sdlgfx-port-tutorial.html
 \title Tutorial: How I ported C++/SDL_gfx based application to Felgo
 
-Prerequisites:
-\list
-\li Basic Linux proficiency (Using the command line, editing files, ...)
-\li Basit git handling
-\endlist
-
 There are several ways to port SDL/SDL_gfx based applications to Felgo. The most canonical way
 would be to provide a model with all the game data needed for rendering and pass it to Felgo
 app to do the heavy lifting as described here: \l{https://felgo.com/doc/apps-howto-model-view-separation/}{Model-view-separation-tutorial}.
 But in case you want a quick result and you don't need any of the advantages of using Felgo for
 rendering: This is the tutorial to read.
 The approach is pretty simple: Create a SDL_gfx drop-in replacement that behind the scenes uses
-a \c Canvas element to do the actual drawing (do be more exact: \l{https://en.wikipedia.org/wiki/Rasterisation}{rasterisation}).
+a \c QML Canvas element to do the actual drawing (do be more exact: \l{https://en.wikipedia.org/wiki/Rasterisation}{rasterisation}).
 We are going to use a real-world example to demonstrate the approach: Neurocid - a space battle simulation driven by \l{https://en.wikipedia.org/wiki/Genetic_algorithm}{a genetic algorithm}
 and \l{https://en.wikipedia.org/wiki/Artificial_neural_network}{artifical neural networks}. The code for this tutorial resides in two \l{https://en.wikipedia.org/wiki/Git}{git-branches} of the Neurocid github project:
 \list
@@ -28,13 +22,34 @@ throught the process step by step anyway.
 
 Tutorial chapters:
 \list 1
+\li \l{Chapter 0: Comments on how I approached the challenge in general}
 \li \l{Chapter 1: Building Neurocid for Debian Linux 10}
+\li \l{Chapter 2: Running the Neurocid-Felgo frontend}
+\li \l{Appendix: Issues with the Challenge and Felgo}
 \endlist
 */
 
 /*!
+\page comments-on-challenge.html
+\title Chapter 0: Comments on how I approached the challenge in general
+
+\list
+\li I worked in a branch, so I can relax project disciplin (e.g.: allow myself to make uncontained or incomplete commits by mistake to safe reviewing time)
+\li I disabled Neurocid features that were in the way and are not strictly necessary (e.g.: like compiling to javascript using emscripten)
+\li Where possible I ignored Neurocid issues.
+\li I didn't fix issues/warnings in third-party code (e.g.: Box2D).
+\li I held back on beautifing the App and the Docs because you are looking for a backend hacker.
+\li I made sure the project can be edited, build and run with and without QT-Creator.
+\li I didn't test and benchmark to a professional extent but i made sure it runs on Ubuntu, Debian and OpenSUSE.
+\li I didn't test for Mac OSX at all (which is a supported target of the master-branch)
+\li I chose a quite ambigous task knowing it is significantly more work than required, because i wanted to implement something that wouldn't go to waist, no matter what.
+\endlist
+
+*/
+/*!
 \page build-neurocid-debian.html
 \title Chapter 1: Building Neurocid for Debian Linux 10
+This chapter assumes a minimal Debian Linux 10 install as prerequisite.
 
 First, let's install all build dependencies:
 \code
@@ -84,4 +99,90 @@ And don't forget to install!
 \code
 sudo make install
 \endcode
+*/
+/*!
+\page run-neurocid.html
+\title Chapter 2: Running the Neurocid-Felgo frontend
+The whole idea behind Neurocid is to train a swarm of "intelligent" space ships to fight another space ship team.
+There are two things required to be able to train a swarm:
+\list
+\li A curriculum (a list of scenarios to train with one after the other) which can be defined by creating scenarios (either in C++ or as json file) and providing placers (Neurocid/lua/placer/)
+\li A fitness function (the default fitness function resides in Neurocid/lua/fitness/amir.lua)
+\endlist
+
+Going into detail on how to do that exactly is out of scope for this tutorial but there is a shell script which provides everything required to run a curriculim.
+To run the training do the following:
+\code
+cd Neurocid/
+felgo/training.sh
+\endcode
+*/
+/*!
+\page appendix-challenge.html
+\title Appendix: Issues with the Challenge and Felgo
+
+\list
+\li The first link in "https://docs.google.com/document/d/1lWUHemIXMqJQfc3OkmarzQ2dlokDPTrpJa5NXJWNIkI/edit" is a 404.
+\li In the Fedora instructions "https://felgo.com/cross-platform-development/install-felgo-on-fedora" you recommend the following:
+\code
+cd lib64/
+sudo chown root:root libcrypto.so.1.0.0 libssl.so.1.0.0
+sudo cp libcrypto.so.1.0.0 libssl.so.1.0.0 /usr/lib64/
+\endcode
+The above procedure is problematic for 3 reasons:
+
+\list
+\li Shipping binaries for dependencies isn't a wise thing to do in general, but in this case you are shipping outdated versions of *very* security-related libraries and furthermore you suggest to install them to the system permanently for other programs to use. That is a very real (and easily avoidable) security risk. Apart from the security risk there is a series of other problems arising from that (ask if you want me to go into further detail)
+\li Changing ownership of the file beforehand and copying after has no effect if the files already exist in /usr/lib64/ (or just one exist, which might lead users to the tutorial)
+For example:
+\code
+# create two files with unprivileged (= no root) ownership.
+touch userfile
+touch rootfile
+
+# Change ownership of one of the files to root.
+sudo chown root:root rootfile
+
+# View the result
+ls -l userfile rootfile
+-rw-r--r-- 1 felgouser  users 0 Apr  1 20:05 userfile
+-rw-r--r-- 1 root       root  0 Apr  1 20:05 rootfile
+
+# Copy rootfile over userfile
+cp rootfile userfile
+
+# View the result
+ls -l userfile rootfile
+-rw-r--r-- 1 felgouser  users 0 Apr  1 20:06 userfile
+-rw-r--r-- 1 root       root  0 Apr  1 20:06 rootfile
+
+# Please note, that the ownership of the target file (userfile) has not changed,
+
+\endcode
+
+\li According to the FHS (https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard) the proper place to store local changes to the system is in the /usr/local/ tree. Adhering to that convention prevents problems emerging from file conflict and makes management of local changes much easier.
+\endlist
+
+There are two solutions for these problems:
+\list
+\li Use LD_LIBRARY_PATH
+
+For example:
+\code
+# Make sure libraries are looked for in ./lib64 first.
+    LD_LIBRARY_PATH="./lib64:$LD_LIBRARY_PATH" ./FelgoInstaller-linux_x64-online.run
+\endcode
+
+\li If you really want to install a library permanently use a different path e.g: "/usr/local/lib64" (or "/usr/local/lib" depending on the distro) and instead of "chown + cp" use a different coreutil: "install".
+
+For example:
+\code
+# copies the files to /usr/local/lib64 while making backups of existing files (if there are any). Finally sets the ownership to root.
+    sudo install -b -o root lib64/libcrypto.so.1.0.0 lib64/libssl.so.1.0.0 /usr/local/lib64
+\endcode
+\endlist
+\li The samplelauncher renders fonts very small (OpenSUSE Tumbleweed using X11 with awesome WM and picom at 1920x1080 with 96dpi).
+\li Installing Felgo on a fresh minimal Debian 10 requires a dependency not convert by the tutorial: libfontconfig1
+\li Without a headless installer I had to do workarounds to install Felgo on my headless build-server.
+\endlist
 */
