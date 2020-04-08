@@ -174,7 +174,7 @@ ifeq ($(MAKECMDGOALS), debug)
 	${MAKE} -C felgo/ -${MAKEFLAGS} CXX=${CXX}
 else
 	${FELGO_PATH}/Felgo/gcc_64/bin/qmake -o felgo/Makefile -recursive CONFIG+=release felgo/felgo-neurocid.pro
-ifeq ($(MAKECMDGOARLS), clean)
+ifeq ($(MAKECMDGOALS), clean)
 	${MAKE} -C felgo/ -${MAKEFLAGS} CXX=${CXX} clean
 else
 	${MAKE} -C felgo/ -${MAKEFLAGS} CXX=${CXX}
