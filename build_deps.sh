@@ -13,4 +13,4 @@ cd ../fann; cmake .; make
 make -j8 -C ../kmlocal 
 make -j8 -C ../json_spirit
 make -j8 -C ../LuaJIT-2.0.3
-cd ../lua-5.3.4/; make clean; make -j8 linux
+#cd ../lua-5.3.4/; make clean; make -j8 linux
