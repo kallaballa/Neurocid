@@ -47,8 +47,9 @@ public:
       exit(1);
     }
     path_ = neurocidPath + "/lua/";
-#endif
+#else
     path_ = "lua/";
+#endif
   }
 
   ~ScriptLoader() {
