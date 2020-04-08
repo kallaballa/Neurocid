@@ -14,7 +14,7 @@ and \l{https://en.wikipedia.org/wiki/Artificial_neural_network}{artifical neural
 \list
 \li \l{https://github.com/kallaballa/Neurocid/tree/master}{Neurocid master} - The code before the port
 \li \l{https://github.com/kallaballa/Neurocid/tree/felgo}{Neurocid felgo} - The code after the port
-<\endlist
+\endlist
 
 If you want all the changes at a glance you can \l{https://github.com/kallaballa/Neurocid/compare/master...felgo}{compare}
 those branches but please be aware that not all of them are strictly necessary to achieve the goal of this tutorial.
