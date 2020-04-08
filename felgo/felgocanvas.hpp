@@ -71,7 +71,7 @@ private:
 	Rect findBounds(BattleField& field);
 	void drawBorder(BattleField& field);
 	void drawGrid(BattleField& field);
-	void drawStar(Star& s);
+    void drawStar(Star& s) override;
 	void drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c);
 	void fillCircle(Vector2D loc, Coord radius, Color c);
 	void drawExplosion(Explosion& expl);
@@ -86,7 +86,7 @@ private:
 	void pushTrail(Ship& t);
 public:
 	FelgoCanvas(FelgoGFX* felgoGfx, Coord width, Coord height, BattleFieldLayout& bfl);
-	virtual ~FelgoCanvas();
+    virtual ~FelgoCanvas() override;
 
 	virtual void zoomIn() override;
 	virtual void zoomOut() override;
