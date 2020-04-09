@@ -1,10 +1,10 @@
 import QtQuick 2.0
 
-/**
-    This is an incomplete drop-in replacement for SDL_gfx based rasterisation
-    (https://en.wikipedia.org/wiki/Rasterisation) functions.
-    It only implements functions required by Neurocid and doesn't yet honor all
-    the api conventions. e.g.: no error reporting by returning an integer value.
+/*
+  This is an incomplete drop-in replacement for SDL_gfx based rasterisation
+  (https://en.wikipedia.org/wiki/Rasterisation) functions.
+  It only implements functions required by Neurocid and doesn't yet honor all
+  the api conventions. e.g.: no error reporting by returning an integer value.
 */
 Canvas {
     // FIXME Benchmark renderTarget and renderStrategy, though the current choice should be fine

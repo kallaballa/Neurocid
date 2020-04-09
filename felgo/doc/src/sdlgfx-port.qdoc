@@ -6,11 +6,11 @@ There are several ways to port C++/SDL_gfx based applications to Felgo. The most
 would be to provide a model with all the game data needed for rendering and pass it to Felgo
 app to do the heavy lifting as described here: \l{https://felgo.com/doc/apps-howto-model-view-separation/}{Model-view-separation-tutorial}.
 But in case you want a quick result, your rendering just works fine the way it is, and you don't need any of the advantages of using Felgo for
-rendering: This is the tutorial to read.
-The approach is pretty simple: Create a SDL_gfx drop-in replacement that behind the scenes uses
-an extend QML Canvas element (\c GfxCanvas) to do the actual drawing (do be more exact: \l{https://en.wikipedia.org/wiki/Rasterisation}{rasterisation}).
-We are going to use a real-world example to demonstrate the approach: Neurocid - a space battle simulation driven by \l{https://en.wikipedia.org/wiki/Genetic_algorithm}{a genetic algorithm}
-and \l{https://en.wikipedia.org/wiki/Artificial_neural_network}{artifical neural networks}. The code for this tutorial resides in two \l{https://en.wikipedia.org/wiki/Git}{git-branches} of the Neurocid github project:
+rendering: This is the tutorial to read. The approach is pretty simple: Create a SDL_gfx drop-in replacement that behind the scenes uses
+an extended QML \c Canvas element to do the actual drawing (do be more exact: \l{https://en.wikipedia.org/wiki/Rasterisation}{rasterisation}).
+We are going to use a real-world example to demonstrate the approach: Neurocid - a space battle simulation driven by
+\l{https://en.wikipedia.org/wiki/Genetic_algorithm}{a genetic algorithm} and \l{https://en.wikipedia.org/wiki/Artificial_neural_network}{artifical neural networks}.
+The code for this tutorial resides in two \l{https://en.wikipedia.org/wiki/Git}{git-branches} of the Neurocid github project:
 \list
 \li \l{https://github.com/kallaballa/Neurocid/tree/master}{Neurocid master} - The code before the port
 \li \l{https://github.com/kallaballa/Neurocid/tree/felgo}{Neurocid felgo} - The code after the port
@@ -204,7 +204,7 @@ but are still required to be effectivly able to render. Flip performs a buffer f
 the frame (see {https://en.wikipedia.org/wiki/Multiple_buffering#Double_buffering_in_computer_graphics}{double buffering}) and clear fills the whole canvas with the RGB color provided.
 There are several ways to call the QML Canvas methods (e.g.: using signals/slots) but i chose the QMetaObject::invokeMethod approached because i wanted tight(er) binding than the message passing of signals/slots provides.
 Also I couldn't find a use case that would require binding those functions many times from many locations.
-You can find the full in felgogfx.cpp
+You can find the full implementation in felgogfx.cpp
 
 \code
 FelgoGFX::FelgoGFX(QObject* canvas) : canvas_(canvas) {
@@ -260,14 +260,30 @@ You can find the full implementation in main.cpp
     //find the gfxCanvas QML object by the objectName we assigned in Chapter 3
     QObject *qmlGfxCanvas = rootObjs.first()->findChild<QObject*>("gfxCanvas");
 
-    //Instantiate our C++ to QML bridge.
-    FelgoGFX* felgoGfx = new nc::FelgoGFX(qmlGfxCanvas);
-    //fill the canvas black
-    felgoGfx.clear(0,0,0)
-    //draw a line
-    felgoGfx.lineRGBA(0,0,100,100,255,0,0,255);
-    //display what we have drawn
-    felgoGfx.flip();
+    std::thread gameThread([=]() {
+        //wait for the GfxCanvas to become available
+        while(!qmlGfxCanvas->property("available").toBool()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            std::cerr << "wait" << std::endl;
+        }
+
+        //Instantiate our C++ to QML bridge.
+        FelgoGFX* felgoGfx = new nc::FelgoGFX(qmlGfxCanvas);
+
+        while(true) {
+            //fill the canvas black
+            felgoGfx.clear(0,0,0)
+            //draw a line
+            felgoGfx.lineRGBA(0,0,100,100,255,0,0,255);
+            //display what we have drawn
+            felgoGfx.flip();
+        }
+    });
+
+    gameThread.detach();
+
+    //now that everything is setup, run the felgo applications
+    return app.exec();
 \endcode
 */
 /*!
@@ -335,7 +351,7 @@ For example:
 \endcode
 \endlist
 \li The samplelauncher renders fonts very small (OpenSUSE Tumbleweed using X11 with awesome WM and picom at 1920x1080 with 96dpi).
-\li Installing Felgo on a fresh minimal Debian 10 requires a dependency not convert by the tutorial: libfontconfig1
+\li Installing Felgo on a fresh minimal Debian 10 requires a dependency not covert by the tutorial: libfontconfig1
 \li Without a headless installer I had to do workarounds to install Felgo on my headless build-server.
 \endlist
 */
