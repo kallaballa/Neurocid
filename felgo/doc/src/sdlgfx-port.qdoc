@@ -21,8 +21,14 @@ The code for this tutorial resides in two \l{https://en.wikipedia.org/wiki/Git}{
 If you want all the changes at a glance you can \l{https://github.com/kallaballa/Neurocid/compare/master...felgo}{compare}
 those branches but please be aware that not all of them are strictly necessary to achieve the goal of this tutorial.
 
+\section1 Known Issues
+\list
+\li Running Felgo applications on Wayland doesn't seem to work (it hangs).
+\li Somehow I wasn't able to get qdoc to output documentation for C++.
+\endlist
+
 Tutorial chapters:
-\list 1
+\list
 \li \l{Chapter 0: Comments on how I approached the challenge in general}
 \li \l{Chapter 1: Building Neurocid for Debian Linux 10}
 \li \l{Chapter 2: The Game}
@@ -60,13 +66,7 @@ Please have a look at training.sh to learn how to set up the environment and run
 \title Chapter 1: Building Neurocid for Debian Linux 10
 This chapter assumes a minimal Debian Linux 10 install as prerequisite.
 
-First, let's install all build dependencies:
-\code
-su - # change to root
-apt-get install git-core pkg-config cmake build-essentials g++ libsdl1.2-dev libsdl-gfx1.2-dev libsdl-image1.2-dev libsdl-ttf1.2-dev libboost-system-dev libboost-program-options-dev libboost-serialization-dev libsndfile1-dev
-\endcode
-
-For convenience we are going to install sudo and configure it:
+First, for convenience we are going to install sudo and configure it:
 \code
 su - # change to root
 apt-get install sudo
@@ -75,6 +75,11 @@ adduser <your user> sudo
 
 Please note, that you need to log out and back in for the changes to take effect (and hence being able to use sudo)
 From this point all commands that are not prefixed with "sudo" should be run with the unprivileged user that you want to run felgo-neurocid with.
+
+Now, let's install all build dependencies:
+\code
+sudo apt-get install git-core pkg-config cmake build-essential g++ libsdl1.2-dev libsdl-gfx1.2-dev libsdl-image1.2-dev libsdl-ttf2.0-dev libboost-system-dev libboost-program-options-dev libboost-serialization-dev libsndfile1-dev
+\endcode
 
 Next let's get the code. We are going to clone the "felgo" branch (not master!).
 \code
