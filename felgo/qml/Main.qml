@@ -33,8 +33,7 @@ App {
                 id: gfxCanvas
                 objectName: "gfxCanvas"
                 anchors.fill: parent;
-                //make sure to send an initial resizeCanvasBackend signal when canvas
-                //becomes available
+                //make sure to send an initial resizeCanvasBackend signal when canvas becomes available
                 onAvailableChanged: neurocidApp.resizeCanvasBackend(width, height)
                 onCanvasSizeChanged: neurocidApp.resizeCanvasBackend(width, height)
 
@@ -109,7 +108,7 @@ App {
                             property var gameSpeed: 0
                             backgroundColor: gameSpeed === 0 ? "red" : (gameSpeed === 1 ? "orange" : "yellow")
                             backgroundColorPressed: Qt.darker(gameSpeed === 0 ? "red" : (gameSpeed === 1 ? "orange" : "yellow"))
-                            text: gameSpeed === 0 ? "Fast" : (gameSpeed === 1 ? "Slow" : "Slowest")
+                            text: gameSpeed === 0 ? "Slow" : (gameSpeed === 1 ? "Slowest" : "Fast")
                             onClicked: {
                                 if(gameSpeed > 1)
                                     gameSpeed = 0;
