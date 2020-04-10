@@ -115,32 +115,27 @@ void FelgoCanvas::tiltDown() {
 		angle_ = 0.1;
 }
 
-//FIXME debug star rendering
 void FelgoCanvas::drawStar(Star& s) {
-    unused(s);
-    /*    double alpha = s.alpha;
+    double alpha = s.alpha;
     double lastR = 0;
     for (size_t i = 0; i < s.radius; i++) {
         if (s.z_ < 0.001)
-            felgoGfx_->circleRGBA(Sint16(s.x), Sint16(s.y), i, s.r, s.g, s.b,
-                    round(alpha));
+            felgoGfx_->circleRGBA(int16_t(s.x), int16_t(s.y), int16_t(i), s.r, s.g, s.b, uint8_t(round(alpha)));
         else {
-            double r = i * 1.5 / zoom_;
+            double r = i;
             if (std::fabs(r - lastR) > 0.001) {
                 auto scaled = scale(Vector2D(s.x, s.y), s.z_);
-                felgoGfx_->circleRGBA(scaled.first, scaled.second, r, s.r, s.g,
-                        s.b, round((alpha / zoom_)));
+                felgoGfx_->circleRGBA(scaled.first, scaled.second, int16_t(r), s.r, s.g, s.b, uint8_t(alpha));
             }
             lastR = r;
         }
         if (i == s.discontinuity)
             alpha /= 3;
         alpha *= s.step;
-    }*/
+    }
 }
 
 void FelgoCanvas::drawExplosion(Explosion& expl) {
-#ifndef _NO_SDLGFX
 	size_t lastR = 0, r = 0;
     for (size_t i = expl.tick_; i > 0; --i) {
 		if (scale_ < 0.013)
@@ -156,11 +151,9 @@ void FelgoCanvas::drawExplosion(Explosion& expl) {
 		}
 		lastR = r;
 	}
-#endif
 }
 
 void FelgoCanvas::drawTrail(const Trail& trail, const Color& c) {
-#ifndef _NO_SDLGFX
 	size_t cnt = 0;
     int16_t lastX = -1;
     int16_t lastY = -1;
@@ -184,8 +177,13 @@ void FelgoCanvas::drawTrail(const Trail& trail, const Color& c) {
 
 		++cnt;
 	}
-#endif
 }
+
+void FelgoCanvas::drawCircle(Vector2D loc, Coord radius, Color c) {
+    auto scaled = transform(loc);
+    felgoGfx_->circleRGBA(scaled.first, scaled.second, int16_t(round(radius * scale_)), uint8_t(c.r), uint8_t(c.g), uint8_t(c.b), uint8_t(c.a));
+}
+
 
 void FelgoCanvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c) {
 	auto scaled = transform(loc);
@@ -193,10 +191,8 @@ void FelgoCanvas::drawEllipse(Vector2D loc, Coord rangeX, Coord rangeY, Color c)
 }
 
 void FelgoCanvas::fillCircle(Vector2D loc, Coord radius, Color c) {
-#ifndef _NO_SDLGFX
 	auto scaled = transform(loc);
     felgoGfx_->filledCircleRGBA(scaled.first, scaled.second, int16_t(round(radius * scale_)), uint8_t(c.r), uint8_t(c.g), uint8_t(c.b), uint8_t(c.a));
-#endif
 }
 
 void FelgoCanvas::drawLine(Coord x0, Coord y0, Coord x1, Coord y1, Color c,
@@ -233,23 +229,20 @@ void FelgoCanvas::drawShip(Ship& ship, Color c) {
 		tip += dir * (ship.radius_) * 5;
 
 	drawLine(ship.loc_.x_, ship.loc_.y_, tip.x_, tip.y_, c);
-	if (scale_ < 0.013)
-		drawEllipse(ship.loc_, ship.radius_ / 30, ship.radius_ / 30, c);
-	else
-		drawEllipse(ship.loc_, ship.radius_ / 100, ship.radius_ / 100, c);
+    if (scale_ < 0.013) {
+        drawCircle(ship.loc_, ship.radius_ / 30, c);
+    } else {
+        drawCircle(ship.loc_, ship.radius_ / 100, c);
+    }
 
 	if (ship.stun_ > 0 && !ship.layout_.isDummy_) {
-		if (scale_ < 0.013)
-			drawEllipse(ship.loc_, ship.radius_, ship.radius_,
-					{ 255, 255, 255 });
-		else
-			drawEllipse(ship.loc_, ship.radius_, ship.radius_,
+            drawCircle(ship.loc_, ship.radius_,
 					{ 255, 255, 255 });
 	}
 	drawLine(ship.loc_.x_, ship.loc_.y_, tip.x_, tip.y_, c);
 
 	if (isDrawEliteEnabled() && ship.isElite) {
-		drawEllipse(ship.loc_, 2, 2, { 255, 0, 255 });
+        drawCircle(ship.loc_, 2, { 255, 0, 255 });
 	}
 
 	Color cengine;
@@ -318,7 +311,6 @@ void FelgoCanvas::drawShip(Ship& ship, Color c) {
 }
 
 void FelgoCanvas::drawFacility(Facility& facility, Color c) {
-#ifndef _NO_SDLGFX
 	if (facility.recharged_ >= facility.layout_.maxRecharge_)
 		c = c * 0.5;
 
@@ -349,7 +341,6 @@ void FelgoCanvas::drawFacility(Facility& facility, Color c) {
                             / static_cast<double>(facility.layout_.maxDamage_)));
 	ul.y_ = lr.y_ - height;
 	fillRect(ul.x_, ul.y_, lr.x_, lr.y_, { 255, 255, 255 });
-#endif
 }
 
 void FelgoCanvas::drawProjectile(Projectile& pro, Color& c) {
