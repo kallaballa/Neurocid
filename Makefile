@@ -170,7 +170,7 @@ dirs:
 ifndef STATIC
 	${MAKE} -C sdl1/ ${MAKEFLAGS} CXX=${CXX} ${MAKECMDGOALS}
 ifeq ($(MAKECMDGOALS), debug)
-^	${FELGO_PATH}/Felgo/gcc_64/bin/qmake -o felgo/Makefile -recursive CONFIG+=debug felgo/felgo-neurocid.pro
+	${FELGO_PATH}/Felgo/gcc_64/bin/qmake -o felgo/Makefile -recursive CONFIG+=debug felgo/felgo-neurocid.pro
 	${MAKE} -C felgo/ -${MAKEFLAGS} CXX=${CXX}
 else
 	${FELGO_PATH}/Felgo/gcc_64/bin/qmake -o felgo/Makefile -recursive CONFIG+=release felgo/felgo-neurocid.pro
