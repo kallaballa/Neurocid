@@ -6,7 +6,6 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$NEUROCID_PATH
 export PATH=$PATH:$NEUROCID_PATH
 export LUA_PATH=$NEUROCID_PATH/lua/?.lua
 
-
 set -x
 function run() {
   m=1
@@ -23,10 +22,7 @@ function run() {
 
 [ -n "$1" ] && POP="$1"
 
-#POP=`run 1000 AimOnOneNoMove $POP`
-#POP=`run 300 SymmetricLinesNoMoveShort $POP`
 POP=`run 1000 SymmetricLinesAttackerMove $POP`
-#POP=`run 500 SymmetricLinesAttackerMoveFar $POP`
 POP=`run 1000 SymmetricLinesAttackerMoveLong $POP`
 POP=`run 1000 SymmetricLines $POP $POP`
 POP=`run 5000 SymmetricLinesFarLong $POP $POP`

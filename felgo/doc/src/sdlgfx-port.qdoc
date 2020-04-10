@@ -2,6 +2,8 @@
 \page sdlgfx-port-tutorial.html
 \title Tutorial: How I ported a C++/SDL_gfx based application to Felgo
 
+\image screen.gif "Felgo-Neurocid"
+
 There are several ways to port C++/SDL_gfx based applications to Felgo. The most canonical way
 would be to provide a model with all the game data needed for rendering and passing it to Felgo
 app to do the heavy lifting as described here: \l{https://felgo.com/doc/apps-howto-model-view-separation/}{Model-view-separation-tutorial}.
@@ -23,24 +25,26 @@ Tutorial chapters:
 \list 1
 \li \l{Chapter 0: Comments on how I approached the challenge in general}
 \li \l{Chapter 1: Building Neurocid for Debian Linux 10}
-\li \l{Chapter 2: Running the Game}
+\li \l{Chapter 2: The Game}
 \li \l{Chapter 3: Write a QML Canvas object that mimics a SDL_gfx-like API}
 \li \l{Chapter 4: Write a C++ to QML Canvas bridge}
 \li \l{Chapter 5: How to use the SDL_gfx-like drop-in replacement}
 \li \l{Appendix: Issues with the Challenge and Felgo}
 \endlist
-*/
 
+Please have a look at training.sh to learn how to set up the environment and run felgo-neurocid
+*/
 /*!
 \page comments-on-challenge.html
 \title Chapter 0: Comments on how I approached the challenge in general
 
 \list
 \li I worked in a branch, so I can relax project disciplin (e.g.: allow myself to make uncontained or incomplete commits by mistake to safe reviewing time)
-\li I disabled Neurocid features that were in the way and are not strictly necessary (e.g.: like compiling to javascript using emscripten)
+\li I disabled Neurocid features that were in the way and are not strictly necessary (e.g.: like compiling to javascript using emscripten or rendering a video)
 \li Where possible I ignored Neurocid issues.
-\li I didn't fix issues/warnings in third-party code (e.g.: Box2D).
+\li I chose to use only buttons because I was hoping to create an Android app (and programming a platform specific UX was clearly out of scope)
 \li I held back on beautifying the App and the Docs because you are looking for a backend hacker.
+\li I didn't fix issues/warnings in third-party code (e.g.: Box2D).
 \li I made sure the project can be edited, build and run with and without QT-Creator.
 \li I didn't test and benchmark to a professional extent but i made sure it runs on Ubuntu, Debian and OpenSUSE.
 \li I didn't test for Mac OSX at all (which is a supported target of the master-branch)
@@ -107,7 +111,7 @@ sudo make install
 */
 /*!
 \page run-neurocid.html
-\title Chapter 2: Running the Game
+\title Chapter 2: The Game
 The whole idea behind Neurocid is to train a swarm of "intelligent" space ships to fight another space ship team.
 There are two things required to be able to train a swarm:
 \list
@@ -125,6 +129,25 @@ felgo/training.sh
 Please note that not every training is successful, even in perfect conditions. Reliability of the training depends very much on the population size.
 A larger population raises the potential for desired development while slowing down the simulation, so if you'd like to experiment with a larger
 population sizes be aware that it might actually take longer to successfully train a team.
+
+To control the training felgo-neurocid takes following command line arguments:
+\code
+Usage: felgo-neurocid [options]
+
+Options:
+  -i [ --iterations ] arg  Run n iterations of the game
+  -a [ --autosave ] arg    Automatically save teams every n minutes
+  --loadA arg              Load the population as team A from a file before
+                           running the scenario
+  --loadB arg              Load the population as team B from a file before
+                           running the scenario
+  --saveA arg              Save the team A population to a file after running
+                           the scenario
+  --saveB arg              Save the team B population to a file after running
+                           the scenario
+  -f [ --framerate ] arg   The frame rate of the renderer
+  -h [ --help ]            Produce help message
+\endcode
 
 \section1 Anatomy of the game
 There are two teams consisting of space ships. Their ultimate goal is to destroy the other team which can be achieved through destroying each of the ships or destroying the enemy base. Each ship has a neural network as brain which controls all its actions. During training the teams follow a curriculum of scenarios and are evolved through genetic algorithms. Scenarios and fitness function are scriptable in lua.
