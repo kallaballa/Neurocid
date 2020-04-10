@@ -6,7 +6,7 @@
 
 /*!
     \class neurocid::FelgoGfx
-    \brief A class that simply forwards SDL_gfx-like calls to the QML GfxCanvas
+    \brief A class that simply forwards SDL_gfx-like primitive calls to the QML \c GfxCanvas
 */
 namespace neurocid {
 
@@ -14,7 +14,7 @@ FelgoGFX::FelgoGFX(QObject* canvas) : canvas_(canvas) {
 }
 
 /*!
- * \brief lineRGBA
+ * \brief FelgoGFX::lineRGBA
  * \param x1
  * \param y1
  * \param x2
@@ -40,7 +40,7 @@ void FelgoGFX::lineRGBA(const int16_t& x1, const int16_t& y1, const int16_t& x2,
 }
 
 /*!
- * \brief circleRGBA
+ * \brief FelgoGFX::circleRGBA
  * \param x
  * \param y
  * \param radius
@@ -64,7 +64,7 @@ void FelgoGFX::circleRGBA(const int16_t& x, const int16_t& y, const int16_t& rad
 }
 
 /*!
- * \brief filledCircleRGBA
+ * \brief FelgoGFX::filledCircleRGBA
  * \param x
  * \param y
  * \param radius
@@ -88,7 +88,7 @@ void FelgoGFX::filledCircleRGBA(const int16_t& x, const int16_t& y, const int16_
 }
 
 /*!
- * \brief pieRGBA
+ * \brief FelgoGFX::pieRGBA
  * \param x
  * \param y
  * \param radius
@@ -116,7 +116,7 @@ void FelgoGFX::pieRGBA(const int16_t& x, const int16_t& y, const int16_t& radius
 }
 
 /*!
- * \brief filledPolygonRGBA
+ * \brief FelgoGFX::filledPolygonRGBA
  * \param vx
  * \param vy
  * \param n
@@ -146,7 +146,7 @@ void FelgoGFX::filledPolygonRGBA(const int16_t* vx,	const int16_t* vy, int n, co
 }
 
 /*!
- * \brief ellipseRGBA
+ * \brief FelgoGFX::ellipseRGBA
  * \param x
  * \param y
  * \param radiusx
@@ -172,7 +172,7 @@ void FelgoGFX::ellipseRGBA(const int16_t& x, const int16_t& y, const int16_t& ra
 }
 
 /*!
- * \brief rectangleRGBA
+ * \brief FelgoGFX::rectangleRGBA
  * \param x1
  * \param y1
  * \param x2
@@ -199,12 +199,13 @@ void FelgoGFX::rectangleRGBA(const int16_t& x1, const int16_t& y1, const int16_t
 
 
 /*!
- * \brief clear
+ * \brief FelgoGFX::clear
  * \param r
  * \param g
  * \param b
  * This function has no corresponding function in SDL_gfx. It fills the whole canvas with a uniform color.
  */
+
 void FelgoGFX::clear(const uint8_t& r, const uint8_t& g, const uint8_t& b) {
   QMetaObject::invokeMethod(canvas_, "clear",
                             Q_ARG(QVariant, r),
@@ -214,7 +215,7 @@ void FelgoGFX::clear(const uint8_t& r, const uint8_t& g, const uint8_t& b) {
 }
 
 /*!
- * \brief flip
+ * \brief FelgoGFX::flip
  *  This function has no corresponding function in SDL_gfx but it serves the same purpose as SDL_Flip, though
  *  the exact semantics are very different.
  */

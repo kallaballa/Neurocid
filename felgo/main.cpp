@@ -78,7 +78,6 @@ struct CommandLineOptions {
   long autosaveInterval_ = 0;
 
   /*!
-   * \fn parse
    * \brief parse the command line options and setup the above variables
    * \param argc the argument count as it was passed to the main function
    * \param argv the argument vector as it was passed to the main function
@@ -122,7 +121,6 @@ struct CommandLineOptions {
 };
 
 /*!
- * \fn setup the neurocid backend according to the options passed and start it
  * \brief run_felgo_neurocid
  * \param opts The command line options parsed from argc and argv
  * \param qmlGfxCanvas The QML \c GfxCanvas object we aquired from the \c QQmlApplicationEngine
@@ -186,7 +184,7 @@ void run_felgo_neurocid(const CommandLineOptions& opts, QObject *qmlGfxCanvas) {
 	      teams[1].score_ = 0;
 
 	      //play the game!
-	      neurocid::play_game(opts.gameIterations_, scenario, teams, pools, opts.captureFile_, opts.autosaveInterval_);
+          neurocid::play_game(opts.gameIterations_, scenario, teams, pools, "", opts.autosaveInterval_);
 
 	      //save the result if requested
 	      if(!opts.saveAFile_.empty()) {

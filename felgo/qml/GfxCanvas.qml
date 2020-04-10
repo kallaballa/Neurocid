@@ -1,8 +1,12 @@
 import QtQuick 2.0
 
 /*
-  This is an incomplete drop-in replacement for SDL_gfx based rasterisation
-  (https://en.wikipedia.org/wiki/Rasterisation) functions.
+*/
+
+/*!
+  \qmltype GfxCanvas
+  \brief   An incomplete drop-in replacement for SDL_gfx primitives
+
   It only implements functions required by Neurocid and doesn't yet honor all
   the api conventions. e.g.: no error reporting by returning an integer value.
 */
@@ -11,7 +15,7 @@ Canvas {
     renderTarget: Canvas.Image;
     renderStrategy: Canvas.Immediate;
 
-    /**
+    /*!
         Creates a hex string from an integer value with a value from 0 to 255. If the resulting
         string consists of only one character a leading zero is added.
     */
@@ -29,14 +33,18 @@ Canvas {
         }
     }
 
-    //Creates an html like rgb hex-string. e.g.: "#ff0000" for pure red
+    /*!
+        Creates an html like rgb hex-string. e.g.: "#ff0000" for pure red
+    */
     function makeHtmlColorString(r, g, b) {
         return "#" + makePadded8BitHexString(r) +
                 makePadded8BitHexString(g) +
                 makePadded8BitHexString(b)
     }
 
-    //Sets the fill and stroke color of the 2d context.
+    /*!
+        Sets the fill and stroke color of the 2d context.
+    */
     function setRGBA(ctx, r, g, b, a) {
         if(a < 0 || a > 255) {
             console.error("setRGBA: alpha value out of bounds");
@@ -54,6 +62,10 @@ Canvas {
     *   You can find documentation on the SDL_gfx functions here:
     *   https://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8h.html
     *   -------------------------------
+    */
+
+    /*!
+        See \c neurocid::FelgoGfx
     */
     function lineRGBA(x1, y1, x2, y2, r, g, b, a) {
         var ctx = getContext("2d");

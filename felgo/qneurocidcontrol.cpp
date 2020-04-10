@@ -1,3 +1,8 @@
+/*!
+    \class QNeurocidControl
+    \brief A class that simply forwards ui signals to the Neurocid backend.
+*/
+
 #include "qneurocidcontrol.hpp"
 
 #include "canvas.hpp"
@@ -5,14 +10,16 @@
 #include "options.hpp"
 
 using namespace neurocid;
-/*!
-    \class QNeurocid
-    \brief A class that simply forwards ui signals to the Neurocid backend.
-*/
-
 
 /*!
- * \brief zoomIn
+ * \brief QNeurocidControl::QNeurocidControl
+ * \param parent
+ */
+QNeurocidControl::QNeurocidControl(QObject *parent) :QObject(parent){
+}
+
+/*!
+ * \brief QNeurocidControl::zoomIn
  * Zooms into the scene displayed by the canvas
  */
 void QNeurocidControl::zoomIn() {
@@ -20,7 +27,7 @@ void QNeurocidControl::zoomIn() {
 }
 
 /*!
- * \brief zoomOut
+ * \brief QNeurocidControl::zoomOut
  * Zooms out of the scene displayed by the canvas
  */
 void QNeurocidControl::zoomOut() {
@@ -28,7 +35,7 @@ void QNeurocidControl::zoomOut() {
 }
 
 /*!
- * \brief left
+ * \brief QNeurocidControl::left
  * Moves the viewport of the canvas left
  */
 void QNeurocidControl::left() {
@@ -36,7 +43,7 @@ void QNeurocidControl::left() {
 }
 
 /*!
- * \brief right
+ * \brief QNeurocidControl::right
  * Moves the viewport of the canvas right
  */
 void QNeurocidControl::right() {
@@ -44,7 +51,7 @@ void QNeurocidControl::right() {
 }
 
 /*!
- * \brief up
+ * \brief QNeurocidControl::up
  * Moves the viewport of the canvas up
  */
 void QNeurocidControl::up() {
@@ -52,7 +59,7 @@ void QNeurocidControl::up() {
 }
 
 /*!
- * \brief down
+ * \brief QNeurocidControl::down
  * Moves the viewport of the canvas down
  */
 void QNeurocidControl::down() {
@@ -60,7 +67,7 @@ void QNeurocidControl::down() {
 }
 
 /*!
- * \brief tiltUp
+ * \brief QNeurocidControl::tiltUp
  * Tilts the battle field display in the canvas up, creating a pseudo-3D effect
  */
 void QNeurocidControl::tiltUp() {
@@ -68,7 +75,7 @@ void QNeurocidControl::tiltUp() {
 }
 
 /*!
- * \brief tiltDown
+ * \brief QNeurocidControl::tiltDown
  * Tilts the battle field display in the canvas down, creating a pseudo-3D effect
  */
 void QNeurocidControl::tiltDown() {
@@ -76,7 +83,7 @@ void QNeurocidControl::tiltDown() {
 }
 
 /*!
- * \brief resizeCanvasBackend
+ * \brief QNeurocidControl::resizeCanvasBackend
  * \param width
  * \param height
  * Resize the neurocid::Canvas to the dimensions provided by the parameters
@@ -89,7 +96,7 @@ void QNeurocidControl::resizeCanvasBackend(int width, int height) {
 }
 
 /*!
- * \brief setSpeed
+ * \brief QNeurocidControl::setSpeed
  * \param s A value from 0 to 2. 0 being the slowest and and 2 the fastest.
  * Sets the speed of the neurocid simulation. if \a s is set to 2 the
  * simulation relinquishes control over the simulation speed which in effect
@@ -112,7 +119,7 @@ void QNeurocidControl::setSpeed(int s) {
 }
 
 /*!
- * \brief setPaused
+ * \brief QNeurocidControl::setPaused
  * \param p If true the game will be paused
  * If \a p is true the game will be paused. If changed to false again the game
  * will resume.
@@ -126,7 +133,7 @@ void QNeurocidControl::setPaused(bool p) {
 }
 
 /*!
- * \brief dumpTeams
+ * \brief QNeurocidControl::dumpTeams
  * Saves the teams to time-stamped files using the following strftime-compatible
  * (http://www.cplusplus.com/reference/ctime/strftime/) format-strings:
  *      "dumpA_%d-%m-%Y_%I:%M:%S.pop"

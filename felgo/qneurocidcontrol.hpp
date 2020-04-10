@@ -7,7 +7,7 @@ class QNeurocidControl : public QObject
 {
     Q_OBJECT
 public:
-    explicit QNeurocidControl(QObject *parent = nullptr) :QObject(parent){}
+    explicit QNeurocidControl(QObject *parent = nullptr);
     ~QNeurocidControl() {}
 signals:
 
