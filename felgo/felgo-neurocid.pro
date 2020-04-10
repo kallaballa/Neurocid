@@ -29,7 +29,7 @@ RESOURCES += #    resources.qrc # uncomment for publishing
 
 HEADERS += felgogfx.hpp qneurocidcontrol.hpp felgocanvas.hpp color.hpp theme.hpp
 
-SOURCES += main.cpp felgocanvas.cpp color.cpp theme.cpp felgogfx.cpp qneurocidcontrol.cpp doc/src/sdlgfx-port.qdoc
+SOURCES += main.cpp felgocanvas.cpp color.cpp theme.cpp felgogfx.cpp qneurocidcontrol.cpp
 
 INCLUDEPATH += $$PWD/../ $$PWD/../kmlocal/src/ $$PWD/../box2d/ $$PWD/../src/ $$PWD/../sdl1/sdl/ $$PWD/../guichan/include/ ../fann/src/include/
 
