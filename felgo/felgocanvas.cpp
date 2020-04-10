@@ -116,7 +116,7 @@ void FelgoCanvas::tiltDown() {
 }
 
 void FelgoCanvas::drawStar(Star& s) {
-    double alpha = s.alpha;
+    /*double alpha = s.alpha;
     double lastR = 0;
     for (size_t i = 0; i < s.radius; i++) {
         if (s.z_ < 0.001)
@@ -132,7 +132,7 @@ void FelgoCanvas::drawStar(Star& s) {
         if (i == s.discontinuity)
             alpha /= 3;
         alpha *= s.step;
-    }
+    }*/
 }
 
 void FelgoCanvas::drawExplosion(Explosion& expl) {
