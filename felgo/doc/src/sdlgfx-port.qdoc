@@ -195,11 +195,6 @@ There are two teams consisting of space ships. Their ultimate goal is to destroy
 
 */
 /*!
-\page felgo-neurocid-structure.html
-\title Chapter 4: Felgo-neurocid project structure
-
-*/
-/*!
 \page write_qml_canvas.html
 \title Chapter 3: Write a QML Canvas object that mimics a SDL_gfx-like API
 SDL_gfx provides a simple and straight-forward \l {https://www.ferzkopp.net/Software/SDL_gfx-2.0/Docs/html/_s_d_l__gfx_primitives_8h.html}{API} for rasterising vector graphics.

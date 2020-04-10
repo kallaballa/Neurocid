@@ -37,50 +37,40 @@ static QNeurocidControl NC_CONTROL;
  */
 struct CommandLineOptions {
     /*!
-   * \param loadAFile_
    * \brief The file from which to load Team A
    */
     string loadAFile_;
     /*!
-  * \param saveAFile_
   * \brief The file to save Team A in after the scenario has ended
   */
     string saveAFile_;
     /*!
-  * \param loadBFile_
   * \brief The file from which to load Team B
   */
     string loadBFile_;
     /*!
-  * \param saveBFile_
   * \brief The file to save Team B in after the scenario has ended
   */
     string saveBFile_;
     /*!
-  * \param scenarioName_
   * \brief Either a name of a scenario defined in ../src/procedural_scenarios.cpp or a json file ending with the suffix nsj
   */
     string scenarioName_;
     /*!
-  * \param gameIterations_
   * \brief The number of times the scenario should be run
   */
     size_t gameIterations_ = 1000;
     /*!
-  * \param frameRate_
   * \brief The frame rate of the renderer
   */
     size_t frameRate_ = 25;
     /*!
-  * \param autosaveInterval_
   * \brief interval in minutes for autosaving
   */
     long autosaveInterval_ = 0;
 
     /*!
    * \brief parse the command line options and setup the above variables
-   * \param argc the argument count as it was passed to the main function
-   * \param argv the argument vector as it was passed to the main function
    * \return zero on success.
    */
     int parse(const int argc, const char* const argv[]) {
@@ -122,8 +112,6 @@ struct CommandLineOptions {
 
 /*!
  * \brief run_felgo_neurocid
- * \param opts The command line options parsed from argc and argv
- * \param qmlGfxCanvas The QML \c GfxCanvas object we aquired from the \c QQmlApplicationEngine
  */
 void run_felgo_neurocid(const CommandLineOptions& opts, QObject *qmlGfxCanvas) {
     //seed the pseudo-random generator

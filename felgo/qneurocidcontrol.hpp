@@ -2,7 +2,10 @@
 #define QNEUROCIDCONTROL_HPP
 
 #include <QObject>
-
+/*!
+    \class QNeurocidControl
+    \brief A class that simply forwards ui signals to the Neurocid backend.
+*/
 class QNeurocidControl : public QObject
 {
     Q_OBJECT

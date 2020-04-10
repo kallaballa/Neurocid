@@ -5,7 +5,10 @@
 #include <QMetaObject>
 
 namespace neurocid {
-
+/*!
+    \class neurocid::FelgoGfx
+    \brief A class that simply forwards SDL_gfx-like primitive calls to the QML \c GfxCanvas
+*/
 class FelgoGFX
 {
 private:

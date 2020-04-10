@@ -3,7 +3,7 @@
 # practices. For that reason, any QDoc configuration file needs to
 # include compat.qdocconf.
 #include(compat.qdocconf)
-project                 = felgo-neurocidd
+project                 = felgo-neurocid
 description             = Tutorial: How I ported an C++/SDL_gfx based game to Felgo
 
 # QDoc needs lists of file extensions to know which files to process in
