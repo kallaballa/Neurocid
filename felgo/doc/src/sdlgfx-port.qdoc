@@ -1,9 +1,9 @@
 /*!
 \page sdlgfx-port-tutorial.html
-\title Tutorial: How I ported C++/SDL_gfx based application to Felgo
+\title Tutorial: How I ported a C++/SDL_gfx based application to Felgo
 
 There are several ways to port C++/SDL_gfx based applications to Felgo. The most canonical way
-would be to provide a model with all the game data needed for rendering and pass it to Felgo
+would be to provide a model with all the game data needed for rendering and passing it to Felgo
 app to do the heavy lifting as described here: \l{https://felgo.com/doc/apps-howto-model-view-separation/}{Model-view-separation-tutorial}.
 But in case you want a quick result, your rendering just works fine the way it is, and you don't need any of the advantages of using Felgo for
 rendering: This is the tutorial to read. The approach is pretty simple: Create a SDL_gfx drop-in replacement that behind the scenes uses
@@ -23,7 +23,7 @@ Tutorial chapters:
 \list 1
 \li \l{Chapter 0: Comments on how I approached the challenge in general}
 \li \l{Chapter 1: Building Neurocid for Debian Linux 10}
-\li \l{Chapter 2: Running the Neurocid-Felgo frontend}
+\li \l{Chapter 2: Running the Game}
 \li \l{Chapter 3: Write a QML Canvas object that mimics a SDL_gfx-like API}
 \li \l{Chapter 4: Write a C++ to QML Canvas bridge}
 \li \l{Chapter 5: How to use the SDL_gfx-like drop-in replacement}
@@ -48,7 +48,7 @@ Tutorial chapters:
 \li In general it would be very nice if you could provide a full Felgo-qdoc-tutorial with config a qdoc document, style-sheets and assets.
 \li Most of the time I'm not a last minute guy but job, family and virus-life took their toll.
 \li I didn't include the appendix (just) to show off. If focus/given directions/time allow(s) it, I regard doing a tutorial as testing a tutorial (in projects I am involved in)
-\li I didn't include the qt/qtdoc pitfalls that i encountered. e.g.: it took quite some time to find out that source documentation can't be in source files and doesn't warn about it. try to search for it :)
+\li I didn't include the qt/qtdoc pitfalls that i encountered.
 \endlist
 */
 /*!
@@ -107,7 +107,7 @@ sudo make install
 */
 /*!
 \page run-neurocid.html
-\title Chapter 2: Running the Neurocid-Felgo frontend
+\title Chapter 2: Running the Game
 The whole idea behind Neurocid is to train a swarm of "intelligent" space ships to fight another space ship team.
 There are two things required to be able to train a swarm:
 \list
@@ -121,18 +121,72 @@ To run the training do the following:
 cd Neurocid/
 felgo/training.sh
 \endcode
+
+Please note that not every training is successful, even in perfect conditions. Reliability of the training depends very much on the population size.
+A larger population raises the potential for desired development while slowing down the simulation, so if you'd like to experiment with a larger
+population sizes be aware that it might actually take longer to successfully train a team.
+
+\section1 Anatomy of the game
+There are two teams consisting of space ships. Their ultimate goal is to destroy the other team which can be achieved through destroying each of the ships or destroying the enemy base. Each ship has a neural network as brain which controls all its actions. During training the teams follow a curriculum of scenarios and are evolved through genetic algorithms. Scenarios and fitness function are scriptable in lua.
+
+\section2 Ships
+\list
+\li A ship can move and shoot projectiles.
+\li A ship has a limited amount of fuel and projectiles.
+\li A ship dies when it is out of fuel.
+\li A ship can collide with out ships and suffers damage.
+\li A ship hit by a projectile suffers damage.
+\li A ship exceeding it's maximum damage dies.
+\li In every game scenario ships start with minimal fuel and no ammunition. They can't just converge on enemy locations and empty their ammonition, they have to visit their own base first to restock both. Also, evertime they are low on fuel or ammonition they have to fly back.
+\endlist
+
+
+\section2 Projectiles
+\list
+\li A projectile has a limited speed but is faster than ships.
+\li A projectile has a limited range and will explode on exceeding it.
+\li A projectile will explode on impact. On friendly ships, enemy ships, friendly bases and enemy bases alike.
+\li When a projectile explodes it creates a blast. Any ship in range of the blast will be stunned for a limited time.
+\endlist
+
+\section2 Bases
+\list
+\li A base supplies friendly ships flying over it with fuel and ammunition
+\li A base can take limited damage before it is destroyed. Without a base the friendly team will starve since it can't restock fuel and ammunition.
+\endlist
+
+\section2 Game Objects
+\list
+\li Dark red dots with a trail of same color: Ships of team A moving conventionally
+\li Dark green dots with a trail of same color: Ships of team B moving conventionally
+\li Big lighter red dot: Base of team A
+\li Big lighter green dot: Base of team B
+\li White circle: Marks a ship which is stunned
+\li Orange dots: Marks a projectile blast
+\li Yellow dots; Projectiles of team A
+\li Turquoise dots: Projectiles of team B
+\li White bar next to bases: Health indicator of the base
+\endlist
+
+\image gameobjectoverview.png "Game Objects Overview"
+
+*/
+/*!
+\page felgo-neurocid-structure.html
+\title Chapter 4: Felgo-neurocid project structure
+
 */
 /*!
 \page write_qml_canvas.html
 \title Chapter 3: Write a QML Canvas object that mimics a SDL_gfx-like API
-SDL_gfx provides a simple and straight-forward {https://www.ferzkopp.net/Software/SDL_gfx-2.0/Docs/html/_s_d_l__gfx_primitives_8h.html}{API) for rasterising vector graphics.
-What we need to do is extend a QML Canvas with methods resembling the SDL_gfx-functions we require. Let's say for the sake of simplicity we only require straight-line rendering.
+SDL_gfx provides a simple and straight-forward \l {https://www.ferzkopp.net/Software/SDL_gfx-2.0/Docs/html/_s_d_l__gfx_primitives_8h.html}{API} for rasterising vector graphics.
+What we need to do is extend a QML Canvas with methods resembling the SDL_gfx-functions we require. Let's say for the sake of simplicity we require straight-lines only.
 The following sections shows an example of QML Canvas that supports exactly that. Please note that the renderTarget and renderStrategy are educated guesses and that
-he helper functions preceeding the function lineRGBA are required to generate html color-hex-strings (e.g: "#ff0000" for pure red), to clear the whole canvas and to control the
+the helper functions preceding the function lineRGBA are required to generate html color-hex-strings (e.g: "#ff0000" for pure red), to clear the whole canvas and to control the
 framebuffer.
-You can find the full (and abstracted implementation) in GfxCanvas.qml
+You can find the full implementation in GfxCanvas
 
-\code
+\qml
 Canvas {
     renderTarget: Canvas.Image;
     renderStrategy: Canvas.Immediate;
@@ -194,14 +248,14 @@ Canvas {
         ctx.stroke();
     }
 }
-\endcode
+\endqml
 */
 /*!
 \page write_a_cpp_to_qml_bridge.html
 \title Chapter 4: Write a C++ to QML Canvas bridge
-The following code demonstrates how to call the corresponding QML method from C++. Please note that the functions flip and clear don't have a corresponding SDL_gfx function
-but are still required to be effectivly able to render. Flip performs a buffer flip of the framebuffer (which you need to do after you've done all the drawing operations to actually display
-the frame (see {https://en.wikipedia.org/wiki/Multiple_buffering#Double_buffering_in_computer_graphics}{double buffering}) and clear fills the whole canvas with the RGB color provided.
+The following code demonstrates how to call the corresponding QML method from C++. Please note that the functions "flip" and "clear" don't have a corresponding SDL_gfx function
+but are still required to be effectivly able to render. "flip" performs a buffer flip of the framebuffer (which you need to do after you've done all the drawing operations to actually display
+the frame (see \l {https://en.wikipedia.org/wiki/Multiple_buffering#Double_buffering_in_computer_graphics}{double buffering}) and "clear" fills the whole canvas with the RGB color provided.
 There are several ways to call the QML Canvas methods (e.g.: using signals/slots) but i chose the QMetaObject::invokeMethod approached because i wanted tight(er) binding than the message passing of signals/slots provides.
 Also I couldn't find a use case that would require binding those functions many times from many locations.
 You can find the full implementation in felgogfx.cpp
@@ -339,7 +393,7 @@ There are two solutions for these problems:
 For example:
 \code
 # Make sure libraries are looked for in ./lib64 first.
-    LD_LIBRARY_PATH="./lib64:$LD_LIBRARY_PATH" ./FelgoInstaller-linux_x64-online.run
+LD_LIBRARY_PATH="./lib64:$LD_LIBRARY_PATH" ./FelgoInstaller-linux_x64-online.run
 \endcode
 
 \li If you really want to install a library permanently use a different path e.g: "/usr/local/lib64" (or "/usr/local/lib" depending on the distro) and instead of "chown + cp" use a different coreutil: "install".
@@ -347,7 +401,7 @@ For example:
 For example:
 \code
 # copies the files to /usr/local/lib64 while making backups of existing files (if there are any). Finally sets the ownership to root.
-    sudo install -b -o root lib64/libcrypto.so.1.0.0 lib64/libssl.so.1.0.0 /usr/local/lib64
+sudo install -b -o root lib64/libcrypto.so.1.0.0 lib64/libssl.so.1.0.0 /usr/local/lib64
 \endcode
 \endlist
 \li The samplelauncher renders fonts very small (OpenSUSE Tumbleweed using X11 with awesome WM and picom at 1920x1080 with 96dpi).
