@@ -16,29 +16,29 @@ typedef gcn::Color Color;
 
 class Theme {
 public:
-	static Color teamA;
-	static Color teamB;
+    static Color teamA;
+    static Color teamB;
 
-	static Color projectileA;
-	static Color projectileB;
+    static Color projectileA;
+    static Color projectileB;
 
-	static Color enginesA;
-	static Color enginesB;
+    static Color enginesA;
+    static Color enginesB;
 
-	static Color explosion;
+    static Color explosion;
 
-	static Color battleFieldCenter;
-	static Color battleFieldBorder;
-	static Color battleFieldGrid;
+    static Color battleFieldCenter;
+    static Color battleFieldBorder;
+    static Color battleFieldGrid;
 
-	static Color osdWidgetBg;
-	static Color osdWidgetFg;
-	static Color osdWidgetFrameMid;
-	static Color osdWidgetFrameOutter;
-	static Color buttonBg;
-	static Color buttonFg;
-	static Color labelBg;
-	static Color labelFg;
+    static Color osdWidgetBg;
+    static Color osdWidgetFg;
+    static Color osdWidgetFrameMid;
+    static Color osdWidgetFrameOutter;
+    static Color buttonBg;
+    static Color buttonFg;
+    static Color labelBg;
+    static Color labelFg;
 };
 
 } /* namespace neurocid */
