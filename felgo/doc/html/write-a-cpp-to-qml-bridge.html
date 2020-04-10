@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- sdlgfx-port.qdoc -->
+  <title>Chapter 4: Write a C++ to QML Canvas bridge | felgo-neurocid</title>
+</head>
+<body>
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Chapter 4: Write a C++ to QML Canvas bridge</h1>
+<span class="subtitle"></span>
+<!-- $$$write_a_cpp_to_qml_bridge.html-description -->
+<div class="descr"> <a name="details"></a>
+<p>The following code demonstrates how to call the corresponding QML method from C++. Please note that the functions &quot;flip&quot; and &quot;clear&quot; don't have a corresponding SDL_gfx function but are still required to be effectivly able to render. &quot;flip&quot; performs a buffer flip of the framebuffer (which you need to do after you've done all the drawing operations to actually display the frame (see <a href="https://en.wikipedia.org/wiki/Multiple_buffering#Double_buffering_in_computer_graphics">double buffering</a>) and &quot;clear&quot; fills the whole canvas with the RGB color provided. There are several ways to call the QML Canvas methods (e.g&#x2e;: using signals/slots) but i chose the QMetaObject::invokeMethod approached because i wanted tight(er) binding than the message passing of signals/slots provides. Also I couldn't find a use case that would require binding those functions many times from many locations. You can find the full implementation in felgogfx.cpp</p>
+<pre class="cpp">FelgoGFX<span class="operator">::</span>FelgoGFX(<span class="type">QObject</span><span class="operator">*</span> canvas) : canvas_(canvas) {
+}
+
+<span class="comment">//except for the return value this function behaves like explained here: https://www.ferzkopp.net/Software/SDL_gfx-2.0/Docs/html/_s_d_l__gfx_primitives_8h.html#a5e4bd13b12d34698fbcb2dc9d3a0e9f3</span>
+<span class="type">void</span> FelgoGFX<span class="operator">::</span>lineRGBA(<span class="keyword">const</span> int16_t<span class="operator">&amp;</span> x1<span class="operator">,</span> <span class="keyword">const</span> int16_t<span class="operator">&amp;</span> y1<span class="operator">,</span> <span class="keyword">const</span> int16_t<span class="operator">&amp;</span> x2<span class="operator">,</span> <span class="keyword">const</span> int16_t<span class="operator">&amp;</span> y2<span class="operator">,</span> <span class="keyword">const</span> uint8_t<span class="operator">&amp;</span> r<span class="operator">,</span> <span class="keyword">const</span> uint8_t<span class="operator">&amp;</span> g<span class="operator">,</span> <span class="keyword">const</span> uint8_t<span class="operator">&amp;</span> b<span class="operator">,</span> <span class="keyword">const</span> uint8_t<span class="operator">&amp;</span> a) {
+    <span class="type">QMetaObject</span><span class="operator">::</span>invokeMethod(canvas_<span class="operator">,</span> <span class="string">&quot;lineRGBA&quot;</span><span class="operator">,</span>
+                              Q_ARG(<span class="type">QVariant</span><span class="operator">,</span> x1)<span class="operator">,</span>
+                              Q_ARG(<span class="type">QVariant</span><span class="operator">,</span> y1)<span class="operator">,</span>
+                              Q_ARG(<span class="type">QVariant</span><span class="operator">,</span> x2)<span class="operator">,</span>
+                              Q_ARG(<span class="type">QVariant</span><span class="operator">,</span> y2)<span class="operator">,</span>
+                              Q_ARG(<span class="type">QVariant</span><span class="operator">,</span> r)<span class="operator">,</span>
+                              Q_ARG(<span class="type">QVariant</span><span class="operator">,</span> g)<span class="operator">,</span>
+                              Q_ARG(<span class="type">QVariant</span><span class="operator">,</span> b)<span class="operator">,</span>
+                              Q_ARG(<span class="type">QVariant</span><span class="operator">,</span> a)
+                              );
+}
+
+<span class="comment">//This function has no corresponding function in SDL_gfx. It fills the whole canvas with a uniform color.</span>
+<span class="type">void</span> FelgoGFX<span class="operator">::</span>clear(<span class="keyword">const</span> uint8_t<span class="operator">&amp;</span> r<span class="operator">,</span> <span class="keyword">const</span> uint8_t<span class="operator">&amp;</span> g<span class="operator">,</span> <span class="keyword">const</span> uint8_t<span class="operator">&amp;</span> b) {
+  <span class="type">QMetaObject</span><span class="operator">::</span>invokeMethod(canvas_<span class="operator">,</span> <span class="string">&quot;clear&quot;</span><span class="operator">,</span>
+                            Q_ARG(<span class="type">QVariant</span><span class="operator">,</span> r)<span class="operator">,</span>
+                            Q_ARG(<span class="type">QVariant</span><span class="operator">,</span> g)<span class="operator">,</span>
+                            Q_ARG(<span class="type">QVariant</span><span class="operator">,</span> b)
+                            );
+}
+
+<span class="comment">//This function has no corresponding function in SDL_gfx but it serves the same purpose as SDL_Flip, though the exact semantics are very different.</span>
+<span class="type">void</span> FelgoGFX<span class="operator">::</span>flip() {
+  <span class="type">QMetaObject</span><span class="operator">::</span>invokeMethod(canvas_<span class="operator">,</span> <span class="string">&quot;flip&quot;</span>);
+}</pre>
+</div>
+<!-- @@@write_a_cpp_to_qml_bridge.html -->
+</body>
+</html>

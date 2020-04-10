@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE QDOCINDEX>
+<INDEX url="" title="Tutorial: How I ported an C++/SDL_gfx based game to Felgo" version="" project="felgo-neurocid">
+    <namespace name="" status="active" access="public" module="felgo-neurocid">
+        <page name="appendix-challenge.html" href="appendix-challenge.html" status="active" location="sdlgfx-port.qdoc" filepath="/home/elchaschab/devel/Neurocid/felgo/doc/src/sdlgfx-port.qdoc" lineno="360" documented="true" subtype="page" title="Appendix: Issues with the Challenge and Felgo" fulltitle="Appendix: Issues with the Challenge and Felgo" subtitle="" module="felgo-neurocid"/>
+        <qmlclass name="GfxCanvas" qml-module-name="GfxCanvas" href="qml-gfxcanvas.html" status="active" access="public" documented="true" title="GfxCanvas" fulltitle="GfxCanvas" subtitle="" brief="An incomplete drop-in replacement for SDL_gfx primitives">
+            <function name="circleRGBA" fullname="GfxCanvas::circleRGBA" href="qml-gfxcanvas.html#circleRGBA-method" status="internal" access="private" location="GfxCanvas.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/GfxCanvas.qml" lineno="87" meta="qmlmethod"/>
+            <function name="clear" fullname="GfxCanvas::clear" href="qml-gfxcanvas.html#clear-method" status="internal" access="private" location="GfxCanvas.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/GfxCanvas.qml" lineno="136" meta="qmlmethod"/>
+            <function name="ellipseRGBA" fullname="GfxCanvas::ellipseRGBA" href="qml-gfxcanvas.html#ellipseRGBA-method" status="internal" access="private" location="GfxCanvas.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/GfxCanvas.qml" lineno="124" meta="qmlmethod"/>
+            <function name="filledCircleRGBA" fullname="GfxCanvas::filledCircleRGBA" href="qml-gfxcanvas.html#filledCircleRGBA-method" status="internal" access="private" location="GfxCanvas.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/GfxCanvas.qml" lineno="79" meta="qmlmethod"/>
+            <function name="filledPolygonRGBA" fullname="GfxCanvas::filledPolygonRGBA" href="qml-gfxcanvas.html#filledPolygonRGBA-method" status="internal" access="private" location="GfxCanvas.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/GfxCanvas.qml" lineno="103" meta="qmlmethod"/>
+            <function name="flip" fullname="GfxCanvas::flip" href="qml-gfxcanvas.html#flip-method" status="internal" access="private" location="GfxCanvas.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/GfxCanvas.qml" lineno="142" meta="qmlmethod"/>
+            <function name="lineRGBA" fullname="GfxCanvas::lineRGBA" href="qml-gfxcanvas.html#lineRGBA-method" status="active" access="public" documented="true" meta="qmlmethod"/>
+            <function name="makeHtmlColorString" fullname="GfxCanvas::makeHtmlColorString" href="qml-gfxcanvas.html#makeHtmlColorString-method" status="active" access="public" documented="true" meta="qmlmethod"/>
+            <function name="makePadded8BitHexString" fullname="GfxCanvas::makePadded8BitHexString" href="qml-gfxcanvas.html#makePadded8BitHexString-method" status="active" access="public" documented="true" meta="qmlmethod"/>
+            <function name="pieRGBA" fullname="GfxCanvas::pieRGBA" href="qml-gfxcanvas.html#pieRGBA-method" status="internal" access="private" location="GfxCanvas.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/GfxCanvas.qml" lineno="95" meta="qmlmethod"/>
+            <function name="rectangleRGBA" fullname="GfxCanvas::rectangleRGBA" href="qml-gfxcanvas.html#rectangleRGBA-method" status="internal" access="private" location="GfxCanvas.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/GfxCanvas.qml" lineno="129" meta="qmlmethod"/>
+            <function name="setRGBA" fullname="GfxCanvas::setRGBA" href="qml-gfxcanvas.html#setRGBA-method" status="active" access="public" documented="true" meta="qmlmethod"/>
+        </qmlclass>
+        <page name="build-neurocid-debian.html" href="build-neurocid-debian.html" status="active" location="sdlgfx-port.qdoc" filepath="/home/elchaschab/devel/Neurocid/felgo/doc/src/sdlgfx-port.qdoc" lineno="58" documented="true" subtype="page" title="Chapter 1: Building Neurocid for Debian Linux 10" fulltitle="Chapter 1: Building Neurocid for Debian Linux 10" subtitle="" module="felgo-neurocid"/>
+        <page name="sdlgfx-port-tutorial.html" href="sdlgfx-port-tutorial.html" status="active" location="sdlgfx-port.qdoc" filepath="/home/elchaschab/devel/Neurocid/felgo/doc/src/sdlgfx-port.qdoc" lineno="1" documented="true" subtype="page" title="Tutorial: How I ported a C++/SDL_gfx based application to Felgo" fulltitle="Tutorial: How I ported a C++/SDL_gfx based application to Felgo" subtitle="" module="felgo-neurocid"/>
+        <page name="write_qml_canvas.html" href="write-qml-canvas.html" status="active" location="sdlgfx-port.qdoc" filepath="/home/elchaschab/devel/Neurocid/felgo/doc/src/sdlgfx-port.qdoc" lineno="196" documented="true" subtype="page" title="Chapter 3: Write a QML Canvas object that mimics a SDL_gfx-like API" fulltitle="Chapter 3: Write a QML Canvas object that mimics a SDL_gfx-like API" subtitle="" module="felgo-neurocid"/>
+        <page name="write_a_cpp_to_qml_bridge.html" href="write-a-cpp-to-qml-bridge.html" status="active" location="sdlgfx-port.qdoc" filepath="/home/elchaschab/devel/Neurocid/felgo/doc/src/sdlgfx-port.qdoc" lineno="270" documented="true" subtype="page" title="Chapter 4: Write a C++ to QML Canvas bridge" fulltitle="Chapter 4: Write a C++ to QML Canvas bridge" subtitle="" module="felgo-neurocid"/>
+        <page name="run-neurocid.html" href="run-neurocid.html" status="active" location="sdlgfx-port.qdoc" filepath="/home/elchaschab/devel/Neurocid/felgo/doc/src/sdlgfx-port.qdoc" lineno="111" documented="true" subtype="page" title="Chapter 2: The Game" fulltitle="Chapter 2: The Game" subtitle="" module="felgo-neurocid">
+            <contents name="anatomy-of-the-game" title="Anatomy of the game" level="1"/>
+            <contents name="ships" title="Ships" level="2"/>
+            <contents name="projectiles" title="Projectiles" level="2"/>
+            <contents name="bases" title="Bases" level="2"/>
+            <contents name="game-objects" title="Game Objects" level="2"/>
+        </page>
+        <namespace name="neurocid" href="neurocid-sub-felgo-neurocid.html" status="internal" access="private" location="felgogfx.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/felgogfx.hpp" lineno="7">
+            <class name="FelgoGFX" fullname="neurocid::FelgoGFX" href="neurocid-felgogfx.html" status="internal" access="private" location="felgogfx.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/felgogfx.hpp" lineno="12">
+                <function name="FelgoGFX" fullname="neurocid::FelgoGFX::FelgoGFX" href="neurocid-felgogfx.html#FelgoGFX" status="internal" access="private" location="felgogfx.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/felgogfx.hpp" lineno="18" meta="constructor" virtual="non" const="false" static="false" final="false" override="false" type="" signature="FelgoGFX(int *canvas)">
+                    <parameter type="int *" name="canvas" default=""/>
+                </function>
+                <function name="circleRGBA" fullname="neurocid::FelgoGFX::circleRGBA" href="neurocid-felgogfx.html#circleRGBA" status="internal" access="private" location="felgogfx.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/felgogfx.hpp" lineno="21" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void circleRGBA(const int16_t &amp;x, const int16_t &amp;y, const int16_t &amp;radius, const uint8_t &amp;r, const uint8_t &amp;g, const uint8_t &amp;b, const uint8_t &amp;a)">
+                    <parameter type="const int16_t &amp;" name="x" default=""/>
+                    <parameter type="const int16_t &amp;" name="y" default=""/>
+                    <parameter type="const int16_t &amp;" name="radius" default=""/>
+                    <parameter type="const uint8_t &amp;" name="r" default=""/>
+                    <parameter type="const uint8_t &amp;" name="g" default=""/>
+                    <parameter type="const uint8_t &amp;" name="b" default=""/>
+                    <parameter type="const uint8_t &amp;" name="a" default=""/>
+                </function>
+                <function name="clear" fullname="neurocid::FelgoGFX::clear" href="neurocid-felgogfx.html#clear" status="internal" access="private" location="felgogfx.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/felgogfx.hpp" lineno="27" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void clear(const uint8_t &amp;r, const uint8_t &amp;g, const uint8_t &amp;b)">
+                    <parameter type="const uint8_t &amp;" name="r" default=""/>
+                    <parameter type="const uint8_t &amp;" name="g" default=""/>
+                    <parameter type="const uint8_t &amp;" name="b" default=""/>
+                </function>
+                <function name="ellipseRGBA" fullname="neurocid::FelgoGFX::ellipseRGBA" href="neurocid-felgogfx.html#ellipseRGBA" status="internal" access="private" location="felgogfx.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/felgogfx.hpp" lineno="25" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void ellipseRGBA(const int16_t &amp;x, const int16_t &amp;y, const int16_t &amp;radiusx, const int16_t &amp;radiusy, const uint8_t &amp;r, const uint8_t &amp;g, const uint8_t &amp;b, const uint8_t &amp;a)">
+                    <parameter type="const int16_t &amp;" name="x" default=""/>
+                    <parameter type="const int16_t &amp;" name="y" default=""/>
+                    <parameter type="const int16_t &amp;" name="radiusx" default=""/>
+                    <parameter type="const int16_t &amp;" name="radiusy" default=""/>
+                    <parameter type="const uint8_t &amp;" name="r" default=""/>
+                    <parameter type="const uint8_t &amp;" name="g" default=""/>
+                    <parameter type="const uint8_t &amp;" name="b" default=""/>
+                    <parameter type="const uint8_t &amp;" name="a" default=""/>
+                </function>
+                <function name="filledCircleRGBA" fullname="neurocid::FelgoGFX::filledCircleRGBA" href="neurocid-felgogfx.html#filledCircleRGBA" status="internal" access="private" location="felgogfx.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/felgogfx.hpp" lineno="22" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void filledCircleRGBA(const int16_t &amp;x, const int16_t &amp;y, const int16_t &amp;radius, const uint8_t &amp;r, const uint8_t &amp;g, const uint8_t &amp;b, const uint8_t &amp;a)">
+                    <parameter type="const int16_t &amp;" name="x" default=""/>
+                    <parameter type="const int16_t &amp;" name="y" default=""/>
+                    <parameter type="const int16_t &amp;" name="radius" default=""/>
+                    <parameter type="const uint8_t &amp;" name="r" default=""/>
+                    <parameter type="const uint8_t &amp;" name="g" default=""/>
+                    <parameter type="const uint8_t &amp;" name="b" default=""/>
+                    <parameter type="const uint8_t &amp;" name="a" default=""/>
+                </function>
+                <function name="filledPolygonRGBA" fullname="neurocid::FelgoGFX::filledPolygonRGBA" href="neurocid-felgogfx.html#filledPolygonRGBA" status="internal" access="private" location="felgogfx.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/felgogfx.hpp" lineno="24" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void filledPolygonRGBA(const int16_t *vx, const int16_t *vy, int n, const uint8_t &amp;r, const uint8_t &amp;g, const uint8_t &amp;b, const uint8_t &amp;a)">
+                    <parameter type="const int16_t *" name="vx" default=""/>
+                    <parameter type="const int16_t *" name="vy" default=""/>
+                    <parameter type="int" name="n" default=""/>
+                    <parameter type="const uint8_t &amp;" name="r" default=""/>
+                    <parameter type="const uint8_t &amp;" name="g" default=""/>
+                    <parameter type="const uint8_t &amp;" name="b" default=""/>
+                    <parameter type="const uint8_t &amp;" name="a" default=""/>
+                </function>
+                <function name="flip" fullname="neurocid::FelgoGFX::flip" href="neurocid-felgogfx.html#flip" status="internal" access="private" location="felgogfx.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/felgogfx.hpp" lineno="28" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void flip()"/>
+                <function name="lineRGBA" fullname="neurocid::FelgoGFX::lineRGBA" href="neurocid-felgogfx.html#lineRGBA" status="internal" access="private" location="felgogfx.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/felgogfx.hpp" lineno="20" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void lineRGBA(const int16_t &amp;x1, const int16_t &amp;y1, const int16_t &amp;x2, const int16_t &amp;y2, const uint8_t &amp;r, const uint8_t &amp;g, const uint8_t &amp;b, const uint8_t &amp;a)">
+                    <parameter type="const int16_t &amp;" name="x1" default=""/>
+                    <parameter type="const int16_t &amp;" name="y1" default=""/>
+                    <parameter type="const int16_t &amp;" name="x2" default=""/>
+                    <parameter type="const int16_t &amp;" name="y2" default=""/>
+                    <parameter type="const uint8_t &amp;" name="r" default=""/>
+                    <parameter type="const uint8_t &amp;" name="g" default=""/>
+                    <parameter type="const uint8_t &amp;" name="b" default=""/>
+                    <parameter type="const uint8_t &amp;" name="a" default=""/>
+                </function>
+                <function name="pieRGBA" fullname="neurocid::FelgoGFX::pieRGBA" href="neurocid-felgogfx.html#pieRGBA" status="internal" access="private" location="felgogfx.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/felgogfx.hpp" lineno="23" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void pieRGBA(const int16_t &amp;x, const int16_t &amp;y, const int16_t &amp;radius, const int16_t &amp;start, const int16_t &amp;end, const uint8_t &amp;r, const uint8_t &amp;g, const uint8_t &amp;b, const uint8_t &amp;a)">
+                    <parameter type="const int16_t &amp;" name="x" default=""/>
+                    <parameter type="const int16_t &amp;" name="y" default=""/>
+                    <parameter type="const int16_t &amp;" name="radius" default=""/>
+                    <parameter type="const int16_t &amp;" name="start" default=""/>
+                    <parameter type="const int16_t &amp;" name="end" default=""/>
+                    <parameter type="const uint8_t &amp;" name="r" default=""/>
+                    <parameter type="const uint8_t &amp;" name="g" default=""/>
+                    <parameter type="const uint8_t &amp;" name="b" default=""/>
+                    <parameter type="const uint8_t &amp;" name="a" default=""/>
+                </function>
+                <function name="rectangleRGBA" fullname="neurocid::FelgoGFX::rectangleRGBA" href="neurocid-felgogfx.html#rectangleRGBA" status="internal" access="private" location="felgogfx.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/felgogfx.hpp" lineno="26" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void rectangleRGBA(const int16_t &amp;x1, const int16_t &amp;y1, const int16_t &amp;x2, const int16_t &amp;y2, const uint8_t &amp;r, const uint8_t &amp;g, const uint8_t &amp;b, const uint8_t &amp;a)">
+                    <parameter type="const int16_t &amp;" name="x1" default=""/>
+                    <parameter type="const int16_t &amp;" name="y1" default=""/>
+                    <parameter type="const int16_t &amp;" name="x2" default=""/>
+                    <parameter type="const int16_t &amp;" name="y2" default=""/>
+                    <parameter type="const uint8_t &amp;" name="r" default=""/>
+                    <parameter type="const uint8_t &amp;" name="g" default=""/>
+                    <parameter type="const uint8_t &amp;" name="b" default=""/>
+                    <parameter type="const uint8_t &amp;" name="a" default=""/>
+                </function>
+                <variable name="canvas_" fullname="neurocid::FelgoGFX::canvas_" href="neurocid-felgogfx.html#canvas_-var" status="internal" access="private" location="felgogfx.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/felgogfx.hpp" lineno="15" type="int *" static="false"/>
+            </class>
+        </namespace>
+        <class name="QNeurocidControl" href="qneurocidcontrol.html" status="internal" access="private" location="qneurocidcontrol.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/qneurocidcontrol.hpp" lineno="9">
+            <function name="down" fullname="QNeurocidControl::down" href="qneurocidcontrol.html#down" status="internal" access="private" location="qneurocidcontrol.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/qneurocidcontrol.hpp" lineno="25" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void down()"/>
+            <function name="dumpTeams" fullname="QNeurocidControl::dumpTeams" href="qneurocidcontrol.html#dumpTeams" status="internal" access="private" location="qneurocidcontrol.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/qneurocidcontrol.hpp" lineno="34" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void dumpTeams()"/>
+            <function name="left" fullname="QNeurocidControl::left" href="qneurocidcontrol.html#left" status="internal" access="private" location="qneurocidcontrol.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/qneurocidcontrol.hpp" lineno="22" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void left()"/>
+            <function name="resizeCanvasBackend" fullname="QNeurocidControl::resizeCanvasBackend" href="qneurocidcontrol.html#resizeCanvasBackend" status="internal" access="private" location="qneurocidcontrol.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/qneurocidcontrol.hpp" lineno="28" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void resizeCanvasBackend(int width, int height)">
+                <parameter type="int" name="width" default=""/>
+                <parameter type="int" name="height" default=""/>
+            </function>
+            <function name="right" fullname="QNeurocidControl::right" href="qneurocidcontrol.html#right" status="internal" access="private" location="qneurocidcontrol.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/qneurocidcontrol.hpp" lineno="23" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void right()"/>
+            <function name="setPaused" fullname="QNeurocidControl::setPaused" href="qneurocidcontrol.html#setPaused" status="internal" access="private" location="qneurocidcontrol.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/qneurocidcontrol.hpp" lineno="33" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void setPaused(bool p)">
+                <parameter type="bool" name="p" default=""/>
+            </function>
+            <function name="setSpeed" fullname="QNeurocidControl::setSpeed" href="qneurocidcontrol.html#setSpeed" status="internal" access="private" location="qneurocidcontrol.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/qneurocidcontrol.hpp" lineno="32" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void setSpeed(int s)">
+                <parameter type="int" name="s" default=""/>
+            </function>
+            <function name="tiltDown" fullname="QNeurocidControl::tiltDown" href="qneurocidcontrol.html#tiltDown" status="internal" access="private" location="qneurocidcontrol.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/qneurocidcontrol.hpp" lineno="27" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void tiltDown()"/>
+            <function name="tiltUp" fullname="QNeurocidControl::tiltUp" href="qneurocidcontrol.html#tiltUp" status="internal" access="private" location="qneurocidcontrol.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/qneurocidcontrol.hpp" lineno="26" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void tiltUp()"/>
+            <function name="up" fullname="QNeurocidControl::up" href="qneurocidcontrol.html#up" status="internal" access="private" location="qneurocidcontrol.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/qneurocidcontrol.hpp" lineno="24" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void up()"/>
+            <function name="zoomOut" fullname="QNeurocidControl::zoomOut" href="qneurocidcontrol.html#zoomOut" status="internal" access="private" location="qneurocidcontrol.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/qneurocidcontrol.hpp" lineno="21" meta="plain" virtual="non" const="false" static="false" final="false" override="false" type="void" signature="void zoomOut()"/>
+            <function name="~QNeurocidControl" fullname="QNeurocidControl::~QNeurocidControl" href="qneurocidcontrol.html#dtor.QNeurocidControl" status="internal" access="private" location="qneurocidcontrol.hpp" filepath="/home/elchaschab/devel/Neurocid/felgo/qneurocidcontrol.hpp" lineno="14" meta="destructor" virtual="non" const="false" static="false" final="false" override="false" type="" signature="~QNeurocidControl()"/>
+        </class>
+        <qmlclass name="Main" qml-module-name="Main" href="qml-main.html" status="internal" access="private" location="Main.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/Main.qml" lineno="4" title="Main" fulltitle="Main" subtitle="">
+            <function name="down" fullname="Main::down" href="qml-main.html#down-signal" status="internal" access="private" location="Main.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/Main.qml" lineno="15" meta="qmlsignal"/>
+            <function name="dumpTeams" fullname="Main::dumpTeams" href="qml-main.html#dumpTeams-signal" status="internal" access="private" location="Main.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/Main.qml" lineno="24" meta="qmlsignal"/>
+            <function name="left" fullname="Main::left" href="qml-main.html#left-signal" status="internal" access="private" location="Main.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/Main.qml" lineno="12" meta="qmlsignal"/>
+            <function name="resizeCanvasBackend" fullname="Main::resizeCanvasBackend" href="qml-main.html#resizeCanvasBackend-signal" status="internal" access="private" location="Main.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/Main.qml" lineno="26" meta="qmlsignal"/>
+            <function name="right" fullname="Main::right" href="qml-main.html#right-signal" status="internal" access="private" location="Main.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/Main.qml" lineno="13" meta="qmlsignal"/>
+            <function name="setPaused" fullname="Main::setPaused" href="qml-main.html#setPaused-signal" status="internal" access="private" location="Main.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/Main.qml" lineno="23" meta="qmlsignal"/>
+            <function name="setSpeed" fullname="Main::setSpeed" href="qml-main.html#setSpeed-signal" status="internal" access="private" location="Main.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/Main.qml" lineno="22" meta="qmlsignal"/>
+            <function name="tiltDown" fullname="Main::tiltDown" href="qml-main.html#tiltDown-signal" status="internal" access="private" location="Main.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/Main.qml" lineno="20" meta="qmlsignal"/>
+            <function name="tiltUp" fullname="Main::tiltUp" href="qml-main.html#tiltUp-signal" status="internal" access="private" location="Main.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/Main.qml" lineno="19" meta="qmlsignal"/>
+            <function name="up" fullname="Main::up" href="qml-main.html#up-signal" status="internal" access="private" location="Main.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/Main.qml" lineno="14" meta="qmlsignal"/>
+            <function name="zoomIn" fullname="Main::zoomIn" href="qml-main.html#zoomIn-signal" status="internal" access="private" location="Main.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/Main.qml" lineno="17" meta="qmlsignal"/>
+            <function name="zoomOut" fullname="Main::zoomOut" href="qml-main.html#zoomOut-signal" status="internal" access="private" location="Main.qml" filepath="/home/elchaschab/devel/Neurocid/felgo/qml/Main.qml" lineno="18" meta="qmlsignal"/>
+        </qmlclass>
+        <page name="howto_use_replacement.html" href="howto-use-replacement.html" status="active" location="sdlgfx-port.qdoc" filepath="/home/elchaschab/devel/Neurocid/felgo/doc/src/sdlgfx-port.qdoc" lineno="313" documented="true" subtype="page" title="Chapter 5: How to use the SDL_gfx-like drop-in replacement" fulltitle="Chapter 5: How to use the SDL_gfx-like drop-in replacement" subtitle="" module="felgo-neurocid"/>
+        <page name="comments-on-challenge.html" href="comments-on-challenge.html" status="active" location="sdlgfx-port.qdoc" filepath="/home/elchaschab/devel/Neurocid/felgo/doc/src/sdlgfx-port.qdoc" lineno="37" documented="true" subtype="page" title="Chapter 0: Comments on how I approached the challenge in general" fulltitle="Chapter 0: Comments on how I approached the challenge in general" subtitle="" module="felgo-neurocid"/>
+    </namespace>
+</INDEX>

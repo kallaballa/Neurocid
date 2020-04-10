@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- sdlgfx-port.qdoc -->
+  <title>Chapter 2: The Game | felgo-neurocid</title>
+</head>
+<body>
+<div class="sidebar">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#anatomy-of-the-game">Anatomy of the game</a></li>
+<li class="level2"><a href="#ships">Ships</a></li>
+<li class="level2"><a href="#projectiles">Projectiles</a></li>
+<li class="level2"><a href="#bases">Bases</a></li>
+<li class="level2"><a href="#game-objects">Game Objects</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Chapter 2: The Game</h1>
+<span class="subtitle"></span>
+<!-- $$$run-neurocid.html-description -->
+<div class="descr"> <a name="details"></a>
+<p>The whole idea behind Neurocid is to train a swarm of &quot;intelligent&quot; space ships to fight another space ship team. There are two things required to be able to train a swarm:</p>
+<ul>
+<li>A curriculum (a list of scenarios to train with one after the other) which can be defined by creating scenarios (either in C++ or as json file) and providing placers (Neurocid/lua/placer/)</li>
+<li>A fitness function (the default fitness function resides in Neurocid/lua/fitness/amir.lua)</li>
+</ul>
+<p>Going into detail on how to do that exactly is out of scope for this tutorial but there is a shell script which provides everything required to run a curriculim. To run the training do the following:</p>
+<pre class="cpp">cd Neurocid<span class="operator">/</span>
+felgo<span class="operator">/</span>training<span class="operator">.</span>sh</pre>
+<p>Please note that not every training is successful, even in perfect conditions. Reliability of the training depends very much on the population size. A larger population raises the potential for desired development while slowing down the simulation, so if you'd like to experiment with a larger population sizes be aware that it might actually take longer to successfully train a team.</p>
+<p>To control the training felgo-neurocid takes following command line arguments:</p>
+<pre class="cpp">Usage: felgo<span class="operator">-</span>neurocid <span class="operator">[</span>options<span class="operator">]</span>
+
+Options:
+  <span class="operator">-</span>i <span class="operator">[</span> <span class="operator">-</span><span class="operator">-</span>iterations <span class="operator">]</span> arg  Run n iterations of the game
+  <span class="operator">-</span>a <span class="operator">[</span> <span class="operator">-</span><span class="operator">-</span>autosave <span class="operator">]</span> arg    Automatically save teams every n minutes
+  <span class="operator">-</span><span class="operator">-</span>loadA arg              Load the population as team A from a file before
+                           running the scenario
+  <span class="operator">-</span><span class="operator">-</span>loadB arg              Load the population as team B from a file before
+                           running the scenario
+  <span class="operator">-</span><span class="operator">-</span>saveA arg              Save the team A population to a file after running
+                           the scenario
+  <span class="operator">-</span><span class="operator">-</span>saveB arg              Save the team B population to a file after running
+                           the scenario
+  <span class="operator">-</span>f <span class="operator">[</span> <span class="operator">-</span><span class="operator">-</span>framerate <span class="operator">]</span> arg   The frame rate of the renderer
+  <span class="operator">-</span>h <span class="operator">[</span> <span class="operator">-</span><span class="operator">-</span>help <span class="operator">]</span>            Produce help message</pre>
+<a name="anatomy-of-the-game"></a>
+<h2 id="anatomy-of-the-game">Anatomy of the game</h2>
+<p>There are two teams consisting of space ships. Their ultimate goal is to destroy the other team which can be achieved through destroying each of the ships or destroying the enemy base. Each ship has a neural network as brain which controls all its actions. During training the teams follow a curriculum of scenarios and are evolved through genetic algorithms. Scenarios and fitness function are scriptable in lua.</p>
+<a name="ships"></a>
+<h3 id="ships">Ships</h3>
+<ul>
+<li>A ship can move and shoot projectiles.</li>
+<li>A ship has a limited amount of fuel and projectiles.</li>
+<li>A ship dies when it is out of fuel.</li>
+<li>A ship can collide with out ships and suffers damage.</li>
+<li>A ship hit by a projectile suffers damage.</li>
+<li>A ship exceeding it's maximum damage dies.</li>
+<li>In every game scenario ships start with minimal fuel and no ammunition. They can't just converge on enemy locations and empty their ammonition, they have to visit their own base first to restock both. Also, evertime they are low on fuel or ammonition they have to fly back.</li>
+</ul>
+<a name="projectiles"></a>
+<h3 id="projectiles">Projectiles</h3>
+<ul>
+<li>A projectile has a limited speed but is faster than ships.</li>
+<li>A projectile has a limited range and will explode on exceeding it.</li>
+<li>A projectile will explode on impact. On friendly ships, enemy ships, friendly bases and enemy bases alike.</li>
+<li>When a projectile explodes it creates a blast. Any ship in range of the blast will be stunned for a limited time.</li>
+</ul>
+<a name="bases"></a>
+<h3 id="bases">Bases</h3>
+<ul>
+<li>A base supplies friendly ships flying over it with fuel and ammunition</li>
+<li>A base can take limited damage before it is destroyed. Without a base the friendly team will starve since it can't restock fuel and ammunition.</li>
+</ul>
+<a name="game-objects"></a>
+<h3 id="game-objects">Game Objects</h3>
+<ul>
+<li>Dark red dots with a trail of same color: Ships of team A moving conventionally</li>
+<li>Dark green dots with a trail of same color: Ships of team B moving conventionally</li>
+<li>Big lighter red dot: Base of team A</li>
+<li>Big lighter green dot: Base of team B</li>
+<li>White circle: Marks a ship which is stunned</li>
+<li>Orange dots: Marks a projectile blast</li>
+<li>Yellow dots; Projectiles of team A</li>
+<li>Turquoise dots: Projectiles of team B</li>
+<li>White bar next to bases: Health indicator of the base</li>
+</ul>
+<p class="centerAlign"><img src="images/gameobjectoverview.png" alt="&quot;Game Objects Overview&quot;" /></p></div>
+<!-- @@@run-neurocid.html -->
+</body>
+</html>

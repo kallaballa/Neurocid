@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- sdlgfx-port.qdoc -->
+  <title>Chapter 1: Building Neurocid for Debian Linux 10 | felgo-neurocid</title>
+</head>
+<body>
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Chapter 1: Building Neurocid for Debian Linux 10</h1>
+<span class="subtitle"></span>
+<!-- $$$build-neurocid-debian.html-description -->
+<div class="descr"> <a name="details"></a>
+<p>This chapter assumes a minimal Debian Linux 10 install as prerequisite.</p>
+<p>First, for convenience we are going to install sudo and configure it:</p>
+<pre class="cpp">su <span class="operator">-</span> <span class="preprocessor"># change to root</span>
+apt<span class="operator">-</span>get install sudo
+adduser <span class="operator">&lt;</span>your user<span class="operator">&gt;</span> sudo</pre>
+<p>Please note, that you need to log out and back in for the changes to take effect (and hence being able to use sudo) From this point all commands that are not prefixed with &quot;sudo&quot; should be run with the unprivileged user that you want to run felgo-neurocid with.</p>
+<p>Now, let's install all build dependencies:</p>
+<pre class="cpp">sudo apt<span class="operator">-</span>get install git<span class="operator">-</span>core pkg<span class="operator">-</span>config cmake build<span class="operator">-</span>essential g<span class="operator">+</span><span class="operator">+</span> libsdl1<span class="operator">.</span><span class="number">2</span><span class="operator">-</span>dev libsdl<span class="operator">-</span>gfx1<span class="operator">.</span><span class="number">2</span><span class="operator">-</span>dev libsdl<span class="operator">-</span>image1<span class="operator">.</span><span class="number">2</span><span class="operator">-</span>dev libsdl<span class="operator">-</span>ttf2<span class="operator">.</span><span class="number">0</span><span class="operator">-</span>dev libboost<span class="operator">-</span>system<span class="operator">-</span>dev libboost<span class="operator">-</span>program<span class="operator">-</span>options<span class="operator">-</span>dev libboost<span class="operator">-</span>serialization<span class="operator">-</span>dev libsndfile1<span class="operator">-</span>dev</pre>
+<p>Next let's get the code. We are going to clone the &quot;felgo&quot; branch (not master!).</p>
+<pre class="cpp">git clone <span class="operator">-</span><span class="operator">-</span>branch felgo https:<span class="comment">//github.com/kallaballa/Neurocid</span></pre>
+<p>Now we need to install Felgo. Please follow the corresponding <a href="https://felgo.com/doc/felgo-installation/">tutorial</a> and make sure to install Felgo directly in your home folder (/home/&lt;your user&gt;/Felgo) or to adjust the variable &quot;FELGO_PATH&quot; in the main Neurocid Makefile (Neurocid/Makefile). For example, if you installed Felgo to /opt/Felgo you need to change the variable to the following:</p>
+<pre class="cpp">FELGO_PATH :<span class="operator">=</span><span class="operator">/</span>opt<span class="operator">/</span>Felgo<span class="operator">/</span></pre>
+<p>Now we are ready to build Neurocid (including the felgo frontend)!</p>
+<pre class="cpp">cd Neurocid<span class="operator">/</span> <span class="preprocessor"># change to the Neurocid directory</span></pre>
+<p>Start by building the third-party code of the repository:</p>
+<pre class="cpp"><span class="operator">.</span><span class="operator">/</span>build_deps<span class="operator">.</span>sh</pre>
+<p>And now let's actually build neurocid including the felgo qt-project which resides in ./felgo/</p>
+<pre class="cpp">make <span class="operator">-</span>j4 <span class="preprocessor"># change 4 to the number of cores/hyperthreads/CPUS your system has to accelerate the build process. if you don't want to do a parallel build, just omit '-j4'</span></pre>
+<p>And don't forget to install!</p>
+<pre class="cpp">sudo make install</pre>
+</div>
+<!-- @@@build-neurocid-debian.html -->
+</body>
+</html>
