@@ -7,7 +7,14 @@
   <title>Tutorial: How I ported a C++/SDL_gfx based application to Felgo | felgo-neurocid</title>
 </head>
 <body>
-<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<div class="sidebar">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#known-issues">Known Issues</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
 <h1 class="title">Tutorial: How I ported a C++/SDL_gfx based application to Felgo</h1>
 <span class="subtitle"></span>
 <!-- $$$sdlgfx-port-tutorial.html-description -->
@@ -18,15 +25,22 @@
 <li><a href="https://github.com/kallaballa/Neurocid/tree/felgo">Neurocid felgo</a> - The code after the port</li>
 </ul>
 <p>If you want all the changes at a glance you can <a href="https://github.com/kallaballa/Neurocid/compare/master...felgo">compare</a> those branches but please be aware that not all of them are strictly necessary to achieve the goal of this tutorial.</p>
+<a name="known-issues"></a>
+<h2 id="known-issues">Known Issues</h2>
+<ul>
+<li>Running Felgo applications on Wayland doesn't seem to work (it hangs).</li>
+<li>Somehow I wasn't able to get qdoc to output documentation for C++.</li>
+</ul>
 <p>Tutorial chapters:</p>
-<ol class="1" type="1"><li><a href="comments-on-challenge.html">Chapter 0: Comments on how I approached the challenge in general</a></li>
+<ul>
+<li><a href="comments-on-challenge.html">Chapter 0: Comments on how I approached the challenge in general</a></li>
 <li><a href="build-neurocid-debian.html">Chapter 1: Building Neurocid for Debian Linux 10</a></li>
 <li><a href="run-neurocid.html">Chapter 2: The Game</a></li>
 <li><a href="write-qml-canvas.html">Chapter 3: Write a QML Canvas object that mimics a SDL_gfx-like API</a></li>
 <li><a href="write-a-cpp-to-qml-bridge.html">Chapter 4: Write a C++ to QML Canvas bridge</a></li>
 <li><a href="howto-use-replacement.html">Chapter 5: How to use the SDL_gfx-like drop-in replacement</a></li>
 <li><a href="appendix-challenge.html">Appendix: Issues with the Challenge and Felgo</a></li>
-</ol>
+</ul>
 <p>Please have a look at training.sh to learn how to set up the environment and run felgo-neurocid</p>
 </div>
 <!-- @@@sdlgfx-port-tutorial.html -->
