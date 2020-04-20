@@ -48,4 +48,6 @@ felgo/moc_qneurocidcontrol.cpp
 felgo/qrc_resources_user.cpp
 sdl1/neurocid-bin
 felgo/felgo-neurocid.pro.user
-felgo/doc/html
+felgo/doc/html/sdlgfx-port-tutorial.html
+felgo/doc/html/felgo-neurocid.index
+
